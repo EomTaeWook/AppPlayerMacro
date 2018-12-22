@@ -1,0 +1,25 @@
+﻿<Window x:Class="NoxMacro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NoxMacro"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="780" Width="1270">
+    <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" VerticalAlignment="Stretch">
+        <Border BorderBrush="Black" BorderThickness="4" DockPanel.Dock="Top" Height="110">
+            <DockPanel LastChildFill="True" Margin="0,0,0,6">
+                <Label Height="43" VerticalAlignment="Top" FontSize="20" Content="프로세스" DockPanel.Dock="Top"/>
+                <ComboBox Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top"></ComboBox>
+            </DockPanel>
+        </Border>
+        <Border BorderBrush="Red" DockPanel.Dock="Left" BorderThickness="3" HorizontalAlignment="Stretch" Width="635">
+            <DockPanel>
+                <Label Content="비교할 이미지" FontSize="20" DockPanel.Dock="Top"></Label>
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <Canvas AllowDrop="True"/>
+                </Border>
+            </DockPanel>
+        </Border>
+    </DockPanel>
+</Window>
