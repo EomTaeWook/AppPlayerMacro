@@ -1,0 +1,50 @@
+﻿<Window x:Class="Macro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Macro"
+        xmlns:util="clr-namespace:Utils;assembly=Utils"
+    mc:Ignorable="d"
+        Title="MainWindow" Height="780" Width="1270">
+    <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" VerticalAlignment="Stretch">
+        <Border BorderBrush="Black" BorderThickness="4" DockPanel.Dock="Top" Height="110">
+            <DockPanel LastChildFill="True" Margin="0,0,0,6">
+                <Label Height="43" VerticalAlignment="Top" FontSize="{x:Static util:ConstHelper.FontSize}" Content="연결 프로세스" DockPanel.Dock="Top"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="9*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0" FontSize="{x:Static util:ConstHelper.FontSize}" Name="combo_process" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                    </ComboBox>
+                    <Button x:Name="btnRefresh" Content="&#80;" Grid.Column="1" Height="40" FontFamily="Wingdings 3" FontSize="{x:Static util:ConstHelper.FontSize}">
+                    </Button>
+                </Grid>
+            </DockPanel>
+        </Border>
+        <Border BorderBrush="Red" DockPanel.Dock="Left" BorderThickness="3" HorizontalAlignment="Stretch" Width="635">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="비교할 이미지" FontSize="{x:Static util:ConstHelper.FontSize}"></Label>
+                        <Button Name="btnCapture" Grid.Row="0" Grid.Column="1" Content="화면 캡쳐" FontSize="{x:Static util:ConstHelper.FontSize}"/>
+                    </Grid>
+                </StackPanel>
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <Canvas AllowDrop="True" Name="captureZone"/>
+                </Border>
+            </DockPanel>
+        </Border>
+    </DockPanel>
+</Window>
