@@ -7,10 +7,13 @@
         xmlns:util="clr-namespace:Utils;assembly=Utils"
     mc:Ignorable="d"
         Title="MainWindow" Height="780" Width="1270">
+    <Window.Resources>
+        
+    </Window.Resources>
     <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" VerticalAlignment="Stretch">
         <Border BorderBrush="Black" BorderThickness="4" DockPanel.Dock="Top" Height="110">
             <DockPanel LastChildFill="True" Margin="0,0,0,6">
-                <Label Height="43" VerticalAlignment="Top" FontSize="{x:Static util:ConstHelper.FontSize}" Content="연결 프로세스" DockPanel.Dock="Top"/>
+                <Label Height="43" VerticalAlignment="Top" FontSize="{x:Static util:ConstHelper.FontSize}" Content="{Binding Path=MainWindowViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Top"/>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -41,9 +44,10 @@
                         <Button Name="btnCapture" Grid.Row="0" Grid.Column="1" Content="화면 캡쳐" FontSize="{x:Static util:ConstHelper.FontSize}"/>
                     </Grid>
                 </StackPanel>
-                <Border BorderBrush="Black" BorderThickness="1">
-                    <Canvas AllowDrop="True" Name="captureZone"/>
-                </Border>
+                <Canvas AllowDrop="True" Name="captureZone" Background="White">
+                    <Border Name="dragBorder" BorderBrush="Blue" BorderThickness="1" Background="LightBlue" CornerRadius="1" Opacity="0.5">
+                    </Border>
+                </Canvas>
             </DockPanel>
         </Border>
     </DockPanel>

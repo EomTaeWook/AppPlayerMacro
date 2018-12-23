@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Utils;
 using Image = Macro.Extensions.Image;
@@ -16,6 +17,8 @@ namespace Macro
     public partial class MainWindow : Window
     {
         private List<Process> _processes;
+        private bool _isDrag;
+        private Point _originPoint;
         public MainWindow()
         {
             InitializeComponent();
@@ -34,7 +37,55 @@ namespace Macro
 
             btnCapture.Click += Button_Click;
             btnRefresh.Click += Button_Click;
+            captureZone.MouseLeftButtonDown += CaptureZone_MouseLeftButtonDown; ;
+            captureZone.MouseMove += CaptureZone_MouseMove;
+            captureZone.MouseLeave += CaptureZone_MouseLeave;
+            captureZone.MouseLeftButtonUp += CaptureZone_MouseLeave;
         }
+        private void CaptureZone_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _isDrag = true;
+            _originPoint = e.GetPosition(captureZone);
+            e.Handled = true;
+        }
+
+        private void CaptureZone_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(_isDrag)
+            {
+                Point currentPoint = e.GetPosition(captureZone);
+                UpdateDragSelectionRect(_originPoint, currentPoint);
+                e.Handled = true;
+            }
+        }
+        private void UpdateDragSelectionRect(Point origin, Point current)
+        {
+            if(origin.X - current.X > 0)
+                Canvas.SetLeft(dragBorder, current.X);
+            else
+                Canvas.SetLeft(dragBorder, origin.X);
+
+            if (origin.Y - current.Y > 0)
+                Canvas.SetTop(dragBorder, current.Y);
+            else
+                Canvas.SetTop(dragBorder, origin.Y);
+
+            if(current.X > origin.X)
+                dragBorder.Width = current.X - origin.X;
+            else
+                dragBorder.Width = origin.X - current.X;
+
+            if (current.Y > origin.Y)
+                dragBorder.Height = current.Y - origin.Y;
+            else
+                dragBorder.Height = origin.Y - current.Y;
+        }
+        private void CaptureZone_MouseLeave(object sender, MouseEventArgs e)
+        {
+            _isDrag = false;
+            e.Handled = true;
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var item = combo_process.SelectedValue;
@@ -59,5 +110,6 @@ namespace Macro
             captureZone.Background = imageBrush;
             return true;
         }
+        
     }
 }

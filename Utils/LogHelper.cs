@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,6 +14,11 @@ namespace Utils
         public static void Error(string message, [CallerMemberName] string callerName = "")
         {
             _logger.Error(message, callerName);
+        }
+        public static void Debug(string message, [CallerMemberName] string callerName = "")
+        {
+            Trace.WriteLine(message);
+            _logger.Debug(message, callerName);
         }
         public static void Info(string message, [CallerMemberName] string callerName = "")
         {
