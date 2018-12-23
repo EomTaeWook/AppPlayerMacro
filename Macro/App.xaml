@@ -1,10 +1,37 @@
 ﻿<Application x:Class="Macro.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Macro"
              xmlns:model="clr-namespace:Macro.Models"
+             xmlns:util="clr-namespace:Utils;assembly=Utils"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <model:ViewModelLocator x:Key="Locator"/>
+        <ResourceDictionary >
+            <ResourceDictionary.MergedDictionaries>
+                <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <!-- Accent and AppTheme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <model:ViewModelLocator x:Key="Locator"/>
+            <Style TargetType="ComboBox">
+                <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
+            </Style>
+            <Style TargetType="RadioButton">
+                <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
+            </Style>
+            <Style TargetType="Controls:NumericUpDown">
+                <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

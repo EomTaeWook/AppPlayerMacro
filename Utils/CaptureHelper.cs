@@ -45,20 +45,29 @@ namespace Utils
 
         public static Bitmap Capture(Process process)
         {
-            Rect rect = new Rect();
-            var hWnd = process.MainWindowHandle;
-            SetForegroundWindow(hWnd);
+            try
+            {
+                Rect rect = new Rect();
+                var hWnd = process.MainWindowHandle;
 
-            GetWindowRect(hWnd, ref rect);
+                SetForegroundWindow(hWnd);
 
-            Bitmap bmp = new Bitmap(rect.Width, rect.Height);
-            Graphics g = Graphics.FromImage(bmp);
-            g.CopyFromScreen(rect.Left, rect.Top, 0, 0,
-                            new Size(rect.Width, rect.Height),
-                            CopyPixelOperation.SourceCopy);
-            g.Dispose();
+                GetWindowRect(hWnd, ref rect);
 
-            return bmp;
+                Bitmap bmp = new Bitmap(rect.Width, rect.Height);
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.CopyFromScreen(rect.Left, rect.Top, 0, 0,
+                                    new Size(rect.Width, rect.Height),
+                                    CopyPixelOperation.SourceCopy);
+                }
+                return bmp;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Warning(ex.Message);
+                return null;
+            }            
         }
     }
     

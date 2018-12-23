@@ -34,7 +34,6 @@ namespace Macro
 #if DEBUG
             path = Environment.CurrentDirectory + "/../../../Datas/";
 #endif
-            
             Singleton<LabelDocument>.Instance.Init(path);
         }
         private void DependenciesResolved()
@@ -46,7 +45,7 @@ namespace Macro
         }
         private void Process(object sender, Exception ex)
         {
-            Debug.Assert(false, ex.Message);
+            //Debug.Assert(false, ex.Message);
             LogHelper.Warning(ex.Message);
         }
     }

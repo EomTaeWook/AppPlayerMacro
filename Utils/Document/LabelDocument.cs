@@ -21,6 +21,11 @@ namespace Utils.Document
         Refresh,
         SelectProcess,
         NotSelectProcessMessage,
+        CompareImage,
+        ScreenCapture,
+        FailCapture,
+        SaveConfig,
+        Config,
 
         Max
     }

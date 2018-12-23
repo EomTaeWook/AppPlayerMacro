@@ -1,54 +1,169 @@
-﻿<Window x:Class="Macro.MainWindow"
+﻿<Controls:MetroWindow x:Class="Macro.MainWindow"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Macro"
         xmlns:util="clr-namespace:Utils;assembly=Utils"
-    mc:Ignorable="d"
-        Title="MainWindow" Height="780" Width="1270">
+        mc:Ignorable="d"
+        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="1"
+        Title="매크로" Height="780" Width="1270">
     <Window.Resources>
         
     </Window.Resources>
-    <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" VerticalAlignment="Stretch">
-        <Border BorderBrush="Black" BorderThickness="4" DockPanel.Dock="Top" Height="110">
+    <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
+        <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">
             <DockPanel LastChildFill="True" Margin="0,0,0,6">
-                <Label Height="43" VerticalAlignment="Top" FontSize="{x:Static util:ConstHelper.FontSize}" Content="{Binding Path=MainWindowViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Top"/>
+                <Label Height="43" VerticalAlignment="Top" Content="{Binding Path=MainWindowViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Top"/>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="9*"></ColumnDefinition>
-                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <ComboBox Grid.Column="0" FontSize="{x:Static util:ConstHelper.FontSize}" Name="combo_process" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                    <ComboBox Grid.Column="0" Name="combo_process" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                     </ComboBox>
-                    <Button x:Name="btnRefresh" Content="&#80;" Grid.Column="1" Height="40" FontFamily="Wingdings 3" FontSize="{x:Static util:ConstHelper.FontSize}">
+                    <Button Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Content="&#81;" Grid.Column="1" Width="40" Height="40" FontFamily="Wingdings 3">
                     </Button>
                 </Grid>
             </DockPanel>
         </Border>
-        <Border BorderBrush="Red" DockPanel.Dock="Left" BorderThickness="3" HorizontalAlignment="Stretch" Width="635">
-            <DockPanel>
+        <Grid Width="auto">
+            <Grid.RowDefinitions>
+                <RowDefinition>
+                </RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border BorderBrush="Black" BorderThickness="1">
+                <DockPanel LastChildFill="True" Grid.Column="0" Grid.Row="0">
+                    <StackPanel DockPanel.Dock="Top">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=MainWindowViewModel.CompareImage, Source={StaticResource Locator}}" ></Label>
+                            <DockPanel Grid.Row="0" Grid.Column="1">
+                                <Button Name="btnCapture" Content="{Binding Path=MainWindowViewModel.ScreenCapture, Source={StaticResource Locator}}"/>
+                            </DockPanel>
+                        </Grid>
+                    </StackPanel>
+                    <Canvas AllowDrop="True" Name="captureZone" Background="White" Grid.Row="0">
+                        <Border Name="dragBorder" BorderBrush="Blue" BorderThickness="1" Background="LightBlue" CornerRadius="1" Opacity="0.5">
+                        </Border>
+                    </Canvas>
+                </DockPanel>
+            </Border>
+            <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
+                <StackPanel DockPanel.Dock="Top">
+                    <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=MainWindowViewModel.Config, Source={StaticResource Locator}}"></Label>
+                </StackPanel>
                 <StackPanel DockPanel.Dock="Top">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="2*"></ColumnDefinition>
+                            <ColumnDefinition Width="8*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="비교할 이미지" FontSize="{x:Static util:ConstHelper.FontSize}"></Label>
-                        <Button Name="btnCapture" Grid.Row="0" Grid.Column="1" Content="화면 캡쳐" FontSize="{x:Static util:ConstHelper.FontSize}"/>
+                        <Label Content="주기(ms)" Grid.Column="0" Grid.Row="0"></Label>
+                        <Grid Grid.Column="1" Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Controls:NumericUpDown Value="2000" Minimum="2000" Maximum = "60000" Interval = "1000" StringFormat="{}{0:N0}"/>
+                            <!--<TextBox Grid.Column="0" FontSize="{x:Static util:ConstHelper.FontSize}"></TextBox>-->
+                        </Grid>
+
+                        <Label Content="EventType" Grid.Column="0" Grid.Row="1"></Label>
+                        <Grid Grid.Column="1" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton GroupName="EventType" Grid.Column="0" IsChecked="True">Mouse</RadioButton>
+                            <RadioButton GroupName="EventType" Grid.Column="1">Keyboard</RadioButton>
+                        </Grid>
+
+                        <Label Content="SendEvent" Grid.Column="0" Grid.Row="2"></Label>
+                        <Grid Grid.Column="1" Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4*"></ColumnDefinition>
+                                <ColumnDefinition Width="6*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button DockPanel.Dock="Left" Content="좌표지정" Grid.Column="0" ></Button>
+                            <!--<TextBox DockPanel.Dock="Left" Grid.Column="0"></TextBox>-->
+                            <Label DockPanel.Dock="Right" Content="DataSet { X : 123  Y : 123}" Grid.Column="2"></Label>
+                        </Grid>
                     </Grid>
                 </StackPanel>
-                <Canvas AllowDrop="True" Name="captureZone" Background="White">
-                    <Border Name="dragBorder" BorderBrush="Blue" BorderThickness="1" Background="LightBlue" CornerRadius="1" Opacity="0.5">
-                    </Border>
-                </Canvas>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Button Content="저장"></Button>
+                </StackPanel>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="6*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label Content="저장 리스트" Grid.Row="0"></Label>
+                    <ListBox ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="2" Grid.Row="1" BorderThickness="1" Style="{StaticResource VirtualisedMetroListBox}">
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #1</ListBoxItem>
+                        <ListBoxItem>ListBox Item #99999</ListBoxItem>
+                    </ListBox>
+                </Grid>
             </DockPanel>
-        </Border>
+        </Grid>
     </DockPanel>
-</Window>
+</Controls:MetroWindow>
