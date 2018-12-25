@@ -27,15 +27,19 @@ namespace Utils
             Bottom = rect.Bottom;
         }
     }
+    [StructLayout(LayoutKind.Sequential)]
+    struct MonitorInfo
+    {
+        public uint Size;
+        public Rect Monitor;
+        public Rect Work;
+        public uint Flags;
+    }
 
     public class CaptureHelper
     {
         [DllImport("user32.dll")]
         private static extern IntPtr GetWindowRect(IntPtr hWnd, ref Rect rect);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool PrintWindow(IntPtr hwnd, IntPtr hDC, uint nFlags);
 
         [DllImport("user32.dll")]
         private static extern IntPtr ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -43,16 +47,54 @@ namespace Utils
         [DllImport("user32.dll")]
         private static extern int SetForegroundWindow(IntPtr hWnd);
 
-        public static Bitmap Capture(Process process)
+        [DllImport("user32.dll")]
+        private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr rect, MonitorEnumDelegate callback, int data);
+        private delegate bool MonitorEnumDelegate(IntPtr desktop, IntPtr hdc, ref Rect rect, int data);
+        [DllImport("user32.dll")]
+        private static extern bool GetMonitorInfo(IntPtr hmon, ref MonitorInfo mi);
+
+        public static Rect MonitorSize()
+        {
+            List<MonitorInfo> infos = new List<MonitorInfo>();
+            MonitorEnumDelegate callback = new MonitorEnumDelegate((IntPtr desktop, IntPtr hdc, ref Rect rect, int data) =>
+            {
+                MonitorInfo info = new MonitorInfo();
+                info.Size = (uint)Marshal.SizeOf(info);
+                if(GetMonitorInfo(desktop, ref info))
+                {
+                    infos.Add(info);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            });
+            EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, callback, 0);
+            var monitor = new Rect();
+            foreach(var info in infos)
+            {
+                if (monitor.Left > info.Monitor.Left)
+                    monitor.Left = info.Monitor.Left;
+                if (monitor.Right < info.Monitor.Right)
+                    monitor.Right = info.Monitor.Right;
+                if (monitor.Bottom < info.Monitor.Bottom)
+                    monitor.Bottom = info.Monitor.Bottom;
+                if (monitor.Top > info.Monitor.Top)
+                    monitor.Top = info.Monitor.Top;
+            }
+            return monitor;
+        }
+        public static Bitmap Capture(Rect rect)
         {
             try
             {
-                Rect rect = new Rect();
-                var hWnd = process.MainWindowHandle;
+                //Rect rect = new Rect();
+                //var hWnd = process.MainWindowHandle;
 
-                SetForegroundWindow(hWnd);
+                //SetForegroundWindow(hWnd);
 
-                GetWindowRect(hWnd, ref rect);
+                //GetWindowRect(hWnd, ref rect);
 
                 Bitmap bmp = new Bitmap(rect.Width, rect.Height);
                 using (var g = Graphics.FromImage(bmp))

@@ -57,9 +57,7 @@
                             </DockPanel>
                         </Grid>
                     </StackPanel>
-                    <Canvas AllowDrop="True" Name="captureZone" Background="White" Grid.Row="0">
-                        <Border Name="dragBorder" BorderBrush="Blue" BorderThickness="1" Background="LightBlue" CornerRadius="1" Opacity="0.5">
-                        </Border>
+                    <Canvas Name="captureImage" Background="White" Grid.Row="0">
                     </Canvas>
                 </DockPanel>
             </Border>
