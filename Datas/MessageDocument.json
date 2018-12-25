@@ -1,0 +1,28 @@
+﻿[
+	{
+		"Code" : "Success",
+		"Kor": "",
+		"Eng": ""
+	},
+	{
+		"Code" : "FailedImageValidate",
+		"Kor": "이미지 설정을 해주세요.",
+		"Eng": "Failed Image Invalidate"
+	},
+	{
+		"Code" : "FailedMouseCoordinatesValidate",
+		"Kor": "마우스 위치 설정을 해주세요.",
+		"Eng": "Failed Mouse Coordinates Invalidate"
+	},
+	{
+		"Code" : "FailedKeyboardCommandValidate",
+		"Kor": "키보드 입력 설정을 해주세요.",
+		"Eng": "Failed KeyboardCommand Invalidate"
+	},
+	{
+		"Code" : "FailedProcessValidate",
+		"Kor": "연결 프로세스 설정을 해주세요.",
+		"Eng": "Failed Process Invalidate"
+	}
+]
+

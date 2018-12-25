@@ -30,11 +30,16 @@ namespace Macro
         private void Init()
         {
             DependenciesResolved();
+            InitTemplate();
+        }
+        private void InitTemplate()
+        {
             var path = Environment.CurrentDirectory;
 #if DEBUG
             path = Environment.CurrentDirectory + "/../../../Datas/";
 #endif
-            Singleton<LabelDocument>.Instance.Init(path);
+            Singleton<DocumentTemplate<Label>>.Instance.Init(path);
+            Singleton<DocumentTemplate<Message>>.Instance.Init(path);
         }
         private void DependenciesResolved()
         {

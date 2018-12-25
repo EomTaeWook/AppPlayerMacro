@@ -1,9 +1,4 @@
 ﻿using Macro.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 using Utils.Document;
 
@@ -11,14 +6,32 @@ namespace Macro.Extensions
 {
     public static class DocumentExtensions
     {
-        public static string Get(this IDocument document, Language language, string key)
+        public static string Get(this Label label, Language language)
         {
-            if (Enum.TryParse(key, out Label label))
-            {
-                return Singleton<LabelDocument>.Instance[label, language];
-            }
-            else
-                return null;
+            return Singleton<DocumentTemplate<Label>>.Instance[label, language];
+        }
+        public static string Get(this Message mesage, Language language)
+        {
+            return Singleton<DocumentTemplate<Message>>.Instance[mesage, language];
+        }
+        public static string Get<Enum>(this IDocument document, Language language, string code) where Enum : struct
+        {
+            Enum @enum = (Enum)System.Enum.Parse(typeof(Enum), code);
+            return Singleton<DocumentTemplate<Enum>>.Instance[@enum, language];
+        }
+    }
+    public class DocumentHelper
+    {
+        private static Language _language;
+        public DocumentHelper(IConfig config) => _language = config.Language;
+
+        public static string Get(Label label)
+        {
+            return DocumentExtensions.Get(label, _language);
+        }
+        public static string Get(Message mesage)
+        {
+            return DocumentExtensions.Get(mesage, _language);
         }
     }
 }

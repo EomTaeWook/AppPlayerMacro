@@ -32,6 +32,9 @@
             <Style TargetType="Controls:NumericUpDown">
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
             </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

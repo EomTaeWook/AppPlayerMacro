@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="Macro.View.ConfigEventView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Macro.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="7*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=ConfigEventViewModel.EventType, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton GroupName="EventType" Grid.Column="0" IsChecked="True" Content="Mouse" Name="rbMouse"/>
+                    <RadioButton GroupName="EventType" Grid.Column="1" Content="Keyboard" Name="rbKeyboard"/>
+                </Grid>
+                <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=ConfigEventViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=ConfigEventViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" ></Button>
+                    <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed"></TextBox>
+                    <Label Name="lblDesc" DockPanel.Dock="Right" Content="" Grid.Column="2"></Label>
+                </Grid>
+                <Label Grid.ColumnSpan="2" Grid.Row="2" Content="{Binding Path=ConfigEventViewModel.ConfigList, Source={StaticResource Locator}}"></Label>
+                <DataGrid Grid.ColumnSpan="2" Grid.Row="3" ItemsSource="{Binding Source=_saves}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="100" Header="Image" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Image}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="EventType" Binding="{Binding EventType}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Desc"/>
+                        <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcessName}" IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</UserControl>

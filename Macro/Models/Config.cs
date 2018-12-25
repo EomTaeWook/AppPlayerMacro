@@ -10,9 +10,11 @@ namespace Macro.Models
     public interface IConfig
     {
         Language Language { get; }
+        string SavePath { get; }
     }
     public class Config : IConfig
     {
         public Language Language { get; set; }
+        public string SavePath { get; set; }
     }
 }

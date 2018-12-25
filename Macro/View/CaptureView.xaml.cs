@@ -47,7 +47,9 @@ namespace Macro.View
             Width = size.Width;
             Top = size.Top;
             Height = size.Height;
-            //Topmost = true;
+#if !DEBUG
+            Topmost = true;
+#endif
         }
         private void EventInit()
         {
@@ -130,10 +132,6 @@ namespace Macro.View
         }
         private void SaveCapture(Rect rect)
         {
-            //Main Monitor로 부터 Position 보정작업 해야함.
-
-            //□■
-            //□□■
             CaptureImage = CaptureHelper.Capture(rect);
         }
     }

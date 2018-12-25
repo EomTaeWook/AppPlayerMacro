@@ -89,18 +89,12 @@ namespace Utils
         {
             try
             {
-                //Rect rect = new Rect();
-                //var hWnd = process.MainWindowHandle;
-
-                //SetForegroundWindow(hWnd);
-
-                //GetWindowRect(hWnd, ref rect);
-
+                var monitor = MonitorSize();
                 Bitmap bmp = new Bitmap(rect.Width, rect.Height);
                 using (var g = Graphics.FromImage(bmp))
                 {
-                    g.CopyFromScreen(rect.Left, rect.Top, 0, 0,
-                                    new Size(rect.Width, rect.Height),
+                    g.CopyFromScreen(monitor.Left, monitor.Top,  (rect.Left * -1), (rect.Top * -1),
+                                    new Size(monitor.Width, monitor.Height),
                                     CopyPixelOperation.SourceCopy);
                 }
                 return bmp;

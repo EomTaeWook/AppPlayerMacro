@@ -12,36 +12,33 @@ namespace Macro.Models.ViewModel
 {
     public class MainWindowViewModel
     {
-        private readonly Language _language;
-        private LabelDocument _document;
-        public MainWindowViewModel(IConfig config)
-        {
-            _language = config.Language;
-            _document = Singleton<LabelDocument>.Instance;
-        }
         public string SaveConfig
         {
-            get => _document.Get(_language, "SaveConfig");
+            get => DocumentHelper.Get(Label.SaveConfig);
         }
         public string ScreenCapture
         {
-            get => _document.Get(_language, "ScreenCapture");
-        }
-        public string Config
-        {
-            get => _document.Get(_language, "Config");
+            get => DocumentHelper.Get(Label.ScreenCapture);
         }
         public string CompareImage
         {
-            get => _document.Get(_language, "CompareImage");
+            get => DocumentHelper.Get(Label.CompareImage);
         }
         public string SelectProcess
         {
-            get => _document.Get(_language, "SelectProcess");
+            get => DocumentHelper.Get(Label.SelectProcess);
         }
         public string Refresh
         {
-            get => _document.Get(_language, "Refresh");
+            get => DocumentHelper.Get(Label.Refresh);
+        }
+        public string Config
+        {
+            get => DocumentHelper.Get(Label.Config);
+        }
+        public string Save
+        {
+            get => DocumentHelper.Get(Label.Save);
         }
     }
 }

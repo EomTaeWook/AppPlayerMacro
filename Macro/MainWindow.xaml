@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Macro"
+        xmlns:view="clr-namespace:Macro.View"
         xmlns:util="clr-namespace:Utils;assembly=Utils"
         mc:Ignorable="d"
         BorderBrush="{DynamicResource AccentColorBrush}"
@@ -63,104 +63,14 @@
             </Border>
             <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
                 <StackPanel DockPanel.Dock="Top">
-                    <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=MainWindowViewModel.Config, Source={StaticResource Locator}}"></Label>
+                    <DockPanel LastChildFill="False">
+                        <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=MainWindowViewModel.Config, Source={StaticResource Locator}}"></Label>
+                        <Button Name="btnSave" DockPanel.Dock="Right" Margin="5, 5, 5, 5" Content="{Binding Path=MainWindowViewModel.Save, Source={StaticResource Locator}}"></Button>
+                    </DockPanel>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Top">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                            <ColumnDefinition Width="8*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="주기(ms)" Grid.Column="0" Grid.Row="0"></Label>
-                        <Grid Grid.Column="1" Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Controls:NumericUpDown Value="2000" Minimum="2000" Maximum = "60000" Interval = "1000" StringFormat="{}{0:N0}"/>
-                            <!--<TextBox Grid.Column="0" FontSize="{x:Static util:ConstHelper.FontSize}"></TextBox>-->
-                        </Grid>
-
-                        <Label Content="EventType" Grid.Column="0" Grid.Row="1"></Label>
-                        <Grid Grid.Column="1" Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <RadioButton GroupName="EventType" Grid.Column="0" IsChecked="True">Mouse</RadioButton>
-                            <RadioButton GroupName="EventType" Grid.Column="1">Keyboard</RadioButton>
-                        </Grid>
-
-                        <Label Content="SendEvent" Grid.Column="0" Grid.Row="2"></Label>
-                        <Grid Grid.Column="1" Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="4*"></ColumnDefinition>
-                                <ColumnDefinition Width="6*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Button DockPanel.Dock="Left" Content="좌표지정" Grid.Column="0" ></Button>
-                            <!--<TextBox DockPanel.Dock="Left" Grid.Column="0"></TextBox>-->
-                            <Label DockPanel.Dock="Right" Content="DataSet { X : 123  Y : 123}" Grid.Column="2"></Label>
-                        </Grid>
-                    </Grid>
+                    <view:ConfigEventView x:Name="configControl"/>
                 </StackPanel>
-                <StackPanel DockPanel.Dock="Bottom">
-                    <Button Content="저장"></Button>
-                </StackPanel>
-                <Grid DockPanel.Dock="Top">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"></RowDefinition>
-                        <RowDefinition Height="6*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Label Content="저장 리스트" Grid.Row="0"></Label>
-                    <ListBox ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="2" Grid.Row="1" BorderThickness="1" Style="{StaticResource VirtualisedMetroListBox}">
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #1</ListBoxItem>
-                        <ListBoxItem>ListBox Item #99999</ListBoxItem>
-                    </ListBox>
-                </Grid>
             </DockPanel>
         </Grid>
     </DockPanel>

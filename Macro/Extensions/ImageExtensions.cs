@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace Macro.Extensions
 {
-    public static class Image
+    public static class ImageExtensions
     {
         public static BitmapSource ToBitmapSource(this Bitmap source)
         {

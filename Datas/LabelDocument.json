@@ -1,38 +1,63 @@
 ﻿[
-{
-	"Label" : "Refresh",
-	"Kor": "새로고침",
-	"Eng": "Refresh"
-},
-{
-	"Label" : "SelectProcess",
-	"Kor": "연결된 프로세스",
-	"Eng": "Select Process"
-},
-{
-	"Label" : "CompareImage",
-	"Kor": "비교할 이미지",
-	"Eng": "CompareImage"
-},
-{
-	"Label" : "ScreenCapture",
-	"Kor": "화면 캡쳐",
-	"Eng": "ScreenCapture"
-},
-{
-	"Label" : "FailCapture",
-	"Kor": "화면 캡쳐에 실패하였습니다.",
-	"Eng": "FailCapture"
-},
-{
-	"Label" : "SaveConfig",
-	"Kor": "저장",
-	"Eng": "SaveConfig"
-},
-{
-	"Label" : "Config",
-	"Kor": "설정",
-	"Eng": "Config"
-}
+	{
+		"Code" : "Refresh",
+		"Kor": "새로고침",
+		"Eng": "Refresh"
+	},
+	{
+		"Code" : "SelectProcess",
+		"Kor": "연결된 프로세스",
+		"Eng": "Select Process"
+	},
+	{
+		"Code" : "CompareImage",
+		"Kor": "비교할 이미지",
+		"Eng": "CompareImage"
+	},
+	{
+		"Code" : "ScreenCapture",
+		"Kor": "화면 캡쳐",
+		"Eng": "ScreenCapture"
+	},
+	{
+		"Code" : "FailCapture",
+		"Kor": "화면 캡쳐에 실패하였습니다.",
+		"Eng": "FailCapture"
+	},
+	{
+		"Code" : "SaveConfig",
+		"Kor": "저장",
+		"Eng": "SaveConfig"
+	},
+	{
+		"Code" : "Config",
+		"Kor": "설정",
+		"Eng": "Config"
+	},
+	{
+		"Code" : "EventType",
+		"Kor": "이벤트 타입",
+		"Eng": "EventType"
+	},
+	{
+		"Code" : "EventDataSet",
+		"Kor": "이벤트 데이터",
+		"Eng": "EventDataSet"
+	},
+	{
+		"Code" : "ConfigList",
+		"Kor": "설정 리스트",
+		"Eng": "Config List"
+	},
+	{
+		"Code" : "MouseCoordinates",
+		"Kor": "마우스 좌표 지정",
+		"Eng": "Specify Mouse Coordinates"
+	},
+	{
+		"Code" : "Save",
+		"Kor": "저장",
+		"Eng": "Save"
+	}
 ]
 

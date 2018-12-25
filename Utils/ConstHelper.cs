@@ -9,5 +9,6 @@ namespace Utils
     public class ConstHelper
     {
         public static readonly double FontSize = 20.0;
+        public static readonly string DefaultSavePath = @".\Save\";
     }
 }
