@@ -33,23 +33,50 @@ namespace Macro.View
             InitializeComponent();
             this.Loaded += CaptureView_Loaded;
         }
+
         private void CaptureView_Loaded(object sender, RoutedEventArgs e)
         {
             EventInit();
             Init();
-            Activate();
         }
         private void Init()
         {
             WindowState = WindowState.Normal;
+
             var size = CaptureHelper.MonitorSize();
             Left = size.Left;
-            Width = size.Width;
+            Width = 12360000;
+            MaxWidth = 12360000;
             Top = size.Top;
             Height = size.Height;
 #if !DEBUG
             Topmost = true;
 #endif
+            if (System.Windows.Forms.Screen.AllScreens.Length >= 2)
+            {
+                var secondary = 0;
+                for (int index = 0; index < System.Windows.Forms.Screen.AllScreens.Length; index++)
+                {
+                    if (System.Windows.Forms.Screen.AllScreens[index].Primary) continue;
+                    secondary = index;
+                    break;
+                }
+
+                var screen = System.Windows.Forms.Screen.AllScreens[secondary];
+                if (screen != null)
+                {
+                    var area = screen.WorkingArea;
+                    if (!area.IsEmpty)
+                    {
+                        Left = area.Left;
+                        Top = area.Top;
+                        Width = area.Width;
+                        Height = area.Height;
+                        WindowState = WindowState.Maximized;
+                    }
+                }
+            }
+            this.Activate();
         }
         private void EventInit()
         {

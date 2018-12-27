@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Macro.View"
              mc:Ignorable="d" 
-             WindowStyle="None" ResizeMode="NoResize" Opacity="0.5"
+             WindowStyle="None" ResizeMode="NoResize" Opacity="0.5" WindowStartupLocation="Manual"
              AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0">
     <Grid>
         <Canvas AllowDrop="True" Name="captureZone" Background="Gray">

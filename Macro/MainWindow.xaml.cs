@@ -33,6 +33,7 @@ namespace Macro
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
             Init();
         }
         private void Init()
@@ -104,8 +105,8 @@ namespace Macro
         {
             var capture = new CaptureView();
             this.WindowState = WindowState.Minimized;
-            capture.ShowDialog();
-            if(capture.CaptureImage != null)
+            capture.Show();
+            if (capture.CaptureImage != null)
             {
                 _bitmap = capture.CaptureImage;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());

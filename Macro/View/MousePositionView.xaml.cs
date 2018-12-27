@@ -70,6 +70,7 @@ namespace Macro.View
 #if !DEBUG
             Topmost = true;
 #endif
+            this.Activate();
         }
     }
 }
