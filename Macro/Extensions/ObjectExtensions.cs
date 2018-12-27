@@ -12,7 +12,6 @@ namespace Macro.Extensions
             using (var ms = new MemoryStream())
             {
                 BinaryFormatter bf = new BinaryFormatter();
-
                 bf.Serialize(ms, '\uFF1C');
                 model.Image.Save(ms, ImageFormat.Png);
                 bf.Serialize(ms, '\u2194');
@@ -26,6 +25,15 @@ namespace Macro.Extensions
                 bf.Serialize(ms, '\uFF1E');
                 return ms.ToArray();
             }
+        }
+        public static object DeserializeObject(string data)
+        {
+
+            return new ConfigEventModel();
+        }
+        public static T DeserializeObject<T>(string data)
+        {
+            return default(T);
         }
     }
 }

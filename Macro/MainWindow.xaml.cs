@@ -14,6 +14,8 @@ using Macro.Extensions;
 using Utils.Document;
 using System.IO;
 using System.Text;
+using Macro.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Macro
 {
@@ -25,15 +27,19 @@ namespace Macro
         private List<Process> _processes;
         private IConfig _config;
         private Bitmap _bitmap;
+        private TaskQueue _taskQueue;
+
         public MainWindow()
         {
             InitializeComponent();
+            _taskQueue = new TaskQueue();
             _config = Singleton<UnityContainer>.Instance.Resolve<IConfig>();
             this.Loaded += MainWindow_Loaded;
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
+            //window7 not support
+            //NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
             Init();
         }
         private void Init()
@@ -64,9 +70,13 @@ namespace Macro
                 var model = configControl.Model;
                 model.Image = _bitmap;
                 model.ProcessName = combo_process.SelectedValue as string;
-                if(TryModelValidate(model, out Message error))
+                if (TryModelValidate(model, out Message error))
                 {
-                    Save(model);
+                    _taskQueue.Enqueue(Save, model).ContinueWith((task) => 
+                    {
+                        _bitmap = null;
+                        captureImage.Background = System.Windows.Media.Brushes.White;
+                    }).Finally(r => ((ConfigEventView)r).InsertModel(model), configControl);
                 }
                 else
                 {
@@ -105,7 +115,7 @@ namespace Macro
         {
             var capture = new CaptureView();
             this.WindowState = WindowState.Minimized;
-            capture.Show();
+            capture.ShowDialog();
             if (capture.CaptureImage != null)
             {
                 _bitmap = capture.CaptureImage;
@@ -113,14 +123,24 @@ namespace Macro
             }
             this.WindowState = WindowState.Normal;
         }
-        private void Save(ConfigEventModel model)
+        private Task Save(object m)
         {
-            string path = _config.SavePath;
+            var model = m as ConfigEventModel;
+            var path = _config.SavePath;
             if (string.IsNullOrEmpty(path))
                 path = ConstHelper.DefaultSavePath;
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-            File.AppendAllText($@"{path}config.save", Encoding.UTF8.GetString(model.SerializeObject())+@"\r\n");
+            File.AppendAllText($@"{path}config.save", Encoding.UTF8.GetString(model.SerializeObject()) + @"\r\n");
+            return Task.CompletedTask;
+        }
+        private void SaveLoad()
+        {
+            var path = _config.SavePath;
+            if (string.IsNullOrEmpty(path))
+                path = ConstHelper.DefaultSavePath;
+            var models = ObjectExtensions.DeserializeObject(File.ReadAllText(path));
+
         }
     }
 }

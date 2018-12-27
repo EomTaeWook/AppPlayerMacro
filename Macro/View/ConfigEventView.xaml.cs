@@ -3,6 +3,7 @@ using Macro.Models;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using Utils.Document;
@@ -96,8 +97,9 @@ namespace Macro.View
                 lblDesc.Content = $"{model.KeyBoardCmd}";
             }
         }
-        public void Refresh()
+        public void InsertModel(ConfigEventModel model)
         {
+            _saves.Add(model);
             _dummy = null;
             _dummy = new ConfigEventModel();
         }

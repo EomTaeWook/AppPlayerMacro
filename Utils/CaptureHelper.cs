@@ -37,7 +37,7 @@ namespace Utils
                 var factorX = dpiX / DefaultDPI;
                 var factorY = dpiY / DefaultDPI;
                 rect.Right = (int)(rect.Right * factorX);
-                //rect.Bottom = (int)(rect.Bottom * factorY);
+                rect.Bottom = (int)(rect.Bottom * factorY);
                 infos.Add(new Rect(rect));
                 return true;
             });
