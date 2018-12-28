@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Utils;
 using Utils.Document;
 using Macro.Extensions;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace Macro.Models.ViewModel
 {
@@ -15,6 +17,7 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.EventType);
         }
+
         public string EventDataSet
         {
             get => DocumentHelper.Get(Label.EventDataSet);
@@ -34,6 +37,6 @@ namespace Macro.Models.ViewModel
         public string Save
         {
             get => DocumentHelper.Get(Label.Save);
-        }
+        }        
     }
 }

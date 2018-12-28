@@ -40,18 +40,18 @@
                     <Label Name="lblDesc" DockPanel.Dock="Right" Content="" Grid.Column="2"></Label>
                 </Grid>
                 <Label Grid.ColumnSpan="2" Grid.Row="2" Content="{Binding Path=ConfigEventViewModel.ConfigList, Source={StaticResource Locator}}"></Label>
-                <DataGrid Grid.ColumnSpan="2" Grid.Row="3" ItemsSource="{Binding Source=_saves}" AutoGenerateColumns="False">
+                <DataGrid Grid.ColumnSpan="2" Grid.Row="3" ItemsSource="{Binding Source=SaveConfigs}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Width="100" Header="Image" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Image Source="{Binding Image}"/>
+                                    <Image Source="{Binding Path=Image}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="EventType" Binding="{Binding EventType}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="EventType" Binding="{Binding Path = EventType}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Desc"/>
-                        <DataGridTextColumn Header="ProcessName" Binding="{Binding ProcessName}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="ProcessName" Binding="{Binding Path=ProcessName}" IsReadOnly="True"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using Point = System.Windows.Point;
 
 namespace Macro.Models

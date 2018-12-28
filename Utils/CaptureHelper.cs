@@ -33,9 +33,9 @@ namespace Utils
             List<Rect> infos = new List<Rect>();
             NativeHelper.MonitorEnumDelegate callback = new NativeHelper.MonitorEnumDelegate((IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data) =>
             {
-                NativeHelper.GetDpiForMonitor(hMonitor, DpiType.Effective, out uint dpiX, out uint dpiY);
-                var factorX = dpiX / DefaultDPI;
-                var factorY = dpiY / DefaultDPI;
+                //NativeHelper.GetDpiForMonitor(hMonitor, DpiType.Effective, out uint dpiX, out uint dpiY);
+                var factorX = 1;// dpiX / DefaultDPI;
+                var factorY = 1;// dpiY / DefaultDPI;
                 rect.Right = (int)(rect.Right * factorX);
                 rect.Bottom = (int)(rect.Bottom * factorY);
                 infos.Add(new Rect(rect));

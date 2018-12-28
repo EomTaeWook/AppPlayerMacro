@@ -15,19 +15,23 @@ namespace Macro.View
     /// </summary>
     public partial class ConfigEventView : UserControl
     {
-        private ConfigEventModel _dummy;
-        private ObservableCollection<ConfigEventModel> _saves;
+        public ObservableCollection<ConfigEventModel> SaveConfigs { get; private set; }
         public ConfigEventView()
         {
             InitializeComponent();
-            _dummy = new ConfigEventModel();
-            _saves = new ObservableCollection<ConfigEventModel>();
+            Model = new ConfigEventModel();
+            SaveConfigs = new ObservableCollection<ConfigEventModel>();
 
             this.Loaded += ConfigEventView_Loaded;
         }
         private void ConfigEventView_Loaded(object sender, RoutedEventArgs e)
         {
             EventInit();
+            Init();
+        }
+        private void Init()
+        {
+
         }
         private void EventInit()
         {
@@ -45,8 +49,8 @@ namespace Macro.View
             {
                 var mousePosition = new MousePositionView();
                 mousePosition.ShowDialog();
-                _dummy.MousePoint = mousePosition.MousePoint;
-                Desc(_dummy);
+                Model.MousePoint = mousePosition.MousePoint;
+                Desc(Model);
             }
             //else if (sender.Equals(btnSave))
             //{
@@ -72,16 +76,16 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
 
-                _dummy.EventType = EventType.Mouse;
+                Model.EventType = EventType.Mouse;
             }
             else if(sender.Equals(rbKeyboard))
             {
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Visible;
 
-                _dummy.EventType = EventType.Keyboard;
+                Model.EventType = EventType.Keyboard;
             }
-            Desc(_dummy);
+            Desc(Model);
         }
         private void Desc(ConfigEventModel model)
         {
@@ -99,10 +103,10 @@ namespace Macro.View
         }
         public void InsertModel(ConfigEventModel model)
         {
-            _saves.Add(model);
-            _dummy = null;
-            _dummy = new ConfigEventModel();
+            SaveConfigs.Add(model);
+            Model = null;
+            Model = new ConfigEventModel();
         }
-        public ConfigEventModel Model { get => _dummy; }
+        public ConfigEventModel Model { get; private set; }
     }
 }

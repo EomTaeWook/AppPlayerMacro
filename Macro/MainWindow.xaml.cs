@@ -39,13 +39,19 @@ namespace Macro
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //window7 not support
-            //NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
+            NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE);
+            SaveLoad();
             Init();
         }
         private void Init()
         {
             _processes = Process.GetProcesses().ToList();
             combo_process.ItemsSource = _processes.OrderBy(r => r.ProcessName).Select(r => r.ProcessName).ToList();
+            Matrix m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
+            ScaleTransform dpiTransform = new ScaleTransform(1 / m.M11, 1 / m.M22);
+            if (dpiTransform.CanFreeze)
+                dpiTransform.Freeze();
+            this.LayoutTransform = dpiTransform;
 
             btnCapture.Click += Button_Click;
             btnRefresh.Click += Button_Click;
@@ -72,7 +78,7 @@ namespace Macro
                 model.ProcessName = combo_process.SelectedValue as string;
                 if (TryModelValidate(model, out Message error))
                 {
-                    _taskQueue.Enqueue(Save, model).ContinueWith((task) => 
+                    _taskQueue.Enqueue(Save, model).ContinueWith((task) =>
                     {
                         _bitmap = null;
                         captureImage.Background = System.Windows.Media.Brushes.White;
@@ -131,7 +137,13 @@ namespace Macro
                 path = ConstHelper.DefaultSavePath;
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-            File.AppendAllText($@"{path}config.save", Encoding.UTF8.GetString(model.SerializeObject()) + @"\r\n");
+
+            using (var fs = new FileStream($@"{path}config.save", FileMode.Append))
+            {
+                var bytes = ObjectExtensions.SerializeObject(model);
+                fs.Write(bytes, 0, bytes.Count());
+                fs.Close();
+            }
             return Task.CompletedTask;
         }
         private void SaveLoad()
@@ -139,8 +151,14 @@ namespace Macro
             var path = _config.SavePath;
             if (string.IsNullOrEmpty(path))
                 path = ConstHelper.DefaultSavePath;
-            var models = ObjectExtensions.DeserializeObject(File.ReadAllText(path));
-
+            if(File.Exists($@"{path}config.save"))
+            {
+                var models = ObjectExtensions.DeserializeObject(File.ReadAllBytes($@"{path}config.save"));
+                foreach(var model in models)
+                {
+                    configControl.InsertModel(model);
+                }
+            }
         }
     }
 }
