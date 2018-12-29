@@ -10,13 +10,13 @@ namespace Macro.Infrastructure
 {
     public class OpenCVHelper
     {
-        public static double Search(Bitmap search)
+        public static int Search(Bitmap source, Bitmap target)
         {
-            var screen = OpenCvSharp.Extensions.BitmapConverter.ToMat(search);
-            var find = OpenCvSharp.Extensions.BitmapConverter.ToMat(search);
-            var result = screen.MatchTemplate(find, TemplateMatchModes.CCoeffNormed);
-            Cv2.MinMaxLoc(result, out double min, out double max);
-            return max;
+            var sourceMat = OpenCvSharp.Extensions.BitmapConverter.ToMat(source);
+            var targetMat = OpenCvSharp.Extensions.BitmapConverter.ToMat(target);
+            var match = sourceMat.MatchTemplate(targetMat, TemplateMatchModes.CCoeffNormed);
+            Cv2.MinMaxLoc(match, out double min, out double max);
+            return Convert.ToInt32(max * 100);
         }
     }
 }

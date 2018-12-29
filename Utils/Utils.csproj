@@ -94,6 +94,10 @@
     <Compile Include="Document\DocumentEnums.cs" />
     <Compile Include="Document\DocumentTemplate.cs" />
     <Compile Include="Document\IBase.cs" />
+    <Compile Include="Infrastructure\InputBuilder.cs" />
+    <Compile Include="Infrastructure\DPIType.cs" />
+    <Compile Include="Infrastructure\InputStruct.cs" />
+    <Compile Include="Infrastructure\KeyCode.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="NativeHelper.cs" />

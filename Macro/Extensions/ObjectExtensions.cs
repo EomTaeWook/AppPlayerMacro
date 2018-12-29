@@ -24,7 +24,8 @@ namespace Macro.Extensions
                 bf.Serialize(ms, model.Index);
                 bf.Serialize(ms, model.Image);
                 bf.Serialize(ms, model.EventType);
-                bf.Serialize(ms, model.MousePoint?? new object());
+                bf.Serialize(ms, model.MousePoint? .X ?? -1d);
+                bf.Serialize(ms, model.MousePoint? .Y ?? -1d);
                 bf.Serialize(ms, model.KeyboardCmd);
                 bf.Serialize(ms, model.ProcessName);
                 bf.Serialize(ms, "\uFF1E");
@@ -44,7 +45,10 @@ namespace Macro.Extensions
                     model.Index = (int)bf.Deserialize(ms);
                     model.Image = (System.Drawing.Bitmap)bf.Deserialize(ms);
                     model.EventType = (EventType)bf.Deserialize(ms);
-                    model.MousePoint = (Point?)bf.Deserialize(ms);
+                    var x = (double)bf.Deserialize(ms);
+                    var y = (double)bf.Deserialize(ms);
+                    if(x != -1 && y != -1)
+                        model.MousePoint = new Point(x, y);
                     model.KeyboardCmd = (string)bf.Deserialize(ms);
                     model.ProcessName = (string)bf.Deserialize(ms);
                     var endTag = bf.Deserialize(ms);

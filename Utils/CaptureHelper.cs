@@ -82,23 +82,28 @@ namespace Utils
             try
             {
                 IntPtr hWnd = process.MainWindowHandle;
+                if (hWnd == IntPtr.Zero)
+                {
+                    bmp = null;
+                    return false;
+                }
                 Rect rect = new Rect();
                 NativeHelper.GetWindowRect(hWnd, ref rect);
                 bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
                 using (var gfxBmp = Graphics.FromImage(bmp))
                 {
                     IntPtr hdcBitmap = gfxBmp.GetHdc();
-                    NativeHelper.PrintWindow(hWnd, hdcBitmap, 3);
+                    NativeHelper.PrintWindow(hWnd, hdcBitmap, 1);
                     gfxBmp.ReleaseHdc(hdcBitmap);
-                    gfxBmp.FillRectangle(new SolidBrush(Color.Gray), new Rectangle(Point.Empty, bmp.Size));
-                    IntPtr hRgn = NativeHelper.CreateRectRgn(0, 0, 0, 0);
-                    NativeHelper.GetWindowRgn(hWnd, hRgn);
-                    Region region = Region.FromHrgn(hRgn);
-                    if (!region.IsEmpty(gfxBmp))
-                    {
-                        gfxBmp.ExcludeClip(region);
-                        gfxBmp.Clear(Color.Transparent);
-                    }
+                    //gfxBmp.FillRectangle(new SolidBrush(Color.Gray), new Rectangle(Point.Empty, bmp.Size));
+                    //IntPtr hRgn = NativeHelper.CreateRectRgn(0, 0, 0, 0);
+                    //NativeHelper.GetWindowRgn(hWnd, hRgn);
+                    //Region region = Region.FromHrgn(hRgn);
+                    //if (!region.IsEmpty(gfxBmp))
+                    //{
+                    //    gfxBmp.ExcludeClip(region);
+                    //    gfxBmp.Clear(Color.Transparent);
+                    //}
                     gfxBmp.Dispose();
                 }
                 return true;

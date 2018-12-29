@@ -22,6 +22,7 @@ namespace Macro.Models
             set
             {
                 _eventType = value;
+                OnPropertyChanged("EventType");
                 OnPropertyChanged("Desc");
             }
         }
@@ -32,6 +33,7 @@ namespace Macro.Models
             set
             {
                 _mousePoint = value;
+                OnPropertyChanged("MousePoint");
                 OnPropertyChanged("Desc");
             }
         }
@@ -42,6 +44,7 @@ namespace Macro.Models
             set
             {
                 _keyboardCmd = value;
+                OnPropertyChanged("KeyboardCmd");
                 OnPropertyChanged("Desc");
             }
         }
@@ -72,8 +75,6 @@ namespace Macro.Models
             KeyboardCmd = obj.KeyboardCmd;
             ProcessName = obj.ProcessName;
         }
-        
-
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

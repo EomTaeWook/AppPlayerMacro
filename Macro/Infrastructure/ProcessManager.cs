@@ -41,19 +41,18 @@ namespace Macro.Infrastructure
         }
         private void Drain()
         {
-            cts.Cancel();
-            _workThread.Join();
-            _workThread = null;
-            cts = null;
-        }
-        private void Process()
-        {
             if (_workThread != null)
             {
                 cts.Cancel();
                 _workThread.Join();
+                _workThread = null;
                 cts = null;
             }
+        }
+        private void Process()
+        {
+            Drain();
+
             cts = new CancellationTokenSource();
             _workThread = new Thread(OnProcess);
             _workThread.Start();

@@ -1,27 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Utils.Infrastructure;
 
 namespace Utils
 {
-    public enum PROCESS_DPI_AWARENESS
-    {
-        PROCESS_DPI_UNAWARE = 0,
-        PROCESS_SYSTEM_DPI_AWARE = 1,
-        PROCESS_PER_MONITOR_DPI_AWARE = 2
-    }
-    public enum DpiType
-    {
-        Effective = 0,
-        Angular = 1,
-        Raw = 2,
-    }
     public class NativeHelper
     {
         [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref Rect rect);
+        public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        public static extern IntPtr ShowWindow(IntPtr hWnd, int nCmdShow);
+        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref Rect rect);
 
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hWnd);
@@ -39,16 +28,17 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern int GetWindowRgn(IntPtr hWnd, IntPtr hRgn);
 
+        [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll")]
-        public static extern bool SetProcessDPIAware();
+        public static extern bool PostMessage(IntPtr hWnd, WindowMessage messageCode, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        public static extern uint SendInput(uint inputCount, Input[] inputs, int structSize);
 
         [DllImport("shcore.dll")]
         public static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
 
         [DllImport("shcore.dll")]
-        public static extern bool GetProcessDpiAwareness(IntPtr hProcess, out PROCESS_DPI_AWARENESS value);
-
-        [DllImport("shcore.dll")]
-        public static extern IntPtr GetDpiForMonitor(IntPtr hMonitor, DpiType dpiType, out uint dpiX, out uint dpiY);
+        public static extern IntPtr GetDpiForMonitor(IntPtr hMonitor, DPI_Type dpiType, out uint dpiX, out uint dpiY);
     }
 }

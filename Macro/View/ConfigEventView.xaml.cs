@@ -50,6 +50,16 @@ namespace Macro.View
             {
                 Model = new ConfigEventModel(item);
                 SelectData(item);
+                if(Model.EventType == EventType.Keyboard)
+                {
+                    btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                    txtKeyboardCmd.Visibility = Visibility.Visible;
+                }
+                else if(Model.EventType == EventType.Mouse)
+                {
+                    btnMouseCoordinate.Visibility = Visibility.Visible;
+                    txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                }
                 e.Handled = true;
             }
         }

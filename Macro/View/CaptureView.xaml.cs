@@ -118,6 +118,7 @@ namespace Macro.View
             {
                 if(this.IsVisible)
                 {
+                    this.WindowState = WindowState.Minimized;
                     SaveCapture(new Rect()
                     {
                         Left = (int)Canvas.GetLeft(dragBorder),
@@ -131,7 +132,6 @@ namespace Macro.View
                 return;
             }
             _isDrag = false;
-            e.Handled = true;
         }
         private void SaveCapture(Rect rect)
         {

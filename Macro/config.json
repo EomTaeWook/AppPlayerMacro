@@ -1,5 +1,6 @@
 {
   "Language": "Kor",
   "SavePath": "",
-  "Period" : "3000"
+  "Period": "4000",
+  "Similarity" : "80"
 }
