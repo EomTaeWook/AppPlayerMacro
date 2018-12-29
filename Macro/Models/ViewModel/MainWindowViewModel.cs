@@ -44,5 +44,13 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Delete);
         }
+        public string Start
+        {
+            get => DocumentHelper.Get(Label.Start);
+        }
+        public string Stop
+        {
+            get => DocumentHelper.Get(Label.Stop);
+        }
     }
 }

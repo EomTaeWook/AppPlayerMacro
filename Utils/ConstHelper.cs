@@ -10,5 +10,6 @@ namespace Utils
     {
         public static readonly double FontSize = 20.0;
         public static readonly string DefaultSavePath = @".\Save\";
+        public static readonly int MinPeriod = 2000;
     }
 }

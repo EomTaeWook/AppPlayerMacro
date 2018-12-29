@@ -63,6 +63,16 @@
 		"Code" : "Delete",
 		"Kor": "삭제",
 		"Eng": "Delete"
+	},
+	{
+		"Code" : "Start",
+		"Kor": "시작",
+		"Eng": "Start"
+	},
+	{
+		"Code" : "Stop",
+		"Kor": "중지",
+		"Eng": "Stop"
 	}
 ]
 

@@ -16,7 +16,11 @@
     <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
         <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">
             <DockPanel LastChildFill="True" Margin="0,0,0,6">
-                <Label Height="43" VerticalAlignment="Top" Content="{Binding Path=MainWindowViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Top"/>
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <Label Height="43" VerticalAlignment="Top" Content="{Binding Path=MainWindowViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Left"/>
+                    <Button Name="btnStart" Width="100" Content="{Binding Path=MainWindowViewModel.Start, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
+                    <Button Name="btnStop" Width="100" Visibility="Collapsed" Content="{Binding Path=MainWindowViewModel.Stop, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
+                </DockPanel>
                 <Grid>
                     <Grid.RowDefinitions>
                     </Grid.RowDefinitions>
@@ -26,8 +30,7 @@
                     </Grid.ColumnDefinitions>
                     <ComboBox Grid.Column="0" Name="combo_process" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                     </ComboBox>
-                    <Button Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Content="&#81;" Grid.Column="1" Width="40" Height="40" FontFamily="Wingdings 3">
-                    </Button>
+                    <Button Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Content="&#81;" Grid.Column="1" Width="40" Height="40" FontFamily="Wingdings 3"/>
                 </Grid>
             </DockPanel>
         </Border>
@@ -62,16 +65,15 @@
                 </DockPanel>
             </Border>
             <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
-                <StackPanel DockPanel.Dock="Top">
-                    <DockPanel LastChildFill="False">
-                        <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=MainWindowViewModel.Config, Source={StaticResource Locator}}"></Label>
-                        <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Margin="5, 5, 5, 5" Content="{Binding Path=MainWindowViewModel.Delete, Source={StaticResource Locator}}"></Button>
-                        <Button Name="btnSave" DockPanel.Dock="Right" Margin="5, 5, 5, 5" Content="{Binding Path=MainWindowViewModel.Save, Source={StaticResource Locator}}"></Button>
-                    </DockPanel>
-                </StackPanel>
-                <StackPanel DockPanel.Dock="Top">
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=MainWindowViewModel.Config, Source={StaticResource Locator}}"></Label>
+                    <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=MainWindowViewModel.Delete, Source={StaticResource Locator}}"></Button>
+                    <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=MainWindowViewModel.Save, Source={StaticResource Locator}}"></Button>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Left">
                     <view:ConfigEventView x:Name="configControl"/>
-                </StackPanel>
+                </DockPanel>
+                
             </DockPanel>
         </Grid>
     </DockPanel>

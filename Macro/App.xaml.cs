@@ -1,4 +1,5 @@
-﻿using Macro.Models;
+﻿using Macro.Infrastructure;
+using Macro.Models;
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -47,6 +48,7 @@ namespace Macro
 
             var container = Singleton<UnityContainer>.Instance;
             container.RegisterInstance<IConfig>(config);
+            container.RegisterSingleton<ProcessManager>();
         }
         private void Process(object sender, Exception ex)
         {

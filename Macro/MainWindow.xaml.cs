@@ -36,10 +36,11 @@ namespace Macro
             _index = 0;
             _taskQueue = new TaskQueue();
             _config = Singleton<UnityContainer>.Instance.Resolve<IConfig>();
+            ProcessManager.AddJob(OnProcessCallback);
             var path = _config.SavePath;
             if (string.IsNullOrEmpty(path))
                 path = ConstHelper.DefaultSavePath;
-            if (!Directory.Exists(SavePath))
+            if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             SavePath = $"{path}config.dat";
 
@@ -66,12 +67,14 @@ namespace Macro
             btnRefresh.Click += Button_Click;
             btnSave.Click += Button_Click;
             btnDelete.Click += Button_Click;
+            btnStart.Click += Button_Click;
+            btnStop.Click += Button_Click;
+
             configControl.SelectData += ConfigControl_SelectData;
 
             var path = _config.SavePath;
             if (string.IsNullOrEmpty(path))
                 path = ConstHelper.DefaultSavePath;
-
         }
 
         private void ConfigControl_SelectData(ConfigEventModel model)
@@ -141,6 +144,32 @@ namespace Macro
                         });
                     }
                 });
+            }
+            else if(btn.Equals(btnStart))
+            {
+                var buttons = this.FindChildren<Button>();
+                foreach (var button in buttons)
+                {
+                    if (button.Equals(btnStart) || button.Equals(btnStop))
+                        continue;
+                    button.IsEnabled = false;
+                }
+                btnStop.Visibility = Visibility.Visible;
+                btnStart.Visibility = Visibility.Collapsed;
+                ProcessManager.Start();
+            }
+            else if(btn.Equals(btnStop))
+            {
+                var buttons = this.FindChildren<Button>();
+                foreach (var button in buttons)
+                {
+                    if (button.Equals(btnStart) || button.Equals(btnStop))
+                        continue;
+                    button.IsEnabled = true;
+                }
+                btnStart.Visibility = Visibility.Visible;
+                btnStop.Visibility = Visibility.Collapsed;
+                ProcessManager.Stop();
             }
         }
         private bool TryModelValidate(ConfigEventModel model, out Message message)
@@ -231,6 +260,27 @@ namespace Macro
                     configControl.InsertModel(model);
                 }
             }
+        }
+        private Task OnProcessCallback()
+        {
+            var result = new TaskCompletionSource<Task>();
+            Dispatcher.Invoke(() =>
+            {
+                var configSaves = (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).ConfigSaves;
+                foreach (var save in configSaves)
+                {
+                    var processes = _processes.Where(r => r.ProcessName.Equals(save.ProcessName)).ToList();
+                    foreach (var process in processes)
+                    {
+                        if (CaptureHelper.ProcessCapture(process, out Bitmap bmp))
+                        {
+                            captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                        }
+                    }
+                }
+                result.SetResult(Task.CompletedTask);
+            });
+            return result.Task;
         }
     }
 }

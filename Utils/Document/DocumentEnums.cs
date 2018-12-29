@@ -22,6 +22,8 @@ namespace Utils.Document
         MouseCoordinates,
         Save,
         Delete,
+        Start,
+        Stop,
 
         Max
     }

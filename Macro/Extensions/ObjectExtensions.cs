@@ -8,6 +8,8 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows;
+using Unity;
+using Utils;
 
 namespace Macro.Extensions
 {
@@ -62,6 +64,17 @@ namespace Macro.Extensions
                 }
             }
             return false;
+        }
+        public static T GetInstance<T>()
+        {
+            if(Singleton<UnityContainer>.Instance.IsRegistered<T>())
+            {
+                return Singleton<UnityContainer>.Instance.Resolve<T>();
+            }
+            else
+            {
+                return Singleton<T>.Instance;
+            }
         }
     }
 }

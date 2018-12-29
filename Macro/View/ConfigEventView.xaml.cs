@@ -29,7 +29,7 @@ namespace Macro.View
             
             Loaded += ConfigEventView_Loaded;
             grdSaves.SelectionChanged += GrdSaves_SelectionChanged;
-            this.PreviewKeyDown += ConfigEventView_PreviewKeyDown;
+            PreviewKeyDown += ConfigEventView_PreviewKeyDown;
         }
 
         private void ConfigEventView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -84,21 +84,6 @@ namespace Macro.View
                 mousePosition.ShowDialog();
                 Model.MousePoint = mousePosition.MousePoint;
             }
-            //else if (sender.Equals(btnSave))
-            //{
-            //    if (TryModelValidate(_dummy, out Message message))
-            //    {
-            //        Save(this, _dummy);
-            //        _saves.Add(new ConfigEventModel(_dummy));
-            //        _dummy = null;
-            //        _dummy = new ConfigEventModel();
-            //        Refresh();
-            //    }
-            //    else
-            //    {
-            //        this.MessageShow("Error", DocumentHelper.Get(message));
-            //    }
-            //}
         }
 
         private void RadioButton_Click(object sender, RoutedEventArgs e)
@@ -125,7 +110,7 @@ namespace Macro.View
         }
         public void InsertModel(ConfigEventModel model)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 ((ConfigEventViewModel)DataContext).ConfigSaves.Add(model);
                 if (Model != _dummy)
@@ -136,7 +121,7 @@ namespace Macro.View
         }
         public void RemoveModel(ConfigEventModel model)
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 if(((ConfigEventViewModel)DataContext).ConfigSaves.Remove(model.Index))
                 {

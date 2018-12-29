@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 namespace Utils
@@ -76,6 +77,38 @@ namespace Utils
                 return null;
             }            
         }
+        public static bool ProcessCapture(Process process, out Bitmap bmp)
+        {
+            try
+            {
+                IntPtr hWnd = process.MainWindowHandle;
+                Rect rect = new Rect();
+                NativeHelper.GetWindowRect(hWnd, ref rect);
+                bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
+                using (var gfxBmp = Graphics.FromImage(bmp))
+                {
+                    IntPtr hdcBitmap = gfxBmp.GetHdc();
+                    NativeHelper.PrintWindow(hWnd, hdcBitmap, 3);
+                    gfxBmp.ReleaseHdc(hdcBitmap);
+                    gfxBmp.FillRectangle(new SolidBrush(Color.Gray), new Rectangle(Point.Empty, bmp.Size));
+                    IntPtr hRgn = NativeHelper.CreateRectRgn(0, 0, 0, 0);
+                    NativeHelper.GetWindowRgn(hWnd, hRgn);
+                    Region region = Region.FromHrgn(hRgn);
+                    if (!region.IsEmpty(gfxBmp))
+                    {
+                        gfxBmp.ExcludeClip(region);
+                        gfxBmp.Clear(Color.Transparent);
+                    }
+                    gfxBmp.Dispose();
+                }
+                return true;
+            }
+            catch(Exception ex)
+            {
+                LogHelper.Warning(ex.Message);
+                bmp = null;
+                return false;
+            }
+        }
     }
-    
 }
