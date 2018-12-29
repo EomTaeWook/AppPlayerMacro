@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Utils;
 using Utils.Infrastructure;
@@ -19,7 +20,7 @@ namespace Macro.Infrastructure
             KeyDown(builder, modifierKeyCodes);
             KeyPress(builder, keyCodes);
             KeyUp(builder, modifierKeyCodes);
-            NativeHelper.SendInput((uint)builder.Count, builder.ToArray(), Marshal.SizeOf(typeof(Input)));
+            NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
         }
         public static void KeyUp(params KeyCode[] keyCodes)
         {
@@ -31,7 +32,7 @@ namespace Macro.Infrastructure
         {
             var builder = new InputBuilder();
             KeyUp(builder, keyCodes);
-            NativeHelper.SendInput((uint)builder.Count, builder.ToArray(), Marshal.SizeOf(typeof(Input)));
+            NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
         }
 
         public static void KeyDown(params KeyCode[] keyCodes)
@@ -44,7 +45,7 @@ namespace Macro.Infrastructure
         {
             var builder = new InputBuilder();
             KeyDown(builder, keyCodes);
-            NativeHelper.SendInput((uint)builder.Count, builder.ToArray(), Marshal.SizeOf(typeof(Input)));
+            NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
         }
 
         public static void KeyPress(params KeyCode[] keyCodes)
@@ -57,7 +58,7 @@ namespace Macro.Infrastructure
         {
             var builder = new InputBuilder();
             KeyPress(builder, keyCodes);
-            NativeHelper.SendInput((uint)builder.Count, builder.ToArray(), Marshal.SizeOf(typeof(Input)));
+            NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
         }
 
         public static void KeyDown(InputBuilder builder, IEnumerable<KeyCode> keyCodes)

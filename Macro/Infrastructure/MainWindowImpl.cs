@@ -154,32 +154,30 @@ namespace Macro
                                 }
                                 else if(save.EventType == EventType.Keyboard)
                                 {
-                                    InputManager.ModifiedKeyStroke(KeyCode.LWIN, KeyCode.KEY_R);
-                                    System.Threading.Thread.Sleep(1000);
-                                    //var hWndActive = NativeHelper.GetForegroundWindow();
-                                    //var commands = save.KeyboardCmd.Split('+');
-                                    //var modifiedKey = commands.Where(r =>
-                                    //{
-                                    //    var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), $"{r}", true);
-                                    //    return keyCode.IsExtendedKey();
-                                    //}).Select(r =>
-                                    //{
-                                    //    var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), $"{r}", true);
-                                    //    return keyCode;
-                                    //});
+                                    var hWndActive = NativeHelper.GetForegroundWindow();
+                                    var commands = save.KeyboardCmd.Split('+');
+                                    var modifiedKey = commands.Where(r =>
+                                    {
+                                        var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), $"{r}", true);
+                                        return keyCode.IsExtendedKey();
+                                    }).Select(r =>
+                                    {
+                                        var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), $"{r}", true);
+                                        return keyCode;
+                                    });
 
-                                    //var keys = commands.Where(r =>
-                                    //{
-                                    //    var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), r, true);
-                                    //    return !keyCode.IsExtendedKey();
-                                    //}).Select(r =>
-                                    //{
-                                    //    var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), r, true);
-                                    //    return keyCode;
-                                    //});
-                                    //NativeHelper.SetForegroundWindow(process.MainWindowHandle);
-                                    //InputManager.ModifiedKeyStroke(modifiedKey, keys);
-                                    //NativeHelper.SetForegroundWindow(hWndActive);
+                                    var keys = commands.Where(r =>
+                                    {
+                                        var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), r, true);
+                                        return !keyCode.IsExtendedKey();
+                                    }).Select(r =>
+                                    {
+                                        var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), r, true);
+                                        return keyCode;
+                                    });
+                                    NativeHelper.SetForegroundWindow(process.MainWindowHandle);
+                                    InputManager.ModifiedKeyStroke(modifiedKey, keys);
+                                    NativeHelper.SetForegroundWindow(hWndActive);
                                 }
                             }
                         }

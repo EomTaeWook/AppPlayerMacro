@@ -25,13 +25,16 @@ namespace Utils.Infrastructure
            _inputList.Add(new Input
             {
                 Type = (uint)InputType.Keyboard,
-                Keyboard = new KeyboardInput()
+                Data = new InputData()
                 {
-                    KeyCode = (uint)keyCode,
-                    Scan = 0,
-                    Flags = IsExtendedKey(keyCode) ? (uint)(KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey) : (uint)KeyboardFlag.KeyUp,
-                    Time = 0,
-                    ExtraInfo = IntPtr.Zero
+                    Keyboard = new KeyboardInput()
+                    {
+                        KeyCode = (uint)keyCode,
+                        Scan = 0,
+                        Flags = IsExtendedKey(keyCode) ? (uint)(KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey) : (uint)KeyboardFlag.KeyUp,
+                        Time = 0,
+                        ExtraInfo = IntPtr.Zero
+                    }
                 }
             });
             return this;
@@ -41,13 +44,16 @@ namespace Utils.Infrastructure
             _inputList.Add(new Input
             {
                 Type = (uint)InputType.Keyboard,
-                Keyboard = new KeyboardInput()
+                Data = new InputData()
                 {
-                    KeyCode = (uint)keyCode,
-                    Scan = 0,
-                    Flags = IsExtendedKey(keyCode) ? (uint)KeyboardFlag.ExtendedKey : 0,
-                    Time = 0,
-                    ExtraInfo = IntPtr.Zero
+                    Keyboard = new KeyboardInput()
+                    {
+                        KeyCode = (uint)keyCode,
+                        Scan = 0,
+                        Flags = IsExtendedKey(keyCode) ? (uint)KeyboardFlag.ExtendedKey : 0,
+                        Time = 0,
+                        ExtraInfo = IntPtr.Zero
+                    }
                 }
             });
             return this;
@@ -56,6 +62,7 @@ namespace Utils.Infrastructure
         {
             if (keyCode == KeyCode.ALT ||
                 keyCode == KeyCode.CONTROL ||
+                keyCode == KeyCode.CTRL ||
                 keyCode == KeyCode.RCONTROL ||
                 keyCode == KeyCode.INSERT ||
                 keyCode == KeyCode.DELETE ||
@@ -95,7 +102,5 @@ namespace Utils.Infrastructure
         {
             return GetEnumerator();
         }
-        public int Count { get => _inputList.Count; }
-
     }
 }

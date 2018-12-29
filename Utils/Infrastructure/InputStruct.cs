@@ -28,6 +28,12 @@ namespace Utils.Infrastructure
         VirtualDesk = 0x4000,
         Absolute = 0x8000,
     }
+    public enum InputType : uint
+    {
+        Mouse = 0,
+        Keyboard,
+        Hardware
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct MouseInput
@@ -56,21 +62,20 @@ namespace Utils.Infrastructure
         public ushort HParam;
     }
     [StructLayout(LayoutKind.Explicit)]
-    public struct Input
+    public struct InputData
     {
         [FieldOffset(0)]
-        public uint Type;
-        [FieldOffset(4)]
         public MouseInput Mouse;
-        [FieldOffset(4)]
+        [FieldOffset(0)]
         public KeyboardInput Keyboard;
-        [FieldOffset(4)]
-        public HardwareInput Hardward;
+        [FieldOffset(0)]
+        public HardwareInput Hardware;
     }
-    public enum InputType : uint
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Input
     {
-        Mouse = 0,
-        Keyboard,
-        Hardware
+        public uint Type;
+        public InputData Data;
     }
 }
