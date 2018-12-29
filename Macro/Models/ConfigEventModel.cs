@@ -6,22 +6,11 @@ namespace Macro.Models
 {
     public class ConfigEventModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private Point? _mousePoint;
         private string _keyboardCmd;
         private EventType _eventType;
-        public ConfigEventModel()
-        {
-            //_mousePoint = new Point();
-            _keyboardCmd = "";
-        }
-        public ConfigEventModel(ConfigEventModel obj)
-        {
-            Image = obj.Image;
-            EventType = obj.EventType;
-            MousePoint = obj.MousePoint;
-            KeyboardCmd = obj.KeyboardCmd;
-            ProcessName = obj.ProcessName;
-        }
 
         public Bitmap Image { get; set; }
 
@@ -37,8 +26,9 @@ namespace Macro.Models
             }
         }
 
-        public Point? MousePoint {
-            get =>_mousePoint;
+        public Point? MousePoint
+        {
+            get => _mousePoint;
             set
             {
                 _mousePoint = value;
@@ -68,7 +58,21 @@ namespace Macro.Models
                     return "";
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
+
+        public ConfigEventModel()
+        {
+            _keyboardCmd = "";
+        }
+        public ConfigEventModel(ConfigEventModel obj)
+        {
+            Index = obj.Index;
+            Image = obj.Image;
+            EventType = obj.EventType;
+            MousePoint = obj.MousePoint;
+            KeyboardCmd = obj.KeyboardCmd;
+            ProcessName = obj.ProcessName;
+        }
+        
 
         private void OnPropertyChanged(string propertyName)
         {

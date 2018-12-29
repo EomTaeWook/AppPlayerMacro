@@ -29,13 +29,20 @@ namespace Macro
         private Bitmap _bitmap;
         private TaskQueue _taskQueue;
         private int _index;
-
+        private readonly string SavePath;
         public MainWindow()
         {
             InitializeComponent();
             _index = 0;
             _taskQueue = new TaskQueue();
             _config = Singleton<UnityContainer>.Instance.Resolve<IConfig>();
+            var path = _config.SavePath;
+            if (string.IsNullOrEmpty(path))
+                path = ConstHelper.DefaultSavePath;
+            if (!Directory.Exists(SavePath))
+                Directory.CreateDirectory(path);
+            SavePath = $"{path}config.dat";
+
             this.Loaded += MainWindow_Loaded;
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -60,6 +67,11 @@ namespace Macro
             btnSave.Click += Button_Click;
             btnDelete.Click += Button_Click;
             configControl.SelectData += ConfigControl_SelectData;
+
+            var path = _config.SavePath;
+            if (string.IsNullOrEmpty(path))
+                path = ConstHelper.DefaultSavePath;
+
         }
 
         private void ConfigControl_SelectData(ConfigEventModel model)
@@ -70,6 +82,7 @@ namespace Macro
             }
             else
             {
+                combo_process.SelectedValue = model.ProcessName;
                 btnDelete.Visibility = Visibility.Visible;
                 _bitmap = model.Image;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
@@ -159,6 +172,7 @@ namespace Macro
         }
         private void Capture()
         {
+            Clear();
             var capture = new CaptureView();
             this.WindowState = WindowState.Minimized;
             capture.ShowDialog();
@@ -174,18 +188,15 @@ namespace Macro
             btnDelete.Visibility = Visibility.Collapsed;
             _bitmap = null;
             captureImage.Background = System.Windows.Media.Brushes.White;
+            configControl.Clear();
         }
         private Task Delete(object m)
         {
             var model = m as ConfigEventModel;
-            var path = _config.SavePath;
-            if (string.IsNullOrEmpty(path))
-                path = ConstHelper.DefaultSavePath;
-            path = $@"{path}config.save";
-            if (File.Exists(path))
+            if (File.Exists(SavePath))
             {
-                File.Delete(path);
-                using (var fs = new FileStream(path, FileMode.CreateNew))
+                File.Delete(SavePath);
+                using (var fs = new FileStream(SavePath, FileMode.CreateNew))
                 {
                     foreach(var data in (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).ConfigSaves)
                     {
@@ -201,13 +212,7 @@ namespace Macro
         {
             var model = m as ConfigEventModel;
             model.Index = _index++;
-            var path = _config.SavePath;
-            if (string.IsNullOrEmpty(path))
-                path = ConstHelper.DefaultSavePath;
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            using (var fs = new FileStream($@"{path}config.save", FileMode.Append))
+            using (var fs = new FileStream(SavePath, FileMode.Append))
             {
                 var bytes = ObjectExtensions.SerializeObject(model);
                 fs.Write(bytes, 0, bytes.Count());
@@ -217,12 +222,9 @@ namespace Macro
         }
         private void SaveLoad()
         {
-            var path = _config.SavePath;
-            if (string.IsNullOrEmpty(path))
-                path = ConstHelper.DefaultSavePath;
-            if(File.Exists($@"{path}config.save"))
+            if(File.Exists(SavePath))
             {
-                var models = ObjectExtensions.DeserializeObject(File.ReadAllBytes($@"{path}config.save"));
+                var models = ObjectExtensions.DeserializeObject(File.ReadAllBytes(SavePath));
                 _index = models.LastOrDefault()?.Index ?? 0;
                 foreach (var model in models)
                 {

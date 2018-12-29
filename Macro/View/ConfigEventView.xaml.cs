@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Unity;
 using Utils;
+using System.Linq;
 
 namespace Macro.View
 {
@@ -47,7 +48,7 @@ namespace Macro.View
         {
             if ((sender as DataGrid).SelectedItem is ConfigEventModel item)
             {
-                Model = item;
+                Model = new ConfigEventModel(item);
                 SelectData(item);
                 e.Handled = true;
             }
@@ -137,12 +138,21 @@ namespace Macro.View
         {
             this.Dispatcher.Invoke(() =>
             {
-                ((ConfigEventViewModel)DataContext).ConfigSaves.Remove(model);
-                if (Model != _dummy)
+                if(((ConfigEventViewModel)DataContext).ConfigSaves.Remove(model.Index))
                 {
-                    Model = _dummy;
+                    if (Model != _dummy)
+                    {
+                        Model = _dummy;
+                    }
                 }
             });
+        }
+        public void Clear()
+        {
+            if (Model != _dummy)
+            {
+                Model = _dummy;
+            }
         }
         public ConfigEventModel Model
         {

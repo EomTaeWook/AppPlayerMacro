@@ -39,7 +39,7 @@
                         <ColumnDefinition Width="6*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=ConfigEventViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" ></Button>
-                    <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed"></TextBox>
+                    <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=ConfigData.KeyboardCmd, Mode=TwoWay}"></TextBox>
                     <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=ConfigData.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="2"></Label>
                 </Grid>
                 <Label Grid.ColumnSpan="2" Grid.Row="2" Content="{Binding Path=ConfigEventViewModel.ConfigList, Source={StaticResource Locator}}"></Label>
