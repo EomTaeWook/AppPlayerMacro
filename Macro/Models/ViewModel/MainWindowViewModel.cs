@@ -40,5 +40,9 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Save);
         }
+        public string Delete
+        {
+            get => DocumentHelper.Get(Label.Delete);
+        }
     }
 }

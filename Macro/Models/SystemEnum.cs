@@ -8,7 +8,7 @@ namespace Macro.Models
 {
     public enum EventType
     {
-        Mouse = 0,
+        Mouse,
         Keyboard,
 
         Max

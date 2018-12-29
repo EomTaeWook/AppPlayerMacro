@@ -1,12 +1,13 @@
 ﻿using Macro.Extensions;
 using Macro.Models;
+using Macro.Models.ViewModel;
 using MahApps.Metro.Controls;
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Utils.Document;
+using System.Windows.Input;
+using Unity;
+using Utils;
 
 namespace Macro.View
 {
@@ -15,14 +16,41 @@ namespace Macro.View
     /// </summary>
     public partial class ConfigEventView : UserControl
     {
-        public ObservableCollection<ConfigEventModel> SaveConfigs { get; private set; }
+        private ConfigEventModel _dummy;
+        public event SelectConfigDataHandler SelectData;
+        public delegate void SelectConfigDataHandler(ConfigEventModel model);
         public ConfigEventView()
         {
+            _dummy = new ConfigEventModel();
+            DataContext = Singleton<UnityContainer>.Instance.Resolve<ConfigEventViewModel>();
+            Model = _dummy;
             InitializeComponent();
-            Model = new ConfigEventModel();
-            SaveConfigs = new ObservableCollection<ConfigEventModel>();
+            
+            Loaded += ConfigEventView_Loaded;
+            grdSaves.SelectionChanged += GrdSaves_SelectionChanged;
+            this.PreviewKeyDown += ConfigEventView_PreviewKeyDown;
+        }
 
-            this.Loaded += ConfigEventView_Loaded;
+        private void ConfigEventView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                grdSaves.SelectedItem = null;
+                Model = _dummy;
+                SelectData(null);
+                e.Handled = true;
+            }
+            base.OnPreviewKeyDown(e);
+        }
+
+        private void GrdSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((sender as DataGrid).SelectedItem is ConfigEventModel item)
+            {
+                Model = item;
+                SelectData(item);
+                e.Handled = true;
+            }
         }
         private void ConfigEventView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -31,7 +59,7 @@ namespace Macro.View
         }
         private void Init()
         {
-
+            grdSaves.ItemsSource = (DataContext as ConfigEventViewModel).ConfigSaves;
         }
         private void EventInit()
         {
@@ -45,12 +73,15 @@ namespace Macro.View
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(sender.Equals(btnMouseCoordinate))
+            if (Model == _dummy)
+            {
+                Model = new ConfigEventModel();
+            }
+            if (sender.Equals(btnMouseCoordinate))
             {
                 var mousePosition = new MousePositionView();
                 mousePosition.ShowDialog();
                 Model.MousePoint = mousePosition.MousePoint;
-                Desc(Model);
             }
             //else if (sender.Equals(btnSave))
             //{
@@ -71,42 +102,52 @@ namespace Macro.View
 
         private void RadioButton_Click(object sender, RoutedEventArgs e)
         {
-            if(sender.Equals(rbMouse))
+            if (Model == _dummy)
+            {
+                Model = new ConfigEventModel();
+            }
+
+            if (sender.Equals(rbMouse))
             {
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
 
                 Model.EventType = EventType.Mouse;
             }
-            else if(sender.Equals(rbKeyboard))
+            else if (sender.Equals(rbKeyboard))
             {
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Visible;
 
                 Model.EventType = EventType.Keyboard;
             }
-            Desc(Model);
-        }
-        private void Desc(ConfigEventModel model)
-        {
-            if(model.EventType == EventType.Mouse)
-            {
-                if(model.MousePoint != null)
-                {
-                    lblDesc.Content = $"X : {model.MousePoint?.X} Y : {model.MousePoint?.Y}";
-                }
-            }
-            else if(model.EventType == EventType.Keyboard)
-            {
-                lblDesc.Content = $"{model.KeyBoardCmd}";
-            }
         }
         public void InsertModel(ConfigEventModel model)
         {
-            SaveConfigs.Add(model);
-            Model = null;
-            Model = new ConfigEventModel();
+            this.Dispatcher.Invoke(() =>
+            {
+                ((ConfigEventViewModel)DataContext).ConfigSaves.Add(model);
+                if (Model != _dummy)
+                {
+                    Model = _dummy;
+                }
+            });
         }
-        public ConfigEventModel Model { get; private set; }
+        public void RemoveModel(ConfigEventModel model)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                ((ConfigEventViewModel)DataContext).ConfigSaves.Remove(model);
+                if (Model != _dummy)
+                {
+                    Model = _dummy;
+                }
+            });
+        }
+        public ConfigEventModel Model
+        {
+            get => ((ConfigEventViewModel)DataContext).ConfigData;
+            private set => ((ConfigEventViewModel)DataContext).ConfigData = value;
+        }
     }
 }

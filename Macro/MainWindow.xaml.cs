@@ -28,10 +28,12 @@ namespace Macro
         private IConfig _config;
         private Bitmap _bitmap;
         private TaskQueue _taskQueue;
+        private int _index;
 
         public MainWindow()
         {
             InitializeComponent();
+            _index = 0;
             _taskQueue = new TaskQueue();
             _config = Singleton<UnityContainer>.Instance.Resolve<IConfig>();
             this.Loaded += MainWindow_Loaded;
@@ -39,9 +41,9 @@ namespace Macro
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //window7 not support
-            NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE);
-            SaveLoad();
+            //NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE);
             Init();
+            SaveLoad();
         }
         private void Init()
         {
@@ -56,8 +58,24 @@ namespace Macro
             btnCapture.Click += Button_Click;
             btnRefresh.Click += Button_Click;
             btnSave.Click += Button_Click;
+            btnDelete.Click += Button_Click;
+            configControl.SelectData += ConfigControl_SelectData;
         }
 
+        private void ConfigControl_SelectData(ConfigEventModel model)
+        {
+            if(model == null)
+            {
+                Clear();
+            }
+            else
+            {
+                btnDelete.Visibility = Visibility.Visible;
+                _bitmap = model.Image;
+                captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
+            }
+        }
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
@@ -80,8 +98,10 @@ namespace Macro
                 {
                     _taskQueue.Enqueue(Save, model).ContinueWith((task) =>
                     {
-                        _bitmap = null;
-                        captureImage.Background = System.Windows.Media.Brushes.White;
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            Clear();
+                        });                        
                     }).Finally(r => ((ConfigEventView)r).InsertModel(model), configControl);
                 }
                 else
@@ -89,11 +109,31 @@ namespace Macro
                     this.MessageShow("Error", DocumentHelper.Get(error));
                 }
             }
+            else if(btn.Equals(btnDelete))
+            {
+                var model = configControl.Model;
+                _taskQueue.Enqueue((o) =>
+                {
+                    configControl.RemoveModel(model);
+                    return Task.CompletedTask;
+                }, configControl)
+                .ContinueWith((task) =>
+                {
+                    if (task.IsCompleted)
+                    {
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            Delete(model);
+                            Clear();
+                        });
+                    }
+                });
+            }
         }
         private bool TryModelValidate(ConfigEventModel model, out Message message)
         {
             message = Message.Success;
-            model.KeyBoardCmd = model.KeyBoardCmd.Replace(" ", "");
+            model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
             if (model.Image == null)
             {
                 message = Message.FailedImageValidate;
@@ -105,7 +145,7 @@ namespace Macro
                 return false;
             }
 
-            if (string.IsNullOrEmpty(model.KeyBoardCmd) && model.EventType == EventType.Keyboard)
+            if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
             {
                 message = Message.FailedKeyboardCommandValidate;
                 return false;
@@ -129,9 +169,38 @@ namespace Macro
             }
             this.WindowState = WindowState.Normal;
         }
+        private void Clear()
+        {
+            btnDelete.Visibility = Visibility.Collapsed;
+            _bitmap = null;
+            captureImage.Background = System.Windows.Media.Brushes.White;
+        }
+        private Task Delete(object m)
+        {
+            var model = m as ConfigEventModel;
+            var path = _config.SavePath;
+            if (string.IsNullOrEmpty(path))
+                path = ConstHelper.DefaultSavePath;
+            path = $@"{path}config.save";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                using (var fs = new FileStream(path, FileMode.CreateNew))
+                {
+                    foreach(var data in (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).ConfigSaves)
+                    {
+                        var bytes = ObjectExtensions.SerializeObject(data);
+                        fs.Write(bytes, 0, bytes.Count());
+                    }
+                    fs.Close();
+                }
+            }
+            return Task.CompletedTask;
+        }
         private Task Save(object m)
         {
             var model = m as ConfigEventModel;
+            model.Index = _index++;
             var path = _config.SavePath;
             if (string.IsNullOrEmpty(path))
                 path = ConstHelper.DefaultSavePath;
@@ -154,7 +223,8 @@ namespace Macro
             if(File.Exists($@"{path}config.save"))
             {
                 var models = ObjectExtensions.DeserializeObject(File.ReadAllBytes($@"{path}config.save"));
-                foreach(var model in models)
+                _index = models.LastOrDefault()?.Index ?? 0;
+                foreach (var model in models)
                 {
                     configControl.InsertModel(model);
                 }

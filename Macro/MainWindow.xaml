@@ -65,6 +65,7 @@
                 <StackPanel DockPanel.Dock="Top">
                     <DockPanel LastChildFill="False">
                         <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=MainWindowViewModel.Config, Source={StaticResource Locator}}"></Label>
+                        <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Margin="5, 5, 5, 5" Content="{Binding Path=MainWindowViewModel.Delete, Source={StaticResource Locator}}"></Button>
                         <Button Name="btnSave" DockPanel.Dock="Right" Margin="5, 5, 5, 5" Content="{Binding Path=MainWindowViewModel.Save, Source={StaticResource Locator}}"></Button>
                     </DockPanel>
                 </StackPanel>

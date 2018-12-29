@@ -21,6 +21,7 @@ namespace Utils.Document
         ConfigList,
         MouseCoordinates,
         Save,
+        Delete,
 
         Max
     }

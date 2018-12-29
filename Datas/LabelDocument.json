@@ -58,6 +58,11 @@
 		"Code" : "Save",
 		"Kor": "저장",
 		"Eng": "Save"
+	},
+	{
+		"Code" : "Delete",
+		"Kor": "삭제",
+		"Eng": "Delete"
 	}
 ]
 
