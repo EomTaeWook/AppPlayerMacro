@@ -6,9 +6,9 @@ namespace Macro.Models
 {
     public class ViewModelLocator
     {
-        public MainWindowViewModel MainWindowViewModel
+        public LabelViewModel LabelViewModel
         {
-            get { return Singleton<UnityContainer>.Instance.Resolve<MainWindowViewModel>(); }
+            get { return Singleton<UnityContainer>.Instance.Resolve<LabelViewModel>(); }
         }
         public ConfigEventViewModel ConfigEventViewModel
         {

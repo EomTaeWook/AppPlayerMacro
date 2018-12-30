@@ -22,7 +22,7 @@
                     <ColumnDefinition Width="3*"></ColumnDefinition>
                     <ColumnDefinition Width="7*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=ConfigEventViewModel.EventType, Source={StaticResource Locator}}"></Label>
+                <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.EventType, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -31,19 +31,19 @@
                     <RadioButton GroupName="EventType" Grid.Column="0" IsChecked="{Binding Path=ConfigData.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Mouse}" Content="Mouse" Name="rbMouse"/>
                     <RadioButton GroupName="EventType" Grid.Column="1" IsChecked="{Binding Path=ConfigData.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Keyboard}" Content="Keyboard" Name="rbKeyboard"/>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=ConfigEventViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
+                <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="4*"></ColumnDefinition>
                         <ColumnDefinition Width="6*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=ConfigEventViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" ></Button>
+                    <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" ></Button>
                     <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=ConfigData.KeyboardCmd, Mode=TwoWay}"></TextBox>
                     <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=ConfigData.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="2"></Label>
                 </Grid>
             </Grid>
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
-                <Label DockPanel.Dock="Top" Content="{Binding Path=ConfigEventViewModel.ConfigList, Source={StaticResource Locator}}"></Label>
+                <Label DockPanel.Dock="Top" Content="{Binding Path=LabelViewModel.ConfigList, Source={StaticResource Locator}}"></Label>
                 <DataGrid DockPanel.Dock="Left" CanUserAddRows="False" VerticalAlignment="Stretch" VerticalScrollBarVisibility = "Auto" ScrollViewer.CanContentScroll="True" Grid.ColumnSpan="2" SelectionMode="Single" SelectionUnit ="FullRow" Grid.Row="0" Name="grdSaves" ItemsSource="{Binding Path=ConfigEventViewModel.ConfigSaves, Source={StaticResource Locator}}" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#FFBFBFBF" VerticalGridLinesBrush="White">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Width="2*" Header="Image" IsReadOnly="True">

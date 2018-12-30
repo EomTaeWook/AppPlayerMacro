@@ -17,9 +17,9 @@
         <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">
             <DockPanel LastChildFill="True" Margin="0,0,0,6">
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                    <Label Height="43" VerticalAlignment="Top" Content="{Binding Path=MainWindowViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Left"/>
-                    <Button Name="btnStart" Width="100" Content="{Binding Path=MainWindowViewModel.Start, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
-                    <Button Name="btnStop" Width="100" Visibility="Collapsed" Content="{Binding Path=MainWindowViewModel.Stop, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
+                    <Label Height="43" VerticalAlignment="Top" Content="{Binding Path=LabelViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Left"/>
+                    <Button Name="btnStart" Width="100" Content="{Binding Path=LabelViewModel.Start, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
+                    <Button Name="btnStop" Width="100" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Stop, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -54,9 +54,9 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                 <ColumnDefinition Width="2*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=MainWindowViewModel.CompareImage, Source={StaticResource Locator}}" ></Label>
+                            <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=LabelViewModel.CompareImage, Source={StaticResource Locator}}" ></Label>
                             <DockPanel Grid.Row="0" Grid.Column="1">
-                                <Button Name="btnCapture" Content="{Binding Path=MainWindowViewModel.ScreenCapture, Source={StaticResource Locator}}"/>
+                                <Button Name="btnCapture" Content="{Binding Path=LabelViewModel.ScreenCapture, Source={StaticResource Locator}}"/>
                             </DockPanel>
                         </Grid>
                     </StackPanel>
@@ -66,14 +66,13 @@
             </Border>
             <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                    <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=MainWindowViewModel.Config, Source={StaticResource Locator}}"></Label>
-                    <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=MainWindowViewModel.Delete, Source={StaticResource Locator}}"></Button>
-                    <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=MainWindowViewModel.Save, Source={StaticResource Locator}}"></Button>
+                    <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=LabelViewModel.Config, Source={StaticResource Locator}}"></Label>
+                    <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Delete, Source={StaticResource Locator}}"></Button>
+                    <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Left">
                     <view:ConfigEventView x:Name="configControl"/>
                 </DockPanel>
-                
             </DockPanel>
         </Grid>
     </DockPanel>

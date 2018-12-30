@@ -35,6 +35,28 @@ namespace Utils.Infrastructure
         Hardware
     }
 
+    public enum WindowMessage : uint
+    {
+        None = 0x000,
+
+        KeyDown = 0x100,
+        KeyUp,
+        Char,
+
+        SysKeyDown = 0x104,
+        SysKeyUp,
+
+        SysCommand = 0x112,
+
+
+        LButtonDown = 0x201,
+        LButtonUp,
+        LButtonDoubleClick,
+        RButtonDown,
+        RButtonUp,
+        RButtonDoubleClick
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct MouseInput
     {

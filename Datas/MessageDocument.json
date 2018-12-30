@@ -23,6 +23,11 @@
 		"Code" : "FailedProcessValidate",
 		"Kor": "연결 프로세스 설정을 해주세요.",
 		"Eng": "Failed Process Invalidate"
+	},
+	{
+		"Code" : "FailedLoadSaveFile",
+		"Kor": "Save File을 로드할 수 없습니다.",
+		"Eng": "Failed to Load Save File"
 	}
 ]
 

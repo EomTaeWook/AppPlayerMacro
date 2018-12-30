@@ -36,6 +36,7 @@ namespace Utils.Document
         FailedMouseCoordinatesValidate,
         FailedKeyboardCommandValidate,
         FailedProcessValidate,
+        FailedLoadSaveFile,
 
         Max
     }

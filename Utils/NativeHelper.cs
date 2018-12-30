@@ -28,7 +28,6 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern int GetWindowRgn(IntPtr hWnd, IntPtr hRgn);
 
-        [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, WindowMessage messageCode, int wParam, int lParam);
 

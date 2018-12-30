@@ -1,17 +1,40 @@
-﻿using System;
+﻿using Macro.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utils;
 using Utils.Document;
-using Macro.Extensions;
-using System.ComponentModel;
 
 namespace Macro.Models.ViewModel
 {
-    public class MainWindowViewModel
+    public class LabelViewModel
     {
+        public string EventType
+        {
+            get => DocumentHelper.Get(Label.EventType);
+        }
+
+        public string EventDataSet
+        {
+            get => DocumentHelper.Get(Label.EventDataSet);
+        }
+        public string MouseCoordinates
+        {
+            get => DocumentHelper.Get(Label.MouseCoordinates);
+        }
+        public string ConfigList
+        {
+            get => DocumentHelper.Get(Label.ConfigList);
+        }
+        public string Config
+        {
+            get => DocumentHelper.Get(Label.Config);
+        }
+        public string Save
+        {
+            get => DocumentHelper.Get(Label.Save);
+        }
         public string SaveConfig
         {
             get => DocumentHelper.Get(Label.SaveConfig);
@@ -31,14 +54,6 @@ namespace Macro.Models.ViewModel
         public string Refresh
         {
             get => DocumentHelper.Get(Label.Refresh);
-        }
-        public string Config
-        {
-            get => DocumentHelper.Get(Label.Config);
-        }
-        public string Save
-        {
-            get => DocumentHelper.Get(Label.Save);
         }
         public string Delete
         {

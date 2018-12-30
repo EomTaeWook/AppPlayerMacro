@@ -25,7 +25,6 @@ namespace Macro
             {
                 Process(s, ex.Exception);
             };
-
             Init();
             base.OnStartup(e);
         }

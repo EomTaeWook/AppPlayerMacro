@@ -148,6 +148,7 @@ namespace Macro.View
             {
                 Model = _dummy;
             }
+            grdSaves.SelectedItem = null;
         }
         public ConfigEventModel Model
         {

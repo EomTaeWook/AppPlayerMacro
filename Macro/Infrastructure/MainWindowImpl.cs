@@ -4,17 +4,14 @@ using Macro.Models;
 using Macro.View;
 using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Unity;
 using Utils;
 using Utils.Infrastructure;
 using Message = Utils.Document.Message;
@@ -39,7 +36,9 @@ namespace Macro
                 _path = ConstHelper.DefaultSavePath;
             if (!Directory.Exists(_path))
                 Directory.CreateDirectory(_path);
-            _path = $"{_path}{ConstHelper.DefaultSaveFile}";   
+            _path = $"{_path}{ConstHelper.DefaultSaveFile}";
+
+            SaveLoad();
         }
 
         private bool TryModelValidate(ConfigEventModel model, out Message message)
@@ -121,15 +120,23 @@ namespace Macro
         }
         private void SaveLoad()
         {
-            if (File.Exists(_path))
+            Dispatcher.Invoke(() => 
             {
-                var models = ObjectExtensions.DeserializeObject(File.ReadAllBytes(_path));
-                _index = models.LastOrDefault()?.Index ?? 0;
-                foreach (var model in models)
+                try
                 {
-                    configControl.InsertModel(model);
+                    var models = ObjectExtensions.DeserializeObject(File.ReadAllBytes(_path));
+                    _index = models.LastOrDefault()?.Index ?? 0;
+                    foreach (var model in models)
+                    {
+                        configControl.InsertModel(model);
+                    }
                 }
-            }
+                catch (Exception ex)
+                {
+                    LogHelper.Warning(ex.Message);
+                    this.MessageShow("Error", DocumentHelper.Get(Message.FailedLoadSaveFile));
+                }
+            }, DispatcherPriority.Send);
         }
         private Task OnProcessCallback()
         {
