@@ -1,0 +1,2 @@
+# EmulatorMacro
+work Project
