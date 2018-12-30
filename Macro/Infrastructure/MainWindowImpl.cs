@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -20,7 +21,9 @@ namespace Macro
 {
     public partial class MainWindow : MetroWindow
     {
+        private TaskQueue _taskQueue;
         private string _path;
+        private int _index;
         private void Init()
         {
             _processes = Process.GetProcesses().ToList();
@@ -38,7 +41,7 @@ namespace Macro
                 Directory.CreateDirectory(_path);
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
 
-            SaveLoad();
+            _taskQueue.Enqueue(SaveLoad, _path);
         }
 
         private bool TryModelValidate(ConfigEventModel model, out Message message)
@@ -118,8 +121,9 @@ namespace Macro
             }
             return Task.CompletedTask;
         }
-        private void SaveLoad()
+        private Task SaveLoad(object state)
         {
+            var task = new TaskCompletionSource<Task>();
             Dispatcher.Invoke(() => 
             {
                 try
@@ -130,18 +134,21 @@ namespace Macro
                     {
                         configControl.InsertModel(model);
                     }
+                    task.SetResult(Task.CompletedTask);
                 }
                 catch (Exception ex)
                 {
                     LogHelper.Warning(ex.Message);
-                    this.MessageShow("Error", DocumentHelper.Get(Message.FailedLoadSaveFile));
+                    //this.MessageShow("Error", DocumentHelper.Get(Message.FailedLoadSaveFile));
+                    Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
                 }
             }, DispatcherPriority.Send);
+            return task.Task;
         }
         private Task OnProcessCallback()
         {
-            var result = new TaskCompletionSource<Task>();
-            Dispatcher.Invoke(() =>
+            var task = new TaskCompletionSource<Task>();
+            Dispatcher.InvokeAsync(() =>
             {
                 var configSaves = (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).ConfigSaves;
                 foreach (var save in configSaves)
@@ -190,9 +197,9 @@ namespace Macro
                         }
                     }
                 }
-                result.SetResult(Task.CompletedTask);
+                task.SetResult(Task.CompletedTask);
             });
-            return result.Task;
+            return task.Task;
         }
     }
 }

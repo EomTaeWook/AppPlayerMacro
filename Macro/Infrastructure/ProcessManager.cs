@@ -10,27 +10,28 @@ namespace Macro.Infrastructure
 {
     public class ProcessManager
     {
-        public static void Start()
+        public static Task Start()
         {
-            ObjectExtensions.GetInstance<ProcessManager>().Process();
+            return ObjectExtensions.GetInstance<ProcessManager>().Process();
         }
-        public static void Stop()
+        public static Task Stop()
         {
-            ObjectExtensions.GetInstance<ProcessManager>().Drain();
+            return ObjectExtensions.GetInstance<ProcessManager>().Drain();
         }
         public static void AddJob(Func<Task> taskFunc)
         {
             ObjectExtensions.GetInstance<ProcessManager>().Jobs.Add(taskFunc);
         }
 
-        private readonly IConfig _config;
-        private CancellationTokenSource cts;
-        private Thread _workThread;
         public List<Func<Task>> Jobs { get; private set; }
+
+        private readonly IConfig _config;
+        private CancellationTokenSource _cts;
+        private Thread _workThread;
+        private TaskCompletionSource<bool> _tcs;
 
         public ProcessManager(IConfig config)
         {
-            cts = new CancellationTokenSource();
             _config = config;
             Jobs = new List<Func<Task>>();
 
@@ -39,27 +40,30 @@ namespace Macro.Infrastructure
                 Stop();
             };
         }
-        private void Drain()
+        private Task Drain()
         {
             if (_workThread != null)
             {
-                cts.Cancel();
-                _workThread.Join();
+                _cts.Cancel();
+                _tcs.Task.Wait();
                 _workThread = null;
-                cts = null;
+                _cts.Dispose();
+                _cts = null;
             }
+            return Task.CompletedTask;
         }
-        private void Process()
+        private Task Process()
         {
-            Drain();
-
-            cts = new CancellationTokenSource();
+            Drain().Wait();
+            _tcs = new TaskCompletionSource<bool>();
+            _cts = new CancellationTokenSource();
             _workThread = new Thread(OnProcess);
             _workThread.Start();
+            return Task.CompletedTask;
         }
         private void OnProcess()
         {
-            while(!cts.IsCancellationRequested)
+            while(!_cts.IsCancellationRequested)
             {
                 foreach (var job in Jobs)
                 {
@@ -68,8 +72,10 @@ namespace Macro.Infrastructure
                         break;
                     }
                 }
-                Thread.Sleep(_config.Period);
+                if (_cts.Token.WaitHandle.WaitOne(_config.Period))
+                    break;
             }
+            _tcs.SetResult(true);
         }
     }
 }

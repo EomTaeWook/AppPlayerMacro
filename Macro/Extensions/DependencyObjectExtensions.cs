@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -48,16 +49,23 @@ namespace Macro.Extensions
             }
         }
 
-        public static void MessageShow(this DependencyObject @object, string title, string message)
+        public static void MessageShow(this MetroWindow @object, string title, string message)
         {
-            var metroWindow = (Application.Current.MainWindow as MetroWindow);
-            metroWindow.ShowModalMessageExternal(title,
+            @object.ShowModalMessageExternal(title,
                                                 message,
                                                 MessageDialogStyle.Affirmative,
                                                 new MetroDialogSettings()
                                                 {
                                                     ColorScheme = MetroDialogColorScheme.Inverted,
                                                 });
+        }
+        public static ProgressDialogController ProgressbarShow(this MetroWindow @object, string title, string message)
+        {
+            return @object.ShowProgressAsync(title, message).Result;
+        }
+        public static Task ProgressbarClose(this MetroWindow @object, ProgressDialogController progressController)
+        {
+            return progressController.CloseAsync();
         }
     }
 }

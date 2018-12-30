@@ -5,16 +5,17 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Utils;
 using Unity;
 using MahApps.Metro.Controls;
 using System.Drawing;
 using Macro.View;
 using Macro.Extensions;
 using Utils.Document;
-using System.IO;
 using Macro.Infrastructure;
 using System.Threading.Tasks;
+using Macro.Extensions;
+using Utils;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Macro
 {
@@ -26,16 +27,14 @@ namespace Macro
         private List<Process> _processes;
         private IConfig _config;
         private Bitmap _bitmap;
-        private TaskQueue _taskQueue;
-        private int _index;
         public MainWindow()
         {
-            InitializeComponent();
             _index = 0;
             _taskQueue = new TaskQueue();
-            _config = Singleton<UnityContainer>.Instance.Resolve<IConfig>();
+            _config = ObjectExtensions.GetInstance<IConfig>();
             ProcessManager.AddJob(OnProcessCallback);
 
+            InitializeComponent();
             this.Loaded += MainWindow_Loaded;
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -140,6 +139,9 @@ namespace Macro
             }
             else if(btn.Equals(btnStop))
             {
+                //var progress = this.ProgressbarShow("Stop", "작업 정지 중...");
+                ProcessManager.Stop().Wait();
+
                 var buttons = this.FindChildren<Button>();
                 foreach (var button in buttons)
                 {
@@ -149,7 +151,8 @@ namespace Macro
                 }
                 btnStart.Visibility = Visibility.Visible;
                 btnStop.Visibility = Visibility.Collapsed;
-                ProcessManager.Stop();
+
+                //this.ProgressbarClose(progress).Wait();
             }
         }
     }
