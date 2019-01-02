@@ -162,13 +162,19 @@ namespace Macro
                             LogHelper.Debug($"similarity : {similarity}");
                             if (similarity >= _config.Similarity)
                             {
-                                if(save.EventType == EventType.Mouse)
+                                var hWndActive = NativeHelper.GetForegroundWindow();
+                                if (save.EventType == EventType.Mouse)
                                 {
+                                    var position = System.Windows.Input.Mouse.GetPosition(this);
+                                    var current = PointToScreen(position);
 
+                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(save.MousePoint.Value.X, save.MousePoint.Value.Y);
+                                    ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
+
+                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(current.X, current.Y);
                                 }
                                 else if(save.EventType == EventType.Keyboard)
                                 {
-                                    var hWndActive = NativeHelper.GetForegroundWindow();
                                     var commands = save.KeyboardCmd.Split('+');
                                     var modifiedKey = commands.Where(r =>
                                     {
@@ -190,9 +196,9 @@ namespace Macro
                                         return keyCode;
                                     });
                                     NativeHelper.SetForegroundWindow(process.MainWindowHandle);
-                                    InputManager.ModifiedKeyStroke(modifiedKey, keys);
-                                    NativeHelper.SetForegroundWindow(hWndActive);
+                                    ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
                                 }
+                                NativeHelper.SetForegroundWindow(hWndActive);
                             }
                         }
                     }

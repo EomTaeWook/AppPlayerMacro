@@ -59,13 +59,5 @@ namespace Macro.Extensions
                                                     ColorScheme = MetroDialogColorScheme.Inverted,
                                                 });
         }
-        public static ProgressDialogController ProgressbarShow(this MetroWindow @object, string title, string message)
-        {
-            return @object.ShowProgressAsync(title, message).Result;
-        }
-        public static Task ProgressbarClose(this MetroWindow @object, ProgressDialogController progressController)
-        {
-            return progressController.CloseAsync();
-        }
     }
 }

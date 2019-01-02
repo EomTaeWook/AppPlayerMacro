@@ -139,7 +139,6 @@ namespace Macro
             }
             else if(btn.Equals(btnStop))
             {
-                //var progress = this.ProgressbarShow("Stop", "작업 정지 중...");
                 ProcessManager.Stop().Wait();
 
                 var buttons = this.FindChildren<Button>();
@@ -151,8 +150,6 @@ namespace Macro
                 }
                 btnStart.Visibility = Visibility.Visible;
                 btnStop.Visibility = Visibility.Collapsed;
-
-                //this.ProgressbarClose(progress).Wait();
             }
         }
     }

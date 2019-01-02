@@ -12,7 +12,7 @@ namespace Utils.Infrastructure
         ScanCode = 0x0008,
     }
     [Flags]
-    internal enum MouseFlag : uint
+    internal enum MouseFlag: uint
     {
         Move = 0x0001,
         LeftDown = 0x0002,
@@ -28,6 +28,12 @@ namespace Utils.Infrastructure
         VirtualDesk = 0x4000,
         Absolute = 0x8000,
     }
+    public enum MouseButton
+    {
+        LeftButton,
+        RightButton,
+    }
+
     public enum InputType : uint
     {
         Mouse = 0,

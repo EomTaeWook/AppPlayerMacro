@@ -14,6 +14,64 @@ namespace Utils.Infrastructure
         {
             _inputList = new List<Input>();
         }
+        #region Mouse
+        public InputBuilder AddRelativeMouseMovement(int x, int y)
+        {
+            var input = new Input { Type = (uint)InputType.Mouse };
+            input.Data.Mouse.Flags = (uint)MouseFlag.Move;
+            input.Data.Mouse.X = x;
+            input.Data.Mouse.Y = y;
+            _inputList.Add(input);
+            return this;
+        }
+        public InputBuilder AddAbsoluteMouseMovement(int absoluteX, int absoluteY)
+        {
+            var input = new Input { Type = (uint)InputType.Mouse };
+            input.Data.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute);
+            input.Data.Mouse.X = absoluteX;
+            input.Data.Mouse.Y = absoluteY;
+            _inputList.Add(input);
+            return this;
+        }
+        public InputBuilder AddMouseButtonDown(MouseButton button)
+        {
+            var input = new Input { Type = (uint)InputType.Mouse };
+            input.Data.Mouse.Flags = (uint)MouseButtonToMouseFlag(button);
+            _inputList.Add(input);
+            
+            return this;
+        }
+        public InputBuilder AddMouseButtonUp(MouseButton button)
+        {
+            var input = new Input { Type = (uint)InputType.Mouse };
+            input.Data.Mouse.Flags = (uint)MouseButtonToMouseFlag(button, true);
+            _inputList.Add(input);
+
+            return this;
+        }
+        public InputBuilder AddMouseButtonClick(MouseButton button)
+        {
+            return AddMouseButtonDown(button).AddMouseButtonUp(button);
+        }
+        public InputBuilder AddMouseButtonDoubleClick(MouseButton button)
+        {
+            return AddMouseButtonClick(button).AddMouseButtonClick(button);
+        }
+
+        private MouseFlag MouseButtonToMouseFlag(MouseButton button, bool isMouseUp = false)
+        {
+            switch(button)
+            {
+                case MouseButton.LeftButton:
+                    return isMouseUp ? MouseFlag.LeftUp : MouseFlag.LeftDown;
+                case MouseButton.RightButton:
+                    return isMouseUp ? MouseFlag.RightUp : MouseFlag.RightDown;
+                default:
+                    return isMouseUp ? MouseFlag.LeftUp : MouseFlag.LeftDown;
+            }
+        }
+        #endregion Mouse
+        #region Keyboard
         public InputBuilder AddKeyPress(KeyCode keyCode)
         {
             AddKeyDown(keyCode);
@@ -84,6 +142,8 @@ namespace Utils.Infrastructure
                 return false;
             }
         }
+        #endregion Keyboard
+
         public Input this[int index]
         {
             get=> _inputList [index];
