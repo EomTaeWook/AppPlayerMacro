@@ -15,7 +15,7 @@ namespace Utils.Infrastructure
             _inputList = new List<Input>();
         }
         #region Mouse
-        public InputBuilder AddRelativeMouseMovement(int x, int y)
+        public InputBuilder AddRelativeMouseMove(int x, int y)
         {
             var input = new Input { Type = (uint)InputType.Mouse };
             input.Data.Mouse.Flags = (uint)MouseFlag.Move;
@@ -24,10 +24,19 @@ namespace Utils.Infrastructure
             _inputList.Add(input);
             return this;
         }
-        public InputBuilder AddAbsoluteMouseMovement(int absoluteX, int absoluteY)
+        public InputBuilder AddAbsoluteMouseMove(int absoluteX, int absoluteY)
         {
             var input = new Input { Type = (uint)InputType.Mouse };
             input.Data.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute);
+            input.Data.Mouse.X = absoluteX;
+            input.Data.Mouse.Y = absoluteY;
+            _inputList.Add(input);
+            return this;
+        }
+        public InputBuilder AddAbsoluteMouseMoveOnVirtualDesktop(int absoluteX, int absoluteY)
+        {
+            var input = new Input { Type = (uint)InputType.Mouse };
+            input.Data.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk);
             input.Data.Mouse.X = absoluteX;
             input.Data.Mouse.Y = absoluteY;
             _inputList.Add(input);

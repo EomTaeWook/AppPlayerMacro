@@ -9,7 +9,8 @@ namespace Macro.Infrastructure
     public interface IMouseInput
     {
         IMouseInput MoveMouseBy(int pixelX, int pixelY);
-        IMouseInput MoveMouseTo(double absoluteX, double absoluteY);
+        IMouseInput MoveMouseTo(int absoluteX, int absoluteY);
+        IMouseInput MoveMouseToVirtualDesktop(int absoluteX, int absoluteY);
 
         IMouseInput LeftButtonDown();
         IMouseInput LeftButtonUp();

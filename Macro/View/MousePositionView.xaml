@@ -9,7 +9,5 @@
         AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0"
         Title="MousePositionView" Height="450" Width="800">
     <Grid>
-        <Canvas Name="pointZone" Background="Gray">
-        </Canvas>
     </Grid>
 </Window>

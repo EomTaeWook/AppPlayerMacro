@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using Utils.Infrastructure;
 
@@ -29,7 +30,12 @@ namespace Utils
         public static extern int GetWindowRgn(IntPtr hWnd, IntPtr hRgn);
 
         [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, WindowMessage messageCode, int wParam, int lParam);
+        private static extern bool GetCursorPos(out InterPoint lpPoint);
+        public static Point GetCursorPosition()
+        {
+            GetCursorPos(out InterPoint point);
+            return point;
+        }
 
         [DllImport("user32.dll")]
         public static extern uint SendInput(uint inputCount, Input[] inputs, int structSize);

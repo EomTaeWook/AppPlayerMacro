@@ -89,6 +89,11 @@ namespace Utils
                 }
                 Rect rect = new Rect();
                 NativeHelper.GetWindowRect(hWnd, ref rect);
+                if (rect.Width == 0 || rect.Height == 0)
+                {
+                    bmp = null;
+                    return false;
+                }
                 bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
                 using (var gfxBmp = Graphics.FromImage(bmp))
                 {

@@ -98,6 +98,7 @@
     <Compile Include="Infrastructure\DPIType.cs" />
     <Compile Include="Infrastructure\InputStruct.cs" />
     <Compile Include="Infrastructure\KeyCode.cs" />
+    <Compile Include="Infrastructure\Point.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="NativeHelper.cs" />

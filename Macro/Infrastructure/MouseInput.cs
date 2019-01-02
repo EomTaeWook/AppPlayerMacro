@@ -42,19 +42,25 @@ namespace Macro.Infrastructure
         public IMouseInput MoveMouseBy(int pixelX, int pixelY)
         {
             var builder = new InputBuilder();
-            builder.AddRelativeMouseMovement(pixelX, pixelY);
+            builder.AddRelativeMouseMove(pixelX, pixelY);
             NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
             return this;
         }
 
-        public IMouseInput MoveMouseTo(double absoluteX, double absoluteY)
+        public IMouseInput MoveMouseTo(int absoluteX, int absoluteY)
         {
             var builder = new InputBuilder();
-            builder.AddAbsoluteMouseMovement((int)Math.Truncate(absoluteX), (int)Math.Truncate(absoluteY));
+            builder.AddAbsoluteMouseMove(absoluteX, absoluteY);
             NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
             return this;
         }
-
+        public IMouseInput MoveMouseToVirtualDesktop(int absoluteX, int absoluteY)
+        {
+            var builder = new InputBuilder();
+            builder.AddAbsoluteMouseMove(absoluteX, absoluteY);
+            NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
+            return this;
+        }
         public IMouseInput RightButtonClick()
         {
             var builder = new InputBuilder();

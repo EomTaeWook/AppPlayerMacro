@@ -36,14 +36,15 @@ namespace Macro.View
         private void EventInit()
         {
             PreviewKeyDown += MousePositionView_PreviewKeyDown;
-            pointZone.MouseLeftButtonDown += PointZone_MouseLeftButtonDown;
+            this.MouseLeftButtonDown += PointZone_MouseLeftButtonDown;
         }
 
         private void PointZone_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if(this.IsVisible)
             {
-                MousePoint = e.GetPosition(pointZone);
+                var position = e.GetPosition(this);
+                MousePoint = PointToScreen(position);
                 e.Handled = true;
                 this.Close();
             }

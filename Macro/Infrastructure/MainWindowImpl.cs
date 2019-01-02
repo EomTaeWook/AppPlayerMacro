@@ -138,6 +138,7 @@ namespace Macro
                 }
                 catch (Exception ex)
                 {
+                    File.Delete(_path);
                     LogHelper.Warning(ex.Message);
                     //this.MessageShow("Error", DocumentHelper.Get(Message.FailedLoadSaveFile));
                     Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
@@ -165,12 +166,14 @@ namespace Macro
                                 var hWndActive = NativeHelper.GetForegroundWindow();
                                 if (save.EventType == EventType.Mouse)
                                 {
-                                    var position = System.Windows.Input.Mouse.GetPosition(this);
-                                    var current = PointToScreen(position);
+                                    var current = NativeHelper.GetCursorPosition();
+                                    var screen = PointToScreen(new System.Windows.Point(current.X, current.Y));
 
-                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(save.MousePoint.Value.X, save.MousePoint.Value.Y);
-                                    ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
+                                    LogHelper.Debug($"current X : {current.X} current Y : {current.Y}");
+                                    //(65536 / GetSystemMetrics(SystemMetric.SM_CXSCREEN));
 
+                                    //ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(save.MousePoint.Value.X, save.MousePoint.Value.Y);
+                                    //ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(current.X, current.Y);
                                 }
                                 else if(save.EventType == EventType.Keyboard)
