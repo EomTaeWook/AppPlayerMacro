@@ -57,7 +57,7 @@ namespace Macro.Infrastructure
         public IMouseInput MoveMouseToVirtualDesktop(int absoluteX, int absoluteY)
         {
             var builder = new InputBuilder();
-            builder.AddAbsoluteMouseMove(absoluteX, absoluteY);
+            builder.AddAbsoluteMouseMoveOnVirtualDesktop(absoluteX, absoluteY);
             NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
             return this;
         }
