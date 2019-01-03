@@ -161,13 +161,15 @@
     <Compile Include="Infrastructure\IKeyboardInput.cs" />
     <Compile Include="Infrastructure\ImageConverter.cs" />
     <Compile Include="Infrastructure\IMouseInput.cs" />
+    <Compile Include="Infrastructure\Impl\ConfigEventImpl.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
-    <Compile Include="Infrastructure\MainWindowImpl.cs" />
+    <Compile Include="Infrastructure\Impl\MainWindowImpl.cs" />
     <Compile Include="Infrastructure\InputManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\ProcessManager.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />
+    <Compile Include="Models\Event\EventArgs.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\SystemEnum.cs" />
     <Compile Include="Models\ViewModel\ConfigEventViewModel.cs" />

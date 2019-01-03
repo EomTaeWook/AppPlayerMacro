@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Macro.Models.Event;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Utils;
+using Utils.Infrastructure;
 
 namespace Macro.View
 {
@@ -20,9 +10,13 @@ namespace Macro.View
     /// </summary>
     public partial class MousePositionView : Window
     {
-        public Point MousePoint { get; private set; }
-        public MousePositionView()
+        public event DataBindingHander DataBinding;
+        public delegate void DataBindingHander(object sender, MousePointArgs args);
+
+        private MonitorInfo _monitorInfo;
+        public MousePositionView(MonitorInfo monitorInfo)
         {
+            _monitorInfo = monitorInfo;
             InitializeComponent();
             this.Loaded += MousePositionView_Loaded;
         }
@@ -44,34 +38,45 @@ namespace Macro.View
             if(this.IsVisible)
             {
                 var position = e.GetPosition(this);
-                MousePoint = PointToScreen(position);
+                
                 e.Handled = true;
-                this.Close();
+                DataBinding? .Invoke(this, new MousePointArgs()
+                {
+                    MousePoint = PointToScreen(position),
+                    MonitorInfo = _monitorInfo
+                });
             }
         }
-
+        public void ShowActivate()
+        {
+            Show();
+            Activate();
+        }
         private void MousePositionView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
+                DataBinding?.Invoke(this, new MousePointArgs()
+                {
+                    MousePoint = null,
+                    MonitorInfo = _monitorInfo
+                });
                 e.Handled = true;
-                this.Close();
             }
             base.OnPreviewKeyDown(e);
         }
 
         private void Init()
         {
-            WindowState = WindowState.Normal;
-            var size = CaptureHelper.MonitorSize();
-            Left = size.Left;
-            Width = size.Width;
-            Top = size.Top;
-            Height = size.Height;
 #if !DEBUG
             Topmost = true;
 #endif
-            this.Activate();
+            Left = _monitorInfo.Rect.Left;
+            Width = _monitorInfo.Rect.Width;
+            Top = _monitorInfo.Rect.Top;
+            Height = _monitorInfo.Rect.Height;
+            WindowState = WindowState.Maximized;
+            Activate();
         }
     }
 }

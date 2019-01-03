@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using Utils.Infrastructure;
 
 namespace Utils
 {
@@ -29,45 +30,41 @@ namespace Utils
     {
         private const float DefaultDPI = 96.0F;
 
-        public static Rect MonitorSize()
+        public static List<MonitorInfo> MonitorInfo()
         {
-            List<Rect> infos = new List<Rect>();
+            var monitors = new List<MonitorInfo>();
+            int index = 0;
+            var factor = NativeHelper.GetSystemDpi();
+
             NativeHelper.MonitorEnumDelegate callback = new NativeHelper.MonitorEnumDelegate((IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data) =>
             {
-                //NativeHelper.GetDpiForMonitor(hMonitor, DpiType.Effective, out uint dpiX, out uint dpiY);
-                var factorX = 1;// dpiX / DefaultDPI;
-                var factorY = 1;// dpiY / DefaultDPI;
-                rect.Right = (int)(rect.Right * factorX);
-                rect.Bottom = (int)(rect.Bottom * factorY);
-                infos.Add(new Rect(rect));
+                rect.Right = rect.Right;
+                rect.Bottom = rect.Bottom;
+
+                monitors.Add(new MonitorInfo()
+                {
+                    Rect = rect,
+                    Index = index++,
+                    FactorX = factor.X / DefaultDPI,
+                    FactorY = factor.Y / DefaultDPI,
+
+                });
                 return true;
             });
             NativeHelper.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, callback, 0);
-            var monitor = new Rect();
-            foreach(var info in infos)
-            {
-                if (monitor.Left > info.Left)
-                    monitor.Left = info.Left;
-                if (monitor.Right < info.Right)
-                    monitor.Right = info.Right;
-                if (monitor.Bottom < info.Bottom)
-                    monitor.Bottom = info.Bottom;
-                if (monitor.Top > info.Top)
-                    monitor.Top = info.Top;
-            }
-            return monitor;
+            return monitors;
         }
-        public static Bitmap Capture(Rect rect)
+        public static Bitmap Capture(MonitorInfo monitor, Rect rect)
         {
             try
             {
-                var monitor = MonitorSize();
-                Bitmap bmp = new Bitmap(rect.Width, rect.Height);
+                Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * monitor.FactorX), (int)Math.Truncate(rect.Height * monitor.FactorY));
                 using (var g = Graphics.FromImage(bmp))
                 {
-                    g.CopyFromScreen(monitor.Left, monitor.Top, (rect.Left * -1), (rect.Top * -1),
-                                    new Size(monitor.Width, monitor.Height),
-                                    CopyPixelOperation.SourceCopy);
+                    g.CopyFromScreen(monitor.Rect.Left, monitor.Rect.Top,
+                        (int)Math.Truncate(rect.Left * - 1 * monitor.FactorX), (int)Math.Truncate(rect.Top * -1 * monitor.FactorY),
+                        new Size(monitor.Rect.Width, monitor.Rect.Height),
+                        CopyPixelOperation.SourceCopy);
                 }
                 return bmp;
             }
@@ -75,13 +72,14 @@ namespace Utils
             {
                 LogHelper.Warning(ex.Message);
                 return null;
-            }            
+            }
         }
         public static bool ProcessCapture(Process process, out Bitmap bmp)
         {
             try
             {
                 IntPtr hWnd = process.MainWindowHandle;
+                var factor = NativeHelper.GetSystemDpi();
                 if (hWnd == IntPtr.Zero)
                 {
                     bmp = null;
@@ -94,21 +92,15 @@ namespace Utils
                     bmp = null;
                     return false;
                 }
-                bmp = new Bitmap(rect.Width, rect.Height, PixelFormat.Format32bppArgb);
+                var factorX = factor.X / DefaultDPI;
+                var factorY = factor.Y / DefaultDPI;
+
+                bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY), PixelFormat.Format32bppArgb);
                 using (var gfxBmp = Graphics.FromImage(bmp))
                 {
                     IntPtr hdcBitmap = gfxBmp.GetHdc();
-                    NativeHelper.PrintWindow(hWnd, hdcBitmap, 1);
+                    NativeHelper.PrintWindow(hWnd, hdcBitmap, 0x02);
                     gfxBmp.ReleaseHdc(hdcBitmap);
-                    //gfxBmp.FillRectangle(new SolidBrush(Color.Gray), new Rectangle(Point.Empty, bmp.Size));
-                    //IntPtr hRgn = NativeHelper.CreateRectRgn(0, 0, 0, 0);
-                    //NativeHelper.GetWindowRgn(hWnd, hRgn);
-                    //Region region = Region.FromHrgn(hRgn);
-                    //if (!region.IsEmpty(gfxBmp))
-                    //{
-                    //    gfxBmp.ExcludeClip(region);
-                    //    gfxBmp.Clear(Color.Transparent);
-                    //}
                     gfxBmp.Dispose();
                 }
                 return true;

@@ -3,6 +3,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Macro.Extensions
@@ -58,6 +59,19 @@ namespace Macro.Extensions
                                                 {
                                                     ColorScheme = MetroDialogColorScheme.Inverted,
                                                 });
+        }
+
+        public static Border Clone(this Border source)
+        {
+            var item = new Border
+            {
+                BorderBrush = source.BorderBrush,
+                BorderThickness = source.BorderThickness,
+                Background = source.Background,
+                Opacity = source.Opacity,
+                CornerRadius = source.CornerRadius
+            };
+            return item;
         }
     }
 }

@@ -1,21 +1,17 @@
 ﻿using Macro.Models;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Unity;
 using MahApps.Metro.Controls;
-using System.Drawing;
 using Macro.View;
 using Macro.Extensions;
 using Utils.Document;
 using Macro.Infrastructure;
 using System.Threading.Tasks;
-using Macro.Extensions;
 using Utils;
-using MahApps.Metro.Controls.Dialogs;
+using Utils.Infrastructure;
 
 namespace Macro
 {
@@ -23,24 +19,12 @@ namespace Macro
     /// MainWindow.xaml에 대한 상호 작용 논리
     /// </summary>
     public partial class MainWindow : MetroWindow
-    {
-        private List<Process> _processes;
-        private IConfig _config;
-        private Bitmap _bitmap;
-        public MainWindow()
-        {
-            _index = 0;
-            _taskQueue = new TaskQueue();
-            _config = ObjectExtensions.GetInstance<IConfig>();
-            ProcessManager.AddJob(OnProcessCallback);
-
-            InitializeComponent();
-            this.Loaded += MainWindow_Loaded;
-        }
+    {        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //window7 not support
-            //NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_SYSTEM_DPI_AWARE);
+            NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
+
             InitEvent();
             Init();
         }
@@ -77,7 +61,6 @@ namespace Macro
             if (btn.Equals(btnCapture))
             {
                 Capture();
-                Application.Current.MainWindow.Activate();
             }
             else if (btn.Equals(btnRefresh))
             {

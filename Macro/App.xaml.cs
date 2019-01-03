@@ -1,12 +1,10 @@
 ﻿using Macro.Infrastructure;
 using Macro.Models;
 using System;
-using System.Diagnostics;
 using System.Windows;
 using Unity;
 using Utils;
 using Utils.Document;
-using Utils.Infrastructure;
 
 namespace Macro
 {
@@ -25,6 +23,7 @@ namespace Macro
             {
                 Process(s, ex.Exception);
             };
+            
             Init();
             base.OnStartup(e);
         }

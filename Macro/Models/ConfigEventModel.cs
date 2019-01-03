@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using Utils.Infrastructure;
 using Point = System.Windows.Point;
 
 namespace Macro.Models
@@ -15,6 +16,7 @@ namespace Macro.Models
         public Bitmap Image { get; set; }
 
         public int Index { get; set; }
+        public MonitorInfo MonitorInfo { get; set; }
 
         public EventType EventType
         {
@@ -74,6 +76,7 @@ namespace Macro.Models
             MousePoint = obj.MousePoint;
             KeyboardCmd = obj.KeyboardCmd;
             ProcessName = obj.ProcessName;
+            MonitorInfo = obj.MonitorInfo;
         }
         private void OnPropertyChanged(string propertyName)
         {

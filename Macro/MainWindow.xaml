@@ -5,13 +5,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:Macro.View"
-        xmlns:util="clr-namespace:Utils;assembly=Utils"
+        xmlns:infra="clr-namespace:Macro.Infrastructure"
         mc:Ignorable="d"
         BorderBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1"
-        Title="매크로" Height="780" Width="1270">
+        Title="매크로" Height="780" Width="1270" WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        
+
     </Window.Resources>
     <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
         <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">

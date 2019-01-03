@@ -9,8 +9,6 @@
              AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0">
     <Grid>
         <Canvas AllowDrop="True" Name="captureZone" Background="Gainsboro" Opacity="1">
-            <Border Name="dragBorder" BorderBrush="Blue" BorderThickness="1" Background="LightBlue" Opacity="1" CornerRadius="1">
-            </Border>
         </Canvas>
     </Grid>
 </Window>

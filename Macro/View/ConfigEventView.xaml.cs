@@ -1,14 +1,9 @@
 ﻿using Macro.Extensions;
 using Macro.Models;
-using Macro.Models.ViewModel;
 using MahApps.Metro.Controls;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Unity;
-using Utils;
-using System.Linq;
 
 namespace Macro.View
 {
@@ -17,20 +12,8 @@ namespace Macro.View
     /// </summary>
     public partial class ConfigEventView : UserControl
     {
-        private ConfigEventModel _dummy;
         public event SelectConfigDataHandler SelectData;
         public delegate void SelectConfigDataHandler(ConfigEventModel model);
-        public ConfigEventView()
-        {
-            _dummy = new ConfigEventModel();
-            DataContext = Singleton<UnityContainer>.Instance.Resolve<ConfigEventViewModel>();
-            Model = _dummy;
-            InitializeComponent();
-            
-            Loaded += ConfigEventView_Loaded;
-            grdSaves.SelectionChanged += GrdSaves_SelectionChanged;
-            PreviewKeyDown += ConfigEventView_PreviewKeyDown;
-        }
 
         private void ConfigEventView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -68,31 +51,25 @@ namespace Macro.View
             EventInit();
             Init();
         }
-        private void Init()
-        {
-            grdSaves.ItemsSource = (DataContext as ConfigEventViewModel).ConfigSaves;
-        }
+        
         private void EventInit()
         {
             var radioButtons = this.FindChildren<RadioButton>();
-            foreach(var button in radioButtons)
+            foreach (var button in radioButtons)
             {
                 button.Click += RadioButton_Click;
             }
+
             btnMouseCoordinate.Click += Button_Click;
+            grdSaves.SelectionChanged += GrdSaves_SelectionChanged;
+            PreviewKeyDown += ConfigEventView_PreviewKeyDown;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (Model == _dummy)
-            {
-                Model = new ConfigEventModel();
-            }
             if (sender.Equals(btnMouseCoordinate))
             {
-                var mousePosition = new MousePositionView();
-                mousePosition.ShowDialog();
-                Model.MousePoint = mousePosition.MousePoint;
+                ShowMousePoisitionView();
             }
         }
 
@@ -117,43 +94,6 @@ namespace Macro.View
 
                 Model.EventType = EventType.Keyboard;
             }
-        }
-        public void InsertModel(ConfigEventModel model)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                ((ConfigEventViewModel)DataContext).ConfigSaves.Add(model);
-                if (Model != _dummy)
-                {
-                    Model = _dummy;
-                }
-            });
-        }
-        public void RemoveModel(ConfigEventModel model)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                if(((ConfigEventViewModel)DataContext).ConfigSaves.Remove(model.Index))
-                {
-                    if (Model != _dummy)
-                    {
-                        Model = _dummy;
-                    }
-                }
-            });
-        }
-        public void Clear()
-        {
-            if (Model != _dummy)
-            {
-                Model = _dummy;
-            }
-            grdSaves.SelectedItem = null;
-        }
-        public ConfigEventModel Model
-        {
-            get => ((ConfigEventViewModel)DataContext).ConfigData;
-            private set => ((ConfigEventViewModel)DataContext).ConfigData = value;
         }
     }
 }

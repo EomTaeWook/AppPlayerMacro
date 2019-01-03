@@ -4,13 +4,12 @@ using Macro.Models;
 using Macro.View;
 using MahApps.Metro.Controls;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
@@ -24,15 +23,32 @@ namespace Macro
         private TaskQueue _taskQueue;
         private string _path;
         private int _index;
+        private List<Process> _processes;
+        private IConfig _config;
+        private Bitmap _bitmap;
+        private List<CaptureView> _captureViews;
+
+        public MainWindow()
+        {
+            _index = 0;
+            _taskQueue = new TaskQueue();
+            _config = ObjectExtensions.GetInstance<IConfig>();
+            ProcessManager.AddJob(OnProcessCallback);
+            _captureViews = new List<CaptureView>();
+
+            InitializeComponent();
+            Loaded += MainWindow_Loaded;
+        }
         private void Init()
         {
+            foreach (var item in CaptureHelper.MonitorInfo())
+            {
+                _captureViews.Add(new CaptureView(item));
+                _captureViews.Last().DataBinding += CaptureView_DataBinding;
+            }
+
             _processes = Process.GetProcesses().ToList();
             combo_process.ItemsSource = _processes.OrderBy(r => r.ProcessName).Select(r => r.ProcessName).ToList();
-            Matrix m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
-            ScaleTransform dpiTransform = new ScaleTransform(1 / m.M11, 1 / m.M22);
-            if (dpiTransform.CanFreeze)
-                dpiTransform.Freeze();
-            this.LayoutTransform = dpiTransform;
 
             _path = _config.SavePath;
             if (string.IsNullOrEmpty(_path))
@@ -42,6 +58,20 @@ namespace Macro
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
 
             _taskQueue.Enqueue(SaveLoad, _path);
+        }
+
+        private void CaptureView_DataBinding(object sender, Models.Event.CaptureArgs args)
+        {
+            foreach(var item in _captureViews)
+            {
+                item.Hide();
+            }
+            if(args.CaptureImage != null)
+            {
+                _bitmap = args.CaptureImage;
+                captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
+            }
+            WindowState = System.Windows.WindowState.Normal;
         }
 
         private bool TryModelValidate(ConfigEventModel model, out Message message)
@@ -74,15 +104,9 @@ namespace Macro
         private void Capture()
         {
             Clear();
-            var capture = new CaptureView();
             WindowState = System.Windows.WindowState.Minimized;
-            capture.ShowDialog();
-            if (capture.CaptureImage != null)
-            {
-                _bitmap = capture.CaptureImage;
-                captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
-            }
-            this.WindowState = System.Windows.WindowState.Normal;
+            foreach (var item in _captureViews)
+                item.ShowActivate();
         }
         private void Clear()
         {
@@ -159,6 +183,8 @@ namespace Macro
                     {
                         if (CaptureHelper.ProcessCapture(process, out Bitmap bmp))
                         {
+                            captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+
                             var similarity = OpenCVHelper.Search(bmp, save.Image);
                             LogHelper.Debug($"similarity : {similarity}");
                             if (similarity >= _config.Similarity)

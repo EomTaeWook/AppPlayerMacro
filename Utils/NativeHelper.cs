@@ -37,6 +37,24 @@ namespace Utils
             return point;
         }
 
+
+        [DllImport("gdi32.dll")]
+        private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetDC(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        public static Point GetSystemDpi()
+        {
+            Point result = new Point();
+            IntPtr hDC = GetDC(IntPtr.Zero);
+            result.X = GetDeviceCaps(hDC, 0x58);
+            result.Y = GetDeviceCaps(hDC, 0x5A);
+            ReleaseDC(IntPtr.Zero, hDC);
+            return result;
+        }
+
+
         [DllImport("user32.dll")]
         public static extern uint SendInput(uint inputCount, Input[] inputs, int structSize);
 

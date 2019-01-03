@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Macro.Models.Event;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Utils;
 using Point = System.Windows.Point;
 using Rect = Utils.Rect;
+using Brushes = System.Windows.Media.Brushes;
+using Macro.Extensions;
+using Utils.Infrastructure;
 
 namespace Macro.View
 {
@@ -24,14 +16,22 @@ namespace Macro.View
     /// </summary>
     public partial class CaptureView : Window
     {
+        public event DataBindingHander DataBinding;
+        public delegate void DataBindingHander(object sender, CaptureArgs args);
+
         private bool _isDrag;
         private Point _originPoint;
+        private MonitorInfo _monitorInfo;
 
-        public Bitmap CaptureImage { private set; get; }
-        public CaptureView()
+        private Border _dummyBorder, _dragBorder;
+
+        public CaptureView(MonitorInfo monitorInfo)
         {
+            _monitorInfo = monitorInfo;
+            _dummyBorder = new Border();
+
             InitializeComponent();
-            this.Loaded += CaptureView_Loaded;
+            Loaded += CaptureView_Loaded;
         }
 
         private void CaptureView_Loaded(object sender, RoutedEventArgs e)
@@ -41,18 +41,31 @@ namespace Macro.View
         }
         private void Init()
         {
-            WindowState = WindowState.Normal;
+            _dummyBorder.BorderBrush = Brushes.Blue;
+            _dummyBorder.BorderThickness = new Thickness(1);
+            _dummyBorder.Background = Brushes.LightBlue;
+            _dummyBorder.Opacity = 1;
+            _dummyBorder.CornerRadius = new CornerRadius(1);
 
-            var size = CaptureHelper.MonitorSize();
-            Left = size.Left;
-            Width = size.Width;
+            Clear();
 
-            Top = size.Top;
-            Height = size.Height;
 #if !DEBUG
             Topmost = true;
 #endif
-            this.Activate();
+
+            Left = _monitorInfo.Rect.Left;
+            Width = _monitorInfo.Rect.Width;
+            Top = _monitorInfo.Rect.Top;
+            Height = _monitorInfo.Rect.Height;
+
+            WindowState = WindowState.Maximized;
+            
+        }
+        private void Clear()
+        {
+            captureZone.Children.Clear();
+            _dragBorder = _dummyBorder.Clone();
+            captureZone.Children.Add(_dragBorder);
         }
         private void EventInit()
         {
@@ -63,13 +76,22 @@ namespace Macro.View
 
             PreviewKeyDown += CaptureView_PreviewKeyDown;
         }
-
+        public void ShowActivate()
+        {
+            Clear();
+            Show();
+            Activate();
+        }
         private void CaptureView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Escape)
             {
                 e.Handled = true;
-                this.Close();
+                DataBinding?.Invoke(this, new CaptureArgs()
+                {
+                    MonitorInfo = _monitorInfo,
+                    CaptureImage = null
+                });
             }
             base.OnPreviewKeyDown(e);
         }
@@ -92,50 +114,46 @@ namespace Macro.View
         private void UpdateDragSelectionRect(Point origin, Point current)
         {
             if (origin.X - current.X > 0)
-                Canvas.SetLeft(dragBorder, current.X);
+                Canvas.SetLeft(_dragBorder, current.X);
             else
-                Canvas.SetLeft(dragBorder, origin.X);
+                Canvas.SetLeft(_dragBorder, origin.X);
 
             if (origin.Y - current.Y > 0)
-                Canvas.SetTop(dragBorder, current.Y);
+                Canvas.SetTop(_dragBorder, current.Y);
             else
-                Canvas.SetTop(dragBorder, origin.Y);
+                Canvas.SetTop(_dragBorder, origin.Y);
 
             if (current.X > origin.X)
-                dragBorder.Width = current.X - origin.X;
+                _dragBorder.Width = current.X - origin.X;
             else
-                dragBorder.Width = origin.X - current.X;
+                _dragBorder.Width = origin.X - current.X;
 
             if (current.Y > origin.Y)
-                dragBorder.Height = current.Y - origin.Y;
+                _dragBorder.Height = current.Y - origin.Y;
             else
-                dragBorder.Height = origin.Y - current.Y;
+                _dragBorder.Height = origin.Y - current.Y;
         }
 
         private void CaptureZone_MouseLeave(object sender, MouseEventArgs e)
         {
-            if(_isDrag)
+            if(_isDrag && IsVisible)
             {
-                if(this.IsVisible)
+                WindowState = WindowState.Minimized;
+                DataBinding?.Invoke(this, new CaptureArgs()
                 {
-                    this.WindowState = WindowState.Minimized;
-                    SaveCapture(new Rect()
+                    MonitorInfo = _monitorInfo,
+                    CaptureImage = CaptureHelper.Capture(_monitorInfo, new Rect()
                     {
-                        Left = (int)Canvas.GetLeft(dragBorder),
-                        Bottom = (int)dragBorder.Height + (int)Canvas.GetTop(dragBorder),
-                        Top = (int)Canvas.GetTop(dragBorder),
-                        Right = (int)dragBorder.Width + (int)Canvas.GetLeft(dragBorder),
-                    });
-                    this.Close();
-                }
+                        Left = (int)Canvas.GetLeft(_dragBorder),
+                        Bottom = (int)_dragBorder.Height + (int)Canvas.GetTop(_dragBorder),
+                        Top = (int)Canvas.GetTop(_dragBorder),
+                        Right = (int)_dragBorder.Width + (int)Canvas.GetLeft(_dragBorder),
+                    })
+                });
                 e.Handled = true;
-                return;
+                WindowState = WindowState.Maximized;
             }
             _isDrag = false;
-        }
-        private void SaveCapture(Rect rect)
-        {
-            CaptureImage = CaptureHelper.Capture(rect);
         }
     }
 }
