@@ -22,9 +22,6 @@ namespace Macro
     {        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //window7 not support
-            NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
-
             InitEvent();
             Init();
         }

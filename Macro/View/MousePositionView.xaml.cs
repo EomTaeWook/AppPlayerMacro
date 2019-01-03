@@ -42,7 +42,7 @@ namespace Macro.View
                 e.Handled = true;
                 DataBinding? .Invoke(this, new MousePointArgs()
                 {
-                    MousePoint = PointToScreen(position),
+                    MousePoint = position,
                     MonitorInfo = _monitorInfo
                 });
             }

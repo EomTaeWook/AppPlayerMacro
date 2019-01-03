@@ -1,10 +1,9 @@
-﻿using Macro.Models;
-using System.Threading;
-using Macro.Extensions;
+﻿using Macro.Extensions;
+using Macro.Models;
 using System;
-using Utils;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Macro.Infrastructure
 {

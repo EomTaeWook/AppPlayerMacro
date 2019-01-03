@@ -56,8 +56,17 @@ namespace Macro
             if (!Directory.Exists(_path))
                 Directory.CreateDirectory(_path);
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
-
             _taskQueue.Enqueue(SaveLoad, _path);
+            //window7 not support
+            if (Environment.OSVersion.Version.Major > 6 && Environment.OSVersion.Version.Minor > 1)
+            {
+                NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
+            }
+            else
+            {
+                this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
+                System.Windows.Application.Current.Shutdown();
+            }
         }
 
         private void CaptureView_DataBinding(object sender, Models.Event.CaptureArgs args)
@@ -164,7 +173,6 @@ namespace Macro
                 {
                     File.Delete(_path);
                     LogHelper.Warning(ex.Message);
-                    //this.MessageShow("Error", DocumentHelper.Get(Message.FailedLoadSaveFile));
                     Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
                 }
             }, DispatcherPriority.Send);

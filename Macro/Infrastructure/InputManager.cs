@@ -5,11 +5,10 @@
         public IKeyboardInput Keyboard { get; private set; }
         public IMouseInput Mouse { get; private set; }
 
-        public InputManager()
+        public InputManager(IKeyboardInput keyboard, IMouseInput mouse)
         {
-            Mouse = new MouseInput();
-            Keyboard = new KeyboardInput();
+            Mouse = mouse;
+            Keyboard = keyboard;
         }
-
     }
 }

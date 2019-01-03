@@ -46,6 +46,9 @@ namespace Macro
             var config = JsonHelper.Load<Config>($@"{ Environment.CurrentDirectory}\config.json");
 
             var container = Singleton<UnityContainer>.Instance;
+            container.RegisterType<IMouseInput, MouseInput>();
+            container.RegisterType<IKeyboardInput, KeyboardInput>();
+            container.RegisterType<InputManager>();
             container.RegisterInstance<IConfig>(config);
             container.RegisterSingleton<ProcessManager>();
         }

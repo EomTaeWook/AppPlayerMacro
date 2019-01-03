@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Utils.Document
+﻿namespace Utils.Document
 {
     public enum Label
     {
@@ -37,6 +31,7 @@ namespace Utils.Document
         FailedKeyboardCommandValidate,
         FailedProcessValidate,
         FailedLoadSaveFile,
+        FailedOSVersion,
 
         Max
     }

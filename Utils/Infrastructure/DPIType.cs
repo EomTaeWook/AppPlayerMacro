@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Utils.Infrastructure
+﻿namespace Utils.Infrastructure
 {
     public enum PROCESS_DPI_AWARENESS
     {
