@@ -1,13 +1,13 @@
-﻿using Macro.Models.Event;
+﻿using Macro.Extensions;
+using Macro.Models.Event;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Utils;
-using Point = System.Windows.Point;
-using Rect = Utils.Rect;
-using Brushes = System.Windows.Media.Brushes;
-using Macro.Extensions;
 using Utils.Infrastructure;
+using Brushes = System.Windows.Media.Brushes;
+using Point = System.Windows.Point;
+using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro.View
 {

@@ -56,7 +56,7 @@ namespace Macro.Models
             get
             {
                 if (EventType == EventType.Mouse && MousePoint.HasValue)
-                    return $"X : { MousePoint.Value.X } Y : {MousePoint.Value.Y }";
+                    return $"X : { MousePoint.Value.X.ToString("#.###")} Y : {MousePoint.Value.Y.ToString("#.###") }";
                 else if (EventType == EventType.Keyboard)
                     return KeyboardCmd;
                 else

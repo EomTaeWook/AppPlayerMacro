@@ -3,29 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using Utils.Infrastructure;
 
 namespace Utils
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Rect
-    {
-        public int Left { get; set; }
-        public int Top { get; set; }
-        public int Right { get; set; }
-        public int Bottom { get; set; }
-        public int Width { get => Right - Left; }
-        public int Height { get => Bottom - Top; }
-        public Rect(Rect rect)
-        {
-            Left = rect.Left;
-            Top = rect.Top;
-            Right = rect.Right;
-            Bottom = rect.Bottom;
-        }
-    }
-
     public class CaptureHelper
     {
         private const float DefaultDPI = 96.0F;
@@ -34,7 +15,6 @@ namespace Utils
         {
             var monitors = new List<MonitorInfo>();
             int index = 0;
-            var factor = NativeHelper.GetSystemDpi();
 
             NativeHelper.MonitorEnumDelegate callback = new NativeHelper.MonitorEnumDelegate((IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data) =>
             {
@@ -45,9 +25,6 @@ namespace Utils
                 {
                     Rect = rect,
                     Index = index++,
-                    FactorX = factor.X / DefaultDPI,
-                    FactorY = factor.Y / DefaultDPI,
-
                 });
                 return true;
             });
@@ -58,11 +35,15 @@ namespace Utils
         {
             try
             {
-                Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * monitor.FactorX), (int)Math.Truncate(rect.Height * monitor.FactorY));
+                var factor = NativeHelper.GetSystemDpi();
+                var factorX = factor.X / DefaultDPI;
+                var factorY = factor.Y / DefaultDPI;
+
+                Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY));
                 using (var g = Graphics.FromImage(bmp))
                 {
                     g.CopyFromScreen(monitor.Rect.Left, monitor.Rect.Top,
-                        (int)Math.Truncate(rect.Left * - 1 * monitor.FactorX), (int)Math.Truncate(rect.Top * -1 * monitor.FactorY),
+                        (int)Math.Truncate(rect.Left * - 1 * factorX), (int)Math.Truncate(rect.Top * -1 * factorY),
                         new Size(monitor.Rect.Width, monitor.Rect.Height),
                         CopyPixelOperation.SourceCopy);
                 }
@@ -99,7 +80,7 @@ namespace Utils
                 using (var gfxBmp = Graphics.FromImage(bmp))
                 {
                     IntPtr hdcBitmap = gfxBmp.GetHdc();
-                    NativeHelper.PrintWindow(hWnd, hdcBitmap, 0x02);
+                    NativeHelper.PrintWindow(hWnd, hdcBitmap, 0x02 | 0x03);
                     gfxBmp.ReleaseHdc(hdcBitmap);
                     gfxBmp.Dispose();
                 }

@@ -58,7 +58,7 @@ namespace Macro
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
             _taskQueue.Enqueue(SaveLoad, _path);
             //window7 not support
-            if (Environment.OSVersion.Version.Major > 6 && Environment.OSVersion.Version.Minor > 1)
+            if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor > 1)
             {
                 NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
             }
@@ -201,12 +201,13 @@ namespace Macro
                                 if (save.EventType == EventType.Mouse)
                                 {
                                     var current = NativeHelper.GetCursorPosition();
-                                    var screen = PointToScreen(new System.Windows.Point(current.X, current.Y));
-
                                     LogHelper.Debug($"current X : {current.X} current Y : {current.Y}");
-                                    //(65536 / GetSystemMetrics(SystemMetric.SM_CXSCREEN));
+                                    var positionX = save.MonitorInfo.Rect.Left + (int)Math.Truncate(save.MousePoint.Value.X);
+                                    var positionY = save.MonitorInfo.Rect.Top + (int)Math.Truncate(save.MousePoint.Value.Y);
 
-                                    //ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(save.MousePoint.Value.X, save.MousePoint.Value.Y);
+                                    ObjectExtensions.GetInstance<InputManager>().Mouse
+                                                .MoveMouseTo(save.MonitorInfo.Rect.Left + (int)Math.Truncate(save.MousePoint.Value.X)
+                                                ,save.MonitorInfo.Rect.Top + (int)Math.Truncate(save.MousePoint.Value.Y));
                                     //ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(current.X, current.Y);
                                 }
