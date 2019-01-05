@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace Utils.Infrastructure
@@ -15,6 +16,7 @@ namespace Utils.Infrastructure
         }
     }
 
+    [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect
     {

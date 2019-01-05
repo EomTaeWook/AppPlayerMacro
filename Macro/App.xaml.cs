@@ -31,13 +31,16 @@ namespace Macro
         {
             DependenciesResolved();
             InitTemplate();
+
+            ShutdownMode = ShutdownMode.OnLastWindowClose;
         }
         private void InitTemplate()
         {
             var path = Environment.CurrentDirectory;
 #if DEBUG
-            path = Environment.CurrentDirectory + "/../../../Datas/";
+            path += @"\..\..\..\";
 #endif
+            path += @".\Datas\";
             Singleton<DocumentTemplate<Label>>.Instance.Init(path);
             Singleton<DocumentTemplate<Message>>.Instance.Init(path);
         }

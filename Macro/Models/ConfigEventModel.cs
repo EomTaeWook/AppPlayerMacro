@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
@@ -56,7 +57,7 @@ namespace Macro.Models
             get
             {
                 if (EventType == EventType.Mouse && MousePoint.HasValue)
-                    return $"X : { MousePoint.Value.X.ToString("#.###")} Y : {MousePoint.Value.Y.ToString("#.###") }";
+                    return $"X : { MousePoint.Value.X.ToString("0.0##")} Y : {MousePoint.Value.Y.ToString("0.0##") }";
                 else if (EventType == EventType.Keyboard)
                     return KeyboardCmd;
                 else

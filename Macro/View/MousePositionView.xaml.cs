@@ -18,7 +18,7 @@ namespace Macro.View
         {
             _monitorInfo = monitorInfo;
             InitializeComponent();
-            this.Loaded += MousePositionView_Loaded;
+            Loaded += MousePositionView_Loaded;
         }
 
         private void MousePositionView_Loaded(object sender, RoutedEventArgs e)
@@ -30,19 +30,17 @@ namespace Macro.View
         private void EventInit()
         {
             PreviewKeyDown += MousePositionView_PreviewKeyDown;
-            this.MouseLeftButtonDown += PointZone_MouseLeftButtonDown;
+            MouseLeftButtonDown += OnMouseLeftButtonDown;
         }
 
-        private void PointZone_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(this.IsVisible)
+            if(IsVisible)
             {
-                var position = e.GetPosition(this);
-                
                 e.Handled = true;
                 DataBinding? .Invoke(this, new MousePointArgs()
                 {
-                    MousePoint = position,
+                    MousePoint = PointToScreen(e.GetPosition(this)),
                     MonitorInfo = _monitorInfo
                 });
             }
@@ -76,7 +74,6 @@ namespace Macro.View
             Top = _monitorInfo.Rect.Top;
             Height = _monitorInfo.Rect.Height;
             WindowState = WindowState.Maximized;
-            Activate();
         }
     }
 }

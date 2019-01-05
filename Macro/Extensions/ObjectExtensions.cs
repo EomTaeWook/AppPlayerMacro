@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using Unity;
 using Utils;
+using Utils.Infrastructure;
 
 namespace Macro.Extensions
 {
@@ -22,6 +23,7 @@ namespace Macro.Extensions
                 bf.Serialize(ms, model.EventType);
                 bf.Serialize(ms, model.MousePoint? .X ?? -1d);
                 bf.Serialize(ms, model.MousePoint? .Y ?? -1d);
+                bf.Serialize(ms, model.MonitorInfo);
                 bf.Serialize(ms, model.KeyboardCmd);
                 bf.Serialize(ms, model.ProcessName);
                 bf.Serialize(ms, "\uFF1E");
@@ -45,6 +47,7 @@ namespace Macro.Extensions
                     var y = (double)bf.Deserialize(ms);
                     if(x != -1 && y != -1)
                         model.MousePoint = new Point(x, y);
+                    model.MonitorInfo = (MonitorInfo)bf.Deserialize(ms);
                     model.KeyboardCmd = (string)bf.Deserialize(ms);
                     model.ProcessName = (string)bf.Deserialize(ms);
                     var endTag = bf.Deserialize(ms);

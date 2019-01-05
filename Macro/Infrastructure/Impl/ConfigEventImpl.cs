@@ -1,13 +1,12 @@
-﻿using Macro.Models;
+﻿using Macro.Extensions;
+using Macro.Models;
+using Macro.Models.Event;
 using Macro.Models.ViewModel;
 using System.Collections.Generic;
-using System.Windows.Controls;
 using System.Linq;
-using Utils;
-using Macro.Extensions;
+using System.Windows.Controls;
 using Unity;
-using Macro.Models.Event;
-using Utils.Infrastructure;
+using Utils;
 
 namespace Macro.View
 {

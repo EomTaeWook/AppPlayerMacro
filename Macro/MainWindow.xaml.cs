@@ -73,7 +73,7 @@ namespace Macro
                 {
                     _taskQueue.Enqueue(Save, model).ContinueWith((task) =>
                     {
-                        this.Dispatcher.Invoke(() =>
+                        Dispatcher.Invoke(() =>
                         {
                             Clear();
                         });                        
@@ -96,7 +96,7 @@ namespace Macro
                 {
                     if (task.IsCompleted)
                     {
-                        this.Dispatcher.Invoke(() =>
+                        Dispatcher.Invoke(() =>
                         {
                             Delete(model);
                             Clear();

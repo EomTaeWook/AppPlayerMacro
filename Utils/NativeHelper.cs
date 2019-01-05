@@ -54,14 +54,10 @@ namespace Utils
             return result;
         }
 
-
         [DllImport("user32.dll")]
         public static extern uint SendInput(uint inputCount, Input[] inputs, int structSize);
 
         [DllImport("shcore.dll")]
         public static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
-
-        [DllImport("shcore.dll")]
-        public static extern IntPtr GetDpiForMonitor(IntPtr hMonitor, DPI_Type dpiType, out uint dpiX, out uint dpiY);
     }
 }

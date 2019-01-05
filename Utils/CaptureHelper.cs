@@ -10,7 +10,6 @@ namespace Utils
     public class CaptureHelper
     {
         private const float DefaultDPI = 96.0F;
-
         public static List<MonitorInfo> MonitorInfo()
         {
             var monitors = new List<MonitorInfo>();

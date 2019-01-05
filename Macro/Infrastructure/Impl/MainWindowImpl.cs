@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
@@ -38,6 +39,7 @@ namespace Macro
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+
         }
         private void Init()
         {
@@ -65,7 +67,7 @@ namespace Macro
             else
             {
                 this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
-                System.Windows.Application.Current.Shutdown();
+                Application.Current.Shutdown();
             }
         }
 
@@ -202,14 +204,15 @@ namespace Macro
                                 {
                                     var current = NativeHelper.GetCursorPosition();
                                     LogHelper.Debug($"current X : {current.X} current Y : {current.Y}");
-                                    var positionX = save.MonitorInfo.Rect.Left + (int)Math.Truncate(save.MousePoint.Value.X);
-                                    var positionY = save.MonitorInfo.Rect.Top + (int)Math.Truncate(save.MousePoint.Value.Y);
+                                    Task.Delay(100);
+                                    var positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - save.MousePoint.Value.X) * (65535 / SystemParameters.VirtualScreenWidth));
+                                    var positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + save.MousePoint.Value.Y) * (65535 / SystemParameters.VirtualScreenHeight));
+                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
+                                    ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
 
-                                    ObjectExtensions.GetInstance<InputManager>().Mouse
-                                                .MoveMouseTo(save.MonitorInfo.Rect.Left + (int)Math.Truncate(save.MousePoint.Value.X)
-                                                ,save.MonitorInfo.Rect.Top + (int)Math.Truncate(save.MousePoint.Value.Y));
-                                    //ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
-                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseTo(current.X, current.Y);
+                                    positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - current.X) * (65535 / SystemParameters.VirtualScreenWidth));
+                                    positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + current.Y) * (65535 / SystemParameters.VirtualScreenHeight));
+                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
                                 }
                                 else if(save.EventType == EventType.Keyboard)
                                 {

@@ -22,7 +22,6 @@ namespace Macro.View
         private bool _isDrag;
         private Point _originPoint;
         private MonitorInfo _monitorInfo;
-
         private Border _dummyBorder, _dragBorder;
 
         public CaptureView(MonitorInfo monitorInfo)
