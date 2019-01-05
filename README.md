@@ -1,8 +1,7 @@
 ﻿
 연결 프로세스의 화면을 분석해서 키보드나 마우스 매크로 설정하여 키보드나 마우스 이벤트 반복
 
-<img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/capture.png" width="90%"></img>
-
+<img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/capture.png" width="100%"></img>
 
 개발환경
     WPF, C#, .net 4.6.1
