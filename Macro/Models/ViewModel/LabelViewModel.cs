@@ -18,9 +18,9 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.MouseCoordinates);
         }
-        public string ConfigList
+        public string TriggerList
         {
-            get => DocumentHelper.Get(Label.ConfigList);
+            get => DocumentHelper.Get(Label.TriggerList);
         }
         public string Config
         {
@@ -32,7 +32,7 @@ namespace Macro.Models.ViewModel
         }
         public string SaveConfig
         {
-            get => DocumentHelper.Get(Label.SaveConfig);
+            get => DocumentHelper.Get(Label.TriggerList);
         }
         public string ScreenCapture
         {
@@ -61,6 +61,10 @@ namespace Macro.Models.ViewModel
         public string Stop
         {
             get => DocumentHelper.Get(Label.Stop);
+        }
+        public string Setting
+        {
+            get => DocumentHelper.Get(Label.Setting);
         }
     }
 }

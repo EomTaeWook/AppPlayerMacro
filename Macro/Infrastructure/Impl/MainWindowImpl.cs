@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Serialize;
 using Macro.Models;
 using Macro.View;
 using MahApps.Metro.Controls;
@@ -16,6 +17,7 @@ using System.Windows.Threading;
 using Utils;
 using Utils.Infrastructure;
 using Message = Utils.Document.Message;
+using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
 {
@@ -24,7 +26,7 @@ namespace Macro
         private TaskQueue _taskQueue;
         private string _path;
         private int _index;
-        private List<Process> _processes;
+        private IEnumerable<KeyValuePair<string, Process>> _processes;
         private IConfig _config;
         private Bitmap _bitmap;
         private List<CaptureView> _captureViews;
@@ -39,8 +41,8 @@ namespace Macro
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-
         }
+
         private void Init()
         {
             foreach (var item in CaptureHelper.MonitorInfo())
@@ -48,9 +50,7 @@ namespace Macro
                 _captureViews.Add(new CaptureView(item));
                 _captureViews.Last().DataBinding += CaptureView_DataBinding;
             }
-
-            _processes = Process.GetProcesses().ToList();
-            combo_process.ItemsSource = _processes.OrderBy(r => r.ProcessName).Select(r => r.ProcessName).ToList();
+            Refresh();
 
             _path = _config.SavePath;
             if (string.IsNullOrEmpty(_path))
@@ -67,10 +67,16 @@ namespace Macro
             else
             {
                 this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
-                Application.Current.Shutdown();
             }
         }
+        private void Refresh()
+        {
+            _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero).Select(r => new KeyValuePair<string, Process>(r.ProcessName, r));
+            combo_process.ItemsSource = _processes.OrderBy(r => r.Key);
+            combo_process.DisplayMemberPath = "Key";
+            combo_process.SelectedValuePath = "Value";
 
+        }
         private void CaptureView_DataBinding(object sender, Models.Event.CaptureArgs args)
         {
             foreach(var item in _captureViews)
@@ -82,10 +88,10 @@ namespace Macro
                 _bitmap = args.CaptureImage;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
             }
-            WindowState = System.Windows.WindowState.Normal;
+            WindowState = WindowState.Normal;
         }
 
-        private bool TryModelValidate(ConfigEventModel model, out Message message)
+        private bool TryModelValidate(EventTriggerModel model, out Message message)
         {
             message = Message.Success;
             model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
@@ -105,7 +111,7 @@ namespace Macro
                 message = Message.FailedKeyboardCommandValidate;
                 return false;
             }
-            if (string.IsNullOrEmpty(model.ProcessName))
+            if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
             {
                 message = Message.FailedProcessValidate;
                 return false;
@@ -115,28 +121,28 @@ namespace Macro
         private void Capture()
         {
             Clear();
-            WindowState = System.Windows.WindowState.Minimized;
+            WindowState = WindowState.Minimized;
             foreach (var item in _captureViews)
                 item.ShowActivate();
         }
         private void Clear()
         {
-            btnDelete.Visibility = System.Windows.Visibility.Collapsed;
+            btnDelete.Visibility = Visibility.Collapsed;
             _bitmap = null;
             captureImage.Background = System.Windows.Media.Brushes.White;
             configControl.Clear();
         }
         private Task Delete(object m)
         {
-            var model = m as ConfigEventModel;
+            var model = m as EventTriggerModel;
             if (File.Exists(_path))
             {
                 File.Delete(_path);
                 using (var fs = new FileStream(_path, FileMode.CreateNew))
                 {
-                    foreach (var data in (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).ConfigSaves)
+                    foreach (var data in (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves)
                     {
-                        var bytes = ObjectExtensions.SerializeObject(data);
+                        var bytes = ObjectSerializer.SerializeObject(data);
                         fs.Write(bytes, 0, bytes.Count());
                     }
                     fs.Close();
@@ -146,11 +152,11 @@ namespace Macro
         }
         private Task Save(object m)
         {
-            var model = m as ConfigEventModel;
+            var model = m as EventTriggerModel;
             model.Index = _index++;
             using (var fs = new FileStream(_path, FileMode.Append))
             {
-                var bytes = ObjectExtensions.SerializeObject(model);
+                var bytes = ObjectSerializer.SerializeObject(model);
                 fs.Write(bytes, 0, bytes.Count());
                 fs.Close();
             }
@@ -163,7 +169,7 @@ namespace Macro
             {
                 try
                 {
-                    var models = ObjectExtensions.DeserializeObject(File.ReadAllBytes(_path));
+                    var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(_path));
                     _index = models.LastOrDefault()?.Index ?? 0;
                     foreach (var model in models)
                     {
@@ -185,13 +191,13 @@ namespace Macro
             var task = new TaskCompletionSource<Task>();
             Dispatcher.InvokeAsync(() =>
             {
-                var configSaves = (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).ConfigSaves;
-                foreach (var save in configSaves)
+                var saves = (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
+                foreach (var save in saves)
                 {
-                    var processes = _processes.Where(r => r.ProcessName.Equals(save.ProcessName)).ToList();
+                    var processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToList();
                     foreach (var process in processes)
                     {
-                        if (CaptureHelper.ProcessCapture(process, out Bitmap bmp))
+                        if (CaptureHelper.ProcessCapture(process.Value, out Bitmap bmp))
                         {
                             captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
 
@@ -200,18 +206,28 @@ namespace Macro
                             if (similarity >= _config.Similarity)
                             {
                                 var hWndActive = NativeHelper.GetForegroundWindow();
+
                                 if (save.EventType == EventType.Mouse)
                                 {
-                                    var current = NativeHelper.GetCursorPosition();
-                                    LogHelper.Debug($"current X : {current.X} current Y : {current.Y}");
+                                    var currentMousePoint = NativeHelper.GetCursorPosition();
+                                    LogHelper.Debug($"current X : {currentMousePoint.X} current Y : {currentMousePoint.Y}");
                                     Task.Delay(100);
-                                    var positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - save.MousePoint.Value.X) * (65535 / SystemParameters.VirtualScreenWidth));
-                                    var positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + save.MousePoint.Value.Y) * (65535 / SystemParameters.VirtualScreenHeight));
+
+                                    NativeHelper.SetForegroundWindow(process.Value.MainWindowHandle);
+
+                                    var currentPosition = new Rect();
+                                    NativeHelper.GetWindowRect(process.Value.MainWindowHandle, ref currentPosition);
+                                    var movePositionX = save.ProcessInfo.Position.Left - currentPosition.Left;// - (currentPosition.Width - save.ProcessInfo.Position.Width);
+                                    var movePositionY = currentPosition.Top - save.ProcessInfo.Position.Top; //- (currentPosition.Height - save.ProcessInfo.Position.Height);
+
+                                    var positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - save.MousePoint.Value.X + movePositionX) * (65535 / SystemParameters.VirtualScreenWidth));
+                                    var positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top - save.MousePoint.Value.Y - movePositionY) * (65535 / SystemParameters.VirtualScreenHeight));
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
+                                    NativeHelper.SetWindowPos(process.Value.MainWindowHandle, currentPosition);
 
-                                    positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - current.X) * (65535 / SystemParameters.VirtualScreenWidth));
-                                    positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + current.Y) * (65535 / SystemParameters.VirtualScreenHeight));
+                                    positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - currentMousePoint.X) * (65535 / SystemParameters.VirtualScreenWidth));
+                                    positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + currentMousePoint.Y) * (65535 / SystemParameters.VirtualScreenHeight));
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
                                 }
                                 else if(save.EventType == EventType.Keyboard)
@@ -236,13 +252,13 @@ namespace Macro
                                         var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), r, true);
                                         return keyCode;
                                     });
-                                    NativeHelper.SetForegroundWindow(process.MainWindowHandle);
                                     ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
                                 }
                                 NativeHelper.SetForegroundWindow(hWndActive);
                             }
                         }
                     }
+                    Task.Delay(100);
                 }
                 task.SetResult(Task.CompletedTask);
             });

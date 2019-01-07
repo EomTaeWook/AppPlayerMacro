@@ -17,11 +17,11 @@ namespace Macro
         {
             AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
             {
-                Process(s, ex.ExceptionObject as Exception);
+                ExceptionProcess(s, ex.ExceptionObject as Exception);
             };
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
-                Process(s, ex.Exception);
+                LogHelper.Debug(ex.Exception.Message);
             };
             
             Init();
@@ -31,7 +31,7 @@ namespace Macro
         {
             DependenciesResolved();
             InitTemplate();
-
+            LogHelper.Init();
             ShutdownMode = ShutdownMode.OnLastWindowClose;
         }
         private void InitTemplate()
@@ -55,7 +55,7 @@ namespace Macro
             container.RegisterInstance<IConfig>(config);
             container.RegisterSingleton<ProcessManager>();
         }
-        private void Process(object sender, Exception ex)
+        private void ExceptionProcess(object sender, Exception ex)
         {
             //Debug.Assert(false, ex.Message);
             LogHelper.Warning(ex.Message);

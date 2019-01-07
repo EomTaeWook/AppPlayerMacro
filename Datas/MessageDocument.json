@@ -33,6 +33,11 @@
 		"Code" : "FailedOSVersion",
 		"Kor": "Window 7 이하는 사용 할 수 없습니다. 죄송합니다.",
 		"Eng": "Window 7 and earlier can not be used. Sorry."
+	},
+	{
+		"Code" : "FailedFileBroken",
+		"Kor": "파일을 읽는 도중에 에러가 발생했습니다.",
+		"Eng": "The file is broken."
 	}
 ]
 

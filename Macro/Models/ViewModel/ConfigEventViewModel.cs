@@ -5,34 +5,34 @@ namespace Macro.Models.ViewModel
 {
     public class ConfigEventViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<ConfigEventModel> _configs;
-        private ConfigEventModel _config;
+        private ObservableCollection<EventTriggerModel> _triggerSaves;
+        private EventTriggerModel _trigger;
         public ConfigEventViewModel()
         {
-            _configs = new ObservableCollection<ConfigEventModel>();
+            _triggerSaves = new ObservableCollection<EventTriggerModel>();
         }
 
         private void Configs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged("ConfigSaves");
+            OnPropertyChanged("TriggerSaves");
         }
-        public ObservableCollection<ConfigEventModel> ConfigSaves
+        public ObservableCollection<EventTriggerModel> TriggerSaves
         {
-            get => _configs;
+            get => _triggerSaves;
             private set
             {
-                _configs = value;
-                OnPropertyChanged("ConfigSaves");
+                _triggerSaves = value;
+                OnPropertyChanged("TriggerSaves");
             }
         }
 
-        public ConfigEventModel ConfigData
+        public EventTriggerModel Trigger
         {
-            get => _config;
+            get => _trigger;
             set
             {
-                _config = value;
-                OnPropertyChanged("ConfigData");
+                _trigger = value;
+                OnPropertyChanged("Trigger");
             }
         }
 

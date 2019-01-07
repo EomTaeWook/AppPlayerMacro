@@ -55,9 +55,18 @@ namespace Utils
         }
 
         [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, SpecialWindowHandles hWndInsertAfter, int x, int y, int width, int height, WindowPosFlags flags);
+        public static bool SetWindowPos(IntPtr hWnd, Rect rect)
+        {
+            return SetWindowPos(hWnd, SpecialWindowHandles.Top, rect.Left, rect.Top, rect.Width, rect.Height, WindowPosFlags.ShowWindow | WindowPosFlags.DoNotActivate | WindowPosFlags.AsynchronousWindowPosition | WindowPosFlags.DoNotCopyBits);
+        }
+
+        [DllImport("user32.dll")]
         public static extern uint SendInput(uint inputCount, Input[] inputs, int structSize);
 
         [DllImport("shcore.dll")]
         public static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
+
+
     }
 }

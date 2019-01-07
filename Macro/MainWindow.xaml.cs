@@ -12,6 +12,7 @@ using Macro.Infrastructure;
 using System.Threading.Tasks;
 using Utils;
 using Utils.Infrastructure;
+using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
 {
@@ -35,9 +36,19 @@ namespace Macro
             btnStop.Click += Button_Click;
 
             configControl.SelectData += ConfigControl_SelectData;
+
+            Unloaded += MainWindow_Unloaded;
         }
-        
-        private void ConfigControl_SelectData(ConfigEventModel model)
+        private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in _captureViews)
+            {
+                item.DataBinding -= CaptureView_DataBinding;
+                item.Close();
+            }
+            _captureViews.Clear();
+        }
+        private void ConfigControl_SelectData(EventTriggerModel model)
         {
             if(model == null)
             {
@@ -45,7 +56,7 @@ namespace Macro
             }
             else
             {
-                combo_process.SelectedValue = model.ProcessName;
+                combo_process.SelectedValue = model.ProcessInfo.ProcessName;
                 btnDelete.Visibility = Visibility.Visible;
                 _bitmap = model.Image;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
@@ -61,16 +72,28 @@ namespace Macro
             }
             else if (btn.Equals(btnRefresh))
             {
-                _processes = Process.GetProcesses().ToList();
-                combo_process.ItemsSource = _processes.OrderBy(r => r.ProcessName).Select(r => r.ProcessName).ToList();
+                Refresh();
             }
             else if (btn.Equals(btnSave))
             {
                 var model = configControl.Model;
                 model.Image = _bitmap;
-                model.ProcessName = combo_process.SelectedValue as string;
+
+                var process = combo_process.SelectedValue as Process;
+
+                model.ProcessInfo = new ProcessInfo()
+                {
+                    ProcessName = process ? .ProcessName,
+                    Position = new Rect()
+                };
+
                 if (TryModelValidate(model, out Message error))
                 {
+                    var rect = new Rect();
+
+                    NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
+                    model.ProcessInfo.Position = rect;
+
                     _taskQueue.Enqueue(Save, model).ContinueWith((task) =>
                     {
                         Dispatcher.Invoke(() =>

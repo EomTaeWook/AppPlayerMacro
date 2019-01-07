@@ -12,8 +12,8 @@ namespace Macro.View
     /// </summary>
     public partial class ConfigEventView : UserControl
     {
-        public event SelectConfigDataHandler SelectData;
-        public delegate void SelectConfigDataHandler(ConfigEventModel model);
+        public event SelectTriggerHandler SelectData;
+        public delegate void SelectTriggerHandler(EventTriggerModel model);
 
         private void ConfigEventView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -29,9 +29,9 @@ namespace Macro.View
 
         private void GrdSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((sender as DataGrid).SelectedItem is ConfigEventModel item)
+            if ((sender as DataGrid).SelectedItem is EventTriggerModel item)
             {
-                Model = new ConfigEventModel(item);
+                Model = new EventTriggerModel(item);
                 SelectData(item);
                 if(Model.EventType == EventType.Keyboard)
                 {
@@ -63,6 +63,18 @@ namespace Macro.View
             btnMouseCoordinate.Click += Button_Click;
             grdSaves.SelectionChanged += GrdSaves_SelectionChanged;
             PreviewKeyDown += ConfigEventView_PreviewKeyDown;
+
+            Unloaded += ConfigEventView_Unloaded;
+        }
+
+        private void ConfigEventView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in _mousePointViews)
+            {
+                item.DataBinding -= ConfigEventView_DataBinding;
+                item.Close();
+            }
+            _mousePointViews.Clear();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -77,7 +89,7 @@ namespace Macro.View
         {
             if (Model == _dummy)
             {
-                Model = new ConfigEventModel();
+                Model = new EventTriggerModel();
             }
 
             if (sender.Equals(rbMouse))

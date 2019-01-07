@@ -1,17 +1,25 @@
 ﻿<Controls:MetroWindow x:Class="Macro.MainWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:view="clr-namespace:Macro.View"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      mc:Ignorable="d"
-        BorderBrush="{DynamicResource AccentColorBrush}"
-        BorderThickness="1"
-        Title="매크로" Height="780" Width="1270" WindowStartupLocation="CenterScreen">
-    <Window.Resources>
-
-    </Window.Resources>
+                      BorderBrush="{DynamicResource AccentColorBrush}"
+                      BorderThickness="1"
+                      Title="매크로" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
+                      mc:Ignorable="d">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button>
+                <StackPanel Orientation="Horizontal">
+                    <IconPacks:PackIconMaterial Width="24" Height="24" Kind="SettingsOutline" />
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="{Binding Path=LabelViewModel.Setting, Source={StaticResource Locator}}" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
     <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
         <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">
             <DockPanel LastChildFill="True" Margin="0,0,0,6">
@@ -21,8 +29,6 @@
                     <Button Name="btnStop" Width="100" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Stop, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <Grid>
-                    <Grid.RowDefinitions>
-                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="9*"></ColumnDefinition>
                         <ColumnDefinition Width="0.3*"></ColumnDefinition>

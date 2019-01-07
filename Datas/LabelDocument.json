@@ -45,9 +45,9 @@
 		"Eng": "EventDataSet"
 	},
 	{
-		"Code" : "ConfigList",
-		"Kor": "설정 리스트",
-		"Eng": "Config List"
+	"Code": "TriggerList",
+	"Kor": "트리거 리스트",
+	"Eng": "Trigger List"
 	},
 	{
 		"Code" : "MouseCoordinates",
@@ -73,6 +73,11 @@
 		"Code" : "Stop",
 		"Kor": "중지",
 		"Eng": "Stop"
+	},
+	{
+		"Code" : "Setting",
+		"Kor": "Setting",
+		"Eng": "Setting"
 	}
 ]
 

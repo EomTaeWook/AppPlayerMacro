@@ -26,12 +26,5 @@ namespace Utils.Infrastructure
         public int Bottom { get; set; }
         public int Width { get => Right - Left; }
         public int Height { get => Bottom - Top; }
-        public Rect(Rect rect)
-        {
-            Left = rect.Left;
-            Top = rect.Top;
-            Right = rect.Right;
-            Bottom = rect.Bottom;
-        }
     }
 }

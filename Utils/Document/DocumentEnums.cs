@@ -12,12 +12,13 @@
         Config,
         EventType,
         EventDataSet,
-        ConfigList,
+        TriggerList,
         MouseCoordinates,
         Save,
         Delete,
         Start,
         Stop,
+        Setting,
 
         Max
     }
@@ -32,6 +33,7 @@
         FailedProcessValidate,
         FailedLoadSaveFile,
         FailedOSVersion,
+        FailedFileBroken,
 
         Max
     }

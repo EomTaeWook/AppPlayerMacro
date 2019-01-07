@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using Utils.Infrastructure;
@@ -6,18 +7,19 @@ using Point = System.Windows.Point;
 
 namespace Macro.Models
 {
-    public class ConfigEventModel : INotifyPropertyChanged
+    [Serializable]
+    public class EventTriggerModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        private EventType _eventType;
         private Point? _mousePoint;
         private string _keyboardCmd;
-        private EventType _eventType;
+        private ProcessInfo _processInfo;
 
-        public Bitmap Image { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public int Index { get; set; }
-        public MonitorInfo MonitorInfo { get; set; }
+
+        public Bitmap Image { get; set; }
 
         public EventType EventType
         {
@@ -32,7 +34,7 @@ namespace Macro.Models
 
         public Point? MousePoint
         {
-            get => _mousePoint;
+            get => _eventType == EventType.Mouse ? _mousePoint : null;
             set
             {
                 _mousePoint = value;
@@ -40,6 +42,8 @@ namespace Macro.Models
                 OnPropertyChanged("Desc");
             }
         }
+
+        public MonitorInfo MonitorInfo { get; set; }
 
         public string KeyboardCmd
         {
@@ -51,13 +55,23 @@ namespace Macro.Models
                 OnPropertyChanged("Desc");
             }
         }
-        public string ProcessName { get; set; } = "";
+
+        public ProcessInfo ProcessInfo
+        {
+            get => _processInfo;
+            set
+            {
+                _processInfo = value;
+                OnPropertyChanged("ProcessInfo");
+            }
+        }
+
         public string Desc
         {
             get
             {
                 if (EventType == EventType.Mouse && MousePoint.HasValue)
-                    return $"X : { MousePoint.Value.X.ToString("0.0##")} Y : {MousePoint.Value.Y.ToString("0.0##") }";
+                    return $"X : { MousePoint.Value.X.ToString("0")} Y : {MousePoint.Value.Y.ToString("0") }";
                 else if (EventType == EventType.Keyboard)
                     return KeyboardCmd;
                 else
@@ -65,20 +79,25 @@ namespace Macro.Models
             }
         }
 
-        public ConfigEventModel()
+        public EventTriggerModel()
         {
             _keyboardCmd = "";
         }
-        public ConfigEventModel(ConfigEventModel obj)
+
+        public List<EventTriggerModel> SubEvents { get; private set; } = new List<EventTriggerModel>();
+
+        public EventTriggerModel(EventTriggerModel obj)
         {
             Index = obj.Index;
             Image = obj.Image;
             EventType = obj.EventType;
             MousePoint = obj.MousePoint;
             KeyboardCmd = obj.KeyboardCmd;
-            ProcessName = obj.ProcessName;
+            ProcessInfo = obj.ProcessInfo;
             MonitorInfo = obj.MonitorInfo;
+            SubEvents = obj.SubEvents;
         }
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
