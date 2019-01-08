@@ -23,12 +23,6 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int flags);
 
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr CreateRectRgn(int left, int top, int right, int bottom);
-
-        [DllImport("user32.dll")]
-        public static extern int GetWindowRgn(IntPtr hWnd, IntPtr hRgn);
-
         [DllImport("user32.dll")]
         private static extern bool GetCursorPos(out InterPoint lpPoint);
         public static Point GetCursorPosition()
@@ -36,7 +30,6 @@ namespace Utils
             GetCursorPos(out InterPoint point);
             return point;
         }
-
 
         [DllImport("gdi32.dll")]
         private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
