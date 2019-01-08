@@ -191,9 +191,13 @@ namespace Macro
         private Task OnProcessCallback()
         {
             var task = new TaskCompletionSource<Task>();
-            Dispatcher.InvokeAsync(() =>
+            List<EventTriggerModel> saves = null;
+            Dispatcher.Invoke(() => 
             {
-                var saves = (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
+                saves = configControl.TriggerSaves;
+            });
+            if(saves != null)
+            {
                 foreach (var save in saves)
                 {
                     var processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToList();
@@ -201,7 +205,10 @@ namespace Macro
                     {
                         if (CaptureHelper.ProcessCapture(process.Value, out Bitmap bmp))
                         {
-                            captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                            Dispatcher.Invoke(() =>
+                            {
+                                captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                            });
 
                             var similarity = OpenCVHelper.Search(bmp, save.Image);
                             LogHelper.Debug($"similarity : {similarity}");
@@ -240,7 +247,7 @@ namespace Macro
                                     positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + currentMousePoint.Y) * (65535 / SystemParameters.VirtualScreenHeight));
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
                                 }
-                                else if(save.EventType == EventType.Keyboard)
+                                else if (save.EventType == EventType.Keyboard)
                                 {
                                     var commands = save.KeyboardCmd.Split('+');
                                     var modifiedKey = commands.Where(r =>
@@ -268,10 +275,14 @@ namespace Macro
                             }
                         }
                     }
-                    Task.Delay(500);
+                    Task.Delay(300);
                 }
                 task.SetResult(Task.CompletedTask);
-            });
+            }
+            else
+            {
+                task.TrySetCanceled();
+            }
             return task.Task;
         }
     }

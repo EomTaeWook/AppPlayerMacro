@@ -26,8 +26,8 @@ namespace Macro.Infrastructure
 
         private readonly IConfig _config;
         private CancellationTokenSource _cts;
-        private Thread _workThread;
-        private TaskCompletionSource<bool> _tcs;
+        private Task _current;
+        private int _atomic =0;
 
         public ProcessManager(IConfig config)
         {
@@ -41,40 +41,40 @@ namespace Macro.Infrastructure
         }
         private Task Drain()
         {
-            if (_workThread != null)
+            if(_atomic == 1)
             {
                 _cts.Cancel();
-                _tcs.Task.Wait();
-                _workThread = null;
-                _cts.Dispose();
-                _cts = null;
+                return _current;
             }
+
             return Task.CompletedTask;
         }
         private Task Process()
         {
-            Drain().Wait();
-            _tcs = new TaskCompletionSource<bool>();
-            _cts = new CancellationTokenSource();
-            _workThread = new Thread(OnProcess);
-            _workThread.Start();
-            return Task.CompletedTask;
+            if (Interlocked.CompareExchange(ref _atomic, 1, 0) != _atomic)
+            {
+                _cts = new CancellationTokenSource();
+                return _current = Task.Factory.StartNew(OnProcess, _cts);
+            }
+            return _current;
         }
-        private void OnProcess()
+        private void OnProcess(object state)
         {
-            while(!_cts.IsCancellationRequested)
+            var token = (state as CancellationTokenSource).Token;
+
+            while (!token.IsCancellationRequested)
             {
                 foreach (var job in Jobs)
                 {
-                    if (!job().IsCompleted)
-                    {
+                    var task = Task.Factory.StartNew(job.Invoke, token);
+                    task.Wait();
+                    if (!task.IsCompleted)
                         break;
-                    }
                 }
-                if (_cts.Token.WaitHandle.WaitOne(_config.Period))
+                if (token.WaitHandle.WaitOne(_config.Period))
                     break;
             }
-            _tcs.SetResult(true);
+            Interlocked.Decrement(ref _atomic);
         }
     }
 }

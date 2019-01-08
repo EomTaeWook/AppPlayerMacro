@@ -17,6 +17,10 @@ namespace Macro.View
             get => ((ConfigEventViewModel)DataContext).Trigger;
             private set => ((ConfigEventViewModel)DataContext).Trigger = value;
         }
+        public List<EventTriggerModel> TriggerSaves
+        {
+            get => ((ConfigEventViewModel)DataContext).TriggerSaves.ToList();
+        }
 
         private List<MousePositionView> _mousePointViews;
         private EventTriggerModel _dummy;
