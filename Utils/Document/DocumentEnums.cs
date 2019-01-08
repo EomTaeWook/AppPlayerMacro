@@ -2,6 +2,7 @@
 {
     public enum Label
     {
+        Title,
         Refresh,
         SelectProcess,
         NotSelectProcessMessage,
@@ -19,6 +20,10 @@
         Start,
         Stop,
         Setting,
+        Language,
+        SavePath,
+        Period,
+        Similarity,
 
         Max
     }

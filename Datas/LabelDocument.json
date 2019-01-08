@@ -20,11 +20,6 @@
 		"Eng": "ScreenCapture"
 	},
 	{
-		"Code" : "FailCapture",
-		"Kor": "화면 캡쳐에 실패하였습니다.",
-		"Eng": "FailCapture"
-	},
-	{
 		"Code" : "SaveConfig",
 		"Kor": "저장",
 		"Eng": "SaveConfig"
@@ -45,9 +40,9 @@
 		"Eng": "EventDataSet"
 	},
 	{
-	"Code": "TriggerList",
-	"Kor": "트리거 리스트",
-	"Eng": "Trigger List"
+		"Code": "TriggerList",
+		"Kor": "트리거 리스트",
+		"Eng": "Trigger List"
 	},
 	{
 		"Code" : "MouseCoordinates",
@@ -78,6 +73,31 @@
 		"Code" : "Setting",
 		"Kor": "Setting",
 		"Eng": "Setting"
+	},
+	{
+		"Code" : "Title",
+		"Kor": "매크로",
+		"Eng": "Macro"
+	},
+	{
+		"Code" : "Language",
+		"Kor": "언어",
+		"Eng": "Language"
+	},
+	{
+		"Code" : "SavePath",
+		"Kor": "저장 경로",
+		"Eng": "SavePath"
+	},
+	{
+		"Code" : "Period",
+		"Kor": "프로세싱 주기",
+		"Eng": "Period"
+	},
+	{
+		"Code" : "Similarity",
+		"Kor": "유사도",
+		"Eng": "Similarity"
 	}
 ]
 

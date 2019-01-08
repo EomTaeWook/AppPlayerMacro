@@ -8,11 +8,11 @@
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       BorderBrush="{DynamicResource AccentColorBrush}"
                       BorderThickness="1"
-                      Title="매크로" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
+                      Title="{Binding Path=LabelViewModel.Title, Source={StaticResource Locator}}" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
                       mc:Ignorable="d">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button>
+            <Button Name="btnSetting">
                 <StackPanel Orientation="Horizontal">
                     <IconPacks:PackIconMaterial Width="24" Height="24" Kind="SettingsOutline" />
                     <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="{Binding Path=LabelViewModel.Setting, Source={StaticResource Locator}}" />
@@ -76,9 +76,16 @@
                     <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Left">
-                    <view:ConfigEventView x:Name="configControl"/>
+                    <view:ConfigEventView x:Name="configView"/>
                 </DockPanel>
             </DockPanel>
         </Grid>
     </DockPanel>
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl x:Name="flyoutsControl">
+            <Controls:Flyout x:Name="settingFlyout" Position="Right" Width="300">
+                <view:SettingView></view:SettingView>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
 </Controls:MetroWindow>

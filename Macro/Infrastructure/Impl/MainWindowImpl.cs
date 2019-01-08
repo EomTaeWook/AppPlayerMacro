@@ -132,7 +132,7 @@ namespace Macro
             btnDelete.Visibility = Visibility.Collapsed;
             _bitmap = null;
             captureImage.Background = System.Windows.Media.Brushes.White;
-            configControl.Clear();
+            configView.Clear();
         }
         private Task Delete(object m)
         {
@@ -142,7 +142,7 @@ namespace Macro
                 File.Delete(_path);
                 using (var fs = new FileStream(_path, FileMode.CreateNew))
                 {
-                    foreach (var data in (configControl.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves)
+                    foreach (var data in (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves)
                     {
                         var bytes = ObjectSerializer.SerializeObject(data);
                         fs.Write(bytes, 0, bytes.Count());
@@ -175,7 +175,7 @@ namespace Macro
                     _index = models.LastOrDefault()?.Index ?? 0;
                     foreach (var model in models)
                     {
-                        configControl.InsertModel(model);
+                        configView.InsertModel(model);
                     }
                     task.SetResult(Task.CompletedTask);
                 }
@@ -194,7 +194,7 @@ namespace Macro
             List<EventTriggerModel> saves = null;
             Dispatcher.Invoke(() => 
             {
-                saves = configControl.TriggerSaves;
+                saves = configView.TriggerSaves;
             });
             if(saves != null)
             {

@@ -1,17 +1,15 @@
-﻿using Macro.Models;
+﻿using Macro.Extensions;
+using Macro.Infrastructure;
+using Macro.Models;
+using Macro.View;
+using MahApps.Metro.Controls;
 using System.Diagnostics;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using MahApps.Metro.Controls;
-using Macro.View;
-using Macro.Extensions;
-using Utils.Document;
-using Macro.Infrastructure;
-using System.Threading.Tasks;
 using Utils;
-using Utils.Infrastructure;
+using Utils.Document;
 using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
@@ -34,11 +32,13 @@ namespace Macro
             btnDelete.Click += Button_Click;
             btnStart.Click += Button_Click;
             btnStop.Click += Button_Click;
+            btnSetting.Click += Button_Click;
 
-            configControl.SelectData += ConfigControl_SelectData;
+            configView.SelectData += configView_SelectData;
 
             Unloaded += MainWindow_Unloaded;
         }
+
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
             foreach (var item in _captureViews)
@@ -48,7 +48,7 @@ namespace Macro
             }
             _captureViews.Clear();
         }
-        private void ConfigControl_SelectData(EventTriggerModel model)
+        private void configView_SelectData(EventTriggerModel model)
         {
             if(model == null)
             {
@@ -76,7 +76,7 @@ namespace Macro
             }
             else if (btn.Equals(btnSave))
             {
-                var model = configControl.Model;
+                var model = configView.Model;
                 model.Image = _bitmap;
 
                 var process = combo_process.SelectedValue as Process;
@@ -100,7 +100,7 @@ namespace Macro
                         {
                             Clear();
                         });                        
-                    }).Finally(r => ((ConfigEventView)r).InsertModel(model), configControl);
+                    }).Finally(r => ((ConfigEventView)r).InsertModel(model), configView);
                 }
                 else
                 {
@@ -109,12 +109,12 @@ namespace Macro
             }
             else if(btn.Equals(btnDelete))
             {
-                var model = configControl.Model;
+                var model = configView.Model;
                 _taskQueue.Enqueue((o) =>
                 {
-                    configControl.RemoveModel(model);
+                    configView.RemoveModel(model);
                     return Task.CompletedTask;
-                }, configControl)
+                }, configView)
                 .ContinueWith((task) =>
                 {
                     if (task.IsCompleted)
@@ -157,6 +157,10 @@ namespace Macro
                         btnStop.Visibility = Visibility.Collapsed;
                     });
                 });
+            }
+            else if(btn.Equals(btnSetting))
+            {
+                settingFlyout.IsOpen = !settingFlyout.IsOpen;
             }
         }
     }

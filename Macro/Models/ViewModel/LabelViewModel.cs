@@ -9,7 +9,6 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.EventType);
         }
-
         public string EventDataSet
         {
             get => DocumentHelper.Get(Label.EventDataSet);
@@ -65,6 +64,26 @@ namespace Macro.Models.ViewModel
         public string Setting
         {
             get => DocumentHelper.Get(Label.Setting);
+        }
+        public string Title
+        {
+            get => DocumentHelper.Get(Label.Title);
+        }
+        public string Language
+        {
+            get => DocumentHelper.Get(Label.Language);
+        }
+        public string SavePath
+        {
+            get => DocumentHelper.Get(Label.SavePath);
+        }
+        public string Period
+        {
+            get => DocumentHelper.Get(Label.Period);
+        }
+        public string Similarity
+        {
+            get => DocumentHelper.Get(Label.Similarity);
         }
     }
 }
