@@ -271,11 +271,12 @@ namespace Macro
                                     });
                                     ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
                                 }
+
                                 NativeHelper.SetForegroundWindow(hWndActive);
                             }
                         }
                     }
-                    Task.Delay(300);
+                    Task.Delay(100);
                 }
                 task.SetResult(Task.CompletedTask);
             }

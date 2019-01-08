@@ -142,17 +142,21 @@ namespace Macro
             }
             else if(btn.Equals(btnStop))
             {
-                ProcessManager.Stop().Wait();
-
-                var buttons = this.FindChildren<Button>();
-                foreach (var button in buttons)
+                ProcessManager.Stop().ContinueWith((task) => 
                 {
-                    if (button.Equals(btnStart) || button.Equals(btnStop))
-                        continue;
-                    button.IsEnabled = true;
-                }
-                btnStart.Visibility = Visibility.Visible;
-                btnStop.Visibility = Visibility.Collapsed;
+                    Dispatcher.Invoke(() =>
+                    {
+                        var buttons = this.FindChildren<Button>();
+                        foreach (var button in buttons)
+                        {
+                            if (button.Equals(btnStart) || button.Equals(btnStop))
+                                continue;
+                            button.IsEnabled = true;
+                        }
+                        btnStart.Visibility = Visibility.Visible;
+                        btnStop.Visibility = Visibility.Collapsed;
+                    });
+                });
             }
         }
     }
