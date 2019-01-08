@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-using Utils.Infrastructure;
 
 namespace Macro.Infrastructure.Serialize
 {
@@ -14,7 +13,13 @@ namespace Macro.Infrastructure.Serialize
         public static byte[] SerializeObject<T>(T model)
         {
             var properties = model.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                            .Where(r => r.CanRead && r.CanWrite).OrderBy(r => r.Name).ToList();
+                                            .Where(r => r.CustomAttributes.Any(a => a.AttributeType == typeof(OrderAttribute)))
+                                            .OrderBy(o => ((OrderAttribute)o.GetCustomAttribute(typeof(OrderAttribute))).Order);
+
+            if (properties.Count() == 0)
+                properties = model.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                            .Where(r => r.CanRead && r.CanWrite)
+                                            .OrderBy(o => o.Name);
 
             using (var ms = new MemoryStream())
             {
@@ -37,7 +42,13 @@ namespace Macro.Infrastructure.Serialize
             {
                 var bf = new BinaryFormatter();
                 var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                            .Where(r => r.CanRead && r.CanWrite).OrderBy(r => r.Name).ToList();
+                                            .Where(r => r.CustomAttributes.Any(a => a.AttributeType == typeof(OrderAttribute)))
+                                            .OrderBy(o => ((OrderAttribute)o.GetCustomAttribute(typeof(OrderAttribute))).Order);
+
+                if (properties.Count() == 0)
+                    properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                                .Where(r => r.CanRead && r.CanWrite)
+                                                .OrderBy(o => o.Name);
 
                 while (ms.Position < ms.Length)
                 {

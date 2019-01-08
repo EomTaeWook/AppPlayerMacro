@@ -9,7 +9,6 @@ namespace Utils
 {
     public class CaptureHelper
     {
-        private const float DefaultDPI = 96.0F;
         public static List<MonitorInfo> MonitorInfo()
         {
             var monitors = new List<MonitorInfo>();
@@ -35,8 +34,8 @@ namespace Utils
             try
             {
                 var factor = NativeHelper.GetSystemDpi();
-                var factorX = factor.X / DefaultDPI;
-                var factorY = factor.Y / DefaultDPI;
+                var factorX = factor.X / ConstHelper.DefaultDPI;
+                var factorY = factor.Y / ConstHelper.DefaultDPI;
 
                 Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY));
                 using (var g = Graphics.FromImage(bmp))
@@ -72,8 +71,8 @@ namespace Utils
                     bmp = null;
                     return false;
                 }
-                var factorX = factor.X / DefaultDPI;
-                var factorY = factor.Y / DefaultDPI;
+                var factorX = factor.X / ConstHelper.DefaultDPI;
+                var factorY = factor.Y / ConstHelper.DefaultDPI;
 
                 bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY), PixelFormat.Format32bppArgb);
                 using (var gfxBmp = Graphics.FromImage(bmp))

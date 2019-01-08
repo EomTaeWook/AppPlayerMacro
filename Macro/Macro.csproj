@@ -199,7 +199,8 @@
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\ProcessManager.cs" />
-    <Compile Include="Infrastructure\Serialize\SaveSerializer.cs" />
+    <Compile Include="Infrastructure\Serialize\Attributes.cs" />
+    <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Models\Event\EventArgs.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
@@ -284,6 +285,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Infrastructure\Attribute\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

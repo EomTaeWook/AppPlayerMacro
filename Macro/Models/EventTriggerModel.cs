@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Macro.Infrastructure.Serialize;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -17,10 +18,13 @@ namespace Macro.Models
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [Order(1)]
         public int Index { get; set; }
 
+        [Order(2)]
         public Bitmap Image { get; set; }
 
+        [Order(3)]
         public EventType EventType
         {
             get => _eventType;
@@ -32,6 +36,7 @@ namespace Macro.Models
             }
         }
 
+        [Order(4)]
         public Point? MousePoint
         {
             get => _eventType == EventType.Mouse ? _mousePoint : null;
@@ -43,8 +48,10 @@ namespace Macro.Models
             }
         }
 
+        [Order(5)]
         public MonitorInfo MonitorInfo { get; set; }
 
+        [Order(6)]
         public string KeyboardCmd
         {
             get => _keyboardCmd;
@@ -56,6 +63,7 @@ namespace Macro.Models
             }
         }
 
+        [Order(7)]
         public ProcessInfo ProcessInfo
         {
             get => _processInfo;
@@ -65,6 +73,9 @@ namespace Macro.Models
                 OnPropertyChanged("ProcessInfo");
             }
         }
+
+        [Order(8)]
+        public List<EventTriggerModel> SubEvents { get; private set; } = new List<EventTriggerModel>();
 
         public string Desc
         {
@@ -83,9 +94,7 @@ namespace Macro.Models
         {
             _keyboardCmd = "";
         }
-
-        public List<EventTriggerModel> SubEvents { get; private set; } = new List<EventTriggerModel>();
-
+        
         public EventTriggerModel(EventTriggerModel obj)
         {
             Index = obj.Index;

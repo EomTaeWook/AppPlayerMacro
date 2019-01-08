@@ -10,11 +10,7 @@ namespace Macro.Infrastructure
         {
             var sourceMat = BitmapConverter.ToMat(source);
             var targetMat = BitmapConverter.ToMat(target);
-
-            sourceMat.ConvertTo(sourceMat, MatType.CV_8UC4);
-            sourceMat.ExtractChannel(1);
             var match = sourceMat.MatchTemplate(targetMat, TemplateMatchModes.CCoeffNormed);
-
             Cv2.MinMaxLoc(match, out double min, out double max);
             return Convert.ToInt32(max * 100);
         }

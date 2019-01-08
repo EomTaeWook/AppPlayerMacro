@@ -85,8 +85,10 @@ namespace Macro
             }
             if(args.CaptureImage != null)
             {
-                _bitmap = args.CaptureImage;
-                captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
+                var capture = args.CaptureImage;
+                captureImage.Background = new ImageBrush(capture.ToBitmapSource());
+                var factor = NativeHelper.GetSystemDpi();
+                _bitmap = new Bitmap(capture, (int)Math.Truncate(capture.Width * factor.X / ConstHelper.DefaultDPI), (int)Math.Truncate(capture.Height * factor.Y / ConstHelper.DefaultDPI));
             }
             WindowState = WindowState.Normal;
         }
@@ -217,14 +219,22 @@ namespace Macro
 
                                     var currentPosition = new Rect();
                                     NativeHelper.GetWindowRect(process.Value.MainWindowHandle, ref currentPosition);
-                                    var movePositionX = save.ProcessInfo.Position.Left - currentPosition.Left;// - (currentPosition.Width - save.ProcessInfo.Position.Width);
-                                    var movePositionY = currentPosition.Top - save.ProcessInfo.Position.Top; //- (currentPosition.Height - save.ProcessInfo.Position.Height);
+
+                                    var movePositionX = save.ProcessInfo.Position.Left - currentPosition.Left;
+                                    var widthRatio = currentPosition.Width * 1.0 / save.ProcessInfo.Position.Width;
+                                    var widthPosition = (int)Math.Truncate((currentPosition.Width - save.ProcessInfo.Position.Width) * widthRatio);
+                                    movePositionX += widthPosition;
+
+                                    var movePositionY = currentPosition.Top - save.ProcessInfo.Position.Top;
+                                    var heightRatio = currentPosition.Height * 1.0 / save.ProcessInfo.Position.Height;
+                                    var heightPosition = (int)Math.Truncate((currentPosition.Height - save.ProcessInfo.Position.Height) * heightRatio);
 
                                     var positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - save.MousePoint.Value.X + movePositionX) * (65535 / SystemParameters.VirtualScreenWidth));
                                     var positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top - save.MousePoint.Value.Y - movePositionY) * (65535 / SystemParameters.VirtualScreenHeight));
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
-                                    NativeHelper.SetWindowPos(process.Value.MainWindowHandle, currentPosition);
+
+                                    //NativeHelper.SetWindowPos(process.Value.MainWindowHandle, currentPosition);
 
                                     positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - currentMousePoint.X) * (65535 / SystemParameters.VirtualScreenWidth));
                                     positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + currentMousePoint.Y) * (65535 / SystemParameters.VirtualScreenHeight));
@@ -258,7 +268,7 @@ namespace Macro
                             }
                         }
                     }
-                    Task.Delay(100);
+                    Task.Delay(500);
                 }
                 task.SetResult(Task.CompletedTask);
             });
