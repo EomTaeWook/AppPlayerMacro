@@ -3,6 +3,7 @@ using Macro.Infrastructure;
 using Macro.Models;
 using Macro.View;
 using MahApps.Metro.Controls;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,8 +22,8 @@ namespace Macro
     {        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            InitEvent();
             Init();
+            InitEvent();
         }
         private void InitEvent()
         {
@@ -34,7 +35,7 @@ namespace Macro
             btnStop.Click += Button_Click;
             btnSetting.Click += Button_Click;
 
-            configView.SelectData += configView_SelectData;
+            configView.SelectData += ConfigView_SelectData;
 
             Unloaded += MainWindow_Unloaded;
         }
@@ -48,7 +49,7 @@ namespace Macro
             }
             _captureViews.Clear();
         }
-        private void configView_SelectData(EventTriggerModel model)
+        private void ConfigView_SelectData(EventTriggerModel model)
         {
             if(model == null)
             {
@@ -56,7 +57,7 @@ namespace Macro
             }
             else
             {
-                combo_process.SelectedValue = model.ProcessInfo.ProcessName;
+                comboProcess.SelectedValue = model.ProcessInfo.ProcessName;
                 btnDelete.Visibility = Visibility.Visible;
                 _bitmap = model.Image;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
@@ -79,7 +80,7 @@ namespace Macro
                 var model = configView.Model;
                 model.Image = _bitmap;
 
-                var process = combo_process.SelectedValue as Process;
+                var process = comboProcess.SelectedValue as Process;
 
                 model.ProcessInfo = new ProcessInfo()
                 {
@@ -162,6 +163,12 @@ namespace Macro
             {
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
             }
+        }
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+
+            var list = DisplayHelper.MonitorInfo();
         }
     }
 }

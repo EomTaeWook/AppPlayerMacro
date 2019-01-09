@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Utils.Infrastructure
 {
@@ -7,5 +8,6 @@ namespace Utils.Infrastructure
     {
         public Rect Rect { get; set; }
         public int Index { get; set; }
+        public Point Dpi { get; set; } = new Point();
     }
 }

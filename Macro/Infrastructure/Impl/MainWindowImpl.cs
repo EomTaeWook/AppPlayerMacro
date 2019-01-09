@@ -42,10 +42,19 @@ namespace Macro
             InitializeComponent();
             Loaded += MainWindow_Loaded;
         }
-
+        
         private void Init()
         {
-            foreach (var item in CaptureHelper.MonitorInfo())
+            //window7 not support
+            if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor > 1)
+            {
+                NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
+            }
+            else
+            {
+                this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
+            }
+            foreach(var item in DisplayHelper.MonitorInfo())
             {
                 _captureViews.Add(new CaptureView(item));
                 _captureViews.Last().DataBinding += CaptureView_DataBinding;
@@ -59,22 +68,13 @@ namespace Macro
                 Directory.CreateDirectory(_path);
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
             _taskQueue.Enqueue(SaveLoad, _path);
-            //window7 not support
-            if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor > 1)
-            {
-                NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
-            }
-            else
-            {
-                this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
-            }
         }
         private void Refresh()
         {
             _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero).Select(r => new KeyValuePair<string, Process>(r.ProcessName, r));
-            combo_process.ItemsSource = _processes.OrderBy(r => r.Key);
-            combo_process.DisplayMemberPath = "Key";
-            combo_process.SelectedValuePath = "Value";
+            comboProcess.ItemsSource = _processes.OrderBy(r => r.Key);
+            comboProcess.DisplayMemberPath = "Key";
+            comboProcess.SelectedValuePath = "Value";
 
         }
         private void CaptureView_DataBinding(object sender, Models.Event.CaptureArgs args)
@@ -124,8 +124,11 @@ namespace Macro
         {
             Clear();
             WindowState = WindowState.Minimized;
-            foreach (var item in _captureViews)
+
+            foreach(var item in _captureViews)
+            {
                 item.ShowActivate();
+            }
         }
         private void Clear()
         {
@@ -203,7 +206,7 @@ namespace Macro
                     var processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToList();
                     foreach (var process in processes)
                     {
-                        if (CaptureHelper.ProcessCapture(process.Value, out Bitmap bmp))
+                        if (DisplayHelper.ProcessCapture(process.Value, out Bitmap bmp))
                         {
                             Dispatcher.Invoke(() =>
                             {
@@ -219,7 +222,8 @@ namespace Macro
                                 if (save.EventType == EventType.Mouse)
                                 {
                                     var currentMousePoint = NativeHelper.GetCursorPosition();
-                                    LogHelper.Debug($"current X : {currentMousePoint.X} current Y : {currentMousePoint.Y}");
+                                    //LogHelper.Debug($"current Mouse X : {currentMousePoint.X} current Y : {currentMousePoint.Y}");
+                                    LogHelper.Debug($"[index : {save.Index}] save Mouse X : {save.MousePoint.Value.X} save Mouse Y : {save.MousePoint.Value.Y}");
                                     Task.Delay(100);
 
                                     NativeHelper.SetForegroundWindow(process.Value.MainWindowHandle);
@@ -227,17 +231,18 @@ namespace Macro
                                     var currentPosition = new Rect();
                                     NativeHelper.GetWindowRect(process.Value.MainWindowHandle, ref currentPosition);
 
-                                    var movePositionX = save.ProcessInfo.Position.Left - currentPosition.Left;
+                                    var movePositionX = Math.Abs(currentPosition.Left - save.ProcessInfo.Position.Left);
                                     var widthRatio = currentPosition.Width * 1.0 / save.ProcessInfo.Position.Width;
-                                    var widthPosition = (int)Math.Truncate((currentPosition.Width - save.ProcessInfo.Position.Width) * widthRatio);
-                                    movePositionX += widthPosition;
+                                    var width = Math.Abs(currentPosition.Width - save.ProcessInfo.Position.Width);
+                                    movePositionX += width - (int)Math.Truncate(width / widthRatio);
 
-                                    var movePositionY = currentPosition.Top - save.ProcessInfo.Position.Top;
+                                    var movePositionY = Math.Abs(currentPosition.Top - save.ProcessInfo.Position.Top);
                                     var heightRatio = currentPosition.Height * 1.0 / save.ProcessInfo.Position.Height;
-                                    var heightPosition = (int)Math.Truncate((currentPosition.Height - save.ProcessInfo.Position.Height) * heightRatio);
+                                    var heightPosition = Math.Abs(currentPosition.Height - save.ProcessInfo.Position.Height);
+                                    movePositionY -= (int)(heightPosition - (heightPosition / heightRatio));
 
-                                    var positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - save.MousePoint.Value.X + movePositionX) * (65535 / SystemParameters.VirtualScreenWidth));
-                                    var positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top - save.MousePoint.Value.Y - movePositionY) * (65535 / SystemParameters.VirtualScreenHeight));
+                                    var positionX = (int)((Math.Abs(save.MonitorInfo.Rect.Left - save.MousePoint.Value.X) + movePositionX) * (65535 / SystemParameters.VirtualScreenWidth));
+                                    var positionY = (int)((Math.Abs(save.MonitorInfo.Rect.Top - save.MousePoint.Value.Y) + movePositionY) * (65535 / SystemParameters.VirtualScreenHeight));
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
                                     ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
 
@@ -276,7 +281,7 @@ namespace Macro
                             }
                         }
                     }
-                    Task.Delay(100);
+                    Task.Delay(_config.ProcessDelay);
                 }
                 task.SetResult(Task.CompletedTask);
             }

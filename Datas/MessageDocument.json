@@ -38,6 +38,21 @@
 		"Code" : "FailedFileBroken",
 		"Kor": "파일을 읽는 도중에 에러가 발생했습니다.",
 		"Eng": "The file is broken."
+	},
+	{
+		"Code" : "FailedPeriodValidate",
+		"Kor": "프로세싱 주기는 2000이상 입력 부탁드립니다.",
+		"Eng": "Please enter a processing cycle of 2000 or more."
+	},
+	{
+		"Code" : "FailedProcessDelayValidate",
+		"Kor": "프로세싱 딜레이는 200이상 입력 부탁드립니다.",
+		"Eng": "Please input 200 or more processing delays."
+	},
+	{
+		"Code" : "FailedSimilarityValidate",
+		"Kor": "유사도는 0이상 입력 부탁드립니다.",
+		"Eng": "The degree of similarity is 0 or more."
 	}
 ]
 

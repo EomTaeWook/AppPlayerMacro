@@ -194,6 +194,7 @@
     <Compile Include="Infrastructure\ImageConverter.cs" />
     <Compile Include="Infrastructure\IMouseInput.cs" />
     <Compile Include="Infrastructure\Impl\ConfigEventImpl.cs" />
+    <Compile Include="Infrastructure\Impl\SettingImpl.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Impl\MainWindowImpl.cs" />
     <Compile Include="Infrastructure\InputManager.cs" />

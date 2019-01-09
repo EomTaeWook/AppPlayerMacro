@@ -33,7 +33,7 @@
                         <ColumnDefinition Width="9*"></ColumnDefinition>
                         <ColumnDefinition Width="0.3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <ComboBox Grid.Column="0" Name="combo_process" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                    <ComboBox Grid.Column="0" Name="comboProcess" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                     </ComboBox>
                     <Button Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Content="&#81;" Grid.Column="1" Width="40" Height="40" FontFamily="Wingdings 3"/>
                 </Grid>
@@ -83,7 +83,7 @@
     </DockPanel>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl x:Name="flyoutsControl">
-            <Controls:Flyout x:Name="settingFlyout" Position="Right" Width="300">
+            <Controls:Flyout x:Name="settingFlyout" Position="Right" Width="350">
                 <view:SettingView></view:SettingView>
             </Controls:Flyout>
         </Controls:FlyoutsControl>

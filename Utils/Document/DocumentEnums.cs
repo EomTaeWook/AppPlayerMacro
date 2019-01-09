@@ -23,6 +23,7 @@
         Language,
         SavePath,
         Period,
+        ProcessDelay,
         Similarity,
 
         Max
@@ -39,6 +40,9 @@
         FailedLoadSaveFile,
         FailedOSVersion,
         FailedFileBroken,
+        FailedPeriodValidate,
+        FailedProcessDelayValidate,
+        FailedSimilarityValidate,
 
         Max
     }

@@ -38,7 +38,7 @@ namespace Macro.View
         private void Init()
         {
             grdSaves.ItemsSource = (DataContext as ConfigEventViewModel).TriggerSaves;
-            foreach (var item in CaptureHelper.MonitorInfo())
+            foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _mousePointViews.Add(new MousePositionView(item));
                 _mousePointViews.Last().DataBinding += ConfigEventView_DataBinding;

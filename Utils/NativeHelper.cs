@@ -60,6 +60,14 @@ namespace Utils
         [DllImport("shcore.dll")]
         public static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
 
+        [DllImport("Shcore.dll")]
+        private static extern IntPtr GetDpiForMonitor(IntPtr hMonitor, DpiFlags dpiType, out uint dpiX, out uint dpiY);
+        public static Point GetMonitorDPI(IntPtr hMonitor)
+        {
+            GetDpiForMonitor(hMonitor, DpiFlags.Effective, out uint dpiX, out uint dpiY);
+            return new Point((int)dpiX, (int)dpiY);
+        }
+
 
     }
 }

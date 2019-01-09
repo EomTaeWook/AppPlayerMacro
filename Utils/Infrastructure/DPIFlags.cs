@@ -6,7 +6,7 @@
         PROCESS_SYSTEM_DPI_AWARE = 1,
         PROCESS_PER_MONITOR_DPI_AWARE = 2
     }
-    public enum DPIFlags
+    public enum DpiFlags
     {
         Effective = 0,
         Angular = 1,

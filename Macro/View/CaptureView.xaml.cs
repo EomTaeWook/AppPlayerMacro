@@ -141,7 +141,7 @@ namespace Macro.View
                 DataBinding?.Invoke(this, new CaptureArgs()
                 {
                     MonitorInfo = _monitorInfo,
-                    CaptureImage = CaptureHelper.Capture(_monitorInfo, new Rect()
+                    CaptureImage = DisplayHelper.Capture(_monitorInfo, new Rect()
                     {
                         Left = (int)Canvas.GetLeft(_dragBorder),
                         Bottom = (int)_dragBorder.Height + (int)Canvas.GetTop(_dragBorder),

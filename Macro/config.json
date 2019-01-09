@@ -1,6 +1,7 @@
 {
   "Language": "Kor",
   "SavePath": "",
-  "Period": "4000",
-  "Similarity" : "80"
+  "Period": "2000",
+  "ProcessDelay" : "200",
+  "Similarity" : "75"
 }

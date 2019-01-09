@@ -29,7 +29,9 @@ OS 버전
     
     2.SavePath : 설정 리스트 save 경로
     
-    3.Period : 연결된 프로세스의 이미지를 캡쳐하는 주기
+    3.Period : 전체 작업 완료 이후 딜레이
+
+    4.ProcessDelay : 저장된 트리거 아이템 비교 완료 이후 딜레이
     
     4.Similarity : 이미지 프로세싱 유사도
 
@@ -63,11 +65,18 @@ OS 버전
 
     10.설정 UI 제작
 
+    2019-01-09 Feedback
+
+        10.1 리스트 중간 Delay 설정
+
     11.OpenCV ROI 기능 적용
 
     12.Cpu 점유율 하향
 
     13.ListView TreeView 변경 하위 이벤트 트리거 볼 수 있도록 UI 변경
+
+    14.Mouse trigger 좌표 값 Test
+        모니터간 DPI 값이 다를 경우 에뮬레이터 이동시 좌표값 틀려짐 보정 필요
 
 버그 레포팅
 

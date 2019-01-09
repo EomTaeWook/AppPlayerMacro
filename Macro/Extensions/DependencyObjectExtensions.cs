@@ -59,7 +59,6 @@ namespace Macro.Extensions
                                                     ColorScheme = MetroDialogColorScheme.Inverted,
                                                 });
         }
-
         public static Border Clone(this Border source)
         {
             var item = new Border

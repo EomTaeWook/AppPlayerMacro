@@ -89,13 +89,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CaptureHelper.cs" />
+    <Compile Include="DisplayHelper.cs" />
     <Compile Include="ConstHelper.cs" />
     <Compile Include="Document\DocumentEnums.cs" />
     <Compile Include="Document\DocumentTemplate.cs" />
     <Compile Include="Document\IBase.cs" />
+    <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="Infrastructure\InputBuilder.cs" />
-    <Compile Include="Infrastructure\DPIFlags.cs" />
+    <Compile Include="Infrastructure\DpiFlags.cs" />
     <Compile Include="Infrastructure\InputStruct.cs" />
     <Compile Include="Infrastructure\KeyCode.cs" />
     <Compile Include="Infrastructure\MonitorInfo.cs" />
