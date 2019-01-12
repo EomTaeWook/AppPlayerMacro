@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
 using Macro.View;
@@ -16,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
 using Utils.Infrastructure;
+using EventType = Macro.Models.EventType;
+using InputManager = Macro.Infrastructure.Manager.InputManager;
 using Message = Utils.Document.Message;
 using Rect = Utils.Infrastructure.Rect;
 
@@ -35,13 +38,11 @@ namespace Macro
         {
             _index = 0;
             _taskQueue = new TaskQueue();
-            _config = ObjectExtensions.GetInstance<IConfig>();
-            ProcessManager.AddJob(OnProcessCallback);
             _captureViews = new List<CaptureView>();
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-        }
+            }
         
         private void Init()
         {
@@ -57,10 +58,11 @@ namespace Macro
             foreach(var item in DisplayHelper.MonitorInfo())
             {
                 _captureViews.Add(new CaptureView(item));
-                _captureViews.Last().DataBinding += CaptureView_DataBinding;
             }
             Refresh();
+            ProcessManager.AddJob(OnProcessCallback);
 
+            _config = ObjectExtensions.GetInstance<IConfig>();
             _path = _config.SavePath;
             if (string.IsNullOrEmpty(_path))
                 _path = ConstHelper.DefaultSavePath;
@@ -69,6 +71,7 @@ namespace Macro
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
             _taskQueue.Enqueue(SaveLoad, _path);
         }
+
         private void Refresh()
         {
             _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero).Select(r => new KeyValuePair<string, Process>(r.ProcessName, r));
@@ -76,21 +79,6 @@ namespace Macro
             comboProcess.DisplayMemberPath = "Key";
             comboProcess.SelectedValuePath = "Value";
 
-        }
-        private void CaptureView_DataBinding(object sender, Models.Event.CaptureArgs args)
-        {
-            foreach(var item in _captureViews)
-            {
-                item.Hide();
-            }
-            if(args.CaptureImage != null)
-            {
-                var capture = args.CaptureImage;
-                captureImage.Background = new ImageBrush(capture.ToBitmapSource());
-                var factor = NativeHelper.GetSystemDpi();
-                _bitmap = new Bitmap(capture, (int)Math.Truncate(capture.Width * factor.X / ConstHelper.DefaultDPI), (int)Math.Truncate(capture.Height * factor.Y / ConstHelper.DefaultDPI));
-            }
-            WindowState = WindowState.Normal;
         }
 
         private bool TryModelValidate(EventTriggerModel model, out Message message)

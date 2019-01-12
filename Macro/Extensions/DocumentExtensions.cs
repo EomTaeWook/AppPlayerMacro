@@ -1,4 +1,5 @@
-﻿using Macro.Models;
+﻿using Macro.Infrastructure;
+using Macro.Models;
 using Utils;
 using Utils.Document;
 
@@ -23,8 +24,15 @@ namespace Macro.Extensions
     public class DocumentHelper
     {
         private static Language _language;
-        public DocumentHelper(IConfig config) => _language = config.Language;
+        public DocumentHelper()
+        {
+            _language= ObjectExtensions.GetInstance<IConfig>().Language;
+            NotifyHelper.ConfigChanged += (e) =>
+            {
+                _language = e.Config.Language;
 
+            };
+        }
         public static string Get(Label label)
         {
             return DocumentExtensions.Get(label, _language);

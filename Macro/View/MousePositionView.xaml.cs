@@ -1,4 +1,5 @@
-﻿using Macro.Models.Event;
+﻿using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
 using System.Windows;
 using System.Windows.Input;
 using Utils.Infrastructure;
@@ -10,9 +11,6 @@ namespace Macro.View
     /// </summary>
     public partial class MousePositionView : Window
     {
-        public event DataBindingHander DataBinding;
-        public delegate void DataBindingHander(object sender, MousePointArgs args);
-
         private MonitorInfo _monitorInfo;
         public MousePositionView(MonitorInfo monitorInfo)
         {
@@ -38,7 +36,7 @@ namespace Macro.View
             if(IsVisible)
             {
                 e.Handled = true;
-                DataBinding? .Invoke(this, new MousePointArgs()
+                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
                 {
                     MousePoint = PointToScreen(e.GetPosition(this)),
                     MonitorInfo = _monitorInfo
@@ -54,7 +52,7 @@ namespace Macro.View
         {
             if (e.Key == Key.Escape)
             {
-                DataBinding?.Invoke(this, new MousePointArgs()
+                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
                 {
                     MousePoint = null,
                     MonitorInfo = _monitorInfo

@@ -1,6 +1,9 @@
-﻿using Macro.Infrastructure;
+﻿using Macro.Extensions;
+using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;
+using System.IO;
 using System.Windows;
 using Unity;
 using Utils;
@@ -46,13 +49,20 @@ namespace Macro
         }
         private void DependenciesResolved()
         {
-            var config = JsonHelper.Load<Config>($@"{ Environment.CurrentDirectory}\config.json");
+            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
+            if (!File.Exists(path))
+                File.WriteAllText(path, JsonHelper.SerializeObject(new Config(), true));
+
+            var config = JsonHelper.Load<Config>(path);
 
             var container = Singleton<UnityContainer>.Instance;
             container.RegisterType<IMouseInput, MouseInput>();
             container.RegisterType<IKeyboardInput, KeyboardInput>();
             container.RegisterType<InputManager>();
+
             container.RegisterInstance<IConfig>(config);
+            container.RegisterInstance(new DocumentHelper());
+
             container.RegisterSingleton<ProcessManager>();
         }
         private void ExceptionProcess(object sender, Exception ex)

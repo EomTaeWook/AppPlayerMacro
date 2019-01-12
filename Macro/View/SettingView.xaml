@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:util="clr-namespace:Utils;assembly=Utils"
              mc:Ignorable="d">
     <Grid>
         <DockPanel LastChildFill="False">
@@ -19,16 +20,20 @@
                     <ColumnDefinition Width="4*"></ColumnDefinition>
                     <ColumnDefinition Width="6*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.Language, Source={StaticResource Locator}}"></Label>
-                <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" FontSize="15"></ComboBox>
+                <Label Grid.Row="0" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.Language, Source={StaticResource Locator} }"></Label>
+                <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" FontSize="15" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
+                
                 <Label Grid.Row="1" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.SavePath, Source={StaticResource Locator}}"></Label>
-                <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Style="{DynamicResource SearchMetroTextBox}" Controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonCmd, Mode=OneWay}"/>
+                <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Style="{DynamicResource SearchMetroTextBox}" Text ="{Binding Path=Config.SavePath, Mode=TwoWay}"/>
+                
                 <Label Grid.Row="2" Grid.Column="0"  FontSize="15" Content="{Binding Path=LabelViewModel.Period, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numPeriod" Minimum="2000" Grid.Row="2" Grid.Column="1"></Controls:NumericUpDown>
+                <Controls:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.Period, Mode=TwoWay}"></Controls:NumericUpDown>
+                
                 <Label Grid.Row="3" Grid.Column="0"  FontSize="15" Content="{Binding Path=LabelViewModel.ProcessDelay, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numDelay" Minimum="0" Grid.Row="3" Grid.Column="1"></Controls:NumericUpDown>
+                <Controls:NumericUpDown Name="numDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinProcessDelay}}" Grid.Row="3" Grid.Column="1" Value="{Binding Path=Config.ProcessDelay, Mode=TwoWay}"></Controls:NumericUpDown>
+                
                 <Label Grid.Row="4" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.Similarity, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numSimilarity" Minimum="20" Grid.Row="4" Grid.Column="1"></Controls:NumericUpDown>
+                <Controls:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></Controls:NumericUpDown>
             </Grid>
             <Button Name="btnSave" DockPanel.Dock="Bottom" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}" Style="{DynamicResource SquareButtonStyle}"></Button>
         </DockPanel>

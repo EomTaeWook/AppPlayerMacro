@@ -1,12 +1,11 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Macro.Models;
-using Macro.Models.Event;
 using Macro.Models.ViewModel;
 using System.Collections.Generic;
-using System.Windows.Controls;
-using Unity;
-using Utils;
 using System.Linq;
+using System.Windows.Controls;
+using Utils;
 
 namespace Macro.View
 {
@@ -28,7 +27,7 @@ namespace Macro.View
         {
             _dummy = new EventTriggerModel();
             _mousePointViews = new List<MousePositionView>();
-            DataContext = Singleton<UnityContainer>.Instance.Resolve<ConfigEventViewModel>();
+            DataContext = new ViewModelLocator().ConfigEventViewModel;
             Model = _dummy;
             InitializeComponent();
 
@@ -41,21 +40,6 @@ namespace Macro.View
             foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _mousePointViews.Add(new MousePositionView(item));
-                _mousePointViews.Last().DataBinding += ConfigEventView_DataBinding;
-            }
-        }
-
-        private void ConfigEventView_DataBinding(object sender, MousePointArgs args)
-        {
-            if (Model == _dummy)
-            {
-                Model = new EventTriggerModel();
-            }
-            Model.MonitorInfo = args.MonitorInfo;
-            Model.MousePoint = args.MousePoint;
-            foreach (var item in _mousePointViews)
-            {
-                item.Hide();
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Utils
 {
@@ -9,14 +10,20 @@ namespace Utils
             var json = File.ReadAllText(path);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
         }
-        public static string SerializeObject(object obj)
+        public static string SerializeObject(object obj, bool pretty = false)
         {
+            var setting = new Newtonsoft.Json.JsonSerializerSettings()
+            {
+                Converters = new List<Newtonsoft.Json.JsonConverter> {
+                        new Newtonsoft.Json.Converters.StringEnumConverter()
+                }
+            };
+            var formatting = pretty ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
 #if DEBUG
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, formatting, setting);
 #else
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.None);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, formatting, setting);
 #endif
-
         }
     }
 }

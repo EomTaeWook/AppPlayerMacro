@@ -6,10 +6,10 @@ namespace Utils.Document
 {
     public class DocumentTemplate<T> : IDocument where T : struct //7.3 Enum
     {
-        private readonly Dictionary<T, Dictionary<Language, string>> _dataqs;
+        private readonly Dictionary<T, Dictionary<Language, string>> _datas;
         public DocumentTemplate()
         {
-            _dataqs = new Dictionary<T, Dictionary<Language, string>>();
+            _datas = new Dictionary<T, Dictionary<Language, string>>();
         }
         public void Init(string path)
         {
@@ -20,7 +20,7 @@ namespace Utils.Document
                 foreach (var data in jsonData)
                 {
                     T code = (T)Enum.Parse(typeof(T), data.Code, true);
-                    _dataqs.Add(code, new Dictionary<Language, string>()
+                    _datas.Add(code, new Dictionary<Language, string>()
                     {
                         { Language.Kor, data.Kor},
                         { Language.Eng, data.Eng},
@@ -32,7 +32,7 @@ namespace Utils.Document
         {
             get
             {
-                return _dataqs[code][language];
+                return _datas[code][language];
             }
         }
     }

@@ -185,7 +185,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Extensions\DependencyObjectExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
@@ -197,18 +196,20 @@
     <Compile Include="Infrastructure\Impl\SettingImpl.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Impl\MainWindowImpl.cs" />
-    <Compile Include="Infrastructure\InputManager.cs" />
+    <Compile Include="Infrastructure\Manager\InputManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
+    <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
-    <Compile Include="Infrastructure\ProcessManager.cs" />
+    <Compile Include="Infrastructure\Manager\ProcessManager.cs" />
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />
-    <Compile Include="Models\Event\EventArgs.cs" />
+    <Compile Include="Infrastructure\EventArgs.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\SystemEnum.cs" />
     <Compile Include="Models\ViewModel\ConfigEventViewModel.cs" />
+    <Compile Include="Models\ViewModel\SettingViewModel.cs" />
     <Compile Include="View\CaptureView.xaml.cs">
       <DependentUpon>CaptureView.xaml</DependentUpon>
     </Compile>
@@ -268,9 +269,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="config.json" />
     <None Include="Macro_TemporaryKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>

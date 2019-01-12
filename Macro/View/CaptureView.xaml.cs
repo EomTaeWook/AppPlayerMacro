@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
-using Macro.Models.Event;
+using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,9 +17,6 @@ namespace Macro.View
     /// </summary>
     public partial class CaptureView : Window
     {
-        public event DataBindingHander DataBinding;
-        public delegate void DataBindingHander(object sender, CaptureArgs args);
-
         private bool _isDrag;
         private Point _originPoint;
         private MonitorInfo _monitorInfo;
@@ -86,7 +84,7 @@ namespace Macro.View
             if(e.Key == Key.Escape)
             {
                 e.Handled = true;
-                DataBinding?.Invoke(this, new CaptureArgs()
+                NotifyHelper.InvokeNotify(EventType.ScreenCapture, new CaptureEventArgs()
                 {
                     MonitorInfo = _monitorInfo,
                     CaptureImage = null
@@ -138,7 +136,7 @@ namespace Macro.View
             if(_isDrag && IsVisible)
             {
                 WindowState = WindowState.Minimized;
-                DataBinding?.Invoke(this, new CaptureArgs()
+                NotifyHelper.InvokeNotify(EventType.ScreenCapture, new CaptureEventArgs()
                 {
                     MonitorInfo = _monitorInfo,
                     CaptureImage = DisplayHelper.Capture(_monitorInfo, new Rect()

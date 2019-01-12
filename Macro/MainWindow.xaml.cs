@@ -1,14 +1,17 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.View;
 using MahApps.Metro.Controls;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Utils;
 using Utils.Document;
 using Rect = Utils.Infrastructure.Rect;
@@ -36,15 +39,38 @@ namespace Macro
             btnSetting.Click += Button_Click;
 
             configView.SelectData += ConfigView_SelectData;
-
+            NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
+            NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             Unloaded += MainWindow_Unloaded;
+        }
+
+        private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
+        {
+            foreach (var item in _captureViews)
+            {
+                item.Hide();
+            }
+            if (e.CaptureImage != null)
+            {
+                var capture = e.CaptureImage;
+                captureImage.Background = new ImageBrush(capture.ToBitmapSource());
+                var factor = NativeHelper.GetSystemDpi();
+                _bitmap = new Bitmap(capture, (int)Math.Truncate(capture.Width * factor.X / ConstHelper.DefaultDPI), (int)Math.Truncate(capture.Height * factor.Y / ConstHelper.DefaultDPI));
+            }
+            WindowState = WindowState.Normal;
+        }
+
+        private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
+        {
+            _config = e.Config;
+            settingFlyout.IsOpen = !settingFlyout.IsOpen;
+            UpdateLayout();
         }
 
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
             foreach (var item in _captureViews)
             {
-                item.DataBinding -= CaptureView_DataBinding;
                 item.Close();
             }
             _captureViews.Clear();
@@ -163,12 +189,6 @@ namespace Macro
             {
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
             }
-        }
-        protected override void OnContentRendered(EventArgs e)
-        {
-            base.OnContentRendered(e);
-
-            var list = DisplayHelper.MonitorInfo();
         }
     }
 }

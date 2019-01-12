@@ -8,11 +8,15 @@ namespace Macro.Models
     {
         public LabelViewModel LabelViewModel
         {
-            get { return Singleton<UnityContainer>.Instance.Resolve<LabelViewModel>(); }
+            get => Singleton<UnityContainer>.Instance.Resolve<LabelViewModel>();
         }
         public ConfigEventViewModel ConfigEventViewModel
         {
-            get { return Singleton<UnityContainer>.Instance.Resolve<ConfigEventViewModel>(); }
+            get => Singleton<UnityContainer>.Instance.Resolve<ConfigEventViewModel>();
+        }
+        public SettingViewModel SettingViewModel
+        {
+            get => Singleton<UnityContainer>.Instance.Resolve<SettingViewModel>(); 
         }
     }
 }

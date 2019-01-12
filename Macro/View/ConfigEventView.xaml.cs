@@ -1,9 +1,12 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using EventType = Macro.Models.EventType;
 
 namespace Macro.View
 {
@@ -64,6 +67,20 @@ namespace Macro.View
             grdSaves.SelectionChanged += GrdSaves_SelectionChanged;
             PreviewKeyDown += ConfigEventView_PreviewKeyDown;
 
+            NotifyHelper.MousePositionDataBind += (args) => 
+            {
+                if (Model == _dummy)
+                {
+                    Model = new EventTriggerModel();
+                }
+                Model.MonitorInfo = args.MonitorInfo;
+                Model.MousePoint = args.MousePoint;
+                foreach (var item in _mousePointViews)
+                {
+                    item.Hide();
+                }
+            };
+
             Unloaded += ConfigEventView_Unloaded;
         }
 
@@ -71,7 +88,6 @@ namespace Macro.View
         {
             foreach (var item in _mousePointViews)
             {
-                item.DataBinding -= ConfigEventView_DataBinding;
                 item.Close();
             }
             _mousePointViews.Clear();

@@ -1,4 +1,7 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
+using Macro.Models.ViewModel;
+using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,13 +38,14 @@ namespace Macro.View
             var btn = sender as Button;
             if(btn.Equals(btnSave))
             {
-                if(TryModelValidate(_dummy, out Message error))
+                var model = (DataContext as SettingViewModel);
+                if (TryModelValidate(model.Config, out Message error))
                 {
-                    _taskQueue.Enqueue(Save);
+                    _taskQueue.Enqueue(Save, model.Config);
                 }
                 else
                 {
-                    
+                    (Application.Current.MainWindow as MetroWindow).MessageShow("Error", DocumentHelper.Get(error));
                 }
             }
         }

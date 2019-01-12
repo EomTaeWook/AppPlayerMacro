@@ -84,7 +84,7 @@
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl x:Name="flyoutsControl">
             <Controls:Flyout x:Name="settingFlyout" Position="Right" Width="350">
-                <view:SettingView></view:SettingView>
+                <view:SettingView x:Name="settingView"></view:SettingView>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>

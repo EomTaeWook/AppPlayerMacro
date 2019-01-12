@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Macro.Infrastructure
+namespace Macro.Infrastructure.Manager
 {
     public class ProcessManager
     {

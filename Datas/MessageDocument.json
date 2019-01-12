@@ -46,8 +46,8 @@
 	},
 	{
 		"Code" : "FailedProcessDelayValidate",
-		"Kor": "프로세싱 딜레이는 200이상 입력 부탁드립니다.",
-		"Eng": "Please input 200 or more processing delays."
+		"Kor": "프로세싱 딜레이는 100이상 입력 부탁드립니다.",
+		"Eng": "Please input 100 or more processing delays."
 	},
 	{
 		"Code" : "FailedSimilarityValidate",
