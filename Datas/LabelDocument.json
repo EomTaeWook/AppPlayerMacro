@@ -47,7 +47,7 @@
 	{
 		"Code" : "MouseCoordinates",
 		"Kor": "마우스 좌표 지정",
-		"Eng": "MouseCoordinates"
+		"Eng": "MouseCoordinate"
 	},
 	{
 		"Code" : "Save",

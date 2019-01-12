@@ -64,7 +64,7 @@ namespace Macro
         {
             _config = e.Config;
             settingFlyout.IsOpen = !settingFlyout.IsOpen;
-            UpdateLayout();
+            Refresh();
         }
 
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)

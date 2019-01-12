@@ -14,8 +14,8 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="7*"></ColumnDefinition>
+                    <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="7.5*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.EventType, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="0">

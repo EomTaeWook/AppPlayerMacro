@@ -13,6 +13,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
@@ -79,6 +81,19 @@ namespace Macro
             comboProcess.DisplayMemberPath = "Key";
             comboProcess.SelectedValuePath = "Value";
 
+            var labels = ObjectExtensions.FindChildren<Label>(this);
+            foreach (var label in labels)
+            {
+                BindingOperations.GetBindingExpressionBase(label, ContentProperty).UpdateTarget();
+            }
+            var buttons = ObjectExtensions.FindChildren<Button>(this);
+            foreach (var button in buttons)
+            {
+                if (button.Equals(btnRefresh) || button.Equals(btnSetting))
+                    continue;
+                BindingOperations.GetBindingExpressionBase(button, ContentProperty).UpdateTarget();
+            }
+            BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
         }
 
         private bool TryModelValidate(EventTriggerModel model, out Message message)
