@@ -305,6 +305,14 @@
     <Error Condition="!Exists('..\packages\OpenCvSharp3-AnyCPU.4.0.0.20181129\build\OpenCvSharp3-AnyCPU.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCvSharp3-AnyCPU.4.0.0.20181129\build\OpenCvSharp3-AnyCPU.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"</PostBuildEvent>
+    <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
+rd /S/Q $(SolutionDir)Release\exe
+mkdir $(SolutionDir)Release\exe
+xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
+xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\"
+xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
+copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
+copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
