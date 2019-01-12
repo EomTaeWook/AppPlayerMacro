@@ -106,7 +106,7 @@ namespace Macro.Extensions
 
         public static Task ProgressbarShow(this MetroWindow @object, Func<Task> action)
         {
-            var task = Task.Factory.StartNew(() =>
+            return Task.Factory.StartNew(() =>
             {
                 @object.Dispatcher.Invoke(() =>
                 {
@@ -114,9 +114,9 @@ namespace Macro.Extensions
                     {
                         Owner = @object
                     };
-                    progress.Loaded += (s, e) => 
+                    progress.Loaded += (s, e) =>
                     {
-                        action().ContinueWith((actionTask) =>
+                        action().ContinueWith((task) =>
                         {
                             progress.Dispatcher.Invoke(() => progress.Close());
                         });
@@ -124,7 +124,6 @@ namespace Macro.Extensions
                     progress.ShowDialog();
                 });
             });
-            return task;
         }
     }
 }

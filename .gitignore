@@ -3,7 +3,7 @@ NoxMacro/obj/
 Macro/bin/
 Macro/obj/
 Utils/obj/
-Utils/bin/Debug/
+Utils/bin/
 .vs/Macro/v15/
 packages/
-Release/exe/
+Release/
