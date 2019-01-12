@@ -27,9 +27,9 @@
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>false</MapFileExtensions>
+    <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>1.2.0.2</ApplicationVersion>
+    <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -320,7 +320,6 @@ xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\"
 xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
 copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
-xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(SolutionDir)Release\Resource\Datas\"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -32,24 +32,10 @@ namespace Macro
         }
         private void Init()
         {
-            ResouceCheck();
             DependenciesResolved();
             InitTemplate();
             LogHelper.Init();
             ShutdownMode = ShutdownMode.OnLastWindowClose;
-        }
-        private void ResouceCheck()
-        {
-            var path = Environment.CurrentDirectory;
-#if DEBUG
-            path += @"\..\..\..\";
-#endif
-            path += @".\Datas\";
-            if(!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-
-            }
         }
         private void InitTemplate()
         {
