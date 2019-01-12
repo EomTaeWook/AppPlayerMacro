@@ -169,7 +169,7 @@ namespace Macro
             }
             else if(btn.Equals(btnStop))
             {
-                ProcessManager.Stop().ContinueWith((task) => 
+                this.ProgressbarShow(ProcessManager.Stop).ContinueWith((task) =>
                 {
                     Dispatcher.Invoke(() =>
                     {

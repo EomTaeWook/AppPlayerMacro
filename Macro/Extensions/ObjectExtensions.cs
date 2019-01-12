@@ -1,8 +1,11 @@
 ﻿using Macro.Models;
+using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -99,6 +102,29 @@ namespace Macro.Extensions
             {
                 return Singleton<T>.Instance;
             }
+        }
+
+        public static Task ProgressbarShow(this MetroWindow @object, Func<Task> action)
+        {
+            var task = Task.Factory.StartNew(() =>
+            {
+                @object.Dispatcher.Invoke(() =>
+                {
+                    var progress = new ProgressView
+                    {
+                        Owner = @object
+                    };
+                    progress.Loaded += (s, e) => 
+                    {
+                        action().ContinueWith((actionTask) =>
+                        {
+                            progress.Dispatcher.Invoke(() => progress.Close());
+                        });
+                    };
+                    progress.ShowDialog();
+                });
+            });
+            return task;
         }
     }
 }
