@@ -1,10 +1,14 @@
-﻿using System.ComponentModel;
+﻿using Macro.Infrastructure;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace Macro.Models.ViewModel
 {
     public class SettingViewModel : INotifyPropertyChanged
     {
         private Config _config;
+        private ICommand _savePathButtonCmd;
+
         public SettingViewModel(IConfig config)
         {
             _config = new Config()
@@ -23,6 +27,14 @@ namespace Macro.Models.ViewModel
             {
                 _config = value;
                 OnPropertyChanged("Config");
+            }
+        }
+
+        public ICommand SavePathButtonCmd
+        {
+            get
+            {
+                return _savePathButtonCmd ?? (_savePathButtonCmd = new FolderBrowserDialogCmd());
             }
         }
 

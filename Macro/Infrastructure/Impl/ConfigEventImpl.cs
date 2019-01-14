@@ -3,7 +3,10 @@ using Macro.Models;
 using Macro.Models.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Utils;
 
 namespace Macro.View
@@ -78,6 +81,36 @@ namespace Macro.View
                 Model = _dummy;
             }
             grdSaves.SelectedItem = null;
+        }
+
+        private DataGridRow GetRowItem(int index)
+        {
+            if (grdSaves.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
+                return null;
+
+            return grdSaves.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
+        }
+
+        private bool IsMouseOnTargetRow(Visual theTarget, GetDragDropPosition pos)
+        {
+            Rect posBounds = VisualTreeHelper.GetDescendantBounds(theTarget);
+            Point theMousePos = pos((IInputElement)theTarget);
+            return posBounds.Contains(theMousePos);
+        }
+
+        private int CurrentRowIndex(GetDragDropPosition pos)
+        {
+            int curIndex = -1;
+            for (int i = 0; i < grdSaves.Items.Count; i++)
+            {
+                DataGridRow item = GetRowItem(i);
+                if (IsMouseOnTargetRow(item, pos))
+                {
+                    curIndex = i;
+                    break;
+                }
+            }
+            return curIndex;
         }
     }
 }

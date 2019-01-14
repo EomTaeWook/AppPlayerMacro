@@ -1,6 +1,7 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Models;
+using Macro.Models.ViewModel;
 using MahApps.Metro.Controls;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,7 +17,9 @@ namespace Macro.View
     {
         public event SelectTriggerHandler SelectData;
         public delegate void SelectTriggerHandler(EventTriggerModel model);
+        public delegate Point GetDragDropPosition(IInputElement theElement);
 
+        private int _prevRowIndex = -1;
         private void ConfigEventView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -80,7 +83,43 @@ namespace Macro.View
                 }
             };
 
+            grdSaves.Drop += GrdSaves_Drop;
+            grdSaves.PreviewMouseLeftButtonDown += GrdSaves_PreviewMouseLeftButtonDown;
+
             Unloaded += ConfigEventView_Unloaded;
+        }
+        
+        private void GrdSaves_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _prevRowIndex = CurrentRowIndex(e.GetPosition);
+            if (_prevRowIndex < 0)
+                return;
+            grdSaves.SelectedIndex = _prevRowIndex;
+
+            var item = grdSaves.Items[_prevRowIndex] as EventTriggerModel;
+            if (item == null)
+                return;
+            DragDropEffects dragdropeffects = DragDropEffects.Move;
+            if (DragDrop.DoDragDrop(grdSaves, item, dragdropeffects) != DragDropEffects.None)
+            {
+                grdSaves.SelectedItem = item;
+            }
+        }
+
+        private void GrdSaves_Drop(object sender, DragEventArgs e)
+        {
+            if(_prevRowIndex < 0)
+                return;
+            int index = CurrentRowIndex(e.GetPosition);
+            if (index < 0)
+                return;
+            if (index == _prevRowIndex)
+                return;
+            if (index == grdSaves.Items.Count - 1)
+                return;
+            var item = grdSaves.Items[index];
+            grdSaves.Items.RemoveAt(index);
+            grdSaves.Items.Insert(index, item);
         }
 
         private void ConfigEventView_Unloaded(object sender, RoutedEventArgs e)
@@ -122,5 +161,6 @@ namespace Macro.View
                 Model.EventType = EventType.Keyboard;
             }
         }
+        
     }
 }

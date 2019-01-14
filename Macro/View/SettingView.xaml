@@ -24,7 +24,7 @@
                 <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" FontSize="15" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
                 
                 <Label Grid.Row="1" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.SavePath, Source={StaticResource Locator}}"></Label>
-                <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Style="{DynamicResource SearchMetroTextBox}" Text ="{Binding Path=Config.SavePath, Mode=TwoWay}"/>
+                <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Style="{DynamicResource SearchMetroTextBox}" Text ="{Binding Path=Config.SavePath, Mode=TwoWay}" Controls:TextBoxHelper.ButtonCommand="{Binding SavePathButtonCmd }"/>
                 
                 <Label Grid.Row="2" Grid.Column="0"  FontSize="15" Content="{Binding Path=LabelViewModel.Period, Source={StaticResource Locator}}"></Label>
                 <Controls:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.Period, Mode=TwoWay}"></Controls:NumericUpDown>

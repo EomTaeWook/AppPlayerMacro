@@ -64,21 +64,22 @@ namespace Macro
             {
                 _captureViews.Add(new CaptureView(item));
             }
+            _config = ObjectExtensions.GetInstance<IConfig>();
+
             Refresh();
             ProcessManager.AddJob(OnProcessCallback);
+            _taskQueue.Enqueue(SaveLoad, _path);
+        }
 
-            _config = ObjectExtensions.GetInstance<IConfig>();
+        private void Refresh()
+        {
             _path = _config.SavePath;
             if (string.IsNullOrEmpty(_path))
                 _path = ConstHelper.DefaultSavePath;
             if (!Directory.Exists(_path))
                 Directory.CreateDirectory(_path);
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
-            _taskQueue.Enqueue(SaveLoad, _path);
-        }
 
-        private void Refresh()
-        {
             _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero).Select(r => new KeyValuePair<string, Process>(r.ProcessName, r));
             comboProcess.ItemsSource = _processes.OrderBy(r => r.Key);
             comboProcess.DisplayMemberPath = "Key";

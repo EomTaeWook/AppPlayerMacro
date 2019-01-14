@@ -39,7 +39,7 @@
             </Grid>
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
                 <Label DockPanel.Dock="Top" Content="{Binding Path=LabelViewModel.TriggerList, Source={StaticResource Locator}}"></Label>
-                <DataGrid DockPanel.Dock="Left" CanUserAddRows="False" VerticalAlignment="Stretch" VerticalScrollBarVisibility = "Auto" ScrollViewer.CanContentScroll="True" Grid.ColumnSpan="2" SelectionMode="Single" SelectionUnit ="FullRow" Grid.Row="0" Name="grdSaves"
+                <DataGrid DockPanel.Dock="Left" CanUserAddRows="False" VerticalAlignment="Stretch" VerticalScrollBarVisibility = "Auto" ScrollViewer.CanContentScroll="True" Grid.ColumnSpan="2" SelectionMode="Single" SelectionUnit ="FullRow" Grid.Row="0" Name="grdSaves" AllowDrop="True"
                           ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#FFBFBFBF" VerticalGridLinesBrush="White">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Width="2*" Header="Image" IsReadOnly="True">
