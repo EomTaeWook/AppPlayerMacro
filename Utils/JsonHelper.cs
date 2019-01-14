@@ -10,6 +10,10 @@ namespace Utils
             var json = File.ReadAllText(path);
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
         }
+        public static T DeserializeObject<T>(string json)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+        }
         public static string SerializeObject(object obj, bool pretty = false)
         {
             var setting = new Newtonsoft.Json.JsonSerializerSettings()

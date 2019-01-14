@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,7 @@ using InputManager = Macro.Infrastructure.Manager.InputManager;
 using Message = Utils.Document.Message;
 using Point = System.Windows.Point;
 using Rect = Utils.Infrastructure.Rect;
+using Version = Macro.Models.Version;
 
 namespace Macro
 {
@@ -194,6 +196,28 @@ namespace Macro
                 }
             }, DispatcherPriority.Send);
             return task.Task;
+        }
+        private void VersionCheck()
+        {
+            var request = (HttpWebRequest)WebRequest.Create(ConstHelper.VersionUrl);
+            Version version = null;
+            using (var response = request.GetResponse())
+            {
+                using (var stream = new StreamReader(response.GetResponseStream()))
+                {
+                    version = JsonHelper.DeserializeObject<Version>(stream.ReadToEnd());
+                }
+            }
+            if(version != null)
+            {
+                if(version.CompareTo(Version.CurrentVersion) > 0)
+                {
+                    if(this.MessageShow("Infomation", DocumentHelper.Get(Message.NewVersion), MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                    {
+                        Process.Start(ConstHelper.ReleaseUrl);
+                    }
+                }
+            }
         }
         private Task OnProcessCallback()
         {

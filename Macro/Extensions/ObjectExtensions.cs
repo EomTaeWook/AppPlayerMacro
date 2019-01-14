@@ -56,11 +56,11 @@ namespace Macro.Extensions
             }
         }
 
-        public static void MessageShow(this MetroWindow @object, string title, string message)
+        public static MessageDialogResult MessageShow(this MetroWindow @object, string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
         {
-            @object.ShowModalMessageExternal(title,
+            return @object.ShowModalMessageExternal(title,
                                                 message,
-                                                MessageDialogStyle.Affirmative,
+                                                style,
                                                 new MetroDialogSettings()
                                                 {
                                                     ColorScheme = MetroDialogColorScheme.Inverted,

@@ -53,6 +53,11 @@
 		"Code" : "FailedSimilarityValidate",
 		"Kor": "유사도는 0이상 입력 부탁드립니다.",
 		"Eng": "The degree of similarity is 0 or more."
+	},
+	{
+		"Code" : "NewVersion",
+		"Kor": "새로운 버전이 있습니다. 다운로드 하시겠습니까?",
+		"Eng": "There is a new version."
 	}
 ]
 

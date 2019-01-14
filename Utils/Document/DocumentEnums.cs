@@ -44,6 +44,8 @@
         FailedProcessDelayValidate,
         FailedSimilarityValidate,
 
+        NewVersion,
+
         Max
     }
 }

@@ -206,6 +206,7 @@
     <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Infrastructure\EventArgs.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
+    <Compile Include="Models\Version.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\SystemEnum.cs" />
     <Compile Include="Models\ViewModel\ConfigEventViewModel.cs" />
