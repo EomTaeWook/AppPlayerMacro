@@ -1,6 +1,5 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
-using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
 using System.Windows;
@@ -51,11 +50,11 @@ namespace Macro.View
         }
         private void ConfigEventView_Loaded(object sender, RoutedEventArgs e)
         {
-            EventInit();
+            InitEvent();
             Init();
         }
         
-        private void EventInit()
+        private void InitEvent()
         {
             var radioButtons = this.FindChildren<RadioButton>();
             foreach (var button in radioButtons)

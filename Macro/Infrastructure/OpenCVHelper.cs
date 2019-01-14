@@ -1,8 +1,7 @@
 ﻿using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using System;
 using System.Drawing;
-using OpenCvSharp.Extensions;
-using Utils;
 using Point = OpenCvSharp.Point;
 
 namespace Macro.Infrastructure

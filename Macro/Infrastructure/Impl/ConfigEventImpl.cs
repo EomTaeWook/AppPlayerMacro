@@ -1,5 +1,4 @@
 ﻿using Macro.Extensions;
-using Macro.Infrastructure;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using System.Collections.Generic;

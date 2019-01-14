@@ -24,7 +24,13 @@ namespace Macro
             };
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
+#if DEBUG
                 LogHelper.Debug(ex.Exception.Message);
+                
+#else
+                ExceptionProcess(s, ex.Exception);
+#endif
+
             };
             
             Init();

@@ -1,5 +1,4 @@
 ﻿using Macro.Infrastructure;
-using Macro.Infrastructure.Manager;
 using System.Windows;
 using System.Windows.Input;
 using Utils.Infrastructure;

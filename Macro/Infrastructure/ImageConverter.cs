@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Macro.Extensions;
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Data;
-using Macro.Extensions;
 namespace Macro.Infrastructure
 {
     [ValueConversion(typeof(Bitmap), typeof(System.Windows.Media.ImageSource))]

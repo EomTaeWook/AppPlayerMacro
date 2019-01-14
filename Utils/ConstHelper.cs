@@ -13,7 +13,7 @@
         public static readonly int DefaultSimilarity = 70;
         public static readonly float DefaultDPI = 96.0F;
 
-        public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=17B1TjY0DFdvqGQ82Ba8kPt71pnE34RpT";
+        public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=188XWJsrFW39ty-VltB-7OjdYZf9FV3Q1";
         public static readonly string ReleaseUrl = @"https://github.com/EomTaeWook/EmulatorMacro/releases";
     }
 }

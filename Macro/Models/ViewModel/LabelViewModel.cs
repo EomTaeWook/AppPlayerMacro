@@ -67,7 +67,7 @@ namespace Macro.Models.ViewModel
         }
         public string Title
         {
-            get => DocumentHelper.Get(Label.Title);
+            get => $"{DocumentHelper.Get(Label.Title)} ver {Version.CurrentVersion.Major}.{Version.CurrentVersion.Minor}.{Version.CurrentVersion.Build}";
         }
         public string Language
         {

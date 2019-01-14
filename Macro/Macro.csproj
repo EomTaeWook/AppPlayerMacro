@@ -28,8 +28,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -278,7 +278,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="config.json" />
-    <None Include="Macro_TemporaryKey.pfx" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +320,6 @@ xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\"
 xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
 copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
-</PostBuildEvent>
+rd /S/Q $(SolutionDir)Release\exe\Save</PostBuildEvent>
   </PropertyGroup>
 </Project>
