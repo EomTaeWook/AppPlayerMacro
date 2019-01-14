@@ -55,6 +55,9 @@ namespace Utils
         }
 
         [DllImport("user32.dll")]
+        public static extern bool PostMessage(IntPtr hWnd, WindowMessage Msg, int wParam, int lParam);
+
+        [DllImport("user32.dll")]
         public static extern uint SendInput(uint inputCount, Input[] inputs, int structSize);
 
         [DllImport("shcore.dll")]
@@ -67,7 +70,5 @@ namespace Utils
             GetDpiForMonitor(hMonitor, DpiFlags.Effective, out uint dpiX, out uint dpiY);
             return new Point((int)dpiX, (int)dpiY);
         }
-
-
     }
 }

@@ -22,23 +22,6 @@ namespace Macro.View
         public ProgressView()
         {
             InitializeComponent();
-            Loaded += ProgressView_Loaded;
-        }
-
-        private void ProgressView_Loaded(object sender, RoutedEventArgs e)
-        {
-            Init();
-        }
-
-        private void Init()
-        {
-            if(Owner != null)
-            {
-                Left = Owner.Left;
-                Top = Owner.Top;
-                Width = Owner.Width;
-                Height = Owner.Height;
-            }
         }
     }
 }

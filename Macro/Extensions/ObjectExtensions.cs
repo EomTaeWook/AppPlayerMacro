@@ -112,18 +112,28 @@ namespace Macro.Extensions
                 {
                     var progress = new ProgressView
                     {
-                        Owner = @object
+                        Owner = @object,
+                        Left = @object.Left / 2,
+                        Width = @object.Width / 2,
+                        Top = @object.Top / 2,
+                        Height = @object.Height / 2
                     };
                     progress.Loaded += (s, e) =>
                     {
                         action().ContinueWith((task) =>
                         {
-                            progress.Dispatcher.Invoke(() => progress.Close());
+                            progress.Dispatcher.Invoke(() => {
+                                progress.Close();
+                            });
                         });
                     };
                     progress.ShowDialog();
                 });
             });
+        }
+        public static int ToLParam(this Point point)
+        {
+            return (int)point.X & 0xFFFF | ((int)point.Y << 0x10);
         }
     }
 }

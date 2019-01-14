@@ -22,6 +22,7 @@ using Utils.Infrastructure;
 using EventType = Macro.Models.EventType;
 using InputManager = Macro.Infrastructure.Manager.InputManager;
 using Message = Utils.Document.Message;
+using Point = System.Windows.Point;
 using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
@@ -216,8 +217,8 @@ namespace Macro
                                 captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
                             });
 
-                            var similarity = OpenCVHelper.Search(bmp, save.Image);
-                            LogHelper.Debug($"similarity : {similarity}");
+                            var similarity = OpenCVHelper.Search(bmp, save.Image, out Point location);
+                            LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                             if (similarity >= _config.Similarity)
                             {
                                 var hWndActive = NativeHelper.GetForegroundWindow();
@@ -225,35 +226,23 @@ namespace Macro
                                 if (save.EventType == EventType.Mouse)
                                 {
                                     var currentMousePoint = NativeHelper.GetCursorPosition();
-                                    //LogHelper.Debug($"current Mouse X : {currentMousePoint.X} current Y : {currentMousePoint.Y}");
-                                    LogHelper.Debug($"[index : {save.Index}] save Mouse X : {save.MousePoint.Value.X} save Mouse Y : {save.MousePoint.Value.Y}");
-                                    Task.Delay(100);
 
-                                    NativeHelper.SetForegroundWindow(process.Value.MainWindowHandle);
+                                    LogHelper.Debug($"[index : {save.Index}] save Mouse X : {save.MousePoint.Value.X} save Mouse Y : {save.MousePoint.Value.Y}");
+
+                                    //NativeHelper.SetForegroundWindow(process.Value.MainWindowHandle);
 
                                     var currentPosition = new Rect();
                                     NativeHelper.GetWindowRect(process.Value.MainWindowHandle, ref currentPosition);
 
-                                    var movePositionX = Math.Abs(currentPosition.Left - save.ProcessInfo.Position.Left);
-                                    var widthRatio = currentPosition.Width * 1.0 / save.ProcessInfo.Position.Width;
-                                    var width = Math.Abs(currentPosition.Width - save.ProcessInfo.Position.Width);
-                                    movePositionX += width - (int)Math.Truncate(width / widthRatio);
+                                    var mousePosition = new Point()
+                                    {
+                                        X = Math.Abs(save.ProcessInfo.Position.Left + (save.MousePoint.Value.X < 0 ? save.MousePoint.Value.X * -1 : save.MousePoint.Value.X)),
+                                        Y = Math.Abs(save.ProcessInfo.Position.Top - (save.MousePoint.Value.Y < 0 ? save.MousePoint.Value.Y * -1 : save.MousePoint.Value.Y))
+                                    };
 
-                                    var movePositionY = Math.Abs(currentPosition.Top - save.ProcessInfo.Position.Top);
-                                    var heightRatio = currentPosition.Height * 1.0 / save.ProcessInfo.Position.Height;
-                                    var heightPosition = Math.Abs(currentPosition.Height - save.ProcessInfo.Position.Height);
-                                    movePositionY -= (int)(heightPosition - (heightPosition / heightRatio));
-
-                                    var positionX = (int)((Math.Abs(save.MonitorInfo.Rect.Left - save.MousePoint.Value.X) + movePositionX) * (65535 / SystemParameters.VirtualScreenWidth));
-                                    var positionY = (int)((Math.Abs(save.MonitorInfo.Rect.Top - save.MousePoint.Value.Y) + movePositionY) * (65535 / SystemParameters.VirtualScreenHeight));
-                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
-                                    ObjectExtensions.GetInstance<InputManager>().Mouse.LeftButtonClick();
-
-                                    //NativeHelper.SetWindowPos(process.Value.MainWindowHandle, currentPosition);
-
-                                    positionX = (int)(Math.Abs(save.MonitorInfo.Rect.Left - currentMousePoint.X) * (65535 / SystemParameters.VirtualScreenWidth));
-                                    positionY = (int)(Math.Abs(save.MonitorInfo.Rect.Top + currentMousePoint.Y) * (65535 / SystemParameters.VirtualScreenHeight));
-                                    ObjectExtensions.GetInstance<InputManager>().Mouse.MoveMouseToVirtualDesktop(positionX, positionY);
+                                    NativeHelper.PostMessage(process.Value.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                                    Task.Delay(200);
+                                    NativeHelper.PostMessage(process.Value.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
                                 }
                                 else if (save.EventType == EventType.Keyboard)
                                 {
