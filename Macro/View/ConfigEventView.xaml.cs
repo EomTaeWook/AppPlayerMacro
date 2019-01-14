@@ -6,6 +6,7 @@ using MahApps.Metro.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using EventType = Macro.Models.EventType;
 
 namespace Macro.View
@@ -17,9 +18,7 @@ namespace Macro.View
     {
         public event SelectTriggerHandler SelectData;
         public delegate void SelectTriggerHandler(EventTriggerModel model);
-        public delegate Point GetDragDropPosition(IInputElement theElement);
 
-        private int _prevRowIndex = -1;
         private void ConfigEventView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -83,43 +82,61 @@ namespace Macro.View
                 }
             };
 
-            grdSaves.Drop += GrdSaves_Drop;
             grdSaves.PreviewMouseLeftButtonDown += GrdSaves_PreviewMouseLeftButtonDown;
+            grdSaves.MouseMove += GrdSaves_MouseMove;
+            grdSaves.MouseLeave += GrdSaves_MouseLeave;
+            grdSaves.PreviewMouseUp += GrdSaves_MouseLeave;
 
             Unloaded += ConfigEventView_Unloaded;
         }
-        
-        private void GrdSaves_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            _prevRowIndex = CurrentRowIndex(e.GetPosition);
-            if (_prevRowIndex < 0)
-                return;
-            grdSaves.SelectedIndex = _prevRowIndex;
 
-            var item = grdSaves.Items[_prevRowIndex] as EventTriggerModel;
-            if (item == null)
+        private void GrdSaves_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (!_isDrag)
                 return;
-            DragDropEffects dragdropeffects = DragDropEffects.Move;
-            if (DragDrop.DoDragDrop(grdSaves, item, dragdropeffects) != DragDropEffects.None)
+            dragPopup.IsOpen = false;
+            _isDrag = false;
+            var viewModel = DataContext as ConfigEventViewModel;
+            var target = grdSaves.SelectedItem as EventTriggerModel;
+            if(viewModel.DragItem != target)
             {
-                grdSaves.SelectedItem = item;
+                var Index = viewModel.TriggerSaves.IndexOf(viewModel.DragItem);
+                viewModel.TriggerSaves.Remove(target);
+                viewModel.TriggerSaves.Insert(Index, target);
+                
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                {
+                    TriggerModel1 = target,
+                    TriggerModel2 = viewModel.DragItem
+                });
+                viewModel.DragItem = _dummy;
             }
         }
 
-        private void GrdSaves_Drop(object sender, DragEventArgs e)
+        private void GrdSaves_MouseMove(object sender, MouseEventArgs e)
         {
-            if(_prevRowIndex < 0)
+            if (!_isDrag || e.LeftButton != MouseButtonState.Pressed)
                 return;
-            int index = CurrentRowIndex(e.GetPosition);
-            if (index < 0)
+            Point position = e.GetPosition(grdSaves);
+            var row = (sender as UIElement).TryFindFromPoint<DataGridRow>(position);
+            if (row != null)
+            {
+                grdSaves.SelectedItem = row.Item;
+                if (!dragPopup.IsOpen)
+                    dragPopup.IsOpen = true;
+
+                var popupSize = new Size(dragPopup.ActualWidth, dragPopup.ActualHeight);
+                dragPopup.PlacementRectangle = new Rect(e.GetPosition(this), popupSize);
+            }
+        }
+
+        private void GrdSaves_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var row = (sender as UIElement).TryFindFromPoint<DataGridRow>(e.GetPosition(grdSaves));
+            if (row == null)
                 return;
-            if (index == _prevRowIndex)
-                return;
-            if (index == grdSaves.Items.Count - 1)
-                return;
-            var item = grdSaves.Items[index];
-            grdSaves.Items.RemoveAt(index);
-            grdSaves.Items.Insert(index, item);
+            _isDrag = true;
+            (DataContext as ConfigEventViewModel).DragItem = row.Item as EventTriggerModel;
         }
 
         private void ConfigEventView_Unloaded(object sender, RoutedEventArgs e)

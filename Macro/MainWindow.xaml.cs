@@ -42,7 +42,20 @@ namespace Macro
             configView.SelectData += ConfigView_SelectData;
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
+            NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             Unloaded += MainWindow_Unloaded;
+        }
+
+        private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
+        {
+            _taskQueue.Enqueue(() => { return Delete(null); })
+                .ContinueWith((task) => 
+                {
+                    if(task.IsCompleted)
+                    {
+                        Dispatcher.Invoke(() => { Clear(); });
+                    }
+                });
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)

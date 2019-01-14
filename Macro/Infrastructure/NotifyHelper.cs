@@ -7,6 +7,7 @@ namespace Macro.Infrastructure
         public static event Action<ConfigEventArgs> ConfigChanged;
         public static event Action<MousePointEventArgs> MousePositionDataBind;
         public static event Action<CaptureEventArgs> ScreenCaptureDataBind;
+        public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
 
         public static void InvokeNotify(EventType eventType, INotifyEventArgs args)
         {
@@ -21,7 +22,9 @@ namespace Macro.Infrastructure
                 case EventType.ScreenCapture:
                     ScreenCaptureDataBind? .Invoke(args as CaptureEventArgs);
                     break;
-
+                case EventType.EventTriggerOrderChanged:
+                    EventTriggerOrderChanged ? .Invoke(args as EventTriggerOrderChangedEventArgs);
+                    break;
             }
         }
     }

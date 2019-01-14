@@ -10,6 +10,7 @@ namespace Macro.Infrastructure
         ConfigChanged,
         MousePointDataBind,
         ScreenCapture,
+        EventTriggerOrderChanged,
 
         Max
     }
@@ -30,5 +31,10 @@ namespace Macro.Infrastructure
     public class ConfigEventArgs : INotifyEventArgs
     {
         public Config Config { get; set; }
+    }
+    public class EventTriggerOrderChangedEventArgs : INotifyEventArgs
+    {
+        public EventTriggerModel TriggerModel1 { get; set; }
+        public EventTriggerModel TriggerModel2 { get; set; }
     }
 }

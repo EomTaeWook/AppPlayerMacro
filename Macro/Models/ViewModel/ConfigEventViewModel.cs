@@ -7,6 +7,7 @@ namespace Macro.Models.ViewModel
     {
         private ObservableCollection<EventTriggerModel> _triggerSaves;
         private EventTriggerModel _trigger;
+        private EventTriggerModel _dragItem;
         public ConfigEventViewModel()
         {
             _triggerSaves = new ObservableCollection<EventTriggerModel>();
@@ -33,6 +34,16 @@ namespace Macro.Models.ViewModel
             {
                 _trigger = value;
                 OnPropertyChanged("Trigger");
+            }
+        }
+
+        public EventTriggerModel DragItem
+        {
+            get => _dragItem;
+            set
+            {
+                _dragItem = value;
+                OnPropertyChanged("DragItem");
             }
         }
 

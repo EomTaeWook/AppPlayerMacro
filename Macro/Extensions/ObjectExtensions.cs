@@ -135,5 +135,37 @@ namespace Macro.Extensions
         {
             return (int)point.X & 0xFFFF | ((int)point.Y << 0x10);
         }
+        public static T TryFindFromPoint<T>(this UIElement element, Point point) where T : class
+        {
+            if (!(element.InputHitTest(point) is DependencyObject @object))
+                return default(T);
+            else if (@object is T)
+                return @object as T;
+            else
+                return TryFindParent<T>(@object);
+        }
+        private static T TryFindParent<T>(DependencyObject child) where T : class
+        {
+            var parentObject = GetParentObject(child);
+            if (parentObject == null)
+                return null;
+            if (parentObject is T)
+                return parentObject as T;
+            else
+                return TryFindParent<T>(parentObject);
+        }
+        private static DependencyObject GetParentObject(DependencyObject child)
+        {
+            if (child == null)
+                return null;
+            if (child is ContentElement contentElement)
+            {
+                DependencyObject parent = ContentOperations.GetParent(contentElement);
+                if (parent != null)
+                    return parent;
+                return contentElement is FrameworkContentElement ce ? ce.Parent : null;
+            }
+            return VisualTreeHelper.GetParent(child);
+        }
     }
 }

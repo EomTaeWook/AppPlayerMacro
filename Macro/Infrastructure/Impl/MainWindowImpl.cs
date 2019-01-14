@@ -38,7 +38,6 @@ namespace Macro
         private IConfig _config;
         private Bitmap _bitmap;
         private List<CaptureView> _captureViews;
-
         public MainWindow()
         {
             _index = 0;
@@ -146,7 +145,6 @@ namespace Macro
         }
         private Task Delete(object m)
         {
-            var model = m as EventTriggerModel;
             if (File.Exists(_path))
             {
                 File.Delete(_path);
