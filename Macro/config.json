@@ -2,6 +2,7 @@
   "Language": "Kor",
   "SavePath": "",
   "Period": "2000",
-  "ProcessDelay" : "200",
-  "Similarity" : "75"
+  "ProcessDelay": "200",
+  "Similarity": "75",
+  "VersionCheck" :  false
 }
