@@ -322,6 +322,7 @@ xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\"
 xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
 copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
-rd /S/Q $(SolutionDir)Release\exe\Save</PostBuildEvent>
+rd /S/Q $(SolutionDir)Release\exe\Save
+del /S/Q $(SolutionDir)Release\exe\Datas\Version.json</PostBuildEvent>
   </PropertyGroup>
 </Project>
