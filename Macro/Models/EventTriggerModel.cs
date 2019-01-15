@@ -15,7 +15,7 @@ namespace Macro.Models
         private Point? _mousePoint;
         private string _keyboardCmd;
         private ProcessInfo _processInfo;
-        private int _nextJobDelay;
+        private int _afterDelay;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -79,13 +79,13 @@ namespace Macro.Models
         public List<EventTriggerModel> SubEvents { get; private set; } = new List<EventTriggerModel>();
 
         [Order(9)]
-        public int NextJobDelay
+        public int AfterDelay
         {
-            get => _nextJobDelay;
+            get => _afterDelay;
             set
             {
-                _nextJobDelay = value;
-                OnPropertyChanged("NextJobDelay");
+                _afterDelay = value;
+                OnPropertyChanged("AfterDelay");
             }
         }
 
@@ -116,7 +116,7 @@ namespace Macro.Models
             KeyboardCmd = obj.KeyboardCmd;
             ProcessInfo = obj.ProcessInfo;
             MonitorInfo = obj.MonitorInfo;
-            //NextJobDelay = obj.NextJobDelay;
+            AfterDelay = obj.AfterDelay;
         }
 
         private void OnPropertyChanged(string propertyName)

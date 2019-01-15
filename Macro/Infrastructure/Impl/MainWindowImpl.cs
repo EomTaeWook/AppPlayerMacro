@@ -148,6 +148,7 @@ namespace Macro
         }
         private Task Delete(object m)
         {
+            configView.RemoveModel(m as EventTriggerModel);
             if (File.Exists(_path))
             {
                 File.Delete(_path);
@@ -167,10 +168,15 @@ namespace Macro
         {
             var model = m as EventTriggerModel;
             model.Index = _index++;
-            using (var fs = new FileStream(_path, FileMode.Append))
+            if (File.Exists(_path))
+                File.Delete(_path);
+            using (var fs = new FileStream(_path, FileMode.OpenOrCreate))
             {
-                var bytes = ObjectSerializer.SerializeObject(model);
-                fs.Write(bytes, 0, bytes.Count());
+                foreach (var data in (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves)
+                {
+                    var bytes = ObjectSerializer.SerializeObject(data);
+                    fs.Write(bytes, 0, bytes.Count());
+                }
                 fs.Close();
             }
             return Task.CompletedTask;
@@ -201,6 +207,9 @@ namespace Macro
         }
         private void VersionCheck()
         {
+            if (!_config.VersionCheck)
+                return;
+
             var request = (HttpWebRequest)WebRequest.Create(ConstHelper.VersionUrl);
             Version version = null;
             using (var response = request.GetResponse())
@@ -313,6 +322,7 @@ namespace Macro
                                     ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
                                     NativeHelper.SetForegroundWindow(hWndActive);
                                 }
+                                Task.Delay(save.AfterDelay);
                             }
                         }
                     }

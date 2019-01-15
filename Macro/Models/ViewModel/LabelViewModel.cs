@@ -89,5 +89,13 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Similarity);
         }
+        public string AfterDelay
+        {
+            get => DocumentHelper.Get(Label.AfterDelay);
+        }
+        public string VersionCheck
+        {
+            get => DocumentHelper.Get(Label.VersionCheck);
+        }
     }
 }

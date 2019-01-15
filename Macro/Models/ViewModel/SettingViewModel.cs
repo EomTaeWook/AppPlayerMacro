@@ -17,7 +17,8 @@ namespace Macro.Models.ViewModel
                 Period = config.Period,
                 ProcessDelay = config.ProcessDelay,
                 SavePath = config.SavePath,
-                Similarity = config.Similarity
+                Similarity = config.Similarity,
+                VersionCheck = config.VersionCheck
             };
         }
         public Config Config

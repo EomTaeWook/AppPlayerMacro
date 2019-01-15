@@ -25,6 +25,8 @@
         Period,
         ProcessDelay,
         Similarity,
+        AfterDelay,
+        VersionCheck,
 
         Max
     }

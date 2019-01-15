@@ -34,7 +34,7 @@ namespace Macro.View
         {
             if ((sender as DataGrid).SelectedItem is EventTriggerModel item)
             {
-                Model = new EventTriggerModel(item);
+                Model = item;
                 SelectData(item);
                 if(Model.EventType == EventType.Keyboard)
                 {
@@ -161,7 +161,6 @@ namespace Macro.View
             {
                 Model = new EventTriggerModel();
             }
-
             if (sender.Equals(rbMouse))
             {
                 btnMouseCoordinate.Visibility = Visibility.Visible;
@@ -176,7 +175,6 @@ namespace Macro.View
 
                 Model.EventType = EventType.Keyboard;
             }
-        }
-        
+        }        
     }
 }

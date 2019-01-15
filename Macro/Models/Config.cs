@@ -11,6 +11,7 @@ namespace Macro.Models
         int Period { get; }
         int ProcessDelay { get; }
         int Similarity { get; }
+        bool VersionCheck { get; }
     }
 
     public class Config : IConfig, INotifyPropertyChanged
@@ -20,6 +21,7 @@ namespace Macro.Models
         private int _period = ConstHelper.MinPeriod;
         private int _processDelay = ConstHelper.MinProcessDelay;
         private int _similarity = ConstHelper.DefaultSimilarity;
+        private bool _versionCheck = false;
 
         public Language Language
         {
@@ -65,6 +67,16 @@ namespace Macro.Models
             {
                 _similarity = value;
                 OnPropertyChanged("Similarity");
+            }
+        }
+
+        public bool VersionCheck
+        {
+            get => _versionCheck;
+            set
+            {
+                _versionCheck = value;
+                OnPropertyChanged("VersionCheck");
             }
         }
 

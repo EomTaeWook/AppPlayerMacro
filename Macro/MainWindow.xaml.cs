@@ -5,8 +5,10 @@ using Macro.Models;
 using Macro.View;
 using MahApps.Metro.Controls;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,10 +52,14 @@ namespace Macro
 
         private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
         {
-            _taskQueue.Enqueue(() => { return Delete(null); })
-                .Finally((state) => 
-                {
-                    Dispatcher.Invoke(() => { Clear(); });
+            _taskQueue.Enqueue(() => 
+            {
+                return Delete(null);
+            }).Finally((state) => {
+                    Dispatcher.Invoke(() => 
+                    {
+                        Clear();
+                    });
                 }, this );
         }
 
@@ -96,7 +102,8 @@ namespace Macro
             }
             else
             {
-                comboProcess.SelectedValue = model.ProcessInfo.ProcessName;
+                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
+                comboProcess.SelectedValue = pair.Value;
                 btnDelete.Visibility = Visibility.Visible;
                 _bitmap = model.Image;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
@@ -133,14 +140,15 @@ namespace Macro
 
                     NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
                     model.ProcessInfo.Position = rect;
+                    configView.InsertModel(model);
 
                     _taskQueue.Enqueue(Save, model).ContinueWith((task) =>
                     {
                         Dispatcher.Invoke(() =>
                         {
                             Clear();
-                        });                        
-                    }).Finally(r => ((ConfigEventView)r).InsertModel(model), configView);
+                        });
+                    });
                 }
                 else
                 {
@@ -152,20 +160,14 @@ namespace Macro
                 var model = configView.Model;
                 _taskQueue.Enqueue((o) =>
                 {
-                    configView.RemoveModel(model);
-                    return Task.CompletedTask;
-                }, configView)
-                .ContinueWith((task) =>
-                {
-                    if (task.IsCompleted)
+                    var task = new TaskCompletionSource<Task>();
+                    Dispatcher.Invoke(() =>
                     {
-                        Dispatcher.Invoke(() =>
-                        {
-                            Delete(model);
-                            Clear();
-                        });
-                    }
-                });
+                        task.SetResult(Delete(o));
+                        Clear();
+                    });
+                    return task.Task;
+                }, model);
             }
             else if(btn.Equals(btnStart))
             {

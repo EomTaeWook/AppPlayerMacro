@@ -103,6 +103,16 @@
 		"Code" : "Similarity",
 		"Kor": "유사도",
 		"Eng": "Similarity"
+	},
+	{
+		"Code" : "AfterDelay",
+		"Kor": "후(後) 딜레이",
+		"Eng": "AfterDelay"
+	},
+	{
+		"Code" : "VersionCheck",
+		"Kor": "버전 정보 확인",
+		"Eng": "VersionCheck"
 	}
 ]
 

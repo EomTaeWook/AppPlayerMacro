@@ -51,9 +51,13 @@ namespace Macro.View
         }
         public void InsertModel(EventTriggerModel model)
         {
+            if (model == null)
+                return;
             Dispatcher.Invoke(() =>
             {
-                ((ConfigEventViewModel)DataContext).TriggerSaves.Add(model);
+                var saves = ((ConfigEventViewModel)DataContext).TriggerSaves;
+                if(!saves.Contains(model))
+                    ((ConfigEventViewModel)DataContext).TriggerSaves.Add(model);
                 if (Model != _dummy)
                 {
                     Model = _dummy;
@@ -62,6 +66,8 @@ namespace Macro.View
         }
         public void RemoveModel(EventTriggerModel model)
         {
+            if (model == null)
+                return;
             Dispatcher.Invoke(() =>
             {
                 if (((ConfigEventViewModel)DataContext).TriggerSaves.Remove(model.Index))

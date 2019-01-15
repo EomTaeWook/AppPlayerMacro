@@ -5,11 +5,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:util="clr-namespace:Utils;assembly=Utils"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
     <Grid>
         <DockPanel LastChildFill="False">
             <Grid DockPanel.Dock="Top">
                 <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -34,6 +36,14 @@
                 
                 <Label Grid.Row="4" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.Similarity, Source={StaticResource Locator}}"></Label>
                 <Controls:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></Controls:NumericUpDown>
+
+                <Label Grid.Row="5" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.VersionCheck, Source={StaticResource Locator}}"></Label>
+                <ComboBox Name="comboVersionCheck" Grid.Row="5" Grid.Column="1" FontSize="15" SelectedValue="{Binding Path=Config.VersionCheck, Mode=TwoWay}">
+                    <ComboBox.Items>
+                        <system:Boolean>True</system:Boolean>
+                        <system:Boolean>False</system:Boolean>
+                    </ComboBox.Items>
+                </ComboBox>
             </Grid>
             <Button Name="btnSave" DockPanel.Dock="Bottom" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}" Style="{DynamicResource SquareButtonStyle}"></Button>
         </DockPanel>
