@@ -19,6 +19,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
+using Utils.Extensions;
 using Utils.Infrastructure;
 using EventType = Macro.Models.EventType;
 using InputManager = Macro.Infrastructure.Manager.InputManager;
@@ -75,6 +76,8 @@ namespace Macro
             _path = _config.SavePath;
             if (string.IsNullOrEmpty(_path))
                 _path = ConstHelper.DefaultSavePath;
+            else
+                _path += @"\";
             if (!Directory.Exists(_path))
                 Directory.CreateDirectory(_path);
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
@@ -180,9 +183,9 @@ namespace Macro
                 try
                 {
                     var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(_path));
-                    _index = models.LastOrDefault()?.Index ?? 0;
                     foreach (var model in models)
                     {
+                        _index = _index < model.Index ? model.Index : _index;
                         configView.InsertModel(model);
                     }
                     task.SetResult(Task.CompletedTask);
@@ -235,32 +238,47 @@ namespace Macro
                     {
                         if (DisplayHelper.ProcessCapture(process.Value, out Bitmap bmp))
                         {
+                            var factor = NativeHelper.GetSystemDpi();
+                            var sourceBmp = bmp.Resize((int)Math.Truncate(bmp.Width * (factor.X / ConstHelper.DefaultDPI)), (int)Math.Truncate(bmp.Height * (factor.Y / ConstHelper.DefaultDPI)));
+                            
+                            var souceFactorX = factor.X / (save.MonitorInfo.Dpi.X * 1.0F);
+                            var souceFactorY = factor.Y / (save.MonitorInfo.Dpi.Y * 1.0F);
+
+                            var targetBmp = save.Image.Resize((int)Math.Truncate(save.Image.Width * souceFactorX), (int)Math.Truncate(save.Image.Height * souceFactorY));
+
                             Dispatcher.Invoke(() =>
                             {
                                 captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
                             });
-
-                            var similarity = OpenCVHelper.Search(bmp, save.Image, out Point location);
+                            var similarity = OpenCVHelper.Search(sourceBmp, targetBmp, out Point location);
                             LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+
                             if (similarity >= _config.Similarity)
                             {
-                                var hWndActive = NativeHelper.GetForegroundWindow();
-
                                 if (save.EventType == EventType.Mouse)
                                 {
-                                    var currentMousePoint = NativeHelper.GetCursorPosition();
-
                                     LogHelper.Debug($"[index : {save.Index}] save Mouse X : {save.MousePoint.Value.X} save Mouse Y : {save.MousePoint.Value.Y}");
-
-                                    //NativeHelper.SetForegroundWindow(process.Value.MainWindowHandle);
 
                                     var currentPosition = new Rect();
                                     NativeHelper.GetWindowRect(process.Value.MainWindowHandle, ref currentPosition);
 
+                                    var targetFactorX = 1.0F;
+                                    var targetFactorY = 1.0F;
+
+                                    foreach (var monitor in DisplayHelper.MonitorInfo())
+                                    {
+                                        if (monitor.Rect.IsContain(currentPosition))
+                                        {
+                                            targetFactorX = monitor.Dpi.X / (save.MonitorInfo.Dpi.X * targetFactorX);
+                                            targetFactorY = monitor.Dpi.Y / (save.MonitorInfo.Dpi.Y * targetFactorY);
+                                            break;
+                                        }
+                                    }
+
                                     var mousePosition = new Point()
                                     {
-                                        X = Math.Abs(save.ProcessInfo.Position.Left + (save.MousePoint.Value.X < 0 ? save.MousePoint.Value.X * -1 : save.MousePoint.Value.X)),
-                                        Y = Math.Abs(save.ProcessInfo.Position.Top - (save.MousePoint.Value.Y < 0 ? save.MousePoint.Value.Y * -1 : save.MousePoint.Value.Y))
+                                        X = Math.Abs(save.ProcessInfo.Position.Left + save.MousePoint.Value.X * -1) * targetFactorX,
+                                        Y = Math.Abs(save.ProcessInfo.Position.Top + save.MousePoint.Value.Y * -1) * targetFactorY
                                     };
 
                                     NativeHelper.PostMessage(process.Value.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
@@ -269,6 +287,9 @@ namespace Macro
                                 }
                                 else if (save.EventType == EventType.Keyboard)
                                 {
+                                    var hWndActive = NativeHelper.GetForegroundWindow();
+                                    Task.Delay(200);
+                                    NativeHelper.SetForegroundWindow(process.Value.MainWindowHandle);
                                     var commands = save.KeyboardCmd.Split('+');
                                     var modifiedKey = commands.Where(r =>
                                     {
@@ -290,9 +311,8 @@ namespace Macro
                                         return keyCode;
                                     });
                                     ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
+                                    NativeHelper.SetForegroundWindow(hWndActive);
                                 }
-
-                                NativeHelper.SetForegroundWindow(hWndActive);
                             }
                         }
                     }

@@ -5,12 +5,14 @@ using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Unity;
 using Utils;
+using Point = System.Windows.Point;
 
 namespace Macro.Extensions
 {
@@ -135,6 +137,15 @@ namespace Macro.Extensions
         {
             return (int)point.X & 0xFFFF | ((int)point.Y << 0x10);
         }
+        public static Bitmap Resize(this Bitmap source, int width, int height)
+        {
+            var bmp = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.DrawImage(source, 0, 0, width, height);
+            }
+            return bmp;
+        }
         public static T TryFindFromPoint<T>(this UIElement element, Point point) where T : class
         {
             if (!(element.InputHitTest(point) is DependencyObject @object))
@@ -167,5 +178,7 @@ namespace Macro.Extensions
             }
             return VisualTreeHelper.GetParent(child);
         }
+
+        
     }
 }

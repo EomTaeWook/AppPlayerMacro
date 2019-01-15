@@ -5,8 +5,8 @@ namespace Macro.Models
     internal class Current
     {
         public static readonly int Major = 1;
-        public static readonly int Minor = 2;
-        public static readonly int Build = 2;
+        public static readonly int Minor = 3;
+        public static readonly int Build = 1;
     }
 
     public class Version : IComparable

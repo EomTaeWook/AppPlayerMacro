@@ -45,11 +45,7 @@ namespace Macro
         }
         private void InitTemplate()
         {
-            var path = Environment.CurrentDirectory;
-#if DEBUG
-            path += @"\..\..\..\";
-#endif
-            path += @".\Datas\";
+            var path = $@"{Environment.CurrentDirectory}\Datas\";
             Singleton<DocumentTemplate<Label>>.Instance.Init(path);
             Singleton<DocumentTemplate<Message>>.Instance.Init(path);
         }

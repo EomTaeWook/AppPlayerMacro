@@ -27,7 +27,9 @@ namespace Macro
         {
             InitEvent();
             Init();
+#if !DEBUG
             VersionCheck();
+#endif
         }
         private void InitEvent()
         {
@@ -49,13 +51,10 @@ namespace Macro
         private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
         {
             _taskQueue.Enqueue(() => { return Delete(null); })
-                .ContinueWith((task) => 
+                .Finally((state) => 
                 {
-                    if(task.IsCompleted)
-                    {
-                        Dispatcher.Invoke(() => { Clear(); });
-                    }
-                });
+                    Dispatcher.Invoke(() => { Clear(); });
+                }, this );
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
