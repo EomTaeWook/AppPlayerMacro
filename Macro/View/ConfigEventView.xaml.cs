@@ -6,7 +6,6 @@ using MahApps.Metro.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using EventType = Macro.Models.EventType;
 
 namespace Macro.View
