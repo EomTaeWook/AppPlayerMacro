@@ -10,15 +10,7 @@ namespace Macro.Infrastructure
     {
         public static int Search(Bitmap source, Bitmap target)
         {
-            var sourceMat = BitmapConverter.ToMat(source);
-            var targetMat = BitmapConverter.ToMat(target);
-
-            if (sourceMat.Cols <= targetMat.Cols || sourceMat.Rows <= targetMat.Rows)
-                return 0;
-
-            var match = sourceMat.MatchTemplate(targetMat,TemplateMatchModes.CCoeffNormed);
-            Cv2.MinMaxLoc(match, out double min, out double max, out Point minLoc, out Point maxLoc);
-            return Convert.ToInt32(max * 100);
+            return Search(source, target, out System.Windows.Point location);
         }
         public static int Search(Bitmap source, Bitmap target, out System.Windows.Point location)
         {

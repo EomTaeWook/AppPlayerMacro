@@ -47,7 +47,7 @@ namespace Macro
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-            }
+        }
         
         private void Init()
         {
