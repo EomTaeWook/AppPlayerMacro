@@ -29,7 +29,6 @@ namespace Macro.View
             }
             base.OnPreviewKeyDown(e);
         }
-
         private void GrdSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((sender as DataGrid).SelectedItem is EventTriggerModel item)
@@ -91,25 +90,30 @@ namespace Macro.View
 
         private void GrdSaves_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (!_isDrag)
-                return;
             dragPopup.IsOpen = false;
-            _isDrag = false;
-            var viewModel = DataContext as ConfigEventViewModel;
-            var target = grdSaves.SelectedItem as EventTriggerModel;
-            if(viewModel.DragItem != target)
+            if (_isDrag)
             {
-                var Index = viewModel.TriggerSaves.IndexOf(viewModel.DragItem);
-                viewModel.TriggerSaves.Remove(target);
-                viewModel.TriggerSaves.Insert(Index, target);
-                
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                var viewModel = DataContext as ConfigEventViewModel;
+                var row = (sender as UIElement).TryFindFromPoint<DataGridRow>(e.GetPosition(grdSaves));
+                if(row != null)
                 {
-                    TriggerModel1 = target,
-                    TriggerModel2 = viewModel.DragItem
-                });
+                    var target = row.Item as EventTriggerModel;
+                    if (viewModel.DragItem != target)
+                    {
+                        var targetIndex = viewModel.TriggerSaves.IndexOf(target);
+                        var selectIndex = viewModel.TriggerSaves.IndexOf(viewModel.DragItem);
+                        viewModel.TriggerSaves.Swap(targetIndex, selectIndex);
+
+                        NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                        {
+                            TriggerModel1 = target,
+                            TriggerModel2 = viewModel.DragItem
+                        });
+                    }
+                }
                 viewModel.DragItem = _dummy;
             }
+            _isDrag = false;
         }
 
         private void GrdSaves_MouseMove(object sender, MouseEventArgs e)
@@ -120,12 +124,12 @@ namespace Macro.View
             var row = (sender as UIElement).TryFindFromPoint<DataGridRow>(position);
             if (row != null)
             {
-                grdSaves.SelectedItem = row.Item;
                 if (!dragPopup.IsOpen)
+                {
                     dragPopup.IsOpen = true;
-
-                var popupSize = new Size(dragPopup.ActualWidth, dragPopup.ActualHeight);
-                dragPopup.PlacementRectangle = new Rect(e.GetPosition(this), popupSize);
+                    var popupSize = new Size(dragPopup.ActualWidth, dragPopup.ActualHeight);
+                    dragPopup.PlacementRectangle = new Rect(e.GetPosition(this), popupSize);
+                }
             }
         }
 

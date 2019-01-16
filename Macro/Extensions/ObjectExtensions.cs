@@ -178,7 +178,11 @@ namespace Macro.Extensions
             }
             return VisualTreeHelper.GetParent(child);
         }
-
-        
+        public static void Swap<T>(this ObservableCollection<T> collection, int index1, int index2)
+        {
+            var temp = collection[index1];
+            collection[index1] = collection[index2];
+            collection[index2] = temp;
+        }
     }
 }

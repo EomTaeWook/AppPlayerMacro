@@ -6,7 +6,7 @@ namespace Macro.Models
     {
         public static readonly int Major = 1;
         public static readonly int Minor = 4;
-        public static readonly int Build = 0;
+        public static readonly int Build = 1;
     }
 
     public class Version : IComparable

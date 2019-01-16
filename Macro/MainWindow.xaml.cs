@@ -94,6 +94,7 @@ namespace Macro
             }
             _captureViews.Clear();
         }
+
         private void ConfigView_SelectData(EventTriggerModel model)
         {
             if(model == null)
