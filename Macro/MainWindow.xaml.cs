@@ -29,9 +29,7 @@ namespace Macro
         {
             InitEvent();
             Init();
-#if !DEBUG
             VersionCheck();
-#endif
         }
         private void InitEvent()
         {
@@ -83,6 +81,7 @@ namespace Macro
         {
             _config = e.Config;
             settingFlyout.IsOpen = !settingFlyout.IsOpen;
+            SaveLoad(null);
             Refresh();
         }
 

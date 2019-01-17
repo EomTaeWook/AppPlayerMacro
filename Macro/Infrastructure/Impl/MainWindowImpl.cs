@@ -12,6 +12,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -100,6 +101,7 @@ namespace Macro
                 BindingOperations.GetBindingExpressionBase(button, ContentProperty).UpdateTarget();
             }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
+            VersionCheck();
         }
 
         private bool TryModelValidate(EventTriggerModel model, out Message message)
@@ -234,6 +236,7 @@ namespace Macro
         {
             var task = new TaskCompletionSource<Task>();
             List<EventTriggerModel> saves = null;
+            List<KeyValuePair<string, Process>> processes = null;
             Dispatcher.Invoke(() => 
             {
                 saves = configView.TriggerSaves;
@@ -242,7 +245,11 @@ namespace Macro
             {
                 foreach (var save in saves)
                 {
-                    var processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToList();
+                    Dispatcher.Invoke(() =>
+                    {
+                        processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToList();
+                    });
+                    
                     foreach (var process in processes)
                     {
                         if (DisplayHelper.ProcessCapture(process.Value, out Bitmap bmp))
@@ -322,7 +329,7 @@ namespace Macro
                                     ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
                                     NativeHelper.SetForegroundWindow(hWndActive);
                                 }
-                                Task.Delay(save.AfterDelay);
+                                Thread.Sleep(save.AfterDelay);
                             }
                         }
                     }
