@@ -29,7 +29,6 @@ namespace Macro
         {
             InitEvent();
             Init();
-            VersionCheck();
         }
         private void InitEvent()
         {
@@ -80,9 +79,9 @@ namespace Macro
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
         {
             _config = e.Config;
-            settingFlyout.IsOpen = !settingFlyout.IsOpen;
             SaveLoad(null);
             Refresh();
+            settingFlyout.IsOpen = !settingFlyout.IsOpen;
         }
 
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
