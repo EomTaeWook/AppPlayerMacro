@@ -79,8 +79,9 @@ namespace Macro
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
         {
             _config = e.Config;
-            SaveLoad(null);
+            (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
             Refresh();
+            SaveLoad(null);
             settingFlyout.IsOpen = !settingFlyout.IsOpen;
         }
 

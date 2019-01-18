@@ -41,8 +41,8 @@
 	},
 	{
 		"Code" : "FailedPeriodValidate",
-		"Kor": "프로세싱 주기는 2000이상 입력 부탁드립니다.",
-		"Eng": "Please enter a processing cycle of 2000 or more."
+		"Kor": "프로세싱 주기는 1000이상 입력 부탁드립니다.",
+		"Eng": "Please enter a processing cycle of 1000 or more."
 	},
 	{
 		"Code" : "FailedProcessDelayValidate",

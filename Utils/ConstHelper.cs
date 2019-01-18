@@ -6,7 +6,7 @@
         public static readonly string DefaultSavePath = @".\Save\";
         public static readonly string DefaultSaveFile = "save.dll";
         public static readonly string DefaultConfigFile = "config.json";
-        public static readonly int MinPeriod = 2000;
+        public static readonly int MinPeriod = 1000;
         public static readonly int MinProcessDelay = 100;
         public static readonly int MinSimilarity = 0;
 

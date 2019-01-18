@@ -23,24 +23,15 @@ namespace Macro.View
             btnSave.Click += Button_Click;
         }
 
-        private void TxtSavePath_StylusButtonDown(object sender, System.Windows.Input.StylusButtonEventArgs e)
-        {
-            var dlg = new SaveFileDialog();
-            if(dlg.ShowDialog() == true)
-            {
-                string path = dlg.FileName;
-            }
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
             if(btn.Equals(btnSave))
             {
-                var model = (DataContext as SettingViewModel);
-                if (TryModelValidate(model.Config, out Message error))
+                var model = (DataContext as SettingViewModel).Config;
+                if (TryModelValidate(model, out Message error))
                 {
-                    _taskQueue.Enqueue(Save, model.Config);
+                    _taskQueue.Enqueue(Save, model);
                 }
                 else
                 {

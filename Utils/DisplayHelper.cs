@@ -75,7 +75,7 @@ namespace Utils
                 var factorY = 1.0F;
                 foreach (var monitor in MonitorInfo())
                 {
-                    if(monitor.Rect.IsContain(rect))
+                    if (monitor.Rect.IsContain(rect))
                     {
                         factorX = factor.X / (monitor.Dpi.X * factorX);
                         factorY = factor.Y / (monitor.Dpi.Y * factorY);
