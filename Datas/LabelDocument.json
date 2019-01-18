@@ -92,12 +92,12 @@
 	{
 		"Code" : "Period",
 		"Kor": "전체 프로세싱 주기(ms)",
-		"Eng": "Period"
+		"Eng": "Period(ms)"
 	},
 	{
 		"Code" : "ItemDelay",
 		"Kor": "아이템 딜레이(ms)",
-		"Eng": "ItemDelay"
+		"Eng": "ItemDelay(ms)"
 	},
 	{
 		"Code" : "Similarity",
@@ -107,7 +107,7 @@
 	{
 		"Code" : "AfterDelay",
 		"Kor": "후(後) 작업 딜레이(ms)",
-		"Eng": "AfterDelay"
+		"Eng": "AfterDelay(ms)"
 	},
 	{
 		"Code" : "VersionCheck",

@@ -101,7 +101,6 @@ namespace Macro
                 BindingOperations.GetBindingExpressionBase(button, ContentProperty).UpdateTarget();
             }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
-            VersionCheck();
         }
 
         private bool TryModelValidate(EventTriggerModel model, out Message message)

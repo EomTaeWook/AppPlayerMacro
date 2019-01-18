@@ -28,6 +28,7 @@ namespace Macro
         {
             InitEvent();
             Init();
+            VersionCheck();
         }
         private void InitEvent()
         {

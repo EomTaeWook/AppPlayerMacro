@@ -19,8 +19,8 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*"></ColumnDefinition>
-                    <ColumnDefinition Width="6*"></ColumnDefinition>
+                    <ColumnDefinition Width="5.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="4.5*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.Language, Source={StaticResource Locator} }"></Label>
                 <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" FontSize="15" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
