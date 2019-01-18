@@ -40,7 +40,7 @@ namespace Macro.View
                 message = Message.FailedPeriodValidate;
                 return false;
             }
-            if (model.ProcessDelay < ConstHelper.MinProcessDelay)
+            if (model.ItemDelay < ConstHelper.MinItemDelay)
             {
                 message = Message.FailedProcessDelayValidate;
                 return false;

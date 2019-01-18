@@ -333,7 +333,7 @@ namespace Macro
                             }
                         }
                     }
-                    Thread.Sleep(_config.ProcessDelay);
+                    Thread.Sleep(_config.ItemDelay);
                 }
                 task.SetResult(Task.CompletedTask);
             }

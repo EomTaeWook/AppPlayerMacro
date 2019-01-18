@@ -6,7 +6,7 @@ namespace Utils.Extensions
     {
         public static bool IsContain(this Rect source, Rect other)
         {
-            return source.Left <= other.Left && source.Right >= other.Right && source.Top <= other.Top && source.Bottom >= other.Bottom;
+            return source.Left <= other.Right && source.Right >= other.Left && source.Top <= other.Bottom && source.Bottom >= other.Top;
         }
     }
 }

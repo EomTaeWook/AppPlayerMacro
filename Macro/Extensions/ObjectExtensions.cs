@@ -122,7 +122,7 @@ namespace Macro.Extensions
                     };
                     progress.Loaded += (s, e) =>
                     {
-                        action().ContinueWith((task) =>
+                        action().ContinueWith(task =>
                         {
                             progress.Dispatcher.Invoke(() => {
                                 progress.Close();

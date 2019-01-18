@@ -81,9 +81,9 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Period);
         }
-        public string ProcessDelay
+        public string ItemDelay
         {
-            get => DocumentHelper.Get(Label.ProcessDelay);
+            get => DocumentHelper.Get(Label.ItemDelay);
         }
         public string Similarity
         {

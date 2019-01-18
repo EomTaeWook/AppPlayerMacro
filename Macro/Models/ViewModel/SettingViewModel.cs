@@ -15,7 +15,7 @@ namespace Macro.Models.ViewModel
             {
                 Language = config.Language,
                 Period = config.Period,
-                ProcessDelay = config.ProcessDelay,
+                ItemDelay = config.ItemDelay,
                 SavePath = config.SavePath,
                 Similarity = config.Similarity,
                 VersionCheck = config.VersionCheck

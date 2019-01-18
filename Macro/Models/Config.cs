@@ -9,7 +9,7 @@ namespace Macro.Models
         Language Language { get; }
         string SavePath { get; }
         int Period { get; }
-        int ProcessDelay { get; }
+        int ItemDelay { get; }
         int Similarity { get; }
         bool VersionCheck { get; }
     }
@@ -19,7 +19,7 @@ namespace Macro.Models
         private Language _language = Language.Kor;
         private string _savePath = "";
         private int _period = ConstHelper.MinPeriod;
-        private int _processDelay = ConstHelper.MinProcessDelay;
+        private int _ItemDelay = ConstHelper.MinItemDelay;
         private int _similarity = ConstHelper.DefaultSimilarity;
         private bool _versionCheck = false;
 
@@ -51,13 +51,13 @@ namespace Macro.Models
                 OnPropertyChanged("Period");
             }
         }
-        public int ProcessDelay
+        public int ItemDelay
         {
-            get => _processDelay;
+            get => _ItemDelay;
             set
             {
-                _processDelay = value;
-                OnPropertyChanged("ProcessDelay");
+                _ItemDelay = value;
+                OnPropertyChanged("ItemDelay");
             }
         }
         public int Similarity

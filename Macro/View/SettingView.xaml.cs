@@ -1,7 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Models.ViewModel;
 using MahApps.Metro.Controls;
-using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
 using Utils.Document;

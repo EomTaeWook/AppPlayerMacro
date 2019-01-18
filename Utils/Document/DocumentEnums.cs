@@ -23,7 +23,7 @@
         Language,
         SavePath,
         Period,
-        ProcessDelay,
+        ItemDelay,
         Similarity,
         AfterDelay,
         VersionCheck,

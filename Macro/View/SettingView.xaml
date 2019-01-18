@@ -32,9 +32,9 @@
                 
                 <Label Grid.Row="2" Grid.Column="0"  FontSize="15" Content="{Binding Path=LabelViewModel.Period, Source={StaticResource Locator}}"></Label>
                 <Controls:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.Period, Mode=TwoWay}"></Controls:NumericUpDown>
-                
-                <Label Grid.Row="3" Grid.Column="0"  FontSize="15" Content="{Binding Path=LabelViewModel.ProcessDelay, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinProcessDelay}}" Grid.Row="3" Grid.Column="1" Value="{Binding Path=Config.ProcessDelay, Mode=TwoWay}"></Controls:NumericUpDown>
+
+                <Label Grid.Row="3" Grid.Column="0"  FontSize="15" Content="{Binding Path=LabelViewModel.ItemDelay, Source={StaticResource Locator}}"></Label>
+                <Controls:NumericUpDown Name="numDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinItemDelay}}" Grid.Row="3" Grid.Column="1" Value="{Binding Path=Config.ItemDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 
                 <Label Grid.Row="4" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.Similarity, Source={StaticResource Locator}}"></Label>
                 <Controls:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></Controls:NumericUpDown>

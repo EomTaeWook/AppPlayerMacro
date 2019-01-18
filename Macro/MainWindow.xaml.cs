@@ -2,7 +2,6 @@
 using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
-using Macro.View;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
@@ -78,11 +77,15 @@ namespace Macro
 
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
         {
-            _config = e.Config;
-            (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
-            Refresh();
-            SaveLoad(null);
-            settingFlyout.IsOpen = !settingFlyout.IsOpen;
+            this.ProgressbarShow(() =>
+            {
+                _config = e.Config;
+                (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
+                Refresh();
+                SaveLoad(null);
+                settingFlyout.IsOpen = !settingFlyout.IsOpen;
+                return Task.CompletedTask;
+            });
         }
 
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
@@ -142,7 +145,7 @@ namespace Macro
                     model.ProcessInfo.Position = rect;
                     configView.InsertModel(model);
 
-                    _taskQueue.Enqueue(Save, model).ContinueWith((task) =>
+                    _taskQueue.Enqueue(Save, model).ContinueWith(task =>
                     {
                         Dispatcher.Invoke(() =>
                         {
@@ -184,7 +187,7 @@ namespace Macro
             }
             else if(btn.Equals(btnStop))
             {
-                this.ProgressbarShow(ProcessManager.Stop).ContinueWith((task) =>
+                this.ProgressbarShow(ProcessManager.Stop).ContinueWith(task =>
                 {
                     Dispatcher.Invoke(() =>
                     {
