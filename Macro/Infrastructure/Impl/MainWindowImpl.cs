@@ -36,7 +36,7 @@ namespace Macro
         private TaskQueue _taskQueue;
         private string _path;
         private int _index;
-        private IEnumerable<KeyValuePair<string, Process>> _processes;
+        private KeyValuePair<string, Process>[] _processes;
         private IConfig _config;
         private Bitmap _bitmap;
         private List<CaptureView> _captureViews;
@@ -83,8 +83,10 @@ namespace Macro
                 Directory.CreateDirectory(_path);
             _path = $"{_path}{ConstHelper.DefaultSaveFile}";
 
-            _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero).Select(r => new KeyValuePair<string, Process>(r.ProcessName, r));
-            comboProcess.ItemsSource = _processes.OrderBy(r => r.Key);
+            _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero)
+                                                .Select(r => new KeyValuePair<string, Process>(r.ProcessName, r))
+                                                .OrderBy(r=>r.Key).ToArray();
+            comboProcess.ItemsSource = _processes;
             comboProcess.DisplayMemberPath = "Key";
             comboProcess.SelectedValuePath = "Value";
 
@@ -213,13 +215,21 @@ namespace Macro
 
             var request = (HttpWebRequest)WebRequest.Create(ConstHelper.VersionUrl);
             Version version = null;
-            using (var response = request.GetResponse())
+            try
             {
-                using (var stream = new StreamReader(response.GetResponseStream()))
+                using (var response = request.GetResponse())
                 {
-                    version = JsonHelper.DeserializeObject<Version>(stream.ReadToEnd());
+                    using (var stream = new StreamReader(response.GetResponseStream()))
+                    {
+                        version = JsonHelper.DeserializeObject<Version>(stream.ReadToEnd());
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+                LogHelper.Warning(ex.Message);
+            }
+            
             if(version != null)
             {
                 if(version.CompareTo(Version.CurrentVersion) > 0)
@@ -231,11 +241,23 @@ namespace Macro
                 }
             }
         }
-        private Task OnProcessCallback()
+        private Task OnProcessCallback(CancellationToken token)
         {
-            var task = new TaskCompletionSource<Task>();
+            var tcs = new TaskCompletionSource<Task>();
             List<EventTriggerModel> saves = null;
-            List<KeyValuePair<string, Process>> processes = null;
+            KeyValuePair<string, Process>[] processes = null;
+            bool tokenCheckDelay(int millisecondsDelay)
+            {
+                try
+                {
+                    Task.Delay(millisecondsDelay, token).Wait();
+                }
+                catch(AggregateException ex)
+                {
+                    LogHelper.Debug(ex.Message);
+                }                    
+                return !token.IsCancellationRequested;
+            }
             Dispatcher.Invoke(() => 
             {
                 saves = configView.TriggerSaves;
@@ -244,18 +266,20 @@ namespace Macro
             {
                 foreach (var save in saves)
                 {
+                    if (token.IsCancellationRequested)
+                        break;
                     Dispatcher.Invoke(() =>
                     {
-                        processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToList();
+                        processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToArray();
                     });
                     
-                    foreach (var process in processes)
+                    for(int i=0; i< processes.Length; ++i)
                     {
-                        if (DisplayHelper.ProcessCapture(process.Value, out Bitmap bmp))
+                        if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp))
                         {
                             var factor = NativeHelper.GetSystemDpi();
                             var sourceBmp = bmp.Resize((int)Math.Truncate(bmp.Width * (factor.X / ConstHelper.DefaultDPI)), (int)Math.Truncate(bmp.Height * (factor.Y / ConstHelper.DefaultDPI)));
-                            
+
                             var souceFactorX = factor.X / (save.MonitorInfo.Dpi.X * 1.0F);
                             var souceFactorY = factor.Y / (save.MonitorInfo.Dpi.Y * 1.0F);
 
@@ -275,7 +299,7 @@ namespace Macro
                                     LogHelper.Debug($"[index : {save.Index}] save Mouse X : {save.MousePoint.Value.X} save Mouse Y : {save.MousePoint.Value.Y}");
 
                                     var currentPosition = new Rect();
-                                    NativeHelper.GetWindowRect(process.Value.MainWindowHandle, ref currentPosition);
+                                    NativeHelper.GetWindowRect(processes.ElementAt(i).Value.MainWindowHandle, ref currentPosition);
 
                                     var targetFactorX = 1.0F;
                                     var targetFactorY = 1.0F;
@@ -296,15 +320,15 @@ namespace Macro
                                         Y = Math.Abs(save.ProcessInfo.Position.Top + save.MousePoint.Value.Y * -1) * targetFactorY
                                     };
 
-                                    NativeHelper.PostMessage(process.Value.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-                                    Task.Delay(200);
-                                    NativeHelper.PostMessage(process.Value.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+                                    NativeHelper.PostMessage(processes.ElementAt(i).Value.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                                    Task.Delay(100).Wait();
+                                    NativeHelper.PostMessage(processes.ElementAt(i).Value.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
                                 }
                                 else if (save.EventType == EventType.Keyboard)
                                 {
                                     var hWndActive = NativeHelper.GetForegroundWindow();
-                                    Task.Delay(200);
-                                    NativeHelper.SetForegroundWindow(process.Value.MainWindowHandle);
+                                    Task.Delay(100).Wait();
+                                    NativeHelper.SetForegroundWindow(processes.ElementAt(i).Value.MainWindowHandle);
                                     var commands = save.KeyboardCmd.Split('+');
                                     var modifiedKey = commands.Where(r =>
                                     {
@@ -328,19 +352,22 @@ namespace Macro
                                     ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
                                     NativeHelper.SetForegroundWindow(hWndActive);
                                 }
-                                Thread.Sleep(save.AfterDelay);
+                                if (!tokenCheckDelay(save.AfterDelay))
+                                    break;
                             }
                         }
                     }
-                    Thread.Sleep(_config.ItemDelay);
+                    if (!tokenCheckDelay(_config.ItemDelay))
+                        break;
                 }
-                task.SetResult(Task.CompletedTask);
+                tokenCheckDelay(_config.Period);
+                tcs.SetResult(Task.CompletedTask);
             }
             else
             {
-                task.TrySetCanceled();
+                tcs.TrySetCanceled();
             }
-            return task.Task;
+            return tcs.Task;
         }
     }
 }

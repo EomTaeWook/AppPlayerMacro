@@ -1,8 +1,8 @@
 {
   "Language": "Kor",
   "SavePath": "",
-  "Period": "2000",
-  "ItemDelay": "200",
+  "Period": "1000",
+  "ItemDelay": "100",
   "Similarity": "75",
-  "VersionCheck" :  false
+  "VersionCheck" :  true
 }

@@ -101,8 +101,8 @@ namespace Macro.View
                     if (viewModel.DragItem != target)
                     {
                         var targetIndex = viewModel.TriggerSaves.IndexOf(target);
-                        var selectIndex = viewModel.TriggerSaves.IndexOf(viewModel.DragItem);
-                        viewModel.TriggerSaves.Swap(targetIndex, selectIndex);
+                        viewModel.TriggerSaves.Remove(viewModel.DragItem);
+                        viewModel.TriggerSaves.Insert(targetIndex, viewModel.DragItem);
 
                         NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                         {

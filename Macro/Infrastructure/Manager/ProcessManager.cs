@@ -17,22 +17,22 @@ namespace Macro.Infrastructure.Manager
         {
             return ObjectExtensions.GetInstance<ProcessManager>().Drain();
         }
-        public static void AddJob(Func<Task> taskFunc)
+        public static void AddJob(Func<CancellationToken, Task> taskFunc)
         {
             ObjectExtensions.GetInstance<ProcessManager>().Jobs.Add(taskFunc);
         }
 
-        public List<Func<Task>> Jobs { get; private set; }
+        public List<Func<CancellationToken, Task>> Jobs { get; private set; }
 
         private readonly IConfig _config;
         private CancellationTokenSource _cts;
         private Task _current;
-        private int _atomic =0;
+        private volatile int _atomic = 0;
 
         public ProcessManager(IConfig config)
         {
             _config = config;
-            Jobs = new List<Func<Task>>();
+            Jobs = new List<Func<CancellationToken, Task>>();
 
             AppDomain.CurrentDomain.ProcessExit += (s, e) =>
             {
@@ -61,12 +61,11 @@ namespace Macro.Infrastructure.Manager
         private void OnProcess(object state)
         {
             var token = (state as CancellationTokenSource).Token;
-
             while (!token.IsCancellationRequested)
             {
                 foreach (var job in Jobs)
                 {
-                    var task = Task.Factory.StartNew(job.Invoke, token);
+                    var task = Task.Factory.StartNew(()=> { return job.Invoke(token); }, token);
                     task.Wait();
                     if (!task.IsCompleted)
                         break;
