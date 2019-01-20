@@ -4,8 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
     <UserControl.Resources>
-        <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure"/>
-        <infra:BooleanToValueConverter x:Key="BooleanConverter" xmlns:infra="clr-namespace:Macro.Infrastructure"/>
+        <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:BooleanToValueConverter x:Key="BooleanConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
     </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="True">

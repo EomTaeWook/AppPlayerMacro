@@ -25,6 +25,13 @@ namespace Macro.View
         public TreeListView()
         {
             Columns = new GridViewColumnCollection();
+            Application.Current.MainWindow.SizeChanged += (s, e) =>
+            {
+                foreach (var column in Columns)
+                {
+                    BindingOperations.GetBindingExpression(column, WidthProperty).UpdateTarget();
+                }
+            };
         }
     }
 

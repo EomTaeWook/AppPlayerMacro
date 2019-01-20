@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Macro.Infrastructure
+namespace Macro.Infrastructure.Converter
 {
     public class BooleanToValueConverter : IValueConverter
     {

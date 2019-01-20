@@ -264,7 +264,7 @@ namespace Macro
             });
             if(saves != null)
             {
-                foreach (var save in saves)
+                foreach (var save in saves) 
                 {
                     if (token.IsCancellationRequested)
                         break;

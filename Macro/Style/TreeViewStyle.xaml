@@ -62,6 +62,14 @@
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="true"/>
+                    <Condition Property="IsSelected" Value="false"/>
+                </MultiTrigger.Conditions>
+                <Setter TargetName="Border" Property="Background" Value="#87CEFA"/>
+                <Setter Property="BorderBrush" Value="#1E90FF"/>
+            </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 

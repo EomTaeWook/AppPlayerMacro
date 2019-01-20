@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Data;
-namespace Macro.Infrastructure
+namespace Macro.Infrastructure.Converter
 {
     [ValueConversion(typeof(Bitmap), typeof(System.Windows.Media.ImageSource))]
     public class ImageConverter : IValueConverter

@@ -193,10 +193,11 @@
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
-    <Compile Include="Infrastructure\BooleanToValueConverter.cs" />
+    <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
+    <Compile Include="Infrastructure\Converter\WidthConverter.cs" />
     <Compile Include="Infrastructure\FolderBrowserDialogCmd.cs" />
     <Compile Include="Infrastructure\IKeyboardInput.cs" />
-    <Compile Include="Infrastructure\ImageConverter.cs" />
+    <Compile Include="Infrastructure\Converter\ImageConverter.cs" />
     <Compile Include="Infrastructure\IMouseInput.cs" />
     <Compile Include="Infrastructure\Impl\ConfigEventImpl.cs" />
     <Compile Include="Infrastructure\Impl\SettingImpl.cs" />
