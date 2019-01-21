@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
 using Utils.Document;
+using Utils.Extensions;
 using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
@@ -144,6 +145,17 @@ namespace Macro
 
                     NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
                     model.ProcessInfo.Position = rect;
+                    if(model.EventType != Models.EventType.Mouse)
+                    {
+                        foreach (var monitor in DisplayHelper.MonitorInfo())
+                        {
+                            if (monitor.Rect.IsContain(rect))
+                            {
+                                model.MonitorInfo = monitor;
+                                break;
+                            }
+                        }
+                    }
                     configView.InsertModel(model);
 
                     _taskQueue.Enqueue(Save, model).ContinueWith(task =>
@@ -184,7 +196,12 @@ namespace Macro
                 }
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
-                ProcessManager.Start();
+                var task = ProcessManager.Start();
+                if(task.IsFaulted)
+                {
+                    ProcessManager.Stop();
+                    ProcessManager.Start();
+                }
             }
             else if(btn.Equals(btnStop))
             {
@@ -201,6 +218,7 @@ namespace Macro
                         }
                         btnStart.Visibility = Visibility.Visible;
                         btnStop.Visibility = Visibility.Collapsed;
+                        configView.Clear();
                     });
                 });
             }

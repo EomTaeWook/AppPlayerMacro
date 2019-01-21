@@ -25,9 +25,11 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <RadioButton GroupName="EventType" Grid.Column="0" IsChecked="{Binding Path=Trigger.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Mouse}" Content="Mouse" Name="rbMouse"/>
-                    <RadioButton GroupName="EventType" Grid.Column="1" IsChecked="{Binding Path=Trigger.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Keyboard}" Content="Keyboard" Name="rbKeyboard"/>
+                    <RadioButton GroupName="EventType" Grid.Column="0" IsChecked="{Binding Path=Trigger.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Image}" Content="Image" Name="rbImage"/>
+                    <RadioButton GroupName="EventType" Grid.Column="1" IsChecked="{Binding Path=Trigger.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Mouse}" Content="Mouse" Name="rbMouse"/>
+                    <RadioButton GroupName="EventType" Grid.Column="2" IsChecked="{Binding Path=Trigger.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Keyboard}" Content="Keyboard" Name="rbKeyboard"/>
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="1">
@@ -35,7 +37,7 @@
                         <ColumnDefinition Width="4*"></ColumnDefinition>
                         <ColumnDefinition Width="6*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" ></Button>
+                    <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" IsEnabled="False"></Button>
                     <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=Trigger.KeyboardCmd, Mode=TwoWay}"></TextBox>
                     <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=Trigger.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="2"></Label>
                 </Grid>

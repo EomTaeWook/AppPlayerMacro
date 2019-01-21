@@ -22,8 +22,7 @@ namespace Macro.View
         {
             if (e.Key == Key.Escape)
             {
-                grdSaves.SelectedItem = null;
-                Model = _dummy;
+                Clear();
                 SelectData(null);
                 e.Handled = true;
             }
@@ -37,13 +36,15 @@ namespace Macro.View
                 SelectData(item);
                 if(Model.EventType == EventType.Keyboard)
                 {
-                    btnMouseCoordinate.Visibility = Visibility.Collapsed;
-                    txtKeyboardCmd.Visibility = Visibility.Visible;
+                    RadioButton_Click(rbKeyboard, null);
                 }
                 else if(Model.EventType == EventType.Mouse)
                 {
-                    btnMouseCoordinate.Visibility = Visibility.Visible;
-                    txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                    RadioButton_Click(rbMouse, null);
+                }
+                else if (Model.EventType == EventType.Image)
+                {
+                    RadioButton_Click(rbImage, null);
                 }
                 e.Handled = true;
             }
@@ -56,6 +57,9 @@ namespace Macro.View
         
         private void InitEvent()
         {
+            NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
+            NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
+
             var radioButtons = this.FindChildren<RadioButton>();
             foreach (var button in radioButtons)
             {
@@ -66,26 +70,32 @@ namespace Macro.View
             grdSaves.SelectionChanged += GrdSaves_SelectionChanged;
             PreviewKeyDown += ConfigEventView_PreviewKeyDown;
 
-            NotifyHelper.MousePositionDataBind += (args) => 
-            {
-                if (Model == _dummy)
-                {
-                    Model = new EventTriggerModel();
-                }
-                Model.MonitorInfo = args.MonitorInfo;
-                Model.MousePoint = args.MousePoint;
-                foreach (var item in _mousePointViews)
-                {
-                    item.Hide();
-                }
-            };
-
             grdSaves.PreviewMouseLeftButtonDown += GrdSaves_PreviewMouseLeftButtonDown;
             grdSaves.MouseMove += GrdSaves_MouseMove;
             grdSaves.MouseLeave += GrdSaves_MouseLeave;
             grdSaves.PreviewMouseUp += GrdSaves_MouseLeave;
 
             Unloaded += ConfigEventView_Unloaded;
+        }
+
+        private void NotifyHelper_MousePositionDataBind(MousePointEventArgs args)
+        {
+            if (Model == _dummy)
+                Model = new EventTriggerModel();
+
+            Model.MonitorInfo = args.MonitorInfo;
+            Model.MousePoint = args.MousePoint;
+            foreach (var item in _mousePointViews)
+            {
+                item.Hide();
+            }
+        }
+
+        private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs args)
+        {
+            if (Model == _dummy)
+                Model = new EventTriggerModel();
+            RadioButtonRefresh();
         }
 
         private void GrdSaves_MouseLeave(object sender, MouseEventArgs e)
@@ -165,20 +175,20 @@ namespace Macro.View
             {
                 Model = new EventTriggerModel();
             }
+
             if (sender.Equals(rbMouse))
             {
-                btnMouseCoordinate.Visibility = Visibility.Visible;
-                txtKeyboardCmd.Visibility = Visibility.Collapsed;
-
                 Model.EventType = EventType.Mouse;
             }
             else if (sender.Equals(rbKeyboard))
             {
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
-                txtKeyboardCmd.Visibility = Visibility.Visible;
-
                 Model.EventType = EventType.Keyboard;
             }
+            else if(sender.Equals(rbImage))
+            {
+                Model.EventType = EventType.Image;
+            }
+            RadioButtonRefresh();
         }        
     }
 }

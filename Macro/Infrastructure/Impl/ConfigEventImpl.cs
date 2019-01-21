@@ -53,39 +53,56 @@ namespace Macro.View
         {
             if (model == null)
                 return;
+
             Dispatcher.Invoke(() =>
             {
                 var saves = ((ConfigEventViewModel)DataContext).TriggerSaves;
+
                 if(!saves.Contains(model))
                     ((ConfigEventViewModel)DataContext).TriggerSaves.Add(model);
-                if (Model != _dummy)
-                {
-                    Model = _dummy;
-                }
+
+                Clear();
             });
         }
         public void RemoveModel(EventTriggerModel model)
         {
             if (model == null)
                 return;
+
             Dispatcher.Invoke(() =>
             {
-                if (((ConfigEventViewModel)DataContext).TriggerSaves.Remove(model.Index))
-                {
-                    if (Model != _dummy)
-                    {
-                        Model = _dummy;
-                    }
-                }
+                ((ConfigEventViewModel)DataContext).TriggerSaves.Remove(model);
+                Clear();
             });
         }
         public void Clear()
         {
             if (Model != _dummy)
-            {
                 Model = _dummy;
-            }
+
             grdSaves.SelectedItem = null;
+            RadioButtonRefresh();
+
+        }
+        private void RadioButtonRefresh()
+        {
+            if (Model.EventType == EventType.Mouse)
+            {
+                btnMouseCoordinate.Visibility = System.Windows.Visibility.Visible;
+                txtKeyboardCmd.Visibility = System.Windows.Visibility.Collapsed;
+                btnMouseCoordinate.IsEnabled = true;
+            }
+            else if(Model.EventType == EventType.Keyboard)
+            {
+                btnMouseCoordinate.Visibility = System.Windows.Visibility.Collapsed;
+                txtKeyboardCmd.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                btnMouseCoordinate.Visibility = System.Windows.Visibility.Visible;
+                txtKeyboardCmd.Visibility = System.Windows.Visibility.Collapsed;
+                btnMouseCoordinate.IsEnabled = false;
+            }
         }
     }
 }

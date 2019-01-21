@@ -44,6 +44,8 @@ namespace Macro.Infrastructure.Manager
             if(_atomic == 1)
             {
                 _cts.Cancel();
+                if(_current.IsFaulted)
+                    Interlocked.Decrement(ref _atomic);
                 return _current;
             }
 

@@ -105,6 +105,7 @@ namespace Macro.Models
         public EventTriggerModel()
         {
             _keyboardCmd = "";
+            _eventType = EventType.Image;
         }
         
         public EventTriggerModel(EventTriggerModel obj)

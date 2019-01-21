@@ -28,7 +28,11 @@ namespace Macro.Infrastructure.Serialize
                 foreach (var prop in properties)
                 {
                     var val = prop.GetValue(model);
-                    val = val ?? Activator.CreateInstance(prop.PropertyType);
+                    var nullableType =  Nullable.GetUnderlyingType(prop.PropertyType);
+                    if (nullableType == null)
+                        val = val ?? Activator.CreateInstance(prop.PropertyType);
+                    else
+                        val = val ?? Activator.CreateInstance(nullableType);
                     bf.Serialize(ms, val);
                 }
                 bf.Serialize(ms, "\uFF1E");

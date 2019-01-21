@@ -4,6 +4,7 @@
     {
         Mouse,
         Keyboard,
+        Image,
 
         Max
     }

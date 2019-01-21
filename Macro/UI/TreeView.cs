@@ -5,7 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Macro.View
+namespace Macro.UI
 {
     public class TreeListView : TreeView
     {

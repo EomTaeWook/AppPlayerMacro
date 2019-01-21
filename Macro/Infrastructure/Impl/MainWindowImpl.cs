@@ -103,6 +103,7 @@ namespace Macro
                 BindingOperations.GetBindingExpressionBase(button, ContentProperty).UpdateTarget();
             }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
+            configView.Clear();
         }
 
         private bool TryModelValidate(EventTriggerModel model, out Message message)
@@ -175,7 +176,8 @@ namespace Macro
                 File.Delete(_path);
             using (var fs = new FileStream(_path, FileMode.OpenOrCreate))
             {
-                foreach (var data in (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves)
+                var saves = (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
+                foreach (var data in saves)
                 {
                     var bytes = ObjectSerializer.SerializeObject(data);
                     fs.Write(bytes, 0, bytes.Count());
@@ -255,7 +257,7 @@ namespace Macro
                 catch(AggregateException ex)
                 {
                     LogHelper.Debug(ex.Message);
-                }                    
+                }
                 return !token.IsCancellationRequested;
             }
             Dispatcher.Invoke(() => 
@@ -296,8 +298,6 @@ namespace Macro
                             {
                                 if (save.EventType == EventType.Mouse)
                                 {
-                                    LogHelper.Debug($"[index : {save.Index}] save Mouse X : {save.MousePoint.Value.X} save Mouse Y : {save.MousePoint.Value.Y}");
-
                                     var currentPosition = new Rect();
                                     NativeHelper.GetWindowRect(processes.ElementAt(i).Value.MainWindowHandle, ref currentPosition);
 
@@ -313,12 +313,13 @@ namespace Macro
                                             break;
                                         }
                                     }
-
                                     var mousePosition = new Point()
                                     {
                                         X = Math.Abs(save.ProcessInfo.Position.Left + save.MousePoint.Value.X * -1) * targetFactorX,
                                         Y = Math.Abs(save.ProcessInfo.Position.Top + save.MousePoint.Value.Y * -1) * targetFactorY
                                     };
+
+                                    LogHelper.Debug($"[index : {save.Index}] Save Position X : {save.MousePoint.Value.X} Save Position Y : {save.MousePoint.Value.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
 
                                     NativeHelper.PostMessage(processes.ElementAt(i).Value.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                                     Task.Delay(100).Wait();
@@ -329,7 +330,7 @@ namespace Macro
                                     var hWndActive = NativeHelper.GetForegroundWindow();
                                     Task.Delay(100).Wait();
                                     NativeHelper.SetForegroundWindow(processes.ElementAt(i).Value.MainWindowHandle);
-                                    var commands = save.KeyboardCmd.Split('+');
+                                    var commands = save.KeyboardCmd.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
                                     var modifiedKey = commands.Where(r =>
                                     {
                                         var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), $"{r}", true);
@@ -351,6 +352,19 @@ namespace Macro
                                     });
                                     ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
                                     NativeHelper.SetForegroundWindow(hWndActive);
+                                }
+                                else if(save.EventType == EventType.Image)
+                                {
+                                    var target = new Point()
+                                    {
+                                        X = (int)Math.Truncate(location.X / 2),
+                                        Y = (int)Math.Truncate(location.Y / 2)
+                                    };
+                                    LogHelper.Debug($"[index : {save.Index}] Location X : {location.X} Location Y : {location.Y} Target X : {target.X} Target Y : {target.Y}");
+
+                                    NativeHelper.PostMessage(processes.ElementAt(i).Value.MainWindowHandle, WindowMessage.LButtonDown, 1, target.ToLParam());
+                                    Task.Delay(100).Wait();
+                                    NativeHelper.PostMessage(processes.ElementAt(i).Value.MainWindowHandle, WindowMessage.LButtonUp, 0, target.ToLParam());
                                 }
                                 if (!tokenCheckDelay(save.AfterDelay))
                                     break;
