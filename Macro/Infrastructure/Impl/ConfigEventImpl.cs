@@ -37,7 +37,8 @@ namespace Macro.View
 
         private void Init()
         {
-            grdSaves.ItemsSource = (DataContext as ConfigEventViewModel).TriggerSaves;
+            treeSaves.ItemsSource = (DataContext as ConfigEventViewModel).TriggerSaves;
+            //grdSaves.ItemsSource = (DataContext as ConfigEventViewModel).TriggerSaves;
             foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _mousePointViews.Add(new MousePositionView(item));
@@ -80,7 +81,7 @@ namespace Macro.View
             if (Model != _dummy)
                 Model = _dummy;
 
-            grdSaves.SelectedItem = null;
+            //grdSaves.SelectedItem = null;
             RadioButtonRefresh();
 
         }

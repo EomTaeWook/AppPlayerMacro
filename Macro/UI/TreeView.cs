@@ -21,7 +21,6 @@ namespace Macro.UI
             get { return (GridViewColumnCollection)GetValue(ColumnsProperty); }
             set { SetValue(ColumnsProperty, value); }
         }
-
         public TreeListView()
         {
             Columns = new GridViewColumnCollection();
@@ -33,12 +32,32 @@ namespace Macro.UI
                 }
             };
         }
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return new TreeListViewItem();
+        }
+    }
+
+    public class TreeListViewItem : TreeViewItem
+    {
+        public TreeViewItem ParentItem { get; set; }
+
+        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+        {
+            base.PrepareContainerForItemOverride(element, item);
+            if (!(element is TreeListViewItem treeViewItem))
+                return;
+            treeViewItem.ParentItem = ItemsControlFromItemContainer(element) as TreeListViewItem;
+        }
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return new TreeListViewItem();
+        }
     }
 
     internal class TreeListViewExpander : ToggleButton
     {
     }
-
     internal class TreeListViewConverter : IValueConverter
     {
         private readonly double Indentation = 10.0;
@@ -46,25 +65,22 @@ namespace Macro.UI
         {
             if (value == null)
                 return null;
+
+            var level = -1;
             if (targetType == typeof(double) && typeof(DependencyObject).IsAssignableFrom(value.GetType()))
             {
-                DependencyObject element = value as DependencyObject;
-                var level = -1;
-                while (element != null)
+                var element = value as DependencyObject;
+                while ((element = VisualTreeHelper.GetParent(element)) != null)
                 {
-                    element = VisualTreeHelper.GetParent(element);
                     if (typeof(TreeViewItem).IsAssignableFrom(element.GetType()))
                         level++;
                 }
-                return Indentation * level;
             }
-            throw new NotSupportedException(
-                string.Format("Cannot convert from <{0}> to <{1}> using <TreeListViewConverter>.",
-                value.GetType(), targetType));
+            return Indentation * level;
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotSupportedException("This method is not supported.");
+            throw new NotImplementedException();
         }
     }
 }

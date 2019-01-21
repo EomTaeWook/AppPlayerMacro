@@ -248,7 +248,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Style\TreeViewStyle.xaml">
+    <Page Include="Styles\TreeViewStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -325,12 +325,12 @@
     <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
 rd /S/Q $(SolutionDir)Release\exe
 mkdir $(SolutionDir)Release\exe
-xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
-xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\"
-xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
-copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
-copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
-rd /S/Q $(SolutionDir)Release\exe\Save
-del /S/Q $(SolutionDir)Release\exe\Datas\Version.json</PostBuildEvent>
+IF $(ConfigurationName) == Release xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
+IF $(ConfigurationName) == Release xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\" 
+IF $(ConfigurationName) == Release xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
+IF $(ConfigurationName) == Release copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
+IF $(ConfigurationName) == Release copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
+IF $(ConfigurationName) == Release rd /S/Q $(SolutionDir)Release\exe\Save
+IF $(ConfigurationName) == Release del /S/Q $(SolutionDir)Release\exe\Datas\Version.json</PostBuildEvent>
   </PropertyGroup>
 </Project>

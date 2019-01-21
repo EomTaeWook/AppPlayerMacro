@@ -9,8 +9,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Grid Width="15" Height="15" SnapsToDevicePixels="True">
-                        <Rectangle Width="9" Height="9" Stroke="#919191" SnapsToDevicePixels="true" Fill="White"/>
+                    <Grid Width="20" Height="20" SnapsToDevicePixels="True">
+                        <Rectangle Width="15" Height="15" Stroke="#919191" SnapsToDevicePixels="true" Fill="White"/>
                         <Rectangle x:Name="ExpandPath" Width="1" Height="5" Stroke="Black" SnapsToDevicePixels="true"/>
                         <Rectangle Width="5" Height="1" Stroke="Black" SnapsToDevicePixels="true"/>
                     </Grid>
@@ -27,16 +27,16 @@
     <ControlTemplate TargetType="{x:Type local:TreeListViewExpander}" x:Key="TreeListViewExpander">
         <StackPanel Orientation="Horizontal" x:Name="ContainerElement">
             <FrameworkElement Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Converter={ StaticResource TreeListViewConverter}}"/>
-            <ToggleButton Style="{ StaticResource ExpandCollapseToggleStyle }" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TreeViewItem}}" Width="15" Height="15" VerticalAlignment="Center" Margin="1,2,1,1"/>
+            <ToggleButton Style="{ StaticResource ExpandCollapseToggleStyle }" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeListViewItem }}" VerticalAlignment="Center" Margin="1,2,1,1"/>
         </StackPanel>
         <ControlTemplate.Triggers>
-            <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TreeViewItem}}" Value="False">
+            <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeListViewItem}}" Value="False">
                 <Setter TargetName="ContainerElement" Property="Visibility" Value="Hidden"/>
             </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <ControlTemplate TargetType="TreeViewItem" x:Key="TreeListViewItem">
+    <ControlTemplate TargetType="local:TreeListViewItem" x:Key="TreeListViewItem">
         <StackPanel>
             <Border x:Name="Border">
                 <GridViewRowPresenter Content="{TemplateBinding Header}" Columns="{Binding Columns, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeListView}}"/>
@@ -78,23 +78,22 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:TreeListView}">
                     <ControlTemplate.Resources>
-                        <Style TargetType="TreeViewItem">
+                        <Style TargetType="local:TreeListViewItem">
                             <Setter Property="Template" Value="{StaticResource TreeListViewItem}"/>
                         </Style>
                         <Style TargetType="local:TreeListViewExpander">
                             <Setter Property="Template" Value="{StaticResource TreeListViewExpander}"/>
                         </Style>
                     </ControlTemplate.Resources>
-
                     <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <GridViewHeaderRowPresenter Columns="{TemplateBinding Columns}"/>
-                                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
                                     <ItemsPresenter/>
                                 </ScrollViewer>
                             </Grid>

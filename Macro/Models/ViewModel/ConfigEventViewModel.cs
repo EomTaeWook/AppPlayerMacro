@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Macro.UI;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Macro.Models.ViewModel
@@ -7,7 +8,7 @@ namespace Macro.Models.ViewModel
     {
         private ObservableCollection<EventTriggerModel> _triggerSaves;
         private EventTriggerModel _trigger;
-        private EventTriggerModel _dragItem;
+        private TreeListViewItem _dragItem;
         public ConfigEventViewModel()
         {
             _triggerSaves = new ObservableCollection<EventTriggerModel>();
@@ -37,13 +38,13 @@ namespace Macro.Models.ViewModel
             }
         }
 
-        public EventTriggerModel DragItem
+        public TreeListViewItem DragTreeItem
         {
             get => _dragItem;
             set
             {
                 _dragItem = value;
-                OnPropertyChanged("DragItem");
+                OnPropertyChanged("DragTreeItem");
             }
         }
 

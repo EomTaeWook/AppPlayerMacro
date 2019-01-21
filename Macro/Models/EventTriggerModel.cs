@@ -15,6 +15,7 @@ namespace Macro.Models
         private Point? _mousePoint;
         private string _keyboardCmd;
         private ProcessInfo _processInfo;
+        private List<EventTriggerModel> _subEventTriggers;
         private int _afterDelay;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -76,7 +77,15 @@ namespace Macro.Models
         }
 
         [Order(8)]
-        public List<EventTriggerModel> SubEvents { get; private set; } = new List<EventTriggerModel>();
+        public List<EventTriggerModel> SubEventTriggers
+        {
+            get => _subEventTriggers ?? (_subEventTriggers = new List<EventTriggerModel>());
+            set
+            {
+                _subEventTriggers = value;
+                OnPropertyChanged("SubEventTriggers");
+            }
+        }
 
         [Order(9)]
         public int AfterDelay
