@@ -281,7 +281,7 @@ namespace Macro
                         {
                             var factor = NativeHelper.GetSystemDpi();
                             var sourceBmp = bmp.Resize((int)Math.Truncate(bmp.Width * (factor.X / ConstHelper.DefaultDPI)), (int)Math.Truncate(bmp.Height * (factor.Y / ConstHelper.DefaultDPI)));
-
+                            sourceBmp.Save("Test.png");
                             var souceFactorX = factor.X / (save.MonitorInfo.Dpi.X * 1.0F);
                             var souceFactorY = factor.Y / (save.MonitorInfo.Dpi.Y * 1.0F);
 
@@ -355,11 +355,19 @@ namespace Macro
                                 }
                                 else if(save.EventType == EventType.Image)
                                 {
-                                    var target = new Point()
+                                    var currentPosition = new Rect();
+                                    NativeHelper.GetWindowRect(processes.ElementAt(i).Value.MainWindowHandle, ref currentPosition);
+                                    var target = new Point();
+                                    foreach (var monitor in DisplayHelper.MonitorInfo())
                                     {
-                                        X = (int)Math.Truncate(location.X / 2),
-                                        Y = (int)Math.Truncate(location.Y / 2)
-                                    };
+                                        if (monitor.Rect.IsContain(currentPosition))
+                                        {
+                                            target.X = location.X * (monitor.Dpi.X / ConstHelper.DefaultDPI) / 2;
+                                            target.Y = location.Y * (monitor.Dpi.Y / ConstHelper.DefaultDPI) / 2;
+                                            break;
+                                        }
+                                    }
+
                                     LogHelper.Debug($"[index : {save.Index}] Location X : {location.X} Location Y : {location.Y} Target X : {target.X} Target Y : {target.Y}");
 
                                     NativeHelper.PostMessage(processes.ElementAt(i).Value.MainWindowHandle, WindowMessage.LButtonDown, 1, target.ToLParam());
