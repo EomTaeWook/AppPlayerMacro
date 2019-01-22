@@ -16,7 +16,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                 
                 <!--Style-->
-                <ResourceDictionary Source="Styles/TreeViewStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Styles/TreeGridViewStyle.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="ComboBox">
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>

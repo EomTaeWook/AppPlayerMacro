@@ -1,6 +1,5 @@
 ﻿<UserControl x:Class="Macro.View.ConfigEventView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:UI="clr-namespace:Macro.UI"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
@@ -55,46 +54,46 @@
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
                 <Label DockPanel.Dock="Top" Content="{Binding Path=LabelViewModel.TriggerList, Source={StaticResource Locator}}"></Label>
 
-                <UI:TreeListView DockPanel.Dock="Left" ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves">
+                <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves">
                     
-                    <UI:TreeListView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding ConfigEventViewModel.TriggerSaves.SubEvents}" />
-                    </UI:TreeListView.ItemTemplate>
+                    <UI:TreeGridView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />
+                    </UI:TreeGridView.ItemTemplate>
                     
-                    <UI:TreeListView.Columns>
-                        <GridViewColumn Header="Image" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeListView}}, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                    <UI:TreeGridView.Columns>
+                        <GridViewColumn Header="Image" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}}, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <UI:TreeListViewExpander/>
+                                        <UI:TreeGridViewExpander/>
                                         <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Image, Converter={StaticResource ResourceKey=ImageConverter}}" Style="{StaticResource Sumnail}"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="EventType" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeListView}}, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="EventType" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}}, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding EventType}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Desc" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeListView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="Desc" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Desc}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="ProcessName" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeListView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="ProcessName" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.4*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding ProcessInfo.ProcessName}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                    </UI:TreeListView.Columns>
-                </UI:TreeListView>
+                    </UI:TreeGridView.Columns>
+                </UI:TreeGridView>
                 <!--<DataGrid DockPanel.Dock="Left" CanUserAddRows="False" VerticalAlignment="Stretch" VerticalScrollBarVisibility = "Auto" ScrollViewer.CanContentScroll="True" Grid.ColumnSpan="2" SelectionMode="Single" SelectionUnit ="FullRow" Grid.Row="0" Name="grdSaves" AllowDrop="True"
                           ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#FFBFBFBF" VerticalGridLinesBrush="White">
                     <DataGrid.Columns>
@@ -112,12 +111,12 @@
                 </DataGrid>-->
             </DockPanel>
         </DockPanel>
-        <Popup x:Name="dragPopup" IsHitTestVisible="False" Placement="RelativePoint" AllowsTransparency="True">
+        <!--<Popup x:Name="dragPopup" IsHitTestVisible="False" Placement="RelativePoint" AllowsTransparency="True">
             <Border BorderBrush="LightSteelBlue" BorderThickness="2" Background="Transparent" Opacity="0.75">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                     <IconPacks:PackIconMaterial Width="16" Height="16" Kind="PlusBox" />
                 </StackPanel>
             </Border>
-        </Popup>
+        </Popup>-->
     </Grid>
 </UserControl>

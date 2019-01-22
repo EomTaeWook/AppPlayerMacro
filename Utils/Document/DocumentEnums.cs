@@ -27,6 +27,7 @@
         Similarity,
         AfterDelay,
         VersionCheck,
+        AddItem,
 
         Max
     }

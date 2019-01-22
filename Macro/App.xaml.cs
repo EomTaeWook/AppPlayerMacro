@@ -18,6 +18,11 @@ namespace Macro
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            DispatcherUnhandledException += (s, ex) =>
+            {
+                ex.Handled = true;
+                ExceptionProcess(s, ex.Exception);
+            };
             AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
             {
                 ExceptionProcess(s, ex.ExceptionObject as Exception);

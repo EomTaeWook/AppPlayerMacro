@@ -3,17 +3,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Macro.UI
 {
-    public class TreeListView : TreeView
+    public class TreeGridView : TreeView
     {
-        public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register("Columns", typeof(GridViewColumnCollection), typeof(TreeListView), new UIPropertyMetadata(null));
+        public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register("Columns", typeof(GridViewColumnCollection), typeof(TreeGridView), new UIPropertyMetadata(null));
 
-        static TreeListView()
+        static TreeGridView()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeListView), new FrameworkPropertyMetadata(typeof(TreeListView)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeGridView), new FrameworkPropertyMetadata(typeof(TreeGridView)));
         }
 
         public GridViewColumnCollection Columns
@@ -21,44 +22,47 @@ namespace Macro.UI
             get { return (GridViewColumnCollection)GetValue(ColumnsProperty); }
             set { SetValue(ColumnsProperty, value); }
         }
-        public TreeListView()
+        public TreeGridView()
         {
             Columns = new GridViewColumnCollection();
-            Application.Current.MainWindow.SizeChanged += (s, e) =>
-            {
-                foreach (var column in Columns)
-                {
-                    BindingOperations.GetBindingExpression(column, WidthProperty).UpdateTarget();
-                }
-            };
+            Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
         }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            foreach (var column in Columns)
+            {
+                BindingOperations.GetBindingExpression(column, WidthProperty).UpdateTarget();
+            }
+        }
+
         protected override DependencyObject GetContainerForItemOverride()
         {
-            return new TreeListViewItem();
+            return new TreeGridViewItem();
         }
     }
 
-    public class TreeListViewItem : TreeViewItem
+    public class TreeGridViewItem : TreeViewItem
     {
         public TreeViewItem ParentItem { get; set; }
 
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
             base.PrepareContainerForItemOverride(element, item);
-            if (!(element is TreeListViewItem treeViewItem))
+            if (!(element is TreeGridViewItem treeViewItem))
                 return;
-            treeViewItem.ParentItem = ItemsControlFromItemContainer(element) as TreeListViewItem;
+            treeViewItem.ParentItem = ItemsControlFromItemContainer(element) as TreeGridViewItem;
         }
         protected override DependencyObject GetContainerForItemOverride()
         {
-            return new TreeListViewItem();
+            return new TreeGridViewItem();
         }
     }
 
-    internal class TreeListViewExpander : ToggleButton
+    internal class TreeGridViewExpander : ToggleButton
     {
     }
-    internal class TreeListViewConverter : IValueConverter
+    internal class TreeGridViewConverter : IValueConverter
     {
         private readonly double Indentation = 10.0;
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

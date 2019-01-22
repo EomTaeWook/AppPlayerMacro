@@ -19,37 +19,6 @@ namespace Macro.View
         public event SelectTriggerHandler SelectData;
         public delegate void SelectTriggerHandler(EventTriggerModel model);
 
-        private void ConfigEventView_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                Clear();
-                SelectData(null);
-                e.Handled = true;
-            }
-            base.OnPreviewKeyDown(e);
-        }
-        private void GrdSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if ((sender as DataGrid).SelectedItem is EventTriggerModel item)
-            {
-                Model = item;
-                SelectData(item);
-                if(Model.EventType == EventType.Keyboard)
-                {
-                    RadioButton_Click(rbKeyboard, null);
-                }
-                else if(Model.EventType == EventType.Mouse)
-                {
-                    RadioButton_Click(rbMouse, null);
-                }
-                else if (Model.EventType == EventType.Image)
-                {
-                    RadioButton_Click(rbImage, null);
-                }
-                e.Handled = true;
-            }
-        }
         private void ConfigEventView_Loaded(object sender, RoutedEventArgs e)
         {
             InitEvent();
@@ -78,17 +47,23 @@ namespace Macro.View
 
             treeSaves.PreviewMouseLeftButtonDown += TreeSaves_PreviewMouseLeftButtonDown;
             treeSaves.MouseMove += TreeSaves_MouseMove;
-            treeSaves.MouseLeave += TreeSaves_MouseLeave;
             treeSaves.MouseLeftButtonUp += TreeSaves_MouseLeave;
+            treeSaves.MouseLeave += TreeSaves_MouseLeave;
+            
+
             Unloaded += ConfigEventView_Unloaded;
         }
-        private void TreeSaves_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+
+        private void TreeSaves_MouseLeave(object sender, MouseEventArgs e)
         {
-            dragPopup.IsOpen = false;
-            if (_isDrag)
+            if(_isDrag && e.LeftButton == MouseButtonState.Released)
             {
+                e.Handled = true;
+                _isDrag = false;
+                Mouse.OverrideCursor = Cursors.Arrow;
                 var viewModel = DataContext as EventTriggerModel;
-                var targetRow = (sender as UIElement).TryFindFromPoint<TreeListViewItem>(e.GetPosition(treeSaves));
+                var targetRow = (sender as UIElement).TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
+
                 if (targetRow != null)
                 {
                     var dragItem = (DataContext as ConfigEventViewModel).DragTreeItem;
@@ -118,31 +93,59 @@ namespace Macro.View
                         targetParent.SubEventTriggers.Insert(targetIndex, item);
                     }
                 }
+                (DataContext as ConfigEventViewModel).DragTreeItem = null;
             }
-            (DataContext as ConfigEventViewModel).DragTreeItem = null;
-            _isDrag = false;
         }
         private void TreeSaves_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_isDrag || e.LeftButton != MouseButtonState.Pressed)
-                return;
-            if (!dragPopup.IsOpen)
+            if(_isDrag && e.LeftButton == MouseButtonState.Pressed)
             {
-                dragPopup.IsOpen = true;
-                var popupSize = new Size(dragPopup.ActualWidth, dragPopup.ActualHeight);
-                dragPopup.PlacementRectangle = new Rect(e.GetPosition(this), popupSize);
+                if(Mouse.OverrideCursor != Cursors.Cross)
+                    Mouse.OverrideCursor = Cursors.Cross;
             }
         }
 
         private void TreeSaves_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var target = (sender as UIElement).TryFindFromPoint<TreeListViewItem>(e.GetPosition(treeSaves));
+            var target = (sender as UIElement).TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
             if (target == null)
                 return;
             _isDrag = true;
             (DataContext as ConfigEventViewModel).DragTreeItem = target;
+            e.Handled = true;
+        }
+        private void ConfigEventView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Clear();
+                SelectData(null);
+                e.Handled = true;
+            }
+            base.OnPreviewKeyDown(e);
         }
 
+        private void GrdSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((sender as DataGrid).SelectedItem is EventTriggerModel item)
+            {
+                Model = item;
+                SelectData(item);
+                if (Model.EventType == EventType.Keyboard)
+                {
+                    RadioButton_Click(rbKeyboard, null);
+                }
+                else if (Model.EventType == EventType.Mouse)
+                {
+                    RadioButton_Click(rbMouse, null);
+                }
+                else if (Model.EventType == EventType.Image)
+                {
+                    RadioButton_Click(rbImage, null);
+                }
+                e.Handled = true;
+            }
+        }
         private void NotifyHelper_MousePositionDataBind(MousePointEventArgs args)
         {
             if (Model == _dummy)

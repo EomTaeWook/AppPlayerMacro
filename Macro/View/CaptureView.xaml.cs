@@ -100,7 +100,7 @@ namespace Macro.View
         }
         private void CaptureZone_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isDrag)
+            if (_isDrag && e.LeftButton == MouseButtonState.Pressed)
             {
                 Point currentPoint = e.GetPosition(captureZone);
                 UpdateDragSelectionRect(_originPoint, currentPoint);

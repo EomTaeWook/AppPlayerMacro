@@ -97,5 +97,9 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.VersionCheck);
         }
+        public string AddItem
+        {
+            get => DocumentHelper.Get(Label.AddItem);
+        }
     }
 }

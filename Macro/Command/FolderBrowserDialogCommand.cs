@@ -2,10 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-
-namespace Macro.Infrastructure
+namespace Macro.Command
 {
-    public class FolderBrowserDialogCmd : ICommand
+    public class FolderBrowserDialogCommand : ICommand
     {
         public event EventHandler CanExecuteChanged
         {
@@ -23,9 +22,9 @@ namespace Macro.Infrastructure
             {
                 if(dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    if(parameter is TextBox)
+                    if(parameter is TextBox textbox)
                     {
-                        (parameter as TextBox).Text = dlg.SelectedPath;
+                        textbox.Text = dlg.SelectedPath;
                     }
                 }
             }

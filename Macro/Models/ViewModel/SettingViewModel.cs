@@ -1,4 +1,4 @@
-﻿using Macro.Infrastructure;
+﻿using Macro.Command;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -35,7 +35,7 @@ namespace Macro.Models.ViewModel
         {
             get
             {
-                return _savePathButtonCmd ?? (_savePathButtonCmd = new FolderBrowserDialogCmd());
+                return _savePathButtonCmd ?? (_savePathButtonCmd = new FolderBrowserDialogCommand());
             }
         }
 

@@ -113,6 +113,11 @@
 		"Code" : "VersionCheck",
 		"Kor": "버전 정보 확인",
 		"Eng": "VersionCheck"
+	},
+	{
+		"Code" : "AddItem",
+		"Kor": "추가",
+		"Eng": "AddItem"
 	}
 ]
 

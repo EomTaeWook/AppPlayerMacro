@@ -1,6 +1,8 @@
-﻿using Macro.UI;
+﻿using Macro.Command;
+using Macro.UI;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace Macro.Models.ViewModel
 {
@@ -8,7 +10,7 @@ namespace Macro.Models.ViewModel
     {
         private ObservableCollection<EventTriggerModel> _triggerSaves;
         private EventTriggerModel _trigger;
-        private TreeListViewItem _dragItem;
+        private TreeGridViewItem _dragItem;
         public ConfigEventViewModel()
         {
             _triggerSaves = new ObservableCollection<EventTriggerModel>();
@@ -38,7 +40,7 @@ namespace Macro.Models.ViewModel
             }
         }
 
-        public TreeListViewItem DragTreeItem
+        public TreeGridViewItem DragTreeItem
         {
             get => _dragItem;
             set

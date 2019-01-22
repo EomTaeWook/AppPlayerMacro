@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Macro.UI">
 
-    <local:TreeListViewConverter x:Key="TreeListViewConverter"/>
+    <local:TreeGridViewConverter x:Key="TreeGridViewConverter"/>
 
     <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
         <Setter Property="Focusable" Value="False"/>
@@ -24,22 +24,22 @@
         </Setter>
     </Style>
 
-    <ControlTemplate TargetType="{x:Type local:TreeListViewExpander}" x:Key="TreeListViewExpander">
+    <ControlTemplate TargetType="{x:Type local:TreeGridViewExpander}" x:Key="TreeGridViewExpander">
         <StackPanel Orientation="Horizontal" x:Name="ContainerElement">
-            <FrameworkElement Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Converter={ StaticResource TreeListViewConverter}}"/>
-            <ToggleButton Style="{ StaticResource ExpandCollapseToggleStyle }" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeListViewItem }}" VerticalAlignment="Center" Margin="1,2,1,1"/>
+            <FrameworkElement Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Converter={ StaticResource TreeGridViewConverter}}"/>
+            <ToggleButton Style="{ StaticResource ExpandCollapseToggleStyle }" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeGridViewItem }}" VerticalAlignment="Center" Margin="1,2,1,1"/>
         </StackPanel>
         <ControlTemplate.Triggers>
-            <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeListViewItem}}" Value="False">
+            <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeGridViewItem}}" Value="False">
                 <Setter TargetName="ContainerElement" Property="Visibility" Value="Hidden"/>
             </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <ControlTemplate TargetType="local:TreeListViewItem" x:Key="TreeListViewItem">
+    <ControlTemplate TargetType="local:TreeGridViewItem" x:Key="TreeGridViewItem">
         <StackPanel>
             <Border x:Name="Border">
-                <GridViewRowPresenter Content="{TemplateBinding Header}" Columns="{Binding Columns, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeListView}}"/>
+                <GridViewRowPresenter Content="{TemplateBinding Header}" Columns="{Binding Columns, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeGridView}}"/>
             </Border>
             <ItemsPresenter x:Name="ItemsPresenter" Visibility="Collapsed"/>
         </StackPanel>
@@ -73,31 +73,29 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style TargetType="{x:Type local:TreeListView}">
+    <Style TargetType="{x:Type local:TreeGridView}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:TreeListView}">
+                <ControlTemplate TargetType="{x:Type local:TreeGridView}">
                     <ControlTemplate.Resources>
-                        <Style TargetType="local:TreeListViewItem">
-                            <Setter Property="Template" Value="{StaticResource TreeListViewItem}"/>
+                        <Style TargetType="local:TreeGridViewItem">
+                            <Setter Property="Template" Value="{StaticResource TreeGridViewItem}"/>
                         </Style>
-                        <Style TargetType="local:TreeListViewExpander">
-                            <Setter Property="Template" Value="{StaticResource TreeListViewExpander}"/>
+                        <Style TargetType="local:TreeGridViewExpander">
+                            <Setter Property="Template" Value="{StaticResource TreeGridViewExpander}"/>
                         </Style>
                     </ControlTemplate.Resources>
                     <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <GridViewHeaderRowPresenter Columns="{TemplateBinding Columns}"/>
-                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
-                                    <ItemsPresenter/>
-                                </ScrollViewer>
-                            </Grid>
-                        </ScrollViewer>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <GridViewHeaderRowPresenter Columns="{TemplateBinding Columns}"/>
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
