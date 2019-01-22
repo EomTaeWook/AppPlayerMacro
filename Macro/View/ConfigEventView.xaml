@@ -54,7 +54,7 @@
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
                 <Label DockPanel.Dock="Top" Content="{Binding Path=LabelViewModel.TriggerList, Source={StaticResource Locator}}"></Label>
 
-                <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves">
+                <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves" AllowDrop="True">
                     
                     <UI:TreeGridView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />

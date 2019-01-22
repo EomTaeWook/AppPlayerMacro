@@ -252,8 +252,8 @@ namespace Macro
             {
                 if (monitor.Rect.IsContain(currentPosition))
                 {
-                    target.X = location.X * (monitor.Dpi.X / ConstHelper.DefaultDPI) / 2;
-                    target.Y = location.Y * (monitor.Dpi.Y / ConstHelper.DefaultDPI) / 2;
+                    target.X = location.X * (monitor.Dpi.X / ConstHelper.DefaultDPI);
+                    target.Y = location.Y * (monitor.Dpi.Y / ConstHelper.DefaultDPI);
                     break;
                 }
             }
@@ -363,6 +363,8 @@ namespace Macro
                             }
                             else if (model.EventType == EventType.Image)
                             {
+                                location.X += targetBmp.Size.Width / 2;
+                                location.Y += targetBmp.Size.Height / 2;
                                 ImageTriggerProcess(processes.ElementAt(i).Value, location);
                             }
                             else if (model.EventType == EventType.Keyboard)

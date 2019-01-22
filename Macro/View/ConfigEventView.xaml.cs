@@ -7,6 +7,8 @@ using MahApps.Metro.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using Utils;
 using EventType = Macro.Models.EventType;
 
 namespace Macro.View
@@ -45,13 +47,35 @@ namespace Macro.View
             //grdSaves.MouseLeave += GrdSaves_MouseLeave;
             //grdSaves.PreviewMouseUp += GrdSaves_MouseLeave;
 
+            treeSaves.SelectedItemChanged += TreeSaves_SelectedItemChanged;
             treeSaves.PreviewMouseLeftButtonDown += TreeSaves_PreviewMouseLeftButtonDown;
             treeSaves.MouseMove += TreeSaves_MouseMove;
             treeSaves.MouseLeftButtonUp += TreeSaves_MouseLeave;
             treeSaves.MouseLeave += TreeSaves_MouseLeave;
-            
 
             Unloaded += ConfigEventView_Unloaded;
+        }
+
+        private void TreeSaves_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if(treeSaves.SelectedItem is EventTriggerModel item)
+            {
+                Model = item;
+                SelectData(Model);
+                if (Model.EventType == EventType.Keyboard)
+                {
+                    RadioButton_Click(rbKeyboard, null);
+                }
+                else if (Model.EventType == EventType.Mouse)
+                {
+                    RadioButton_Click(rbMouse, null);
+                }
+                else if (Model.EventType == EventType.Image)
+                {
+                    RadioButton_Click(rbImage, null);
+                }
+            }
+            e.Handled = true;
         }
 
         private void TreeSaves_MouseLeave(object sender, MouseEventArgs e)
@@ -60,10 +84,8 @@ namespace Macro.View
             {
                 e.Handled = true;
                 _isDrag = false;
-                Mouse.OverrideCursor = Cursors.Arrow;
                 var viewModel = DataContext as EventTriggerModel;
                 var targetRow = (sender as UIElement).TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
-
                 if (targetRow != null)
                 {
                     var dragItem = (DataContext as ConfigEventViewModel).DragTreeItem;
@@ -100,8 +122,7 @@ namespace Macro.View
         {
             if(_isDrag && e.LeftButton == MouseButtonState.Pressed)
             {
-                if(Mouse.OverrideCursor != Cursors.Cross)
-                    Mouse.OverrideCursor = Cursors.Cross;
+                DragDrop.DoDragDrop(treeSaves, (DataContext as ConfigEventViewModel).DragTreeItem.DataContext, DragDropEffects.Move);
             }
         }
 
@@ -112,7 +133,7 @@ namespace Macro.View
                 return;
             _isDrag = true;
             (DataContext as ConfigEventViewModel).DragTreeItem = target;
-            e.Handled = true;
+            OnPreviewMouseLeftButtonDown(e);
         }
         private void ConfigEventView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -125,27 +146,6 @@ namespace Macro.View
             base.OnPreviewKeyDown(e);
         }
 
-        private void GrdSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if ((sender as DataGrid).SelectedItem is EventTriggerModel item)
-            {
-                Model = item;
-                SelectData(item);
-                if (Model.EventType == EventType.Keyboard)
-                {
-                    RadioButton_Click(rbKeyboard, null);
-                }
-                else if (Model.EventType == EventType.Mouse)
-                {
-                    RadioButton_Click(rbMouse, null);
-                }
-                else if (Model.EventType == EventType.Image)
-                {
-                    RadioButton_Click(rbImage, null);
-                }
-                e.Handled = true;
-            }
-        }
         private void NotifyHelper_MousePositionDataBind(MousePointEventArgs args)
         {
             if (Model == _dummy)

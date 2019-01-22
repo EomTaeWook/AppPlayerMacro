@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Macro.UI
@@ -45,6 +44,31 @@ namespace Macro.UI
     public class TreeGridViewItem : TreeViewItem
     {
         public TreeViewItem ParentItem { get; set; }
+        public TreeGridViewItem()
+        {
+            Background = Brushes.PowderBlue;
+            BorderThickness = new Thickness(10, 10, 10, 10);
+            DragLeave += TreeGridViewItem_DragLeave;
+            DragOver += TreeGridViewItem_DragOver;
+        }
+
+        private void TreeGridViewItem_DragLeave(object sender, DragEventArgs e)
+        {
+            if(sender is TreeGridViewItem item)
+            {
+                item.Background = Brushes.PowderBlue;
+                item.BorderThickness = new Thickness(10, 10, 10, 10);
+            }
+        }
+
+        private void TreeGridViewItem_DragOver(object sender, DragEventArgs e)
+        {
+            if (sender is TreeGridViewItem item)
+            {
+                item.BorderThickness = new Thickness(150);
+                item.BorderBrush = Brushes.Red;
+            }
+        }
 
         protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {

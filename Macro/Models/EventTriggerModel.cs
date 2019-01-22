@@ -18,6 +18,7 @@ namespace Macro.Models
         private List<EventTriggerModel> _subEventTriggers;
         private int _afterDelay;
 
+        [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Order(1)]
