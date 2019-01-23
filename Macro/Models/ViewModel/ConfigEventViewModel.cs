@@ -7,7 +7,7 @@ namespace Macro.Models.ViewModel
     public class ConfigEventViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<EventTriggerModel> _triggerSaves;
-        private EventTriggerModel _trigger;
+        private TreeGridViewItem _currentItem;
         public ConfigEventViewModel()
         {
             _triggerSaves = new ObservableCollection<EventTriggerModel>();
@@ -27,17 +27,15 @@ namespace Macro.Models.ViewModel
             }
         }
 
-        public EventTriggerModel Trigger
+        public TreeGridViewItem CurrentTreeViewItem
         {
-            get => _trigger;
+            get => _currentItem;
             set
             {
-                _trigger = value;
-                OnPropertyChanged("Trigger");
+                _currentItem = value;
+                OnPropertyChanged("CurrentTreeViewItem");
             }
         }
-
-        public TreeGridViewItem SelectTreeItem { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

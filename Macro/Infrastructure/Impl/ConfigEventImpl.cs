@@ -13,26 +13,31 @@ namespace Macro.View
 {
     public partial class ConfigEventView : UserControl
     {
-        public EventTriggerModel Model
+        public TreeGridViewItem CurrentTreeViewItem
         {
-            get => ((ConfigEventViewModel)DataContext).Trigger;
-            private set => ((ConfigEventViewModel)DataContext).Trigger = value;
+            get => this.DataContext<ConfigEventViewModel>().CurrentTreeViewItem;
+            private set => this.DataContext<ConfigEventViewModel>().CurrentTreeViewItem = value;
         }
         public List<EventTriggerModel> TriggerSaves
         {
-            get => ((ConfigEventViewModel)DataContext).TriggerSaves.ToList();
+            get => this.DataContext<ConfigEventViewModel>().TriggerSaves.ToList();
         }
 
         private List<MousePositionView> _mousePointViews;
-        private EventTriggerModel _dummy;
+        private TreeGridViewItem _dummy;
         private bool _isDrag;
         public ConfigEventView()
         {
             _isDrag = false;
-            _dummy = new EventTriggerModel();
+            _dummy = new TreeGridViewItem()
+            {
+                DataContext = new EventTriggerModel()
+            };
+
             _mousePointViews = new List<MousePositionView>();
             DataContext = new ViewModelLocator().ConfigEventViewModel;
-            Model = _dummy;
+            CurrentTreeViewItem = _dummy;
+
             InitializeComponent();
 
             Loaded += ConfigEventView_Loaded;
@@ -40,7 +45,7 @@ namespace Macro.View
 
         private void Init()
         {
-            treeSaves.ItemsSource = (DataContext as ConfigEventViewModel).TriggerSaves;
+            treeSaves.ItemsSource = this.DataContext<ConfigEventViewModel>().TriggerSaves;
             foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _mousePointViews.Add(new MousePositionView(item));
@@ -52,82 +57,83 @@ namespace Macro.View
             foreach (var item in _mousePointViews)
                 item.ShowActivate();
         }
-        public void InsertModel(EventTriggerModel model)
+        public void BindingItems(IEnumerable<EventTriggerModel> items)
         {
-            if (model == null)
+            foreach (var item in items)
+                this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(item);
+        }
+        public void InsertCurrentItem()
+        {
+            if (CurrentTreeViewItem == _dummy)
                 return;
 
             Dispatcher.Invoke(() =>
             {
-                var saves = ((ConfigEventViewModel)DataContext).TriggerSaves;
+                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
 
-                if(!saves.Contains(model))
-                    ((ConfigEventViewModel)DataContext).TriggerSaves.Add(model);
+                if (treeVIewItem == null)
+                    this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(CurrentTreeViewItem.DataContext<EventTriggerModel>());
 
                 Clear();
             });
         }
-        public void RemoveModel(EventTriggerModel model)
+        public void CurrentRemove()
         {
-            if (model == null)
-                return;
-            var viewModel = DataContext as ConfigEventViewModel;
-            if (model != viewModel.SelectTreeItem.DataContext)
+            if (CurrentTreeViewItem == _dummy)
                 return;
             Dispatcher.Invoke(() =>
             {
-                if(viewModel.SelectTreeItem.ParentItem == null)
+                if (CurrentTreeViewItem.ParentItem == null)
                 {
-                    viewModel.TriggerSaves.Remove(model);
+                    this.DataContext<ConfigEventViewModel>().TriggerSaves.Remove(CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 }
                 else
                 {
-                    (viewModel.SelectTreeItem.ParentItem.DataContext as EventTriggerModel).SubEventTriggers.Remove(model);
+                    CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers.Remove(CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 }
-                Clear();
             });
         }
         public void Clear()
         {
-            if (Model != _dummy)
-                Model = _dummy;
-            (DataContext as ConfigEventViewModel).SelectTreeItem = null;
-            RadioButtonRefresh();
-
-        }
-        private void ItemContainerPositionChange(Point point)
-        {
-            var targetRow = treeSaves.TryFindFromPoint<TreeGridViewItem>(point);
-            var dragItem = (DataContext as ConfigEventViewModel).SelectTreeItem;
-
-            var parentItemContainer = dragItem.ParentItem == null ? (DataContext as ConfigEventViewModel).TriggerSaves : (dragItem.ParentItem.DataContext as EventTriggerModel).SubEventTriggers;
-
-            if (targetRow != null)
+            CurrentTreeViewItem.IsSelected = false;
+            if (CurrentTreeViewItem != _dummy)
             {
-                if (targetRow == dragItem)
-                    return;
-                var item = dragItem.DataContext as EventTriggerModel;
-                var targetItem = targetRow.DataContext as EventTriggerModel;
+                CurrentTreeViewItem = _dummy;
+            }
+            RadioButtonRefresh();
+            btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
+        }
+        
+        private void ItemContainerPositionChange(TreeGridViewItem target)
+        {
+            var parentItemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<ConfigEventViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
 
-                if (targetRow.ParentItem == null && dragItem.ParentItem == null)
-                {
-                    parentItemContainer.Remove(item);
-                    (targetRow.DataContext as EventTriggerModel).SubEventTriggers.Add(item);
-                }
-                else if (targetRow.ParentItem != dragItem.ParentItem && targetRow.ParentItem != dragItem)
+            if (target != null)
+            {
+                if (target == CurrentTreeViewItem)
+                    return;
+                var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                var targetItem = target.DataContext<EventTriggerModel>();
+
+                if (target.ParentItem == null && CurrentTreeViewItem.ParentItem == null)
                 {
                     parentItemContainer.Remove(item);
                     targetItem.SubEventTriggers.Add(item);
                 }
-                else if (targetRow.ParentItem == dragItem.ParentItem)
+                else if (target.ParentItem != CurrentTreeViewItem.ParentItem && target.ParentItem != CurrentTreeViewItem)
                 {
-                    var targetParent = (targetRow.ParentItem.DataContext as EventTriggerModel);
-                    var targetIndex = targetParent.SubEventTriggers.IndexOf(targetRow.DataContext as EventTriggerModel);
+                    parentItemContainer.Remove(item);
+                    targetItem.SubEventTriggers.Add(item);
+                }
+                else if (target.ParentItem == CurrentTreeViewItem.ParentItem)
+                {
+                    var targetParent = target.ParentItem.DataContext<EventTriggerModel>();
+                    var targetIndex = targetParent.SubEventTriggers.IndexOf(target.DataContext<EventTriggerModel>());
 
                     targetParent.SubEventTriggers.Remove(item);
                     targetParent.SubEventTriggers.Insert(targetIndex, item);
                 }
-                else if(targetRow.ParentItem == dragItem)
+                else if(target.ParentItem == CurrentTreeViewItem)
                 {
                     parentItemContainer.Remove(item);
                     item.SubEventTriggers.Remove(targetItem);
@@ -137,34 +143,24 @@ namespace Macro.View
                     targetItem.SubEventTriggers.Add(item);
                     parentItemContainer.Add(targetItem);
                 }
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
-                {
-                    TriggerModel1 = item,
-                    TriggerModel2 = targetItem
-                });
+                target.IsExpanded = true;
             }
             else
             {
-                var item = dragItem.DataContext as EventTriggerModel;
+                var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 parentItemContainer.Remove(item);
-                (DataContext as ConfigEventViewModel).TriggerSaves.Add(item);
-
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
-                {
-                    TriggerModel1 = item,
-                });
+                this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(item);
             }
-            
         }
         private void RadioButtonRefresh()
         {
-            if (Model.EventType == Models.EventType.Mouse)
+            if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == Models.EventType.Mouse)
             {
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = true;
             }
-            else if(Model.EventType == Models.EventType.Keyboard)
+            else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == Models.EventType.Keyboard)
             {
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Visible;

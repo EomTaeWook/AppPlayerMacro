@@ -80,19 +80,6 @@ namespace Macro.Extensions
             };
             return item;
         }
-
-        public static bool Remove(this ObservableCollection<EventTriggerModel> collection, int key)
-        {
-            foreach(var item in collection)
-            {
-                if(item.Index == key)
-                {
-                    collection.Remove(item);
-                    return true;
-                }
-            }
-            return false;
-        }
         
         public static T GetInstance<T>()
         {
@@ -200,6 +187,20 @@ namespace Macro.Extensions
                 }
             }
             return null;
+        }
+        public static T DataContext<T>(this FrameworkElement control) where T : class
+        {
+            if (control.DataContext is T context)
+                return context;
+            else
+                return null;
+        }
+        public static T DataContext<T>(this ItemsControl control) where T : class
+        {
+            if(control.DataContext is T context)
+                return context;
+            else
+                return null;
         }
     }
 }

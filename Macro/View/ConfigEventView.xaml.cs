@@ -32,8 +32,12 @@ namespace Macro.View
             {
                 button.Click += RadioButton_Click;
             }
+            var commonButtons = this.FindChildren<Button>();
+            foreach (var button in commonButtons)
+            {
+                button.Click += Button_Click;
+            }
 
-            btnMouseCoordinate.Click += Button_Click;
             PreviewKeyDown += ConfigEventView_PreviewKeyDown;
 
             treeSaves.SelectedItemChanged += TreeSaves_SelectedItemChanged;
@@ -43,30 +47,56 @@ namespace Macro.View
 
             Unloaded += ConfigEventView_Unloaded;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(btnMouseCoordinate))
+            {
+                ShowMousePoisitionView();
+            }
+            else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
+            {
+                if (CurrentTreeViewItem == null)
+                    return;
+                var itemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<ConfigEventViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+                var currentIndex = itemContainer.IndexOf(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+
+                if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
+                {
+                    itemContainer.Swap(currentIndex, currentIndex - 1);
+                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex - 1]);
+                }
+                else if(currentIndex < itemContainer.Count - 1 && sender.Equals(btnTreeItemDown))
+                {
+                    itemContainer.Swap(currentIndex, currentIndex + 1);
+                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex + 1]);
+                }
+            }
+        }
+
         private void TreeSaves_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if(treeSaves.SelectedItem is EventTriggerModel item)
             {
-                (DataContext as ConfigEventViewModel).SelectTreeItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem);
-                Model = item;
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.SelectEventTriggerChanged, new SelectEventTriggerChangedEventArgs()
+                CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem);
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
                 {
-                    TriggerModel = Model,
-                    TreeViewItem = (DataContext as ConfigEventViewModel).SelectTreeItem
+                    TreeViewItem = CurrentTreeViewItem
                 });
 
-                if (Model.EventType == EventType.Keyboard)
+                if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Keyboard)
                 {
                     RadioButton_Click(rbKeyboard, null);
                 }
-                else if (Model.EventType == EventType.Mouse)
+                else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Mouse)
                 {
                     RadioButton_Click(rbMouse, null);
                 }
-                else if (Model.EventType == EventType.Image)
+                else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
                 {
                     RadioButton_Click(rbImage, null);
                 }
+                btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Visible;
             }
         }
 
@@ -75,8 +105,16 @@ namespace Macro.View
             if(_isDrag)
             {
                 _isDrag = false;
-                ItemContainerPositionChange(e.GetPosition(treeSaves));
-                (DataContext as ConfigEventViewModel).SelectTreeItem = null;
+                var targetRow = treeSaves.TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
+                ItemContainerPositionChange(targetRow);
+                var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                Clear();
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                {
+                    TriggerModel1 = item,
+                    TriggerModel2 = targetRow?.DataContext<EventTriggerModel>()
+                });
+                
             }
         }
         private void TreeSaves_MouseMove(object sender, MouseEventArgs e)
@@ -88,9 +126,9 @@ namespace Macro.View
                     return;
 
                 _isDrag = true;
-                (DataContext as ConfigEventViewModel).SelectTreeItem = target;
+                CurrentTreeViewItem = target;
 
-                DragDrop.DoDragDrop((DataContext as ConfigEventViewModel).SelectTreeItem, new object(), DragDropEffects.Move);
+                DragDrop.DoDragDrop(CurrentTreeViewItem, new object(), DragDropEffects.Move);
             }
         }
 
@@ -104,7 +142,7 @@ namespace Macro.View
             if (e.Key == Key.Escape)
             {
                 Clear();
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.SelectEventTriggerChanged, new SelectEventTriggerChangedEventArgs());
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs());
                 e.Handled = true;
             }
             base.OnPreviewKeyDown(e);
@@ -112,11 +150,14 @@ namespace Macro.View
 
         private void NotifyHelper_MousePositionDataBind(MousePointEventArgs args)
         {
-            if (Model == _dummy)
-                Model = new EventTriggerModel();
+            if (CurrentTreeViewItem == _dummy)
+                CurrentTreeViewItem = new TreeGridViewItem()
+                {
+                    DataContext = new EventTriggerModel()
+                };
 
-            Model.MonitorInfo = args.MonitorInfo;
-            Model.MousePoint = args.MousePoint;
+            CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = args.MonitorInfo;
+            CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = args.MouseTriggerInfo;
             foreach (var item in _mousePointViews)
             {
                 item.Hide();
@@ -125,8 +166,11 @@ namespace Macro.View
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs args)
         {
-            if (Model == _dummy)
-                Model = new EventTriggerModel();
+            if (CurrentTreeViewItem == _dummy)
+                CurrentTreeViewItem = new TreeGridViewItem()
+                {
+                    DataContext = new EventTriggerModel()
+                };
             RadioButtonRefresh();
         }
 
@@ -139,32 +183,25 @@ namespace Macro.View
             _mousePointViews.Clear();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender.Equals(btnMouseCoordinate))
-            {
-                ShowMousePoisitionView();
-            }
-        }
-
         private void RadioButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Model == _dummy)
-            {
-                Model = new EventTriggerModel();
-            }
+            if (CurrentTreeViewItem == _dummy)
+                CurrentTreeViewItem = new TreeGridViewItem()
+                {
+                    DataContext = new EventTriggerModel()
+                };
 
             if (sender.Equals(rbMouse))
             {
-                Model.EventType = EventType.Mouse;
+                CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Mouse;
             }
             else if (sender.Equals(rbKeyboard))
             {
-                Model.EventType = EventType.Keyboard;
+                CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Keyboard;
             }
             else if(sender.Equals(rbImage))
             {
-                Model.EventType = EventType.Image;
+                CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Image;
             }
             RadioButtonRefresh();
         }        

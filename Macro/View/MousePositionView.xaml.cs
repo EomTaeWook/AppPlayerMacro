@@ -37,7 +37,11 @@ namespace Macro.View
                 e.Handled = true;
                 NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MousePoint = PointToScreen(e.GetPosition(this)),
+                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    {
+                        MouseInfoEventType = Models.MouseEventType.LeftClick,
+                        StartPoint = PointToScreen(e.GetPosition(this))
+                    },
                     MonitorInfo = _monitorInfo
                 });
             }
@@ -53,7 +57,10 @@ namespace Macro.View
             {
                 NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MousePoint = null,
+                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    {
+                        MouseInfoEventType = Models.MouseEventType.None,
+                    },
                     MonitorInfo = _monitorInfo
                 });
                 e.Handled = true;

@@ -3,7 +3,6 @@
     public enum Label
     {
         Title,
-        Refresh,
         SelectProcess,
         NotSelectProcessMessage,
         CompareImage,
@@ -27,7 +26,7 @@
         Similarity,
         AfterDelay,
         VersionCheck,
-        AddItem,
+        Refresh,
 
         Max
     }

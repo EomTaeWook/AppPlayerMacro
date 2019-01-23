@@ -8,4 +8,13 @@
 
         Max
     }
+    public enum MouseEventType
+    {
+        None,
+        LeftClick,
+        RightClick,
+        DragAndDrop,
+
+        Max
+    }
 }

@@ -1,10 +1,5 @@
 ﻿[
 	{
-		"Code" : "Refresh",
-		"Kor": "새로고침",
-		"Eng": "Refresh"
-	},
-	{
 		"Code" : "SelectProcess",
 		"Kor": "연결된 프로세스",
 		"Eng": "Select Process"
@@ -113,11 +108,6 @@
 		"Code" : "VersionCheck",
 		"Kor": "버전 정보 확인",
 		"Eng": "VersionCheck"
-	},
-	{
-		"Code" : "AddItem",
-		"Kor": "추가",
-		"Eng": "AddItem"
 	}
 ]
 

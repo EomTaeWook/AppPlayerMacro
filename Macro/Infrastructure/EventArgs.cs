@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Windows.Controls;
 using Utils.Infrastructure;
-using Point = System.Windows.Point;
 
 namespace Macro.Infrastructure
 {
@@ -12,7 +11,7 @@ namespace Macro.Infrastructure
         MousePointDataBind,
         ScreenCapture,
         EventTriggerOrderChanged,
-        SelectEventTriggerChanged,
+        SelctTreeViewItemChanged,
 
         Max
     }
@@ -22,7 +21,7 @@ namespace Macro.Infrastructure
     public class MousePointEventArgs : INotifyEventArgs
     {
         public MonitorInfo MonitorInfo { get; set; }
-        public Point? MousePoint { get; set; }
+        public MouseTriggerInfo MouseTriggerInfo { get; set; }
     }
     public class CaptureEventArgs : INotifyEventArgs
     {
@@ -39,9 +38,8 @@ namespace Macro.Infrastructure
         public EventTriggerModel TriggerModel1 { get; set; }
         public EventTriggerModel TriggerModel2 { get; set; }
     }
-    public class SelectEventTriggerChangedEventArgs : INotifyEventArgs
+    public class SelctTreeViewItemChangedEventArgs : INotifyEventArgs
     {
-        public EventTriggerModel TriggerModel { get; set; }
         public TreeViewItem TreeViewItem { get; set; }
     }
 }

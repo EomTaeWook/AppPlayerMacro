@@ -8,7 +8,7 @@ namespace Macro.Infrastructure
         public static event Action<MousePointEventArgs> MousePositionDataBind;
         public static event Action<CaptureEventArgs> ScreenCaptureDataBind;
         public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
-        public static event Action<SelectEventTriggerChangedEventArgs> SelectEventTriggerChanged;
+        public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
 
         public static void InvokeNotify(EventType eventType, INotifyEventArgs args)
         {
@@ -26,8 +26,8 @@ namespace Macro.Infrastructure
                 case EventType.EventTriggerOrderChanged:
                     EventTriggerOrderChanged ? .Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
-                case EventType.SelectEventTriggerChanged:
-                    SelectEventTriggerChanged?.Invoke(args as SelectEventTriggerChangedEventArgs);
+                case EventType.SelctTreeViewItemChanged:
+                    SelectTreeViewChanged?.Invoke(args as SelctTreeViewItemChangedEventArgs);
                     break;
             }
         }

@@ -35,14 +35,12 @@ namespace Macro
     {
         private TaskQueue _taskQueue;
         private string _path;
-        private int _index;
         private KeyValuePair<string, Process>[] _processes;
         private IConfig _config;
         private Bitmap _bitmap;
         private List<CaptureView> _captureViews;
         public MainWindow()
         {
-            _index = 0;
             _taskQueue = new TaskQueue();
             _captureViews = new List<CaptureView>();
 
@@ -98,8 +96,9 @@ namespace Macro
             var buttons = ObjectExtensions.FindChildren<Button>(this);
             foreach (var button in buttons)
             {
-                if (button.Equals(btnRefresh) || button.Equals(btnSetting))
+                if (button.Equals(btnSetting) || button.Content == null || !(button.Content is string))
                     continue;
+
                 BindingOperations.GetBindingExpressionBase(button, ContentProperty).UpdateTarget();
             }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
@@ -115,7 +114,7 @@ namespace Macro
                 message = Message.FailedImageValidate;
                 return false;
             }
-            if (model.EventType == EventType.Mouse && model.MousePoint == null)
+            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
             {
                 message = Message.FailedMouseCoordinatesValidate;
                 return false;
@@ -150,15 +149,15 @@ namespace Macro
             captureImage.Background = System.Windows.Media.Brushes.White;
             configView.Clear();
         }
-        private Task Delete(object m)
+        private Task Delete()
         {
-            configView.RemoveModel(m as EventTriggerModel);
+            configView.CurrentRemove();
             if (File.Exists(_path))
             {
                 File.Delete(_path);
                 using (var fs = new FileStream(_path, FileMode.CreateNew))
                 {
-                    foreach (var data in (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves)
+                    foreach (var data in this.configView.DataContext<Models.ViewModel.ConfigEventViewModel>().TriggerSaves)
                     {
                         var bytes = ObjectSerializer.SerializeObject(data);
                         fs.Write(bytes, 0, bytes.Count());
@@ -168,10 +167,8 @@ namespace Macro
             }
             return Task.CompletedTask;
         }
-        private Task Save(object m)
+        private Task Save()
         {
-            var model = m as EventTriggerModel;
-            model.Index = _index++;
             if (File.Exists(_path))
                 File.Delete(_path);
             using (var fs = new FileStream(_path, FileMode.OpenOrCreate))
@@ -194,11 +191,7 @@ namespace Macro
                 try
                 {
                     var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(_path));
-                    foreach (var model in models)
-                    {
-                        _index = _index < model.Index ? model.Index : _index;
-                        configView.InsertModel(model);
-                    }
+                    configView.BindingItems(models);
                     task.SetResult(Task.CompletedTask);
                 }
                 catch (Exception ex)
@@ -214,11 +207,10 @@ namespace Macro
         {
             if (!_config.VersionCheck)
                 return;
-
-            var request = (HttpWebRequest)WebRequest.Create(ConstHelper.VersionUrl);
             Version version = null;
             try
             {
+                var request = (HttpWebRequest)WebRequest.Create(ConstHelper.VersionUrl);
                 using (var response = request.GetResponse())
                 {
                     using (var stream = new StreamReader(response.GetResponseStream()))
@@ -285,15 +277,36 @@ namespace Macro
             }
             var mousePosition = new Point()
             {
-                X = Math.Abs(model.ProcessInfo.Position.Left + model.MousePoint.Value.X * -1) * targetFactorX,
-                Y = Math.Abs(model.ProcessInfo.Position.Top + model.MousePoint.Value.Y * -1) * targetFactorY
+                X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.StartPoint.X * -1) * targetFactorX,
+                Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.StartPoint.Y * -1) * targetFactorY
             };
 
-            LogHelper.Debug($"[index : {model.Index}] Save Position X : {model.MousePoint.Value.X} Save Position Y : {model.MousePoint.Value.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-            Task.Delay(100).Wait();
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+            LogHelper.Debug($"Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+            if(model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
+            {
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                Task.Delay(100).Wait();
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+            }
+            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.RightClick)
+            {
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
+                Task.Delay(100).Wait();
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
+            }
+            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.DragAndDrop)
+            {
+                var mouseEndPosition = new Point()
+                {
+                    X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1) * targetFactorX,
+                    Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1) * targetFactorY
+                };
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                Task.Delay(100).Wait();
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mouseEndPosition.ToLParam());
+                Task.Delay(100).Wait();
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+            }
         }
         private void KeyboardTriggerProcess(Process process, EventTriggerModel model)
         {

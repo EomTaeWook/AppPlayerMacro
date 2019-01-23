@@ -44,37 +44,38 @@ namespace Macro
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
-            NotifyHelper.SelectEventTriggerChanged += NotifyHelper_SelectEventTriggerChanged;
+            NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
             Unloaded += MainWindow_Unloaded;
         }
 
-        private void NotifyHelper_SelectEventTriggerChanged(SelectEventTriggerChangedEventArgs e)
+        private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
-            if (e.TriggerModel == null)
+            if (e.TreeViewItem == null)
             {
                 Clear();
             }
             else
             {
-                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == e.TriggerModel.ProcessInfo.ProcessName).FirstOrDefault();
+                var model = e.TreeViewItem.DataContext<EventTriggerModel>();
+                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
                 comboProcess.SelectedValue = pair.Value;
                 btnDelete.Visibility = Visibility.Visible;
-                _bitmap = e.TriggerModel.Image;
+                _bitmap = model.Image;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
             }
         }
-
         private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
             _taskQueue.Enqueue(() => 
             {
-                return Delete(null);
-            }).Finally((state) => {
-                    Dispatcher.Invoke(() => 
-                    {
-                        Clear();
-                    });
-                }, this );
+                return Delete();
+            }).Finally((state) => 
+            {
+                Dispatcher.Invoke(() => 
+                {
+                    Clear();
+                });
+            }, this);
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
@@ -128,7 +129,7 @@ namespace Macro
             }
             else if (btn.Equals(btnSave))
             {
-                var model = configView.Model;
+                var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 model.Image = _bitmap;
 
                 var process = comboProcess.SelectedValue as Process;
@@ -156,9 +157,9 @@ namespace Macro
                             }
                         }
                     }
-                    configView.InsertModel(model);
+                    configView.InsertCurrentItem();
 
-                    _taskQueue.Enqueue(Save, model).ContinueWith(task =>
+                    _taskQueue.Enqueue(Save).ContinueWith(task =>
                     {
                         Dispatcher.Invoke(() =>
                         {
@@ -173,17 +174,16 @@ namespace Macro
             }
             else if(btn.Equals(btnDelete))
             {
-                var model = configView.Model;
                 _taskQueue.Enqueue((o) =>
                 {
                     var task = new TaskCompletionSource<Task>();
                     Dispatcher.Invoke(() =>
                     {
-                        task.SetResult(Delete(o));
+                        task.SetResult(Delete());
                         Clear();
                     });
                     return task.Task;
-                }, model);
+                }, null);
             }
             else if(btn.Equals(btnStart))
             {

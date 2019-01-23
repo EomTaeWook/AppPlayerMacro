@@ -3,8 +3,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.Serialization;
 using Utils.Infrastructure;
-using Point = System.Windows.Point;
 
 namespace Macro.Models
 {
@@ -12,7 +12,7 @@ namespace Macro.Models
     public class EventTriggerModel : INotifyPropertyChanged
     {
         private EventType _eventType;
-        private Point? _mousePoint;
+        private MouseTriggerInfo _mouseTriggerInfo;
         private string _keyboardCmd;
         private ProcessInfo _processInfo;
         private ObservableCollection<EventTriggerModel> _subEventTriggers;
@@ -22,12 +22,9 @@ namespace Macro.Models
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Order(1)]
-        public int Index { get; set; }
-
-        [Order(2)]
         public Bitmap Image { get; set; }
 
-        [Order(3)]
+        [Order(2)]
         public EventType EventType
         {
             get => _eventType;
@@ -39,22 +36,22 @@ namespace Macro.Models
             }
         }
 
-        [Order(4)]
-        public Point? MousePoint
+        [Order(3)]
+        public MouseTriggerInfo MouseTriggerInfo
         {
-            get => _eventType == EventType.Mouse ? _mousePoint : null;
+            get => _mouseTriggerInfo ?? (_mouseTriggerInfo = new MouseTriggerInfo());
             set
             {
-                _mousePoint = value;
-                OnPropertyChanged("MousePoint");
+                _mouseTriggerInfo = value;
+                OnPropertyChanged("MouseTriggerInfo");
                 OnPropertyChanged("Desc");
             }
         }
 
-        [Order(5)]
+        [Order(4)]
         public MonitorInfo MonitorInfo { get; set; }
 
-        [Order(6)]
+        [Order(5)]
         public string KeyboardCmd
         {
             get => _keyboardCmd;
@@ -66,7 +63,7 @@ namespace Macro.Models
             }
         }
 
-        [Order(7)]
+        [Order(6)]
         public ProcessInfo ProcessInfo
         {
             get => _processInfo;
@@ -77,7 +74,7 @@ namespace Macro.Models
             }
         }
 
-        [Order(8)]
+        [Order(7)]
         public ObservableCollection<EventTriggerModel> SubEventTriggers
         {
             get => _subEventTriggers ?? (_subEventTriggers = new ObservableCollection<EventTriggerModel>());
@@ -88,7 +85,7 @@ namespace Macro.Models
             }
         }
 
-        [Order(9)]
+        [Order(8)]
         public int AfterDelay
         {
             get => _afterDelay;
@@ -103,12 +100,30 @@ namespace Macro.Models
         {
             get
             {
-                if (EventType == EventType.Mouse && MousePoint.HasValue)
-                    return $"X : { MousePoint.Value.X.ToString("0")} Y : {MousePoint.Value.Y.ToString("0") }";
+                if (EventType == EventType.Mouse)
+                {
+                    if(MouseTriggerInfo.MouseInfoEventType != MouseEventType.DragAndDrop && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                    {
+                        return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() }";
+                    }
+                    else if(MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
+                    {
+                        return "";
+                    }
+                    else 
+                    {
+                        return $"X : { MouseTriggerInfo.StartPoint.X.ToString("0")} Y : {MouseTriggerInfo.StartPoint.Y.ToString("0") } / " +
+                            $"X : { MouseTriggerInfo.EndPoint.X.ToString("0")} Y : {MouseTriggerInfo.EndPoint.Y.ToString("0") }";
+                    }
+                }
                 else if (EventType == EventType.Keyboard)
+                {
                     return KeyboardCmd;
+                }
                 else
+                {
                     return "";
+                }
             }
         }
 
@@ -120,10 +135,9 @@ namespace Macro.Models
         
         public EventTriggerModel(EventTriggerModel obj)
         {
-            Index = obj.Index;
             Image = obj.Image;
             EventType = obj.EventType;
-            MousePoint = obj.MousePoint;
+            MouseTriggerInfo = obj.MouseTriggerInfo;
             KeyboardCmd = obj.KeyboardCmd;
             ProcessInfo = obj.ProcessInfo;
             MonitorInfo = obj.MonitorInfo;

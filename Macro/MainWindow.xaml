@@ -35,7 +35,9 @@
                     </Grid.ColumnDefinitions>
                     <ComboBox Grid.Column="0" Name="comboProcess" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                     </ComboBox>
-                    <Button Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Content="&#81;" Grid.Column="1" Width="40" Height="40" FontFamily="Wingdings 3"/>
+                    <Button Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Grid.Column="1" Width="40" Height="40" FontFamily="Wingdings 3">
+                        <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
+                    </Button>
                 </Grid>
             </DockPanel>
         </Border>
