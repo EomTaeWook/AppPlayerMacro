@@ -37,7 +37,7 @@
     </ControlTemplate>
 
     <ControlTemplate TargetType="local:TreeGridViewItem" x:Key="TreeGridViewItem">
-        <StackPanel>
+        <StackPanel x:Name="StackPanel">
             <Border x:Name="Border">
                 <GridViewRowPresenter Content="{TemplateBinding Header}" Columns="{Binding Columns, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TreeGridView}}"/>
             </Border>
@@ -62,14 +62,14 @@
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             </Trigger>
-            <!--<MultiTrigger>
+            <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsMouseOver" Value="true"/>
                     <Condition Property="IsSelected" Value="false"/>
                 </MultiTrigger.Conditions>
                 <Setter TargetName="Border" Property="Background" Value="#87CEFA"/>
                 <Setter Property="BorderBrush" Value="#1E90FF"/>
-            </MultiTrigger>-->
+            </MultiTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 

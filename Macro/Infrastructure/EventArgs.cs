@@ -1,5 +1,6 @@
 ﻿using Macro.Models;
 using System.Drawing;
+using System.Windows.Controls;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
 
@@ -11,6 +12,7 @@ namespace Macro.Infrastructure
         MousePointDataBind,
         ScreenCapture,
         EventTriggerOrderChanged,
+        SelectEventTriggerChanged,
 
         Max
     }
@@ -36,5 +38,10 @@ namespace Macro.Infrastructure
     {
         public EventTriggerModel TriggerModel1 { get; set; }
         public EventTriggerModel TriggerModel2 { get; set; }
+    }
+    public class SelectEventTriggerChangedEventArgs : INotifyEventArgs
+    {
+        public EventTriggerModel TriggerModel { get; set; }
+        public TreeViewItem TreeViewItem { get; set; }
     }
 }

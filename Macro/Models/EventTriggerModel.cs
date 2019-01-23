@@ -1,6 +1,6 @@
 ﻿using Macro.Infrastructure.Serialize;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using Utils.Infrastructure;
@@ -15,7 +15,7 @@ namespace Macro.Models
         private Point? _mousePoint;
         private string _keyboardCmd;
         private ProcessInfo _processInfo;
-        private List<EventTriggerModel> _subEventTriggers;
+        private ObservableCollection<EventTriggerModel> _subEventTriggers;
         private int _afterDelay;
 
         [field:NonSerialized]
@@ -78,9 +78,9 @@ namespace Macro.Models
         }
 
         [Order(8)]
-        public List<EventTriggerModel> SubEventTriggers
+        public ObservableCollection<EventTriggerModel> SubEventTriggers
         {
-            get => _subEventTriggers ?? (_subEventTriggers = new List<EventTriggerModel>());
+            get => _subEventTriggers ?? (_subEventTriggers = new ObservableCollection<EventTriggerModel>());
             set
             {
                 _subEventTriggers = value;

@@ -41,14 +41,30 @@ namespace Macro
             btnStop.Click += Button_Click;
             btnSetting.Click += Button_Click;
 
-            configView.SelectData += ConfigView_SelectData;
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
+            NotifyHelper.SelectEventTriggerChanged += NotifyHelper_SelectEventTriggerChanged;
             Unloaded += MainWindow_Unloaded;
         }
 
-        private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
+        private void NotifyHelper_SelectEventTriggerChanged(SelectEventTriggerChangedEventArgs e)
+        {
+            if (e.TriggerModel == null)
+            {
+                Clear();
+            }
+            else
+            {
+                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == e.TriggerModel.ProcessInfo.ProcessName).FirstOrDefault();
+                comboProcess.SelectedValue = pair.Value;
+                btnDelete.Visibility = Visibility.Visible;
+                _bitmap = e.TriggerModel.Image;
+                captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
+            }
+        }
+
+        private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
             _taskQueue.Enqueue(() => 
             {
@@ -99,22 +115,6 @@ namespace Macro
             _captureViews.Clear();
         }
 
-        private void ConfigView_SelectData(EventTriggerModel model)
-        {
-            if(model == null)
-            {
-                Clear();
-            }
-            else
-            {
-                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
-                comboProcess.SelectedValue = pair.Value;
-                btnDelete.Visibility = Visibility.Visible;
-                _bitmap = model.Image;
-                captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
-            }
-        }
-        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;

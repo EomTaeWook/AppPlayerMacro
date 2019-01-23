@@ -4,8 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:util="clr-namespace:Utils;assembly=Utils"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:util="clr-namespace:Utils;assembly=Utils"
              mc:Ignorable="d">
     <Grid>
         <DockPanel LastChildFill="False">

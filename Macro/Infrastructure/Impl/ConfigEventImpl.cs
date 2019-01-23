@@ -1,8 +1,11 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Macro.Models;
 using Macro.Models.ViewModel;
+using Macro.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using Utils;
 
@@ -38,7 +41,6 @@ namespace Macro.View
         private void Init()
         {
             treeSaves.ItemsSource = (DataContext as ConfigEventViewModel).TriggerSaves;
-            //grdSaves.ItemsSource = (DataContext as ConfigEventViewModel).TriggerSaves;
             foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _mousePointViews.Add(new MousePositionView(item));
@@ -69,10 +71,19 @@ namespace Macro.View
         {
             if (model == null)
                 return;
-
+            var viewModel = DataContext as ConfigEventViewModel;
+            if (model != viewModel.SelectTreeItem.DataContext)
+                return;
             Dispatcher.Invoke(() =>
             {
-                ((ConfigEventViewModel)DataContext).TriggerSaves.Remove(model);
+                if(viewModel.SelectTreeItem.ParentItem == null)
+                {
+                    viewModel.TriggerSaves.Remove(model);
+                }
+                else
+                {
+                    (viewModel.SelectTreeItem.ParentItem.DataContext as EventTriggerModel).SubEventTriggers.Remove(model);
+                }
                 Clear();
             });
         }
@@ -80,28 +91,88 @@ namespace Macro.View
         {
             if (Model != _dummy)
                 Model = _dummy;
-
-            //grdSaves.SelectedItem = null;
+            (DataContext as ConfigEventViewModel).SelectTreeItem = null;
             RadioButtonRefresh();
 
         }
-        private void RadioButtonRefresh()
+        private void ItemContainerPositionChange(Point point)
         {
-            if (Model.EventType == EventType.Mouse)
+            var targetRow = treeSaves.TryFindFromPoint<TreeGridViewItem>(point);
+            var dragItem = (DataContext as ConfigEventViewModel).SelectTreeItem;
+
+            var parentItemContainer = dragItem.ParentItem == null ? (DataContext as ConfigEventViewModel).TriggerSaves : (dragItem.ParentItem.DataContext as EventTriggerModel).SubEventTriggers;
+
+            if (targetRow != null)
             {
-                btnMouseCoordinate.Visibility = System.Windows.Visibility.Visible;
-                txtKeyboardCmd.Visibility = System.Windows.Visibility.Collapsed;
-                btnMouseCoordinate.IsEnabled = true;
-            }
-            else if(Model.EventType == EventType.Keyboard)
-            {
-                btnMouseCoordinate.Visibility = System.Windows.Visibility.Collapsed;
-                txtKeyboardCmd.Visibility = System.Windows.Visibility.Visible;
+                if (targetRow == dragItem)
+                    return;
+                var item = dragItem.DataContext as EventTriggerModel;
+                var targetItem = targetRow.DataContext as EventTriggerModel;
+
+                if (targetRow.ParentItem == null && dragItem.ParentItem == null)
+                {
+                    parentItemContainer.Remove(item);
+                    (targetRow.DataContext as EventTriggerModel).SubEventTriggers.Add(item);
+                }
+                else if (targetRow.ParentItem != dragItem.ParentItem && targetRow.ParentItem != dragItem)
+                {
+                    parentItemContainer.Remove(item);
+                    targetItem.SubEventTriggers.Add(item);
+                }
+                else if (targetRow.ParentItem == dragItem.ParentItem)
+                {
+                    var targetParent = (targetRow.ParentItem.DataContext as EventTriggerModel);
+                    var targetIndex = targetParent.SubEventTriggers.IndexOf(targetRow.DataContext as EventTriggerModel);
+
+                    targetParent.SubEventTriggers.Remove(item);
+                    targetParent.SubEventTriggers.Insert(targetIndex, item);
+                }
+                else if(targetRow.ParentItem == dragItem)
+                {
+                    parentItemContainer.Remove(item);
+                    item.SubEventTriggers.Remove(targetItem);
+                    var targetSubItem = targetItem.SubEventTriggers;
+                    targetItem.SubEventTriggers = item.SubEventTriggers;
+                    item.SubEventTriggers = targetSubItem;
+                    targetItem.SubEventTriggers.Add(item);
+                    parentItemContainer.Add(targetItem);
+                }
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                {
+                    TriggerModel1 = item,
+                    TriggerModel2 = targetItem
+                });
             }
             else
             {
-                btnMouseCoordinate.Visibility = System.Windows.Visibility.Visible;
-                txtKeyboardCmd.Visibility = System.Windows.Visibility.Collapsed;
+                var item = dragItem.DataContext as EventTriggerModel;
+                parentItemContainer.Remove(item);
+                (DataContext as ConfigEventViewModel).TriggerSaves.Add(item);
+
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                {
+                    TriggerModel1 = item,
+                });
+            }
+            
+        }
+        private void RadioButtonRefresh()
+        {
+            if (Model.EventType == Models.EventType.Mouse)
+            {
+                btnMouseCoordinate.Visibility = Visibility.Visible;
+                txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                btnMouseCoordinate.IsEnabled = true;
+            }
+            else if(Model.EventType == Models.EventType.Keyboard)
+            {
+                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                txtKeyboardCmd.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                btnMouseCoordinate.Visibility = Visibility.Visible;
+                txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
             }
         }

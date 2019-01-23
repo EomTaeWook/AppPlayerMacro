@@ -243,25 +243,28 @@ namespace Macro
                 }
             }
         }
-        private void ImageTriggerProcess(Process process, Point location)
+        private void ImageTriggerProcess(Process process, Point location, EventTriggerModel model)
         {
             var currentPosition = new Rect();
             NativeHelper.GetWindowRect(process.MainWindowHandle, ref currentPosition);
-            var target = new Point();
+
+            var targetFactorX = 1.0F;
+            var targetFactorY = 1.0F;
+
             foreach (var monitor in DisplayHelper.MonitorInfo())
             {
                 if (monitor.Rect.IsContain(currentPosition))
                 {
-                    target.X = location.X * (monitor.Dpi.X / ConstHelper.DefaultDPI);
-                    target.Y = location.Y * (monitor.Dpi.Y / ConstHelper.DefaultDPI);
+                    targetFactorX = monitor.Dpi.X / (model.MonitorInfo.Dpi.X * targetFactorX);
+                    targetFactorY = monitor.Dpi.Y / (model.MonitorInfo.Dpi.Y * targetFactorY);
                     break;
                 }
             }
-            LogHelper.Debug($"Image Location X : {location.X} Location Y : {location.Y} Target X : {target.X} Target Y : {target.Y}");
+            LogHelper.Debug($"Image Location X : {location.X} Location Y : {location.Y} Target X : {location.X * targetFactorX} Target Y : {location.Y * targetFactorY}");
 
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, target.ToLParam());
+            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, location.ToLParam());
             Task.Delay(100).Wait();
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, target.ToLParam());
+            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, location.ToLParam());
         }
         private void MouseTriggerProcess(Process process, EventTriggerModel model)
         {
@@ -340,7 +343,7 @@ namespace Macro
 
                     Dispatcher.Invoke(() =>
                     {
-                        captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                        captureImage.Background = new ImageBrush(sourceBmp.ToBitmapSource());
                     });
                     var similarity = OpenCVHelper.Search(sourceBmp, targetBmp, out Point location);
                     LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
@@ -363,9 +366,9 @@ namespace Macro
                             }
                             else if (model.EventType == EventType.Image)
                             {
-                                location.X += targetBmp.Size.Width / 2;
-                                location.Y += targetBmp.Size.Height / 2;
-                                ImageTriggerProcess(processes.ElementAt(i).Value, location);
+                                location.X = location.X / souceFactorX + (model.Image.Width / 2);
+                                location.Y = location.Y / souceFactorY + (model.Image.Height / 2);
+                                ImageTriggerProcess(processes.ElementAt(i).Value, location, model);
                             }
                             else if (model.EventType == EventType.Keyboard)
                             {
@@ -395,7 +398,6 @@ namespace Macro
         {
             var tcs = new TaskCompletionSource<Task>();
             List<EventTriggerModel> saves = null;
-            KeyValuePair<string, Process>[] processes = null;
             
             Dispatcher.Invoke(() => 
             {
@@ -407,11 +409,6 @@ namespace Macro
                 {
                     if (token.IsCancellationRequested)
                         break;
-                    Dispatcher.Invoke(() =>
-                    {
-                        processes = _processes.Where(r => r.Key.Equals(save.ProcessInfo.ProcessName)).ToArray();
-                    });
-
                     if (!TriggerProcess(save, token))
                         break;
                 }

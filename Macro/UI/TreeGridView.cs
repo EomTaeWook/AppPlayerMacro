@@ -44,29 +44,70 @@ namespace Macro.UI
     public class TreeGridViewItem : TreeViewItem
     {
         public TreeViewItem ParentItem { get; set; }
+        internal bool IsDrag { get; set; }
         public TreeGridViewItem()
         {
-            Background = Brushes.PowderBlue;
-            BorderThickness = new Thickness(10, 10, 10, 10);
+            IsDrag = false;
+            DragEnter += TreeGridViewItem_DragEnter;
             DragLeave += TreeGridViewItem_DragLeave;
-            DragOver += TreeGridViewItem_DragOver;
+            Drop += TreeGridViewItem_Drop;
+            MouseLeave += TreeGridViewItem_MouseLeave;
+        }
+
+        private void TreeGridViewItem_Drop(object sender, DragEventArgs e)
+        {
+            if (sender is TreeGridViewItem item && item.IsDrag)
+            {
+                UpdateLeave(item);
+            }
+        }
+
+        private void TreeGridViewItem_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (sender is TreeGridViewItem item && item.IsDrag)
+            {
+                UpdateLeave(item);
+            }
         }
 
         private void TreeGridViewItem_DragLeave(object sender, DragEventArgs e)
         {
-            if(sender is TreeGridViewItem item)
+            if (sender is TreeGridViewItem item && item.IsDrag)
             {
-                item.Background = Brushes.PowderBlue;
-                item.BorderThickness = new Thickness(10, 10, 10, 10);
+                UpdateLeave(item);
             }
         }
 
-        private void TreeGridViewItem_DragOver(object sender, DragEventArgs e)
+        private void TreeGridViewItem_DragEnter(object sender, DragEventArgs e)
         {
-            if (sender is TreeGridViewItem item)
+            if (sender is TreeGridViewItem item && !item.IsDrag)
             {
-                item.BorderThickness = new Thickness(150);
-                item.BorderBrush = Brushes.Red;
+                item.IsDrag = true;
+                if (item.Template.FindName("Border", item) is Border border)
+                {
+                    border.BorderThickness = new Thickness(0, 0, 0, 2);
+                    border.BorderBrush = Brushes.Red;
+                }
+                if (item.Template.FindName("StackPanel", item) is StackPanel panel)
+                {
+                    panel.Background = Brushes.PowderBlue;
+                }
+            }
+        }
+        private void UpdateLeave(TreeGridViewItem item)
+        {
+            if (item == null)
+                return;
+            item.IsDrag = false;
+
+            if (item.Template.FindName("Border", item) is Border border)
+            {
+                border.BorderThickness = new Thickness(0, 0, 0, 0);
+                border.BorderBrush = Brushes.Transparent;
+            }
+            if (item.Template.FindName("StackPanel", item) is StackPanel panel)
+            {
+                panel.Background = Brushes.Transparent;
             }
         }
 

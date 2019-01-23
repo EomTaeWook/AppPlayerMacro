@@ -184,5 +184,22 @@ namespace Macro.Extensions
             collection[index1] = collection[index2];
             collection[index2] = temp;
         }
+        public static T GetSelectItemFromObject<T>(this ItemsControl control, object item) where T : ItemsControl
+        {
+            if (control.ItemContainerGenerator.ContainerFromItem(item) is T target)
+                return target;
+            for (int i=0; i< control.Items.Count; ++i)
+            {
+                if (control.ItemContainerGenerator.ContainerFromIndex(i) is T subControl)
+                {
+                    target = GetSelectItemFromObject<T>(subControl, item);
+                    if (item != null)
+                    {
+                        return target;
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

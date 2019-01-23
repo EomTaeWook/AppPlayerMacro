@@ -85,7 +85,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="ProcessName" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.4*}">
+                        <GridViewColumn  Header="ProcessName" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.4*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding ProcessInfo.ProcessName}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />
