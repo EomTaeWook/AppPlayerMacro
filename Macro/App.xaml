@@ -35,12 +35,13 @@
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
             </Style>
             <Style TargetType="TextBox">
+                
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
             </Style>
             <Style x:Key="Sumnail" TargetType="Image">
-                <Setter Property="MaxWidth" Value="80" />
+                <!--<Setter Property="MaxWidth" Value="80" />-->
                 <Setter Property="MaxHeight" Value="80" />
-                <Setter Property="Width" Value="80" />
+                <!--<Setter Property="Width" Value="80" />-->
                 <Setter Property="Height" Value="80" />
             </Style>
             <model:ViewModelLocator x:Key="Locator" xmlns:model="clr-namespace:Macro.Models"/>

@@ -27,6 +27,7 @@
         AfterDelay,
         VersionCheck,
         Refresh,
+        Fix,
 
         Max
     }

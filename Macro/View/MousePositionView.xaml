@@ -4,9 +4,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        WindowStyle="None" ResizeMode="NoResize" Opacity="0.5"
-        AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0" WindowStartupLocation="Manual"
-        Title="MousePositionView" Height="450" Width="800">
-    <Grid>
+        WindowStyle="None" ResizeMode="NoResize" Opacity="0.5" WindowStartupLocation="Manual"
+            AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0">
+    <Grid >
+        <Path Stroke="Black" StrokeThickness="1" x:Name="pathMousePoint">
+        </Path>
     </Grid>
 </Window>

@@ -3,7 +3,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Runtime.Serialization;
 using Utils.Infrastructure;
 
 namespace Macro.Models
@@ -102,7 +101,7 @@ namespace Macro.Models
             {
                 if (EventType == EventType.Mouse)
                 {
-                    if(MouseTriggerInfo.MouseInfoEventType != MouseEventType.DragAndDrop && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                    if(MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
                     {
                         return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() }";
                     }
@@ -112,7 +111,7 @@ namespace Macro.Models
                     }
                     else 
                     {
-                        return $"X : { MouseTriggerInfo.StartPoint.X.ToString("0")} Y : {MouseTriggerInfo.StartPoint.Y.ToString("0") } / " +
+                        return $"X : { MouseTriggerInfo.StartPoint.X.ToString("0")} Y : {MouseTriggerInfo.StartPoint.Y.ToString("0") }\r\n" +
                             $"X : { MouseTriggerInfo.EndPoint.X.ToString("0")} Y : {MouseTriggerInfo.EndPoint.Y.ToString("0") }";
                     }
                 }

@@ -54,7 +54,7 @@ namespace Utils.Infrastructure
 
         SysCommand = 0x112,
 
-
+        MouseMove = 0x200,
         LButtonDown = 0x201,
         LButtonUp,
         LButtonDoubleClick,

@@ -6,6 +6,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:view="clr-namespace:Macro.View"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:util="clr-namespace:Utils;assembly=Utils"
                       BorderBrush="{DynamicResource AccentColorBrush}"
                       BorderThickness="1"
                       Title="{Binding Path=LabelViewModel.Title, Source={StaticResource Locator}}" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
@@ -31,13 +32,21 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="9*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <ComboBox Grid.Column="0" Name="comboProcess" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                     </ComboBox>
-                    <Button Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Grid.Column="1" Width="40" Height="40" FontFamily="Wingdings 3">
-                        <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
-                    </Button>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=LabelViewModel.Fix, Source={StaticResource Locator}}" Margin="5,0,0,0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}"></CheckBox>
+                        <Button Grid.Column="1" Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Width="40" Height="40" FontFamily="Wingdings 3">
+                            <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
+                        </Button>
+                    </Grid>
+                    
                 </Grid>
             </DockPanel>
         </Border>
@@ -73,7 +82,7 @@
             </Border>
             <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                    <Label DockPanel.Dock="Left" FontSize="30" Content="{Binding Path=LabelViewModel.Config, Source={StaticResource Locator}}"></Label>
+                    <Label DockPanel.Dock="Left" FontSize="25" Content="{Binding Path=LabelViewModel.Config, Source={StaticResource Locator}}"></Label>
                     <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Delete, Source={StaticResource Locator}}"></Button>
                     <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
                 </DockPanel>

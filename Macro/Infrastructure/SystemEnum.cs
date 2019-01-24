@@ -13,7 +13,7 @@
         None,
         LeftClick,
         RightClick,
-        DragAndDrop,
+        Drag,
 
         Max
     }

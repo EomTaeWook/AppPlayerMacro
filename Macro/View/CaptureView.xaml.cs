@@ -24,10 +24,24 @@ namespace Macro.View
         public CaptureView(MonitorInfo monitorInfo)
         {
             _monitorInfo = monitorInfo;
-            _dummyBorder = new Border();
-
+            _dummyBorder = new Border
+            {
+                BorderBrush = Brushes.Blue,
+                BorderThickness = new Thickness(1),
+                Background = Brushes.LightBlue,
+                SnapsToDevicePixels = true,
+                Opacity = 1,
+                CornerRadius = new CornerRadius(1)
+            };
             InitializeComponent();
             Loaded += CaptureView_Loaded;
+        }
+
+        public void ShowActivate()
+        {
+            Clear();
+            Show();
+            Activate();
         }
 
         private void CaptureView_Loaded(object sender, RoutedEventArgs e)
@@ -37,12 +51,6 @@ namespace Macro.View
         }
         private void Init()
         {
-            _dummyBorder.BorderBrush = Brushes.Blue;
-            _dummyBorder.BorderThickness = new Thickness(1);
-            _dummyBorder.Background = Brushes.LightBlue;
-            _dummyBorder.Opacity = 1;
-            _dummyBorder.CornerRadius = new CornerRadius(1);
-
             Clear();
 
 #if !DEBUG
@@ -71,12 +79,6 @@ namespace Macro.View
             captureZone.MouseLeftButtonUp += CaptureZone_MouseLeave;
 
             PreviewKeyDown += CaptureView_PreviewKeyDown;
-        }
-        public void ShowActivate()
-        {
-            Clear();
-            Show();
-            Activate();
         }
         private void CaptureView_PreviewKeyDown(object sender, KeyEventArgs e)
         {

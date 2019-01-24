@@ -75,7 +75,8 @@ namespace Macro.Extensions
                 BorderThickness = source.BorderThickness,
                 Background = source.Background,
                 Opacity = source.Opacity,
-                CornerRadius = source.CornerRadius
+                CornerRadius = source.CornerRadius,
+                SnapsToDevicePixels = source.SnapsToDevicePixels
             };
             return item;
         }

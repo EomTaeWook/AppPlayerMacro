@@ -1,6 +1,8 @@
 ﻿using Macro.Infrastructure;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Utils.Infrastructure;
 
 namespace Macro.View
@@ -11,11 +13,23 @@ namespace Macro.View
     public partial class MousePositionView : Window
     {
         private MonitorInfo _monitorInfo;
+        private bool _isDrag;
+        private PathFigure _pathFigure;
         public MousePositionView(MonitorInfo monitorInfo)
         {
+            _pathFigure = new PathFigure
+            {
+                Segments = new PathSegmentCollection()
+            };        
             _monitorInfo = monitorInfo;
             InitializeComponent();
             Loaded += MousePositionView_Loaded;
+        }
+        public void ShowActivate()
+        {
+            Clear();
+            Show();
+            Activate();
         }
 
         private void MousePositionView_Loaded(object sender, RoutedEventArgs e)
@@ -27,14 +41,53 @@ namespace Macro.View
         private void EventInit()
         {
             PreviewKeyDown += MousePositionView_PreviewKeyDown;
-            MouseLeftButtonDown += OnMouseLeftButtonDown;
+            PreviewMouseLeftButtonDown+= OnPreviewMouseButtonDown;
+            PreviewMouseRightButtonDown += OnPreviewMouseButtonDown;
+
+            PreviewMouseMove += MousePositionView_PreviewMouseMove;
+
+            PreviewMouseLeftButtonUp += MousePositionView_PreviewMouseLeftButtonUp;
+            PreviewMouseRightButtonUp += MousePositionView_PreviewMouseRightButtonUp;
         }
 
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void MousePositionView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if(IsVisible)
+            if(IsVisible && !_isDrag && e.LeftButton == MouseButtonState.Pressed)
+                _isDrag = true;
+
+            if (_isDrag && e.LeftButton == MouseButtonState.Pressed && IsVisible)
             {
-                e.Handled = true;
+                LineSegment segment = new LineSegment
+                {
+                    Point = e.GetPosition(this)
+                };
+                _pathFigure.Segments.Add(segment);
+            }
+            e.Handled = true;
+        }
+        private void MousePositionView_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            if (IsVisible && !_isDrag)
+            {
+                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
+                {
+                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    {
+                        MouseInfoEventType = Models.MouseEventType.RightClick,
+                        StartPoint = PointToScreen(e.GetPosition(this))
+                    },
+                    MonitorInfo = _monitorInfo
+                });
+            }
+            _isDrag = false;
+        }
+
+        private void MousePositionView_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            if (IsVisible && !_isDrag)
+            {
                 NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
                 {
                     MouseTriggerInfo = new Models.MouseTriggerInfo()
@@ -45,12 +98,31 @@ namespace Macro.View
                     MonitorInfo = _monitorInfo
                 });
             }
+            else if (IsVisible && _isDrag)
+            {
+                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
+                {
+                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    {
+                        MouseInfoEventType = Models.MouseEventType.Drag,
+                        StartPoint = PointToScreen(_pathFigure.StartPoint),
+                        MiddlePoint = _pathFigure.Segments.Select(r => PointToScreen((r as LineSegment).Point)).ToList(),
+                        EndPoint = PointToScreen(e.GetPosition(this)),
+                    },
+                    MonitorInfo = _monitorInfo
+                });
+            }
+            _isDrag = false;
         }
-        public void ShowActivate()
+
+        private void OnPreviewMouseButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Show();
-            Activate();
+            if (IsVisible)
+                _isDrag = false;
+            _pathFigure.StartPoint = e.GetPosition(this);
+            e.Handled = true;
         }
+
         private void MousePositionView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -67,9 +139,16 @@ namespace Macro.View
             }
             base.OnPreviewKeyDown(e);
         }
-
+        private void Clear()
+        {
+            _pathFigure.Segments.Clear();
+        }
         private void Init()
         {
+            pathMousePoint.Data = new PathGeometry()
+            {
+                Figures = new PathFigureCollection() { _pathFigure }
+            };
 #if !DEBUG
             Topmost = true;
 #endif

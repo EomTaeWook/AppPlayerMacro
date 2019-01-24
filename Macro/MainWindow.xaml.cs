@@ -39,12 +39,44 @@ namespace Macro
             btnStart.Click += Button_Click;
             btnStop.Click += Button_Click;
             btnSetting.Click += Button_Click;
+            checkFix.Checked += CheckFix_Checked;
+            checkFix.Unchecked += CheckFix_Checked;
+            comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
 
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
             Unloaded += MainWindow_Unloaded;
+        }
+
+        private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CheckFix_Checked(checkFix, null);
+        }
+        private void CheckFix_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(checkFix))
+            {
+                if (checkFix.IsChecked.HasValue)
+                {
+                    if(checkFix.IsChecked.Value)
+                    {
+                        if(comboProcess.SelectedItem is KeyValuePair<string, Process> item)
+                        {
+                            _fixProcess = new KeyValuePair<string, Process>(item.Key, item.Value);
+                        }
+                    }
+                    else
+                    {
+                        _fixProcess = null;
+                    }                        
+                }
+                else
+                {
+                    _fixProcess = null;
+                }
+            }
         }
 
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)

@@ -36,6 +36,7 @@ namespace Macro
         private TaskQueue _taskQueue;
         private string _path;
         private KeyValuePair<string, Process>[] _processes;
+        private KeyValuePair<string, Process>? _fixProcess;
         private IConfig _config;
         private Bitmap _bitmap;
         private List<CaptureView> _captureViews;
@@ -99,6 +100,11 @@ namespace Macro
                     continue;
 
                 BindingOperations.GetBindingExpressionBase(button, ContentProperty).UpdateTarget();
+            }
+            var checkBoxs = ObjectExtensions.FindChildren<CheckBox>(this);
+            foreach (var checkBox in checkBoxs)
+            {
+                BindingOperations.GetBindingExpressionBase(checkBox, ContentProperty).UpdateTarget();
             }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
             configView.Clear();
@@ -285,31 +291,45 @@ namespace Macro
                 Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.StartPoint.Y * -1) * targetFactorY
             };
 
-            LogHelper.Debug($">>>>Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-            if(model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
+            
+            if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
+                LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
                 NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.RightClick)
             {
+                LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
                 NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
             }
-            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.DragAndDrop)
+            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Drag)
             {
-                var mouseEndPosition = new Point()
+                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                Task.Delay(100).Wait();
+                for (int i = 0; i < model.MouseTriggerInfo.MiddlePoint.Count; ++i)
+                {
+                    mousePosition = new Point()
+                    {
+                        X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1) * targetFactorX,
+                        Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1) * targetFactorY
+                    };
+                    NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
+                    Task.Delay(100).Wait();
+                }
+                mousePosition = new Point()
                 {
                     X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1) * targetFactorX,
                     Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1) * targetFactorY
                 };
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-                Task.Delay(100).Wait();
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mouseEndPosition.ToLParam());
+                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
                 NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
             }
         }
         private void KeyboardTriggerProcess(Process process, EventTriggerModel model)
@@ -346,7 +366,10 @@ namespace Macro
             var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
             Dispatcher.Invoke(() =>
             {
-                processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
+                if (_fixProcess.HasValue)
+                    processes = new KeyValuePair<string, Process>[] { _fixProcess.Value };
+                else
+                    processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
             });
             for (int i = 0; i < processes.Length; ++i)
             {
