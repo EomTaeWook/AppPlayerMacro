@@ -45,7 +45,7 @@ OS 버전
 
     5.이미지 조합을 통한 이벤트 발생 방법
 
-<img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/ImageCombination.png" width="100%"></img>
+<img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/imageCombination.png" width="100%"></img>
 
 설정(Config.json 혹은 프로그램 내 Setting)
 
