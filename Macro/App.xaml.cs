@@ -37,7 +37,6 @@ namespace Macro
 #endif
 
             };
-            
             Init();
             base.OnStartup(e);
         }
@@ -50,9 +49,10 @@ namespace Macro
         }
         private void InitTemplate()
         {
-            var path = $@"{Environment.CurrentDirectory}\Datas\";
-            Singleton<DocumentTemplate<Label>>.Instance.Init(path);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(path);
+            Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFile);
+            Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFile);
+
+            Singleton<DynamicDPIManager>.Instance.Init("dynamicDPI");
         }
         private void DependenciesResolved()
         {

@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="Macro.View.ConfigEventView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:UI="clr-namespace:Macro.UI"
-             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
     
     <UserControl.Resources>
@@ -85,7 +85,7 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <UI:TreeGridViewExpander/>
-                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Image, Converter={StaticResource ResourceKey=ImageConverter}}" Style="{StaticResource Sumnail}"/>
+                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Image, Converter={StaticResource ResourceKey=ImageConverter}}" Style="{StaticResource Sumnail}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

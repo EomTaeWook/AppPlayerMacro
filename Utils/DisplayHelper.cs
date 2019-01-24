@@ -53,17 +53,17 @@ namespace Utils
             }
         }
 
-        public static bool ProcessCapture(Process process, out Bitmap bmp)
+        public static bool ProcessCapture(Process process, out Bitmap bmp, bool isDynamic = false)
         {
             try
             {
                 IntPtr hWnd = process.MainWindowHandle;
-                var factor = NativeHelper.GetSystemDpi();
                 if (hWnd == IntPtr.Zero)
                 {
                     bmp = null;
                     return false;
                 }
+                var factor = NativeHelper.GetSystemDpi();
                 Rect rect = new Rect();
                 NativeHelper.GetWindowRect(hWnd, ref rect);
                 if (rect.Width == 0 || rect.Height == 0)
@@ -73,13 +73,16 @@ namespace Utils
                 }
                 var factorX = 1.0F;
                 var factorY = 1.0F;
-                foreach (var monitor in MonitorInfo())
+                if(isDynamic)
                 {
-                    if (monitor.Rect.IsContain(rect))
+                    foreach (var monitor in MonitorInfo())
                     {
-                        factorX = factor.X / (monitor.Dpi.X * factorX);
-                        factorY = factor.Y / (monitor.Dpi.Y * factorY);
-                        break;
+                        if (monitor.Rect.IsContain(rect))
+                        {
+                            factorX = factor.X / (monitor.Dpi.X * factorX);
+                            factorY = factor.Y / (monitor.Dpi.Y * factorY);
+                            break;
+                        }
                     }
                 }
 

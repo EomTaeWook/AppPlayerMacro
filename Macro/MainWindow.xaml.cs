@@ -3,7 +3,6 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -88,8 +87,7 @@ namespace Macro
             {
                 var capture = e.CaptureImage;
                 captureImage.Background = new ImageBrush(capture.ToBitmapSource());
-                var factor = NativeHelper.GetSystemDpi();
-                _bitmap = new Bitmap(capture, (int)Math.Truncate(capture.Width * factor.X / ConstHelper.DefaultDPI), (int)Math.Truncate(capture.Height * factor.Y / ConstHelper.DefaultDPI));
+                _bitmap = new Bitmap(capture, capture.Width, capture.Height);
             }
             WindowState = WindowState.Normal;
         }

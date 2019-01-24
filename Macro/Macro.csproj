@@ -203,6 +203,7 @@
     <Compile Include="Infrastructure\Impl\SettingImpl.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Impl\MainWindowImpl.cs" />
+    <Compile Include="Infrastructure\Manager\DynamicDPIManager.cs" />
     <Compile Include="Infrastructure\Manager\InputManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
@@ -212,9 +213,10 @@
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Infrastructure\EventArgs.cs" />
+    <Compile Include="Infrastructure\DynamicDPI.cs" />
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
-    <Compile Include="Models\Version.cs" />
+    <Compile Include="Infrastructure\Version.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\SystemEnum.cs" />
     <Compile Include="Models\ViewModel\ConfigEventViewModel.cs" />

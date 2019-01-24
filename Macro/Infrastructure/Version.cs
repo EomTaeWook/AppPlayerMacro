@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Macro.Models
+namespace Macro.Infrastructure
 {
     internal class Current
     {
-        public static readonly int Major = 1;
-        public static readonly int Minor = 5;
+        public static readonly int Major = 2;
+        public static readonly int Minor = 0;
         public static readonly int Build = 0;
     }
 

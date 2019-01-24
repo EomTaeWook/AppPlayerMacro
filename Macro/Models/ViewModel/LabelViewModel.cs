@@ -1,4 +1,5 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Utils.Document;
 
 namespace Macro.Models.ViewModel

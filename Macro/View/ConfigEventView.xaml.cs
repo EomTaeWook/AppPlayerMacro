@@ -64,12 +64,12 @@ namespace Macro.View
                 if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
                 {
                     itemContainer.Swap(currentIndex, currentIndex - 1);
-                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex - 1]);
+                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex - 1]) ?? _dummy;
                 }
                 else if(currentIndex < itemContainer.Count - 1 && sender.Equals(btnTreeItemDown))
                 {
                     itemContainer.Swap(currentIndex, currentIndex + 1);
-                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex + 1]);
+                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex + 1]) ?? _dummy;
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace Macro.View
         {
             if(treeSaves.SelectedItem is EventTriggerModel item)
             {
-                CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem);
+                CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem) ?? _dummy;
                 NotifyHelper.InvokeNotify(Infrastructure.EventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
                 {
                     TreeViewItem = CurrentTreeViewItem

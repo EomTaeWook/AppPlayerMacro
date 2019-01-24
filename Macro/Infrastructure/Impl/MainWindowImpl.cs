@@ -27,7 +27,7 @@ using InputManager = Macro.Infrastructure.Manager.InputManager;
 using Message = Utils.Document.Message;
 using Point = System.Windows.Point;
 using Rect = Utils.Infrastructure.Rect;
-using Version = Macro.Models.Version;
+using Version = Macro.Infrastructure.Version;
 
 namespace Macro
 {
@@ -50,7 +50,6 @@ namespace Macro
         
         private void Init()
         {
-            //window7 not support
             if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor > 1)
             {
                 NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
@@ -242,21 +241,26 @@ namespace Macro
 
             var targetFactorX = 1.0F;
             var targetFactorY = 1.0F;
-
+            var factor = NativeHelper.GetSystemDpi();
             foreach (var monitor in DisplayHelper.MonitorInfo())
             {
                 if (monitor.Rect.IsContain(currentPosition))
                 {
-                    targetFactorX = monitor.Dpi.X / (model.MonitorInfo.Dpi.X * targetFactorX);
-                    targetFactorY = monitor.Dpi.Y / (model.MonitorInfo.Dpi.Y * targetFactorY);
+                    targetFactorX = monitor.Dpi.X / (factor.X * targetFactorX);
+                    targetFactorY = monitor.Dpi.Y / (factor.Y * targetFactorY);
                     break;
                 }
             }
-            LogHelper.Debug($"Image Location X : {location.X} Location Y : {location.Y} Target X : {location.X * targetFactorX} Target Y : {location.Y * targetFactorY}");
+            var position = new Point()
+            {
+                X = location.X * targetFactorX,
+                Y = location.Y * targetFactorY
+            };
 
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, location.ToLParam());
+            LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
+            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, position.ToLParam());
             Task.Delay(100).Wait();
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, location.ToLParam());
+            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, position.ToLParam());
         }
         private void MouseTriggerProcess(Process process, EventTriggerModel model)
         {
@@ -281,7 +285,7 @@ namespace Macro
                 Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.StartPoint.Y * -1) * targetFactorY
             };
 
-            LogHelper.Debug($"Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+            LogHelper.Debug($">>>>Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
             if(model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
                 NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
@@ -339,33 +343,46 @@ namespace Macro
         private bool TriggerProcess(EventTriggerModel model, CancellationToken token)
         {
             KeyValuePair<string, Process>[] processes = null;
+            var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
             Dispatcher.Invoke(() =>
             {
                 processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
             });
             for (int i = 0; i < processes.Length; ++i)
             {
-                if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp))
+                if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, isDynamic))
                 {
-                    var factor = NativeHelper.GetSystemDpi();
-                    var sourceBmp = bmp.Resize((int)Math.Truncate(bmp.Width * (factor.X / ConstHelper.DefaultDPI)), (int)Math.Truncate(bmp.Height * (factor.Y / ConstHelper.DefaultDPI)));
-                    var souceFactorX = factor.X / (model.MonitorInfo.Dpi.X * 1.0F);
-                    var souceFactorY = factor.Y / (model.MonitorInfo.Dpi.Y * 1.0F);
+                    var currentPosition = new Rect();
+                    NativeHelper.GetWindowRect(processes.ElementAt(i).Value.MainWindowHandle, ref currentPosition);
+                    var factorX = 1.0F;
+                    var factorY = 1.0F;
 
-                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * souceFactorX), (int)Math.Truncate(model.Image.Height * souceFactorY));
+                    var factor = NativeHelper.GetSystemDpi();
+                    foreach (var monitor in DisplayHelper.MonitorInfo())
+                    {
+                        if (monitor.Rect.IsContain(currentPosition))
+                        {
+                            factorX = monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X * (factor.X * 1.0F / monitor.Dpi.X);
+                            factorY = monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y * (factor.X * 1.0F / monitor.Dpi.X);
+                            break;
+                        }
+                    }
+                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factorX), (int)Math.Truncate(model.Image.Height * factorX));
+                    var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location);
+                    LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
 
                     Dispatcher.Invoke(() =>
                     {
-                        captureImage.Background = new ImageBrush(sourceBmp.ToBitmapSource());
+                        captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
                     });
-                    var similarity = OpenCVHelper.Search(sourceBmp, targetBmp, out Point location);
-                    LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
 
                     if (similarity >= _config.Similarity)
                     {
                         if(model.SubEventTriggers.Count > 0)
                         {
-                            for(int ii=0; ii<model.SubEventTriggers.Count; ++ii)
+                            if (!TokenCheckDelay(model.AfterDelay, token))
+                                break;
+                            for (int ii=0; ii<model.SubEventTriggers.Count; ++ii)
                             {
                                 if (!TriggerProcess(model.SubEventTriggers[ii], token))
                                     break;
@@ -379,17 +396,18 @@ namespace Macro
                             }
                             else if (model.EventType == EventType.Image)
                             {
-                                location.X = location.X / souceFactorX + (model.Image.Width / 2);
-                                location.Y = location.Y / souceFactorY + (model.Image.Height / 2);
+                                location.X = location.X + (targetBmp.Width / 2);
+                                location.Y = location.Y + (targetBmp.Height / 2);
                                 ImageTriggerProcess(processes.ElementAt(i).Value, location, model);
                             }
                             else if (model.EventType == EventType.Keyboard)
                             {
                                 KeyboardTriggerProcess(processes.ElementAt(i).Value, model);
                             }
+                            if (!TokenCheckDelay(model.AfterDelay, token))
+                                break;
                         }
-                        if (!TokenCheckDelay(model.AfterDelay, token))
-                            break;
+
                     }
                 }
             }

@@ -1,5 +1,4 @@
-﻿using Macro.Models;
-using Macro.View;
+﻿using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
@@ -180,7 +179,7 @@ namespace Macro.Extensions
                 if (control.ItemContainerGenerator.ContainerFromIndex(i) is T subControl)
                 {
                     target = GetSelectItemFromObject<T>(subControl, item);
-                    if (item != null)
+                    if (target != null)
                     {
                         return target;
                     }

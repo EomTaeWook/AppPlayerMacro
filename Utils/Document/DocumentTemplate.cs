@@ -13,7 +13,7 @@ namespace Utils.Document
         }
         public void Init(string path)
         {
-            var json = File.ReadAllText($@"{path}\{typeof(T).Name}Document.json");
+            var json = File.ReadAllText($@"{path}{typeof(T).Name}Document.json");
             if (!string.IsNullOrEmpty(json))
             {
                 var jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DocumentData>>(json);

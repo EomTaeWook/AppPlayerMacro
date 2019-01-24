@@ -1,5 +1,4 @@
 ﻿using Macro.Extensions;
-using Macro.Infrastructure;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
@@ -120,18 +119,10 @@ namespace Macro.View
                     parentItemContainer.Remove(item);
                     targetItem.SubEventTriggers.Add(item);
                 }
-                else if (target.ParentItem != CurrentTreeViewItem.ParentItem && target.ParentItem != CurrentTreeViewItem)
+                else if (target.ParentItem != CurrentTreeViewItem)
                 {
                     parentItemContainer.Remove(item);
                     targetItem.SubEventTriggers.Add(item);
-                }
-                else if (target.ParentItem == CurrentTreeViewItem.ParentItem)
-                {
-                    var targetParent = target.ParentItem.DataContext<EventTriggerModel>();
-                    var targetIndex = targetParent.SubEventTriggers.IndexOf(target.DataContext<EventTriggerModel>());
-
-                    targetParent.SubEventTriggers.Remove(item);
-                    targetParent.SubEventTriggers.Insert(targetIndex, item);
                 }
                 else if(target.ParentItem == CurrentTreeViewItem)
                 {
@@ -142,8 +133,8 @@ namespace Macro.View
                     item.SubEventTriggers = targetSubItem;
                     targetItem.SubEventTriggers.Add(item);
                     parentItemContainer.Add(targetItem);
+                    CurrentTreeViewItem = _dummy;
                 }
-                target.IsExpanded = true;
             }
             else
             {

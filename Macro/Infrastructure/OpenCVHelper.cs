@@ -24,11 +24,21 @@ namespace Macro.Infrastructure
 
             var match = sourceMat.MatchTemplate(targetMat, TemplateMatchModes.CCoeffNormed);
             Cv2.MinMaxLoc(match, out double min, out double max, out Point minLoc, out Point maxLoc);
+
             location = new System.Windows.Point()
             {
                 X = maxLoc.X,
                 Y = maxLoc.Y
             };
+#if DEBUG
+            using (var g = Graphics.FromImage(source))
+            {
+                using (var pen = new Pen(Color.Red, 2))
+                {
+                    g.DrawRectangle(pen, new Rectangle() { X = (int)location.X, Y = (int)location.Y, Width = target.Width, Height = target.Height });
+                }
+            }
+#endif
             return Convert.ToInt32(max * 100);
         }
     }

@@ -30,7 +30,6 @@ namespace Macro.Extensions
             NotifyHelper.ConfigChanged += (e) =>
             {
                 _language = e.Config.Language;
-
             };
         }
         public static string Get(Label label)
