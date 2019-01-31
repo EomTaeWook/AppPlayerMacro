@@ -30,10 +30,9 @@ namespace Macro
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
 #if DEBUG
-                LogHelper.Debug(ex.Exception.Message);
-                
+                LogHelper.Debug(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #else
-                ExceptionProcess(s, ex.Exception);
+                LogHelper.Warning(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #endif
 
             };

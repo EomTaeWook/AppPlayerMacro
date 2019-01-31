@@ -28,6 +28,7 @@
         VersionCheck,
         Refresh,
         Fix,
+        Repeat,
 
         Max
     }

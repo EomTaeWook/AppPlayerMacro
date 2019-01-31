@@ -17,4 +17,14 @@
 
         Max
     }
+
+    public enum RepeatType
+    {
+        Once,
+        Count,
+        NoSearch,
+        Continue,
+
+        Max
+    }
 }

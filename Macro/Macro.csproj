@@ -209,6 +209,7 @@
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\Manager\ProcessManager.cs" />
+    <Compile Include="Infrastructure\RepeatInfo.cs" />
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />

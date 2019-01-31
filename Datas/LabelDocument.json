@@ -1,118 +1,123 @@
 ﻿[
-	{
-		"Code" : "SelectProcess",
-		"Kor": "연결된 프로세스",
-		"Eng": "Select Process"
-	},
-	{
-		"Code" : "CompareImage",
-		"Kor": "비교할 이미지",
-		"Eng": "CompareImage"
-	},
-	{
-		"Code" : "ScreenCapture",
-		"Kor": "화면 캡쳐",
-		"Eng": "ScreenCapture"
-	},
-	{
-		"Code" : "SaveConfig",
-		"Kor": "저장",
-		"Eng": "SaveConfig"
-	},
-	{
-		"Code" : "Config",
-		"Kor": "설정",
-		"Eng": "Config"
-	},
-	{
-		"Code" : "EventType",
-		"Kor": "이벤트 타입",
-		"Eng": "EventType"
-	},
-	{
-		"Code" : "EventDataSet",
-		"Kor": "이벤트 데이터",
-		"Eng": "EventDataSet"
-	},
-	{
-		"Code": "TriggerList",
-		"Kor": "트리거 리스트",
-		"Eng": "Trigger List"
-	},
-	{
-		"Code" : "MouseCoordinates",
-		"Kor": "마우스 좌표 지정",
-		"Eng": "MouseCoordinate"
-	},
-	{
-		"Code" : "Save",
-		"Kor": "저장",
-		"Eng": "Save"
-	},
-	{
-		"Code" : "Delete",
-		"Kor": "삭제",
-		"Eng": "Delete"
-	},
-	{
-		"Code" : "Start",
-		"Kor": "시작",
-		"Eng": "Start"
-	},
-	{
-		"Code" : "Stop",
-		"Kor": "중지",
-		"Eng": "Stop"
-	},
-	{
-		"Code" : "Setting",
-		"Kor": "Setting",
-		"Eng": "Setting"
-	},
-	{
-		"Code" : "Title",
-		"Kor": "매크로",
-		"Eng": "Macro"
-	},
-	{
-		"Code" : "Language",
-		"Kor": "언어",
-		"Eng": "Language"
-	},
-	{
-		"Code" : "SavePath",
-		"Kor": "저장 경로",
-		"Eng": "SavePath"
-	},
-	{
-		"Code" : "Period",
-		"Kor": "전체 프로세싱 주기(ms)",
-		"Eng": "Period(ms)"
-	},
-	{
-		"Code" : "ItemDelay",
-		"Kor": "아이템 딜레이(ms)",
-		"Eng": "ItemDelay(ms)"
-	},
-	{
-		"Code" : "Similarity",
-		"Kor": "유사도",
-		"Eng": "Similarity"
-	},
-	{
-		"Code" : "AfterDelay",
-		"Kor": "후(後) 작업 딜레이(ms)",
-		"Eng": "AfterDelay(ms)"
-	},
-	{
-		"Code" : "VersionCheck",
-		"Kor": "버전 정보 확인",
-		"Eng": "VersionCheck"
-	},
-	{
-		"Code" : "Fix",
-		"Kor": "고정",
-		"Eng": "Fix"
-	}
+  {
+    "Code": "SelectProcess",
+    "Kor": "연결된 프로세스",
+    "Eng": "Select Process"
+  },
+  {
+    "Code": "CompareImage",
+    "Kor": "비교할 이미지",
+    "Eng": "CompareImage"
+  },
+  {
+    "Code": "ScreenCapture",
+    "Kor": "화면 캡쳐",
+    "Eng": "ScreenCapture"
+  },
+  {
+    "Code": "SaveConfig",
+    "Kor": "저장",
+    "Eng": "SaveConfig"
+  },
+  {
+    "Code": "Config",
+    "Kor": "설정",
+    "Eng": "Config"
+  },
+  {
+    "Code": "EventType",
+    "Kor": "이벤트 타입",
+    "Eng": "EventType"
+  },
+  {
+    "Code": "EventDataSet",
+    "Kor": "이벤트 데이터",
+    "Eng": "EventDataSet"
+  },
+  {
+    "Code": "TriggerList",
+    "Kor": "트리거 리스트",
+    "Eng": "Trigger List"
+  },
+  {
+    "Code": "MouseCoordinates",
+    "Kor": "마우스 좌표 지정",
+    "Eng": "MouseCoordinate"
+  },
+  {
+    "Code": "Save",
+    "Kor": "저장",
+    "Eng": "Save"
+  },
+  {
+    "Code": "Delete",
+    "Kor": "삭제",
+    "Eng": "Delete"
+  },
+  {
+    "Code": "Start",
+    "Kor": "시작",
+    "Eng": "Start"
+  },
+  {
+    "Code": "Stop",
+    "Kor": "중지",
+    "Eng": "Stop"
+  },
+  {
+    "Code": "Setting",
+    "Kor": "Setting",
+    "Eng": "Setting"
+  },
+  {
+    "Code": "Title",
+    "Kor": "매크로",
+    "Eng": "Macro"
+  },
+  {
+    "Code": "Language",
+    "Kor": "언어",
+    "Eng": "Language"
+  },
+  {
+    "Code": "SavePath",
+    "Kor": "저장 경로",
+    "Eng": "SavePath"
+  },
+  {
+    "Code": "Period",
+    "Kor": "전체 프로세싱 주기(ms)",
+    "Eng": "Period(ms)"
+  },
+  {
+    "Code": "ItemDelay",
+    "Kor": "아이템 딜레이(ms)",
+    "Eng": "ItemDelay(ms)"
+  },
+  {
+    "Code": "Similarity",
+    "Kor": "유사도",
+    "Eng": "Similarity"
+  },
+  {
+    "Code": "AfterDelay",
+    "Kor": "후(後) 작업 딜레이(ms)",
+    "Eng": "AfterDelay(ms)"
+  },
+  {
+    "Code": "VersionCheck",
+    "Kor": "버전 정보 확인",
+    "Eng": "VersionCheck"
+  },
+  {
+    "Code": "Fix",
+    "Kor": "고정",
+    "Eng": "Fix"
+  },
+  {
+    "Code": "Repeat",
+    "Kor": "반복",
+    "Eng": "Repeat"
+  }
 ]
 

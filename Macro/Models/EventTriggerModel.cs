@@ -1,4 +1,5 @@
-﻿using Macro.Infrastructure.Serialize;
+﻿using Macro.Infrastructure;
+using Macro.Infrastructure.Serialize;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -16,6 +17,7 @@ namespace Macro.Models
         private ProcessInfo _processInfo;
         private ObservableCollection<EventTriggerModel> _subEventTriggers;
         private int _afterDelay;
+        private RepeatInfo _repeatInfo;
 
         [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
@@ -92,6 +94,16 @@ namespace Macro.Models
             {
                 _afterDelay = value;
                 OnPropertyChanged("AfterDelay");
+            }
+        }
+        [Order(9)]
+        public RepeatInfo RepeatInfo
+        {
+            get => _repeatInfo ?? (_repeatInfo = new RepeatInfo());
+            set
+            {
+                _repeatInfo = value;
+                OnPropertyChanged("RepeatInfo");
             }
         }
 

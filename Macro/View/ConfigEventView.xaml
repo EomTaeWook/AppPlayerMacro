@@ -18,6 +18,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -52,28 +53,37 @@
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
+                <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.Repeat, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="3" Name="grdRepeat">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Name="comboRepeat" Grid.Column="0"></ComboBox>
+                    <Controls:NumericUpDown Name="numRepeatCount" Minimum="1" Grid.Column="1"></Controls:NumericUpDown>
+                </Grid>
+                
             </Grid>
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*"></ColumnDefinition>
-                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Content="{Binding Path=LabelViewModel.TriggerList, Source={StaticResource Locator}}"></Label>
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Background="Transparent" DockPanel.Dock="Left" VerticalAlignment="Stretch" Height="40" Name="btnTreeItemUp" Visibility="Hidden">
+                        <Button Grid.Column="0" Background="Transparent" VerticalAlignment="Stretch" Height="40" Name="btnTreeItemUp" Visibility="Hidden">
                             <IconPacks:PackIconMaterial Width="auto" Height="24" Kind="ArrowUpDropCircleOutline" />
                         </Button>
-                        <Button Grid.Column="1" Background="Transparent" DockPanel.Dock="Right" VerticalAlignment="Stretch" Height="40" Name="btnTreeItemDown" Visibility="Hidden">
+                        <Button Grid.Column="1" Background="Transparent" VerticalAlignment="Stretch" Height="40" Name="btnTreeItemDown" Visibility="Hidden">
                             <IconPacks:PackIconMaterial Width="auto" Height="24" Kind="ArrowDownDropCircleOutline" />
                         </Button>
                     </Grid>
                 </Grid>
-
                 <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves" AllowDrop="True">
                     <UI:TreeGridView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />

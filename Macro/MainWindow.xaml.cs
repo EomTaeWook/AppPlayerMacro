@@ -88,8 +88,14 @@ namespace Macro
             else
             {
                 var model = e.TreeViewItem.DataContext<EventTriggerModel>();
-                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
-                comboProcess.SelectedValue = pair.Value;
+                if(_fixProcess == null)
+                {
+                    var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
+                    comboProcess.SelectedValue = pair.Value;
+                }
+                else
+                    comboProcess.SelectedValue = _fixProcess.Value;
+
                 btnDelete.Visibility = Visibility.Visible;
                 _bitmap = model.Image;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());

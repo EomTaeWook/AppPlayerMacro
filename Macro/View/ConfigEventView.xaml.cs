@@ -106,6 +106,8 @@ namespace Macro.View
             {
                 _isDrag = false;
                 var targetRow = treeSaves.TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
+                if (CurrentTreeViewItem == targetRow)
+                    return;
                 ItemContainerPositionChange(targetRow);
                 var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 Clear();
@@ -186,10 +188,12 @@ namespace Macro.View
         private void RadioButton_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentTreeViewItem == _dummy)
+            {
                 CurrentTreeViewItem = new TreeGridViewItem()
                 {
                     DataContext = new EventTriggerModel()
                 };
+            }
 
             if (sender.Equals(rbMouse))
             {

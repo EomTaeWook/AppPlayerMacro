@@ -33,6 +33,7 @@
             </Style>
             <Style TargetType="Controls:NumericUpDown">
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
+                <Setter Property="MaxHeight"  Value="40"/>
             </Style>
             <Style TargetType="TextBox">
                 
