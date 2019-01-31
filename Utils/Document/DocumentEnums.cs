@@ -30,6 +30,11 @@
         Fix,
         Repeat,
 
+        RepeatOnce,
+        RepeatCount,
+        RepeatNoSearch,
+        RepeatContinue,
+
         Max
     }
 

@@ -118,6 +118,26 @@
     "Code": "Repeat",
     "Kor": "반복",
     "Eng": "Repeat"
+  },
+  {
+    "Code": "RepeatOnce",
+    "Kor": "한번",
+    "Eng": "Once"
+  },
+  {
+    "Code": "RepeatCount",
+    "Kor": "횟수",
+    "Eng": "Count"
+  },
+  {
+    "Code": "RepeatNoSearch",
+    "Kor": "검색 결과가 없을때 까지",
+    "Eng": "NoSearch"
+  },
+  {
+    "Code": "RepeatContinue",
+    "Kor": "계속",
+    "Eng": "Continue"
   }
 ]
 

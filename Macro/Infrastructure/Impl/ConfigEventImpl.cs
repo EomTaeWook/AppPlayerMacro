@@ -2,6 +2,7 @@
 using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -25,6 +26,7 @@ namespace Macro.View
         private List<MousePositionView> _mousePointViews;
         private TreeGridViewItem _dummy;
         private bool _isDrag;
+        private List<KeyValuePair<RepeatType, string>> _repeatItems;
         public ConfigEventView()
         {
             _isDrag = false;
@@ -32,7 +34,7 @@ namespace Macro.View
             {
                 DataContext = new EventTriggerModel()
             };
-
+            _repeatItems = new List<KeyValuePair<RepeatType, string>>();
             _mousePointViews = new List<MousePositionView>();
             DataContext = new ViewModelLocator().ConfigEventViewModel;
             CurrentTreeViewItem = _dummy;
@@ -49,6 +51,16 @@ namespace Macro.View
             {
                 _mousePointViews.Add(new MousePositionView(item));
             }
+            foreach(var type in Enum.GetValues(typeof(RepeatType)))
+            {
+                if(Enum.TryParse($"Repeat{type.ToString()}", out Utils.Document.Label label))
+                {
+                    _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, DocumentHelper.Get(label)));
+                }
+            }
+            comboRepeat.ItemsSource = _repeatItems;
+            comboRepeat.DisplayMemberPath = "Value";
+            comboRepeat.SelectedValuePath = "Key";
         }
 
         public void ShowMousePoisitionView()

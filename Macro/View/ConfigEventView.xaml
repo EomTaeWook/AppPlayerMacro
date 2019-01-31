@@ -54,12 +54,12 @@
                     <Controls:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.Repeat, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Column="1" Grid.Row="3" Name="grdRepeat">
+                <Grid Grid.Column="1" Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <ComboBox Name="comboRepeat" Grid.Column="0"></ComboBox>
+                    <ComboBox Name="comboRepeat" Grid.Column="0" SelectedValue="{Binding Path=CurrentTreeViewItem.DataContext.RepeatInfo.RepeatType, Mode=TwoWay}"></ComboBox>
                     <Controls:NumericUpDown Name="numRepeatCount" Minimum="1" Grid.Column="1"></Controls:NumericUpDown>
                 </Grid>
                 
