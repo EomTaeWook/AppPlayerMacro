@@ -60,15 +60,15 @@ namespace Macro.Infrastructure.Manager
             }
             return _current;
         }
-        private void OnProcess(object state)
+        private async void OnProcess(object state)
         {
             var token = (state as CancellationTokenSource).Token;
             while (!token.IsCancellationRequested)
             {
                 foreach (var job in Jobs)
                 {
-                    var task = Task.Factory.StartNew(()=> { return job.Invoke(token); }, token);
-                    task.Wait();
+                    var task = Task.Run(()=> { return job.Invoke(token); }, token);
+                    await task;
                     if (!task.IsCompleted)
                         break;
                 }

@@ -362,9 +362,9 @@ namespace Macro
             ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             NativeHelper.SetForegroundWindow(hWndActive);
         }
-        private bool TriggerProcess(EventTriggerModel model, CancellationToken token, out bool isExcute)
+        private async Task<bool> TriggerProcess(EventTriggerModel model, CancellationToken token)
         {
-            isExcute = false;
+            var isExcute = false;
             KeyValuePair<string, Process>[] processes = null;
             var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
             Dispatcher.Invoke(() =>
@@ -410,26 +410,28 @@ namespace Macro
                             {
                                 for(int ii=0; ii<model.RepeatInfo.Count; ++ii)
                                 {
-                                    if (!TokenCheckDelay(model.AfterDelay, token))
+                                    if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                         break;
                                     for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
                                     {
-                                        if (!TriggerProcess(model.SubEventTriggers[iii], token, out bool ignore))
+                                        await TriggerProcess(model.SubEventTriggers[iii], token);
+                                        if (token.IsCancellationRequested)
                                             break;
                                     }
                                 }
                             }
                             else if(model.RepeatInfo.RepeatType == RepeatType.NoSearch)
                             {
-                                while (TokenCheckDelay(model.AfterDelay, token))
+                                while (await TokenCheckDelayAsync(model.AfterDelay, token))
                                 {
                                     isExcute = false;
                                     for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
                                     {
-                                        if (!TriggerProcess(model.SubEventTriggers[ii], token, out bool isChildExcute))
+                                        var childExcute = await TriggerProcess(model.SubEventTriggers[ii], token);
+                                        if (token.IsCancellationRequested)
                                             break;
-                                        if (!isExcute && isChildExcute)
-                                            isExcute = isChildExcute;
+                                        if (!isExcute && childExcute)
+                                            isExcute = childExcute;
                                     }
                                     if (!isExcute)
                                         break;
@@ -439,7 +441,6 @@ namespace Macro
                         else
                         {
                             isExcute = true;
-
                             if (model.EventType == EventType.Mouse)
                             {
                                 MouseTriggerProcess(processes.ElementAt(i).Value, model);
@@ -454,20 +455,25 @@ namespace Macro
                             {
                                 KeyboardTriggerProcess(processes.ElementAt(i).Value, model);
                             }
-                            if (!TokenCheckDelay(model.AfterDelay, token))
+                            if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                 break;
                         }
                     }
                 }
             }
-            return TokenCheckDelay(_config.ItemDelay, token);
+            await TokenCheckDelayAsync(_config.ItemDelay, token);
+            return isExcute;
         }
-        private bool TokenCheckDelay(int millisecondsDelay, CancellationToken token)
+        private async Task<bool> TokenCheckDelayAsync(int millisecondsDelay, CancellationToken token)
         {
             try
             {
-                if(millisecondsDelay > 0)
-                    Task.Delay(millisecondsDelay, token).Wait();
+                if (millisecondsDelay > 0)
+                    await Task.Delay(millisecondsDelay, token);
+            }
+            catch (TaskCanceledException ex)
+            {
+                LogHelper.Debug(ex.Message);
             }
             catch (AggregateException ex)
             {
@@ -475,9 +481,8 @@ namespace Macro
             }
             return !token.IsCancellationRequested;
         }
-        private Task OnProcessCallback(CancellationToken token)
+        private async Task OnProcessCallback(CancellationToken token)
         {
-            var tcs = new TaskCompletionSource<Task>();
             List<EventTriggerModel> saves = null;
             
             Dispatcher.Invoke(() => 
@@ -490,17 +495,10 @@ namespace Macro
                 {
                     if (token.IsCancellationRequested)
                         break;
-                    if (!TriggerProcess(save, token, out bool ignore))
-                        break;
+                    await TriggerProcess(save, token);
                 }
-                TokenCheckDelay(_config.Period, token);
-                tcs.SetResult(Task.CompletedTask);
+                await TokenCheckDelayAsync(_config.Period, token);
             }
-            else
-            {
-                tcs.TrySetCanceled();
-            }
-            return tcs.Task;
         }
     }
 }
