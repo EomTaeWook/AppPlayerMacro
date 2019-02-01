@@ -362,9 +362,9 @@ namespace Macro
             ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             NativeHelper.SetForegroundWindow(hWndActive);
         }
-        private bool TriggerProcess(EventTriggerModel model, CancellationToken token, out bool isSearch)
+        private bool TriggerProcess(EventTriggerModel model, CancellationToken token, out bool isExcute)
         {
-            isSearch = false;
+            isExcute = false;
             KeyValuePair<string, Process>[] processes = null;
             var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
             Dispatcher.Invoke(() =>
@@ -404,7 +404,6 @@ namespace Macro
 
                     if (similarity >= _config.Similarity)
                     {
-                        isSearch = true;
                         if (model.SubEventTriggers.Count > 0)
                         {
                             if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
@@ -422,8 +421,7 @@ namespace Macro
                             }
                             else if(model.RepeatInfo.RepeatType == RepeatType.NoSearch)
                             {
-                                var isExcute = false;
-                                while(TokenCheckDelay(model.AfterDelay, token))
+                                while (TokenCheckDelay(model.AfterDelay, token))
                                 {
                                     isExcute = false;
                                     for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
@@ -440,6 +438,8 @@ namespace Macro
                         }
                         else
                         {
+                            isExcute = true;
+
                             if (model.EventType == EventType.Mouse)
                             {
                                 MouseTriggerProcess(processes.ElementAt(i).Value, model);
