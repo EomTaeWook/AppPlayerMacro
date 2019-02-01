@@ -115,9 +115,9 @@
     "Eng": "Fix"
   },
   {
-    "Code": "Repeat",
-    "Kor": "반복",
-    "Eng": "Repeat"
+    "Code": "RepeatSubItems",
+    "Kor": "하위 아이템 반복",
+    "Eng": "Repeat Sub Items"
   },
   {
     "Code": "RepeatOnce",
@@ -131,13 +131,8 @@
   },
   {
     "Code": "RepeatNoSearch",
-    "Kor": "검색 결과가 없을때 까지",
-    "Eng": "NoSearch"
-  },
-  {
-    "Code": "RepeatContinue",
-    "Kor": "계속",
-    "Eng": "Continue"
+    "Kor": "검색 결과가 없을 때까지",
+    "Eng": "Until there are no results"
   }
 ]
 

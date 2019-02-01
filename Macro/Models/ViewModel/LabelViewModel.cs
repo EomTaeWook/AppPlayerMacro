@@ -102,9 +102,9 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Fix);
         }
-        public string Repeat
+        public string RepeatSubItems
         {
-            get => DocumentHelper.Get(Label.Repeat);
+            get => DocumentHelper.Get(Label.RepeatSubItems);
         }
     }
 }

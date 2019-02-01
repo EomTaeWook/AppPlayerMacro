@@ -23,7 +23,6 @@
         Once,
         Count,
         NoSearch,
-        Continue,
 
         Max
     }

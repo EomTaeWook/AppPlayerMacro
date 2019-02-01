@@ -28,7 +28,7 @@
         VersionCheck,
         Refresh,
         Fix,
-        Repeat,
+        RepeatSubItems,
 
         RepeatOnce,
         RepeatCount,

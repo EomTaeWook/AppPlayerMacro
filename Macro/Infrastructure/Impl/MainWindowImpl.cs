@@ -293,7 +293,6 @@ namespace Macro
                 X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.StartPoint.X * -1) * targetFactorX,
                 Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.StartPoint.Y * -1) * targetFactorY
             };
-
             
             if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
@@ -363,8 +362,9 @@ namespace Macro
             ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             NativeHelper.SetForegroundWindow(hWndActive);
         }
-        private bool TriggerProcess(EventTriggerModel model, CancellationToken token)
+        private bool TriggerProcess(EventTriggerModel model, CancellationToken token, out bool isSearch)
         {
+            isSearch = false;
             KeyValuePair<string, Process>[] processes = null;
             var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
             Dispatcher.Invoke(() =>
@@ -404,14 +404,36 @@ namespace Macro
 
                     if (similarity >= _config.Similarity)
                     {
-                        if(model.SubEventTriggers.Count > 0)
+                        isSearch = true;
+                        if (model.SubEventTriggers.Count > 0)
                         {
                             if (!TokenCheckDelay(model.AfterDelay, token))
                                 break;
-                            for (int ii=0; ii<model.SubEventTriggers.Count; ++ii)
+
+                            if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
                             {
-                                if (!TriggerProcess(model.SubEventTriggers[ii], token))
-                                    break;
+                                for(int ii=0; ii<model.RepeatInfo.Count; ++ii)
+                                {
+                                    for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
+                                    {
+                                        if (!TriggerProcess(model.SubEventTriggers[iii], token, out bool ignore))
+                                            break;
+                                    }
+                                }
+                            }
+                            else if(model.RepeatInfo.RepeatType == RepeatType.NoSearch)
+                            {
+                                var isExcute = false;
+                                do
+                                {
+                                    for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+                                    {
+                                        if (!TriggerProcess(model.SubEventTriggers[ii], token, out bool isChildExcute))
+                                            break;
+                                        if (!isExcute && isChildExcute)
+                                            isExcute = isChildExcute;
+                                    }
+                                }while (TokenCheckDelay(_config.ItemDelay, token) && isExcute);
                             }
                         }
                         else
@@ -433,7 +455,6 @@ namespace Macro
                             if (!TokenCheckDelay(model.AfterDelay, token))
                                 break;
                         }
-
                     }
                 }
             }
@@ -466,7 +487,7 @@ namespace Macro
                 {
                     if (token.IsCancellationRequested)
                         break;
-                    if (!TriggerProcess(save, token))
+                    if (!TriggerProcess(save, token, out bool ignore))
                         break;
                 }
                 TokenCheckDelay(_config.Period, token);

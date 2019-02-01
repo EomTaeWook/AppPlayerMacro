@@ -4,6 +4,7 @@ using Macro.Models.ViewModel;
 using Macro.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +27,7 @@ namespace Macro.View
         private List<MousePositionView> _mousePointViews;
         private TreeGridViewItem _dummy;
         private bool _isDrag;
-        private List<KeyValuePair<RepeatType, string>> _repeatItems;
+        private ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems;
         public ConfigEventView()
         {
             _isDrag = false;
@@ -34,7 +35,7 @@ namespace Macro.View
             {
                 DataContext = new EventTriggerModel()
             };
-            _repeatItems = new List<KeyValuePair<RepeatType, string>>();
+            _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
             _mousePointViews = new List<MousePositionView>();
             DataContext = new ViewModelLocator().ConfigEventViewModel;
             CurrentTreeViewItem = _dummy;
@@ -58,9 +59,9 @@ namespace Macro.View
                     _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, DocumentHelper.Get(label)));
                 }
             }
-            comboRepeat.ItemsSource = _repeatItems;
-            comboRepeat.DisplayMemberPath = "Value";
-            comboRepeat.SelectedValuePath = "Key";
+            comboRepeatSubItem.ItemsSource = _repeatItems;
+            comboRepeatSubItem.DisplayMemberPath = "Value";
+            comboRepeatSubItem.SelectedValuePath = "Key";
         }
 
         public void ShowMousePoisitionView()
@@ -113,6 +114,8 @@ namespace Macro.View
             }
             RadioButtonRefresh();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
+            lblRepeatSubItems.Visibility = Visibility.Collapsed;
+            gridRepeat.Visibility = Visibility.Collapsed;
         }
         
         private void ItemContainerPositionChange(TreeGridViewItem target)

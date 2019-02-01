@@ -4,6 +4,8 @@ using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
 using MahApps.Metro.Controls;
+using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -26,6 +28,7 @@ namespace Macro.View
         {
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
+            NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
 
             var radioButtons = this.FindChildren<RadioButton>();
             foreach (var button in radioButtons)
@@ -45,7 +48,36 @@ namespace Macro.View
             treeSaves.MouseMove += TreeSaves_MouseMove;
             treeSaves.Drop += TreeSaves_Drop;
 
+            comboRepeatSubItem.SelectionChanged += ComboRepeatSubItem_SelectionChanged;
+
             Unloaded += ConfigEventView_Unloaded;
+        }
+
+        private void NotifyHelper_ConfigChanged(ConfigEventArgs config)
+        {
+            _repeatItems.Clear();
+            foreach (var type in Enum.GetValues(typeof(RepeatType)))
+            {
+                if (Enum.TryParse($"Repeat{type.ToString()}", out Utils.Document.Label label))
+                {
+                    _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, DocumentHelper.Get(label)));
+                }
+            }
+        }
+
+        private void ComboRepeatSubItem_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender.Equals(comboRepeatSubItem) && comboRepeatSubItem.SelectedItem is KeyValuePair<RepeatType, string> item)
+            {
+                if(item.Key == RepeatType.Count)
+                {
+                    numRepeatCount.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    numRepeatCount.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -97,6 +129,16 @@ namespace Macro.View
                     RadioButton_Click(rbImage, null);
                 }
                 btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Visible;
+                if(item.SubEventTriggers.Count != 0)
+                {
+                    lblRepeatSubItems.Visibility = Visibility.Visible;
+                    gridRepeat.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    lblRepeatSubItems.Visibility = Visibility.Collapsed;
+                    gridRepeat.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -137,7 +179,6 @@ namespace Macro.View
         private void TreeSaves_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isDrag = false;
-  
         }
         private void ConfigEventView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -153,11 +194,12 @@ namespace Macro.View
         private void NotifyHelper_MousePositionDataBind(MousePointEventArgs args)
         {
             if (CurrentTreeViewItem == _dummy)
+            {
                 CurrentTreeViewItem = new TreeGridViewItem()
                 {
                     DataContext = new EventTriggerModel()
                 };
-
+            }
             CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = args.MonitorInfo;
             CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = args.MouseTriggerInfo;
             foreach (var item in _mousePointViews)
@@ -169,10 +211,12 @@ namespace Macro.View
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs args)
         {
             if (CurrentTreeViewItem == _dummy)
+            {
                 CurrentTreeViewItem = new TreeGridViewItem()
                 {
                     DataContext = new EventTriggerModel()
                 };
+            }
             RadioButtonRefresh();
         }
 

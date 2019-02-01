@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:UI="clr-namespace:Macro.UI"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
-    
+
     <UserControl.Resources>
         <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
         <infra:BooleanToValueConverter x:Key="BooleanConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
@@ -18,7 +18,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -27,6 +27,7 @@
                 <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.EventType, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="0">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -53,16 +54,17 @@
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.Repeat, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Column="1" Grid.Row="3">
+                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
+                <Grid Grid.Column="1" Grid.Row="3" Visibility="Collapsed" Name="gridRepeat">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <ComboBox Name="comboRepeat" Grid.Column="0" SelectedValue="{Binding Path=CurrentTreeViewItem.DataContext.RepeatInfo.RepeatType, Mode=TwoWay}"></ComboBox>
-                    <Controls:NumericUpDown Name="numRepeatCount" Minimum="1" Grid.Column="1"></Controls:NumericUpDown>
+                    <ComboBox Name="comboRepeatSubItem" Grid.Column="0" SelectedValue="{Binding Path=CurrentTreeViewItem.DataContext.RepeatInfo.RepeatType, Mode=TwoWay}">
+                    </ComboBox>
+                    <Controls:NumericUpDown Name="numRepeatCount" Minimum="1" Grid.Column="1" Value="{Binding Path=CurrentTreeViewItem.DataContext.RepeatInfo.Count, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
-                
+
             </Grid>
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
                 <Grid DockPanel.Dock="Top">
@@ -84,7 +86,7 @@
                         </Button>
                     </Grid>
                 </Grid>
-                <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves" AllowDrop="True">
+                <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{Binding Path=ConfigEventViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves" AllowDrop="True" Margin="0,-1,0,1">
                     <UI:TreeGridView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />
                     </UI:TreeGridView.ItemTemplate>

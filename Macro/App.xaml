@@ -21,6 +21,9 @@
             <Style TargetType="ComboBox">
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
             </Style>
+            <Style TargetType="ComboBoxItem">
+                <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.ItemFontSize}"/>
+            </Style>
             <Style TargetType="Label">
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
             </Style>

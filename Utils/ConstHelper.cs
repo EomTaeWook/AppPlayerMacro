@@ -3,6 +3,7 @@
     public class ConstHelper
     {
         public static readonly double FontSize = 17.0;
+        public static readonly double ItemFontSize = FontSize - 5.0;
         public static readonly string DefaultSavePath = @".\Save\";
         public static readonly string DefaultSaveFile = "save.dll";
         public static readonly string DefaultConfigFile = "config.json";
