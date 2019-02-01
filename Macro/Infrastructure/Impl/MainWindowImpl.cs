@@ -407,13 +407,12 @@ namespace Macro
                         isSearch = true;
                         if (model.SubEventTriggers.Count > 0)
                         {
-                            if (!TokenCheckDelay(model.AfterDelay, token))
-                                break;
-
                             if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
                             {
                                 for(int ii=0; ii<model.RepeatInfo.Count; ++ii)
                                 {
+                                    if (!TokenCheckDelay(model.AfterDelay, token))
+                                        break;
                                     for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
                                     {
                                         if (!TriggerProcess(model.SubEventTriggers[iii], token, out bool ignore))
@@ -424,8 +423,9 @@ namespace Macro
                             else if(model.RepeatInfo.RepeatType == RepeatType.NoSearch)
                             {
                                 var isExcute = false;
-                                do
+                                while(TokenCheckDelay(model.AfterDelay, token))
                                 {
+                                    isExcute = false;
                                     for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
                                     {
                                         if (!TriggerProcess(model.SubEventTriggers[ii], token, out bool isChildExcute))
@@ -433,7 +433,9 @@ namespace Macro
                                         if (!isExcute && isChildExcute)
                                             isExcute = isChildExcute;
                                     }
-                                }while (TokenCheckDelay(_config.ItemDelay, token) && isExcute);
+                                    if (!isExcute)
+                                        break;
+                                }
                             }
                         }
                         else
@@ -464,7 +466,8 @@ namespace Macro
         {
             try
             {
-                Task.Delay(millisecondsDelay, token).Wait();
+                if(millisecondsDelay > 0)
+                    Task.Delay(millisecondsDelay, token).Wait();
             }
             catch (AggregateException ex)
             {
