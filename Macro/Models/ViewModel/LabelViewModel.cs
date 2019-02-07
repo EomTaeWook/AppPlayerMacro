@@ -94,6 +94,10 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.AfterDelay);
         }
+        public string SearchResultDisplay
+        {
+            get => DocumentHelper.Get(Label.SearchResultDisplay);
+        }
         public string VersionCheck
         {
             get => DocumentHelper.Get(Label.VersionCheck);

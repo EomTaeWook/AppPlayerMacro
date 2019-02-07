@@ -105,6 +105,11 @@
     "Eng": "AfterDelay(ms)"
   },
   {
+    "Code": "SearchResultDisplay",
+    "Kor": "이미지 검색 결과 표시",
+    "Eng": "Display Search Result"
+  },
+  {
     "Code": "VersionCheck",
     "Kor": "버전 정보 확인",
     "Eng": "VersionCheck"

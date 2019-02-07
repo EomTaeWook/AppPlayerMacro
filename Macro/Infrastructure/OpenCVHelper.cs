@@ -30,15 +30,6 @@ namespace Macro.Infrastructure
                 X = maxLoc.X,
                 Y = maxLoc.Y
             };
-#if DEBUG
-            using (var g = Graphics.FromImage(source))
-            {
-                using (var pen = new Pen(Color.Red, 2))
-                {
-                    g.DrawRectangle(pen, new Rectangle() { X = (int)location.X, Y = (int)location.Y, Width = target.Width, Height = target.Height });
-                }
-            }
-#endif
             return Convert.ToInt32(max * 100);
         }
     }

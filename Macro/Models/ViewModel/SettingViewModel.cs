@@ -18,6 +18,7 @@ namespace Macro.Models.ViewModel
                 ItemDelay = config.ItemDelay,
                 SavePath = config.SavePath,
                 Similarity = config.Similarity,
+                SearchResultDisplay = config.SearchResultDisplay,
                 VersionCheck = config.VersionCheck
             };
         }
@@ -33,10 +34,7 @@ namespace Macro.Models.ViewModel
 
         public ICommand SavePathButtonCmd
         {
-            get
-            {
-                return _savePathButtonCmd ?? (_savePathButtonCmd = new FolderBrowserDialogCommand());
-            }
+            get => _savePathButtonCmd ?? (_savePathButtonCmd = new FolderBrowserDialogCommand());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -397,6 +397,17 @@ namespace Macro
                     var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location);
                     LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
 
+                    if (_config.SearchResultDisplay)
+                    {
+                        using (var g = Graphics.FromImage(bmp))
+                        {
+                            using (var pen = new System.Drawing.Pen(System.Drawing.Color.Red, 2))
+                            {
+                                g.DrawRectangle(pen, new Rectangle() { X = (int)location.X, Y = (int)location.Y, Width = targetBmp.Width, Height = targetBmp.Height });
+                            }
+                        }
+                    }
+
                     Dispatcher.Invoke(() =>
                     {
                         captureImage.Background = new ImageBrush(bmp.ToBitmapSource());

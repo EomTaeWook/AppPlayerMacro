@@ -25,6 +25,7 @@
         ItemDelay,
         Similarity,
         AfterDelay,
+        SearchResultDisplay,
         VersionCheck,
         Refresh,
         Fix,
