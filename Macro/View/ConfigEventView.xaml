@@ -3,6 +3,7 @@
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:UI="clr-namespace:Macro.UI"
+             xmlns:util="clr-namespace:Utils;assembly=Utils"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
 
     <UserControl.Resources>
@@ -27,14 +28,16 @@
                 <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.EventType, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <RadioButton GroupName="EventType" Grid.Column="0" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Image}" Content="Image" Name="rbImage"/>
                     <RadioButton GroupName="EventType" Grid.Column="1" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Mouse}" Content="Mouse" Name="rbMouse"/>
                     <RadioButton GroupName="EventType" Grid.Column="2" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Keyboard}" Content="Keyboard" Name="rbKeyboard"/>
+                    <RadioButton GroupName="EventType" Grid.Column="3" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=RelativeToImage}" Content="RelativeToImage" Name="rbRelativeToImage"/>
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="1">
@@ -44,7 +47,19 @@
                     </Grid.ColumnDefinitions>
                     <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" IsEnabled="False"></Button>
                     <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>
-                    <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=CurrentTreeViewItem.DataContext.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="1" FontSize="14"></Label>
+                    <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=CurrentTreeViewItem.DataContext.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}"></Label>
+                    <Grid Name="gridRelative" Grid.Column="0" Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="4*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="4*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Content="{Binding Path=LabelViewModel.X, Source={StaticResource Locator}}"></Label>
+                        <Controls:NumericUpDown FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Name="numRelativeX" Grid.Column="1" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.X, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
+                        <Label Grid.Column="2" Content="{Binding Path=LabelViewModel.Y, Source={StaticResource Locator}}"></Label>
+                        <Controls:NumericUpDown FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Name="numRelativeY" Grid.Column="3" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
+                    </Grid>
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="2" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="2">

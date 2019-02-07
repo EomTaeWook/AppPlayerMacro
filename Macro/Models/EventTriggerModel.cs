@@ -130,6 +130,10 @@ namespace Macro.Models
                 {
                     return KeyboardCmd;
                 }
+                else if(EventType == EventType.RelativeToImage)
+                {
+                    return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() }";
+                }
                 else
                 {
                     return "";

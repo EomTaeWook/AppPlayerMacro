@@ -23,7 +23,7 @@
                     <ColumnDefinition Width="4.5*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.Language, Source={StaticResource Locator} }"></Label>
-                <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" FontSize="15" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
+                <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
                 
                 <Label Grid.Row="1" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.SavePath, Source={StaticResource Locator}}"></Label>
                 <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Style="{DynamicResource SearchMetroTextBox}" Text ="{Binding Path=Config.SavePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
@@ -40,7 +40,7 @@
                 <Controls:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></Controls:NumericUpDown>
 
                 <Label Grid.Row="5" Grid.Column="0" FontSize="15" Content="{Binding Path=LabelViewModel.VersionCheck, Source={StaticResource Locator}}"></Label>
-                <ComboBox Name="comboVersionCheck" Grid.Row="5" Grid.Column="1" FontSize="15" SelectedValue="{Binding Path=Config.VersionCheck, Mode=TwoWay}">
+                <ComboBox Name="comboVersionCheck" Grid.Row="5" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.VersionCheck, Mode=TwoWay}">
                     <ComboBox.Items>
                         <system:Boolean>True</system:Boolean>
                         <system:Boolean>False</system:Boolean>

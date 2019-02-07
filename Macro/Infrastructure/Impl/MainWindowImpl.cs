@@ -262,8 +262,8 @@ namespace Macro
             }
             var position = new Point()
             {
-                X = location.X * targetFactorX,
-                Y = location.Y * targetFactorY
+                X = (location.X + model.MouseTriggerInfo.StartPoint.X) * targetFactorX,
+                Y = (location.Y + model.MouseTriggerInfo.StartPoint.Y) * targetFactorY
             };
 
             LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
@@ -445,7 +445,7 @@ namespace Macro
                             {
                                 MouseTriggerProcess(processes.ElementAt(i).Value, model);
                             }
-                            else if (model.EventType == EventType.Image)
+                            else if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage)
                             {
                                 location.X = location.X + (targetBmp.Width / 2);
                                 location.Y = location.Y + (targetBmp.Height / 2);

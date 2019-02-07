@@ -5,6 +5,7 @@
         Mouse,
         Keyboard,
         Image,
+        RelativeToImage,
 
         Max
     }

@@ -8,6 +8,7 @@ namespace Macro.Models.ViewModel
     {
         private ObservableCollection<EventTriggerModel> _triggerSaves;
         private TreeGridViewItem _currentItem;
+        private PointModel _pointModel;
         public ConfigEventViewModel()
         {
             _triggerSaves = new ObservableCollection<EventTriggerModel>();
@@ -34,6 +35,15 @@ namespace Macro.Models.ViewModel
             {
                 _currentItem = value;
                 OnPropertyChanged("CurrentTreeViewItem");
+            }
+        }
+        public PointModel RelativePosition
+        {
+            get => _pointModel;
+            set
+            {
+                _pointModel = value;
+                OnPropertyChanged("RelativePosition");
             }
         }
 

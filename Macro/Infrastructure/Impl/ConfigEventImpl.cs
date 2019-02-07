@@ -23,23 +23,31 @@ namespace Macro.View
         {
             get => this.DataContext<ConfigEventViewModel>().TriggerSaves.ToList();
         }
+        public PointModel RelativePosition
+        {
+            get => this.DataContext<ConfigEventViewModel>().RelativePosition;
+            private set => this.DataContext<ConfigEventViewModel>().RelativePosition = value;
+        }
 
         private List<MousePositionView> _mousePointViews;
-        private TreeGridViewItem _dummy;
+        private TreeGridViewItem _dummyTreeGridViewItem;
+        private PointModel _dummyRelativePosition;
         private bool _isDrag;
         private ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems;
         public ConfigEventView()
         {
             _isDrag = false;
-            _dummy = new TreeGridViewItem()
+            _dummyTreeGridViewItem = new TreeGridViewItem()
             {
                 DataContext = new EventTriggerModel()
             };
+            _dummyRelativePosition = new PointModel();
             _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
             _mousePointViews = new List<MousePositionView>();
             DataContext = new ViewModelLocator().ConfigEventViewModel;
-            CurrentTreeViewItem = _dummy;
-
+            CurrentTreeViewItem = _dummyTreeGridViewItem;
+            RelativePosition = _dummyRelativePosition;
+            
             InitializeComponent();
 
             Loaded += ConfigEventView_Loaded;
@@ -76,7 +84,7 @@ namespace Macro.View
         }
         public void InsertCurrentItem()
         {
-            if (CurrentTreeViewItem == _dummy)
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
                 return;
 
             Dispatcher.Invoke(() =>
@@ -84,14 +92,15 @@ namespace Macro.View
                 var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
 
                 if (treeVIewItem == null)
+                {
                     this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(CurrentTreeViewItem.DataContext<EventTriggerModel>());
-
+                }
                 Clear();
             });
         }
         public void CurrentRemove()
         {
-            if (CurrentTreeViewItem == _dummy)
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
                 return;
             Dispatcher.Invoke(() =>
             {
@@ -108,9 +117,13 @@ namespace Macro.View
         public void Clear()
         {
             CurrentTreeViewItem.IsSelected = false;
-            if (CurrentTreeViewItem != _dummy)
+            if (CurrentTreeViewItem != _dummyTreeGridViewItem)
             {
-                CurrentTreeViewItem = _dummy;
+                CurrentTreeViewItem = _dummyTreeGridViewItem;
+            }
+            if(RelativePosition != _dummyRelativePosition)
+            {
+                RelativePosition = _dummyRelativePosition;
             }
             RadioButtonRefresh();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
@@ -148,7 +161,7 @@ namespace Macro.View
                     item.SubEventTriggers = targetSubItem;
                     targetItem.SubEventTriggers.Add(item);
                     parentItemContainer.Add(targetItem);
-                    CurrentTreeViewItem = _dummy;
+                    CurrentTreeViewItem = _dummyTreeGridViewItem;
                 }
             }
             else
@@ -160,20 +173,29 @@ namespace Macro.View
         }
         private void RadioButtonRefresh()
         {
-            if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == Models.EventType.Mouse)
+            if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Mouse)
             {
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                gridRelative.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = true;
             }
-            else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == Models.EventType.Keyboard)
+            else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Keyboard)
             {
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Visible;
+                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                gridRelative.Visibility = Visibility.Collapsed;
+            }
+            else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.RelativeToImage)
+            {
+                gridRelative.Visibility = Visibility.Visible;
+                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                txtKeyboardCmd.Visibility = Visibility.Collapsed;
             }
             else
             {
                 btnMouseCoordinate.Visibility = Visibility.Visible;
+                gridRelative.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
             }

@@ -168,6 +168,11 @@ namespace Macro
                 var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 model.Image = _bitmap;
 
+                if(model.EventType == Models.EventType.RelativeToImage)
+                {
+                    model.MouseTriggerInfo.StartPoint = new System.Windows.Point(configView.RelativePosition.X, configView.RelativePosition.Y);
+                }
+
                 var process = comboProcess.SelectedValue as Process;
 
                 model.ProcessInfo = new ProcessInfo()

@@ -106,5 +106,13 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.RepeatSubItems);
         }
+        public string X
+        {
+            get => "X";
+        }
+        public string Y
+        {
+            get => "Y";
+        }
     }
 }
