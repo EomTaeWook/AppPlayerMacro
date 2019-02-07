@@ -94,7 +94,7 @@ namespace Macro
                     comboProcess.SelectedValue = pair.Value;
                 }
                 else
-                    comboProcess.SelectedValue = _fixProcess.Value;
+                    comboProcess.SelectedValue = _fixProcess.Value.Value;
 
                 btnDelete.Visibility = Visibility.Visible;
                 _bitmap = model.Image;
