@@ -411,8 +411,8 @@ namespace Macro
                         {
                             if (monitor.Rect.IsContain(currentPosition))
                             {
-                                factorX = monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X * (factor.X * 1.0F / monitor.Dpi.X);
-                                factorY = monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y * (factor.X * 1.0F / monitor.Dpi.Y);
+                                factorX = monitor.Dpi.X * factorX / model.MonitorInfo.Dpi.X * (factor.X * factorX / monitor.Dpi.X);
+                                factorY = monitor.Dpi.Y * factorY / model.MonitorInfo.Dpi.Y * (factor.X * factorY / monitor.Dpi.Y);
                                 break;
                             }
                         }
