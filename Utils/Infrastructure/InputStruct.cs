@@ -76,8 +76,8 @@ namespace Utils.Infrastructure
     [StructLayout(LayoutKind.Sequential)]
     public struct KeyboardInput
     {
-        public uint KeyCode;
-        public uint Scan;
+        public ushort KeyCode;
+        public ushort Scan;
         public uint Flags;
         public uint Time;
         public IntPtr ExtraInfo;

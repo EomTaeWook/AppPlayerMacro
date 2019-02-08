@@ -339,27 +339,49 @@ namespace Macro
             var hWndActive = NativeHelper.GetForegroundWindow();
             Task.Delay(100).Wait();
             NativeHelper.SetForegroundWindow(process.MainWindowHandle);
-            var commands = model.KeyboardCmd.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
-            var modifiedKey = commands.Where(r =>
+            var inputs = model.KeyboardCmd.ToUpper().Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+            var modifiedKey = inputs.Where(r =>
             {
-                var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), $"{r}", true);
-                return keyCode.IsExtendedKey();
+                if(Enum.TryParse($"{r}", out KeyCode keyCode))
+                    return keyCode.IsExtendedKey();
+                return false;
             }).Select(r =>
             {
-                var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), $"{r}", true);
+                Enum.TryParse($"{r}", out KeyCode keyCode);
                 return keyCode;
-            });
+            }).ToArray();
 
-            var keys = commands.Where(r =>
+            var command = new List<char>();
+            foreach(var input in inputs)
             {
-                var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), r, true);
-                return !keyCode.IsExtendedKey();
+                if (Enum.TryParse(input, out KeyCode keyCode))
+                {
+                    if (!keyCode.IsExtendedKey())
+                    {
+                        for (int i = 0; i < input.Count(); i++)
+                            command.Add(input[i]);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < input.Count(); i++)
+                        command.Add(input[i]);
+                }
+            }
+            var keys = command.Where(r=>
+            {
+                if (Enum.TryParse($"KEY_{r}", out KeyCode keyCode))
+                    return !keyCode.IsExtendedKey();
+                return false;
             }).Select(r =>
             {
-                var keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), r, true);
+                Enum.TryParse($"KEY_{r}", out KeyCode keyCode);
                 return keyCode;
-            });
+            }).ToArray();
+
             ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
+            Task.Delay(100).Wait();
+            LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }
         private async Task<bool> TriggerProcess(EventTriggerModel model, CancellationToken token)
@@ -382,18 +404,33 @@ namespace Macro
                     NativeHelper.GetWindowRect(processes.ElementAt(i).Value.MainWindowHandle, ref currentPosition);
                     var factorX = 1.0F;
                     var factorY = 1.0F;
-
                     var factor = NativeHelper.GetSystemDpi();
-                    foreach (var monitor in DisplayHelper.MonitorInfo())
+                    if (isDynamic)
                     {
-                        if (monitor.Rect.IsContain(currentPosition))
+                        foreach (var monitor in DisplayHelper.MonitorInfo())
                         {
-                            factorX = monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X * (factor.X * 1.0F / monitor.Dpi.X);
-                            factorY = monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y * (factor.X * 1.0F / monitor.Dpi.X);
-                            break;
+                            if (monitor.Rect.IsContain(currentPosition))
+                            {
+                                factorX = monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X * (factor.X * 1.0F / monitor.Dpi.X);
+                                factorY = monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y * (factor.X * 1.0F / monitor.Dpi.Y);
+                                break;
+                            }
                         }
                     }
-                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factorX), (int)Math.Truncate(model.Image.Height * factorX));
+                    else
+                    {
+                        foreach (var monitor in DisplayHelper.MonitorInfo())
+                        {
+                            if (monitor.Rect.IsContain(currentPosition))
+                            {
+                                factorX = monitor.Dpi.X * factorX / ConstHelper.DefaultDPI;
+                                factorY = monitor.Dpi.Y * factorY / ConstHelper.DefaultDPI ;
+                                break;
+                            }
+                        }
+                    }
+
+                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factorX), (int)Math.Truncate(model.Image.Height * factorY));
                     var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location);
                     LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
 
