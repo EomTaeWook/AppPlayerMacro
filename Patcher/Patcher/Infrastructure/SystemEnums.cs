@@ -1,4 +1,4 @@
-﻿namespace Utils.Document
+﻿namespace Patcher.Infrastructure
 {
     public enum Language
     {
@@ -7,6 +7,25 @@
 
         Max
     }
+    public enum Label
+    {
+        Cancel,
+        Rollback,
+        Download,
+        SearchPatchList,
+        Patching,
+
+        CancelPatch,
+
+        Max
+    }
+    public enum Message
+    {
+        CancelPatch,
+
+        Max
+    }
+
     public interface IDocumentData
     {
         string Code { get; }

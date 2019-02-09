@@ -93,7 +93,8 @@
     <Compile Include="ConstHelper.cs" />
     <Compile Include="Document\DocumentEnums.cs" />
     <Compile Include="Document\DocumentTemplate.cs" />
-    <Compile Include="Document\IBase.cs" />
+    <Compile Include="Document\DocumentBase.cs" />
+    <Compile Include="Extensions\DocumentExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="Infrastructure\InputBuilder.cs" />
     <Compile Include="Infrastructure\DpiFlags.cs" />

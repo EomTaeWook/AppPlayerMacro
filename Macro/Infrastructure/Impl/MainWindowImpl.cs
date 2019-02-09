@@ -238,7 +238,14 @@ namespace Macro
                 {
                     if(this.MessageShow("Infomation", DocumentHelper.Get(Message.NewVersion), MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
                     {
-                        Process.Start(ConstHelper.ReleaseUrl);
+                        if(File.Exists("Patcher.exe"))
+                        {
+                            Process.Start("Patcher.exe");
+                            Application.Current.Shutdown();
+                        }
+                            
+                        else
+                            Process.Start(ConstHelper.ReleaseUrl);
                     }
                 }
             }

@@ -39,7 +39,6 @@
                 <Setter Property="MaxHeight"  Value="40"/>
             </Style>
             <Style TargetType="TextBox">
-                
                 <Setter Property="FontSize"  Value="{x:Static util:ConstHelper.FontSize}"/>
             </Style>
             <Style x:Key="Sumnail" TargetType="Image">

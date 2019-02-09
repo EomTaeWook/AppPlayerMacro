@@ -1,5 +1,13 @@
 ﻿namespace Utils.Document
 {
+    public enum Language
+    {
+        Kor,
+        Eng,
+
+        Max
+    }
+
     public enum Label
     {
         Title,

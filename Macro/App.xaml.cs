@@ -1,5 +1,4 @@
-﻿using Macro.Extensions;
-using Macro.Infrastructure;
+﻿using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;

@@ -1,4 +1,5 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Utils;
+using EventType = Macro.Models.EventType;
 
 namespace Macro.View
 {

@@ -8,3 +8,9 @@ Utils/bin/
 packages/
 Release/exe/
 Release/Install/Setup.exe
+Patcher/.vs/
+Patcher/Patcher/bin/Debug/ControlzEx.dll
+Patcher/Patcher/bin/
+Patcher/Patcher/obj/
+.gitattributes
+Patcher/Patcher/Patcher.csproj.user

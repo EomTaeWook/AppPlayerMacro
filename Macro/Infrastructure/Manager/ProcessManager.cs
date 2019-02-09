@@ -29,6 +29,9 @@ namespace Macro.Infrastructure.Manager
         private Task _current;
         private volatile int _atomic = 0;
 
+        public ProcessManager() : this(null)
+        {
+        }
         public ProcessManager(IConfig config)
         {
             _config = config;

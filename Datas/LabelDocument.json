@@ -138,6 +138,31 @@
     "Code": "RepeatNoSearch",
     "Kor": "검색 결과가 없을 때까지",
     "Eng": "Until there are no results"
+  },
+  {
+    "Code": "Cancel",
+    "Kor": "취소",
+    "Eng": "Cancel"
+  },
+  {
+    "Code": "Rollback",
+    "Kor": "변경을 되돌리는 중입니다.",
+    "Eng": "Rollback is in progress."
+  },
+  {
+    "Code": "Download",
+    "Kor": "다운로드",
+    "Eng": "Download"
+  },
+  {
+    "Code": "SearchPatchList",
+    "Kor": "패치 목록 검색",
+    "Eng": "SearchPatchList"
+  },
+  {
+    "Code": "Patching",
+    "Kor": "패치 진행",
+    "Eng": "Patch in progress"
   }
 ]
 

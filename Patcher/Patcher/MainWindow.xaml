@@ -1,0 +1,23 @@
+﻿<Controls:MetroWindow x:Class="Patcher.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      mc:Ignorable="d"
+        Title="MacroPatcher" Height="130" Width="450" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Name="lblState" Content="" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="20,0,0,0" FontSize="17"></Label>
+        <Label Name="lblCount" Content="" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Margin="20,0,0,0" FontSize="17"></Label>
+        <Controls:MetroProgressBar BorderBrush="Black" Name="progress" BorderThickness="1" Grid.Row="1" Grid.Column="0" Margin="20,0,5,10" Height="30" FontSize="17"/>
+        <Button Name="btnCancel" Grid.Row="1" Grid.Column="1" Content="" Margin="0,0,20,10" Height="30"/>
+    </Grid>
+</Controls:MetroWindow>

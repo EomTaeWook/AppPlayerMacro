@@ -247,7 +247,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\DocumentExtensions.cs" />
+    <Compile Include="Infrastructure\DocumentHelper.cs" />
     <Compile Include="Extensions\ImageExtensions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -301,6 +301,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Patcher\Patcher\Patcher.csproj">
+      <Project>{76b834a5-1aa7-445e-808c-5e90ab0f7ca6}</Project>
+      <Name>Patcher</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{da7e0725-f356-48bc-b586-4cd4dea35803}</Project>
       <Name>Utils</Name>
@@ -329,8 +333,6 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
 IF $(ConfigurationName) == Release (
-rd /S/Q $(SolutionDir)Release\exe
-mkdir $(SolutionDir)Release\exe
 xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
 xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\" 
 xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
@@ -338,5 +340,10 @@ copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
 rd /S/Q $(SolutionDir)Release\exe\Save
 del /S/Q $(SolutionDir)Release\exe\Datas\Version.json)</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>IF $(ConfigurationName) == Release (
+rd /S/Q $(SolutionDir)Release\exe
+mkdir $(SolutionDir)Release\exe )</PreBuildEvent>
   </PropertyGroup>
 </Project>

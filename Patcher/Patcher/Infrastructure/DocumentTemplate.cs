@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Utils.Document
+namespace Patcher.Infrastructure
 {
-    public class DocumentTemplate<T> : IDocument where T : struct //7.3 Enum
+    public class DocumentTemplate<T> where T : struct //7.3 Enum
     {
         private readonly Dictionary<T, Dictionary<Language, string>> _datas;
         public DocumentTemplate()

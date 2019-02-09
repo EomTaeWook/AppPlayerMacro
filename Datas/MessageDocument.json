@@ -58,6 +58,11 @@
 		"Code" : "NewVersion",
 		"Kor": "새로운 버전이 있습니다. 다운로드 하시겠습니까?",
 		"Eng": "There is a new version."
+	},
+	{
+		"Code" : "CancelPatch",
+		"Kor": "패치를 중단하시겠습니까?",
+		"Eng": "Stop patching?"
 	}
 ]
 

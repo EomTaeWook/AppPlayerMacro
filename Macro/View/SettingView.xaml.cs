@@ -1,4 +1,5 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Macro.Models.ViewModel;
 using MahApps.Metro.Controls;
 using System.Windows;
