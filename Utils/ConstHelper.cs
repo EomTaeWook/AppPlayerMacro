@@ -18,5 +18,6 @@
 
         public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=188XWJsrFW39ty-VltB-7OjdYZf9FV3Q1";
         public static readonly string ReleaseUrl = @"https://github.com/EomTaeWook/EmulatorMacro/releases";
+        public static readonly string PatchUrl = @"https://drive.google.com/uc?export=view&id=1y4DIXlCb4cRqTfQHwgeyyJ0ky4WZBmD_";
     }
 }

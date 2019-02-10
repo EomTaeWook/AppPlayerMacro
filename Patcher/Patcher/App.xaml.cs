@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
-using Patcher.Infrastructure;
+﻿using Patcher.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using Utils;
+using Utils.Document;
+using Utils.Extensions;
 
 namespace Patcher
 {
@@ -48,12 +49,28 @@ namespace Patcher
 #if !DEBUG
             if(e.Args.Count() != 2)
                 Current.Shutdown();
-#endif
             if(!VersionValidate(e.Args[0].Split('.'), e.Args[1].Split('.'), out int compare))
                 Current.Shutdown();
             ObjectCache.SetValue("Version", compare);
+#else
+            ObjectCache.SetValue("Version", 1);
+#endif
+            foreach(var item in Dependency.List)
+            {
+                if(File.Exists(item))
+                    File.SetAttributes(item, FileAttributes.Hidden);
+            }
+
             Init();
             InitTemplate();
+            LogHelper.Init();
+
+            foreach (var item in Dependency.List)
+            {
+                if (File.Exists(item))
+                    File.SetAttributes(item, FileAttributes.Normal);
+            }
+
             base.OnStartup(e);
         }
 
@@ -93,7 +110,7 @@ namespace Patcher
 
             if (File.Exists(path))
             {
-                var configObj = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path));
+                var configObj = JsonHelper.DeserializeObject<dynamic>(File.ReadAllText(path));
                 var pair = configObj.First;
                 while (pair != null)
                 {
@@ -113,22 +130,20 @@ namespace Patcher
 #if DEBUG
             path = $@"..\..\..\Datas\";
 #endif
-            var labelTemplate = new DocumentTemplate<Label>();
-            labelTemplate.Init(path);
-            var messageTemplate = new DocumentTemplate<Message>();
-            messageTemplate.Init(path);
+            Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFile);
+            Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFile);
 
             ObjectCache.SetValue("PatchUrl", ConstHelper.PatchUrl.ToString());
-
+            
             if (Enum.TryParse(ObjectCache.GetValue("language").ToString(), out Language language))
             {
-                ObjectCache.SetValue("SearchPatchList", labelTemplate[Label.SearchPatchList, language]);
-                ObjectCache.SetValue("Cancel", labelTemplate[Label.Cancel, language]);
-                ObjectCache.SetValue("Download", labelTemplate[Label.Download, language]);
-                ObjectCache.SetValue("Patching", labelTemplate[Label.Patching, language]);
-                ObjectCache.SetValue("Rollback", labelTemplate[Label.Rollback, language]);
+                ObjectCache.SetValue("SearchPatchList", DocumentExtensions.Get(Label.SearchPatchList, language));
+                ObjectCache.SetValue("Cancel", DocumentExtensions.Get(Label.Cancel, language));
+                ObjectCache.SetValue("Download", DocumentExtensions.Get(Label.Download, language));
+                ObjectCache.SetValue("Patching", DocumentExtensions.Get(Label.Patching, language));
+                ObjectCache.SetValue("Rollback", DocumentExtensions.Get(Label.Rollback, language));
 
-                ObjectCache.SetValue("CancelPatch", messageTemplate[Message.CancelPatch, language]);
+                ObjectCache.SetValue("CancelPatch", DocumentExtensions.Get(Message.CancelPatch, language));
             }
         }
     }

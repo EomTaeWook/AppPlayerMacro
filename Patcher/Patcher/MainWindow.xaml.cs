@@ -12,6 +12,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Utils;
 
 namespace Patcher
 {
@@ -104,7 +105,7 @@ namespace Patcher
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message);
+                LogHelper.Warning(ex.Message);
             }
             
             Directory.CreateDirectory(_tempPath);
@@ -131,7 +132,7 @@ namespace Patcher
                         await Rollback();
                     tcs.SetResult(task.Result);
                 });
-            }, System.Windows.Threading.DispatcherPriority.Input, token);
+            }, System.Windows.Threading.DispatcherPriority.Input);
 
             return tcs.Task;
         }
@@ -146,7 +147,7 @@ namespace Patcher
                     using (var stream = new StreamReader(response.GetResponseStream()))
                     {
                         var json = stream.ReadToEnd();
-                        var lists = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(json);
+                        var lists = JsonHelper.DeserializeObject<List<string>>(json);
                         _patchList.AddRange(lists.Where(r => r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 2)
                             .Select(r => 
                             {
@@ -159,7 +160,7 @@ namespace Patcher
             }
             catch(Exception ex)
             {
-                Trace.WriteLine(ex.Message);
+                LogHelper.Warning(ex.Message);
             }
         }
         private Task DownloadFiles(CancellationToken token)
@@ -215,7 +216,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(ex.Message);
+                    LogHelper.Warning(ex.Message);
                     i--;
                 }
             }
@@ -290,7 +291,7 @@ namespace Patcher
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message);
+                LogHelper.Warning(ex.Message);
             }
             return Task.CompletedTask;
         } 

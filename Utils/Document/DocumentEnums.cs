@@ -44,6 +44,12 @@
         RepeatNoSearch,
         RepeatContinue,
 
+        Cancel,
+        Rollback,
+        Download,
+        SearchPatchList,
+        Patching,
+
         Max
     }
 
@@ -63,6 +69,7 @@
         FailedSimilarityValidate,
 
         NewVersion,
+        CancelPatch,
 
         Max
     }
