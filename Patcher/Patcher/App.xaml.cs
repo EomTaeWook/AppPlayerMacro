@@ -13,10 +13,8 @@ namespace Patcher
     /// <summary>
     /// App.xaml에 대한 상호 작용 논리
     /// </summary>
-
     public partial class App : Application
     {
-        private AppDomain _utilAppDomain = AppDomain.CreateDomain("UtilAppDomain");
         public App()
         {
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
@@ -31,12 +29,12 @@ namespace Patcher
             var resources = assemblies.GetManifestResourceNames().Where(s => s.EndsWith(name));
             if (resources.Count() > 0)
             {
-                string resourceName = resources.First();
+                var resourceName = resources.First();
                 using (Stream stream = assemblies.GetManifestResourceStream(resourceName))
                 {
                     if (stream != null)
                     {
-                        byte[] buffer = new byte[stream.Length];
+                        var buffer = new byte[stream.Length];
                         stream.Read(buffer, 0, buffer.Length);
                         return Assembly.Load(buffer);
                     }
@@ -47,15 +45,8 @@ namespace Patcher
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var listener = new Listener();
-            var obj = (Loader)_utilAppDomain.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName, typeof(Loader).FullName);
-            obj.Init(listener);
-            var caches = obj.GetCaches();
-            foreach (var cache in caches)
-            {
-                ObjectCache.SetValue(cache.Key, cache.Value);
-            }
-            AppDomain.Unload(_utilAppDomain);
+            Init();
+            InitTemplate();
             base.OnStartup(e);
         }
 
@@ -65,78 +56,49 @@ namespace Patcher
             {
                 Trace.WriteLine($">>>>{args.LoadedAssembly.ManifestModule.Name}<<<<");
             }
-            else
-            {
-                //Trace.WriteLine(args.LoadedAssembly.ManifestModule.Name);
-            }
         }
-        [Serializable]
-        public class Loader : MarshalByRefObject
+        private void Init()
         {
-            Listener _listener;
-            public void Init(Listener listener)
-            {
-                _listener = listener;
-                var name = AppDomain.CurrentDomain.FriendlyName;
-                var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
+            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
 
-                if (File.Exists(path))
+            if (File.Exists(path))
+            {
+                var configObj = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path));
+                var pair = configObj.First;
+                while (pair != null)
                 {
-                    var configObj = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path));
-                    var pair = configObj.First;
-                    while(pair != null)
+                    var value = pair.GetType().GetProperty("Value").GetValue(pair);
+                    if (Enum.TryParse(value.ToString(), true, out Language language))
                     {
-                        var value = pair.GetType().GetProperty("Value").GetValue(pair);
-                        if (Enum.TryParse(value.ToString(), true, out Language language))
-                        {
-                            listener.Insert("language", value.ToString());
-                            break;
-                        }
-                        pair = pair.Next;
+                        ObjectCache.SetValue("language", value.ToString());
+                        break;
                     }
+                    pair = pair.Next;
                 }
-                InitTemplate();
-            }
-            public void InitTemplate()
-            {
-                var path = ConstHelper.DefaultDatasFile;
-#if DEBUG
-                path = $@"..\..\..\Datas\";
-#endif
-                var labelTemplate = new DocumentTemplate<Label>();
-                labelTemplate.Init(path);
-                var messageTemplate = new DocumentTemplate<Message>();
-                messageTemplate.Init(path);
-
-                _listener.Insert("PatchUrl", ConstHelper.PatchUrl.ToString());
-
-                if (Enum.TryParse(ObjectCache.GetValue("language").ToString(), out Language language))
-                {
-                    _listener.Insert("SearchPatchList", labelTemplate[Label.SearchPatchList, language]);
-                    _listener.Insert("Cancel", labelTemplate[Label.Cancel, language]);
-                    _listener.Insert("Download", labelTemplate[Label.Download, language]);
-                    _listener.Insert("Patching", labelTemplate[Label.Patching, language]);
-                    _listener.Insert("Rollback", labelTemplate[Label.Rollback, language]);
-
-                    _listener.Insert("CancelPatch", messageTemplate[Message.CancelPatch, language]);
-                }
-            }
-            public KeyValuePair<string, object>[] GetCaches()
-            {
-                return _listener.GetCaches();
             }
         }
-
-        [Serializable]
-        public class Listener
+        private void InitTemplate()
         {
-            public void Insert(string key, object value)
+            var path = ConstHelper.DefaultDatasFile;
+#if DEBUG
+            path = $@"..\..\..\Datas\";
+#endif
+            var labelTemplate = new DocumentTemplate<Label>();
+            labelTemplate.Init(path);
+            var messageTemplate = new DocumentTemplate<Message>();
+            messageTemplate.Init(path);
+
+            ObjectCache.SetValue("PatchUrl", ConstHelper.PatchUrl.ToString());
+
+            if (Enum.TryParse(ObjectCache.GetValue("language").ToString(), out Language language))
             {
-                ObjectCache.SetValue(key, value);
-            }
-            public KeyValuePair<string, object>[] GetCaches()
-            {
-                return ObjectCache.GetCaches();
+                ObjectCache.SetValue("SearchPatchList", labelTemplate[Label.SearchPatchList, language]);
+                ObjectCache.SetValue("Cancel", labelTemplate[Label.Cancel, language]);
+                ObjectCache.SetValue("Download", labelTemplate[Label.Download, language]);
+                ObjectCache.SetValue("Patching", labelTemplate[Label.Patching, language]);
+                ObjectCache.SetValue("Rollback", labelTemplate[Label.Rollback, language]);
+
+                ObjectCache.SetValue("CancelPatch", messageTemplate[Message.CancelPatch, language]);
             }
         }
     }

@@ -6,7 +6,7 @@ namespace Macro.Infrastructure
     {
         public static readonly int Major = 2;
         public static readonly int Minor = 3;
-        public static readonly int Build = 0;
+        public static readonly int Build = 2;
     }
 
     public class Version : IComparable
@@ -21,7 +21,8 @@ namespace Macro.Infrastructure
         }
         public static Version CurrentVersion
         {
-            get => new Lazy<Version>(() => {
+            get => new Lazy<Version>(() => 
+            {
                 return new Version()
                 {
                     Major = Current.Major,

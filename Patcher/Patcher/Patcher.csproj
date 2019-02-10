@@ -132,10 +132,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF $(ConfigurationName) == Release (
-IF NOT EXIST $(SolutionDir)..\Release\exe\ mkdir $(SolutionDir)..\Release\exe"
+IF NOT EXIST $(SolutionDir)\Release\exe\ mkdir "$(SolutionDir)\Release\exe"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
 copy "$(TargetDir)Utils.dll" "$(SolutionDir)Release\exe\"
-del /S/Q $(SolutionDir)..\Release\exe\PatchList.json)</PostBuildEvent>
+del /S/Q $(SolutionDir)\Release\exe\PatchList.json)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

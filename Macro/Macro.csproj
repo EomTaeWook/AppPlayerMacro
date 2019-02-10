@@ -338,11 +338,15 @@ xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\"
 xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
 copy "$(ProjectDir)config.json" "$(SolutionDir)Release\exe\"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
+copy "$(TargetDir)patcher.exe" "$(SolutionDir)Release\exe\"
 rd /S/Q $(SolutionDir)Release\exe\Save
-del /S/Q $(SolutionDir)Release\exe\Datas\Version.json)</PostBuildEvent>
+del /S/Q $(SolutionDir)Release\exe\Datas\Version.json
+del /S/Q $(SolutionDir)Release\exe\patcher.exe.config
+del /S/Q $(SolutionDir)Release\exe\macro.exe.config)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>IF $(ConfigurationName) == Release (
+IF NOT EXIST $(SolutionDir)\Release\exe\ rd /S/Q $(SolutionDir)Release\exe
 rd /S/Q $(SolutionDir)Release\exe
 mkdir $(SolutionDir)Release\exe )</PreBuildEvent>
   </PropertyGroup>
