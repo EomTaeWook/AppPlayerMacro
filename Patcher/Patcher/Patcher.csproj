@@ -34,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -91,6 +92,7 @@
     <Compile Include="Infrastructure\DocumentTemplate.cs" />
     <Compile Include="Infrastructure\ObjectCache.cs" />
     <Compile Include="Infrastructure\SystemEnums.cs" />
+    <Compile Include="Infrastructure\Version.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

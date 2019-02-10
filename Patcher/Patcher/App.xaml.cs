@@ -45,9 +45,39 @@ namespace Patcher
 
         protected override void OnStartup(StartupEventArgs e)
         {
+#if !DEBUG
+            if(e.Args.Count() != 2)
+                Current.Shutdown();
+#endif
+            if(!VersionValidate(e.Args[0].Split('.'), e.Args[1].Split('.'), out int compare))
+                Current.Shutdown();
+            ObjectCache.SetValue("Version", compare);
             Init();
             InitTemplate();
             base.OnStartup(e);
+        }
+
+        private bool VersionValidate(string[] current, string[] next, out int compare)
+        {
+            compare = 0;
+
+            if (current.Count() != next.Count() || current.Count() != 3 || next.Count() != 3)
+                return false;
+
+            var currentVersion = new Infrastructure.Version()
+            {
+                Major = Convert.ToInt32(current[0]),
+                Minor = Convert.ToInt32(current[1]),
+                Build = Convert.ToInt32(current[2])
+            };
+            var nextVersion = new Infrastructure.Version()
+            {
+                Major = Convert.ToInt32(next[0]),
+                Minor = Convert.ToInt32(next[1]),
+                Build = Convert.ToInt32(next[2]),
+            };
+            compare = nextVersion.CompareTo(currentVersion);
+            return true;
         }
 
         private void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)

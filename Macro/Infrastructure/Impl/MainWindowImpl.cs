@@ -240,12 +240,15 @@ namespace Macro
                     {
                         if(File.Exists("Patcher.exe"))
                         {
-                            Process.Start("Patcher.exe");
+                            var param = $"{Version.CurrentVersion.Major}.{Version.CurrentVersion.Minor}.{Version.CurrentVersion.Build} " +
+                                $"{version.Major}.{version.Minor}.{version.Build}";
+                            Process.Start("Patcher.exe", param);
                             Application.Current.Shutdown();
                         }
-                            
                         else
+                        {
                             Process.Start(ConstHelper.ReleaseUrl);
+                        }
                     }
                 }
             }

@@ -4,6 +4,7 @@ using Patcher.Extensions;
 using Patcher.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -33,7 +34,9 @@ namespace Patcher
         {
             InitEvent();
             Init();
-            InitPatch();
+            if (ObjectCache.GetValue("Version").ToString().Equals("1"))
+                InitPatch();
+
             Task.Run(async () =>
             {
                 var processes = Process.GetProcessesByName("Macro");
@@ -48,6 +51,21 @@ namespace Patcher
                     Application.Current.Shutdown();
                 });
             });
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            e.Cancel = true;
+            if (this.MessageShow("", ObjectCache.GetValue("CancelPatch").ToString(), MessageDialogStyle.AffirmativeAndNegative,
+                    new MetroDialogSettings()
+                    {
+                        DialogTitleFontSize = 0.1F,
+                        MaximumBodyHeight = 500,
+                    }) == MessageDialogResult.Affirmative)
+            {
+                btnCancel.IsEnabled = false;
+                _cts.Cancel();
+            }
         }
         private void Init()
         {
@@ -127,17 +145,14 @@ namespace Patcher
                 {
                     using (var stream = new StreamReader(response.GetResponseStream()))
                     {
-                        var datas = stream.ReadToEnd();
-                        if (datas.StartsWith("[") & (datas.EndsWith("]") || datas.EndsWith($"{']'}{"\r\n"}")))
-                        {
-                            var lastIdx = datas.LastIndexOf(']');
-                            var tokens = datas.Remove(0, 1).Remove(lastIdx - 1, datas.Count() - lastIdx - 2).Trim().Replace("\"", "").Replace("\r\n", "").Trim().Split(',').ToArray();
-                            _patchList.AddRange(tokens.Where(r => r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 2).Select(r =>
+                        var json = stream.ReadToEnd();
+                        var lists = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(json);
+                        _patchList.AddRange(lists.Where(r => r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 2)
+                            .Select(r => 
                             {
                                 var split = r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                                 return new Tuple<string, string>(split[0], split[1]);
-                            }).ToList());
-                        }
+                            }));
                     }
                 }
                 lblCount.Content = $"(0/{_patchList.Count})";
