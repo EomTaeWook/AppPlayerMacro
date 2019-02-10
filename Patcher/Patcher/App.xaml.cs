@@ -110,17 +110,10 @@ namespace Patcher
 
             if (File.Exists(path))
             {
-                var configObj = JsonHelper.DeserializeObject<dynamic>(File.ReadAllText(path));
-                var pair = configObj.First;
-                while (pair != null)
+                var config = JsonHelper.DeserializeObject<dynamic>(File.ReadAllText(path));
+                if (Enum.TryParse(config["Language"].ToString(), true, out Language language))
                 {
-                    var value = pair.GetType().GetProperty("Value").GetValue(pair);
-                    if (Enum.TryParse(value.ToString(), true, out Language language))
-                    {
-                        ObjectCache.SetValue("language", value.ToString());
-                        break;
-                    }
-                    pair = pair.Next;
+                    ObjectCache.SetValue("language", config["Language"].ToString());
                 }
             }
         }
