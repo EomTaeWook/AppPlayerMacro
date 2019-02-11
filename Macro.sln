@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macro", "Macro\Macro.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{DA7E0725-F356-48BC-B586-4CD4DEA35803}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patcher", "Patcher\Patcher\Patcher.csproj", "{76B834A5-1AA7-445E-808C-5E90AB0F7CA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patcher", "Patcher\Patcher.csproj", "{76B834A5-1AA7-445E-808C-5E90AB0F7CA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
