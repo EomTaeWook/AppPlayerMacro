@@ -123,7 +123,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Utils\Utils.csproj">
+    <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{da7e0725-f356-48bc-b586-4cd4dea35803}</Project>
       <Name>Utils</Name>
       <Private>False</Private>

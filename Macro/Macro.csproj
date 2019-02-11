@@ -301,7 +301,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Patcher\Patcher\Patcher.csproj">
+    <ProjectReference Include="..\Patcher\Patcher.csproj">
       <Project>{76b834a5-1aa7-445e-808c-5e90ab0f7ca6}</Project>
       <Name>Patcher</Name>
     </ProjectReference>
@@ -346,8 +346,7 @@ del /S/Q $(SolutionDir)Release\exe\macro.exe.config)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>IF $(ConfigurationName) == Release (
-IF NOT EXIST $(SolutionDir)\Release\exe\ rd /S/Q $(SolutionDir)Release\exe
-rd /S/Q $(SolutionDir)Release\exe
+IF EXIST $(SolutionDir)\Release\exe\ rd /S/Q $(SolutionDir)Release\exe
 mkdir $(SolutionDir)Release\exe )</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -14,3 +14,6 @@ Patcher/Patcher/bin/
 Patcher/Patcher/obj/
 .gitattributes
 Patcher/Patcher/Patcher.csproj.user
+Patcher/obj/
+.vs/
+Patcher/bin/
