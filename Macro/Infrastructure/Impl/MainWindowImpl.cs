@@ -394,11 +394,45 @@ namespace Macro
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }
+        private Tuple<float, float, bool> CalculateFactor(Process process, EventTriggerModel model)
+        {
+            var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
+            var currentPosition = new Rect();
+            NativeHelper.GetWindowRect(process.MainWindowHandle, ref currentPosition);
+            var factor = NativeHelper.GetSystemDpi();
+            var factorX = 1.0F;
+            var factorY = 1.0F;
+            if (isDynamic)
+            {
+                foreach (var monitor in DisplayHelper.MonitorInfo())
+                {
+                    if (monitor.Rect.IsContain(currentPosition))
+                    {
+                        factorX = monitor.Dpi.X * factorX / model.MonitorInfo.Dpi.X * (factor.X * factorX / monitor.Dpi.X);
+                        factorY = monitor.Dpi.Y * factorY / model.MonitorInfo.Dpi.Y * (factor.X * factorY / monitor.Dpi.Y);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var monitor in DisplayHelper.MonitorInfo())
+                {
+                    if (monitor.Rect.IsContain(currentPosition))
+                    {
+                        factorX = monitor.Dpi.X * factorX / ConstHelper.DefaultDPI;
+                        factorY = monitor.Dpi.Y * factorY / ConstHelper.DefaultDPI;
+                        break;
+                    }
+                }
+            }
+            return Tuple.Create(factorX, factorY, isDynamic);
+        }
         private async Task<bool> TriggerProcess(EventTriggerModel model, CancellationToken token)
         {
             var isExcute = false;
             KeyValuePair<string, Process>[] processes = null;
-            var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
+            
             Dispatcher.Invoke(() =>
             {
                 if (_fixProcess.HasValue)
@@ -406,132 +440,98 @@ namespace Macro
                 else
                     processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
             });
-            for (int i = 0; i < processes.Length; ++i)
+
+            for(int i=0; i<processes.Length; ++i)
             {
-                if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, isDynamic))
+                var factor = CalculateFactor(processes[i].Value, model);
+                if(DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, factor.Item3))
                 {
-                    var currentPosition = new Rect();
-                    NativeHelper.GetWindowRect(processes.ElementAt(i).Value.MainWindowHandle, ref currentPosition);
-                    var factorX = 1.0F;
-                    var factorY = 1.0F;
-                    var factor = NativeHelper.GetSystemDpi();
-                    if (isDynamic)
-                    {
-                        foreach (var monitor in DisplayHelper.MonitorInfo())
-                        {
-                            if (monitor.Rect.IsContain(currentPosition))
-                            {
-                                factorX = monitor.Dpi.X * factorX / model.MonitorInfo.Dpi.X * (factor.X * factorX / monitor.Dpi.X);
-                                factorY = monitor.Dpi.Y * factorY / model.MonitorInfo.Dpi.Y * (factor.X * factorY / monitor.Dpi.Y);
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var monitor in DisplayHelper.MonitorInfo())
-                        {
-                            if (monitor.Rect.IsContain(currentPosition))
-                            {
-                                factorX = monitor.Dpi.X * factorX / ConstHelper.DefaultDPI;
-                                factorY = monitor.Dpi.Y * factorY / ConstHelper.DefaultDPI ;
-                                break;
-                            }
-                        }
-                    }
+                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
 
-                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factorX), (int)Math.Truncate(model.Image.Height * factorY));
-                    var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location);
-                    LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
-
-                    if (_config.SearchResultDisplay)
+                    if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
                     {
-                        using (var g = Graphics.FromImage(bmp))
+                        var count = model.RepeatInfo.Count;
+                        var similarity = 0;
+                        while ((similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay)) < _config.Similarity && count-- > 0)
                         {
-                            using (var pen = new System.Drawing.Pen(System.Drawing.Color.Red, 2))
+                            LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+                            Dispatcher.Invoke(() =>
                             {
-                                g.DrawRectangle(pen, new Rectangle() { X = (int)location.X, Y = (int)location.Y, Width = targetBmp.Width, Height = targetBmp.Height });
-                            }
-                        }
-                    }
+                                captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                            });
 
-                    Dispatcher.Invoke(() =>
-                    {
-                        captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
-                    });
-
-                    if (similarity >= _config.Similarity)
-                    {
-                        if (model.SubEventTriggers.Count > 0)
-                        {
-                            if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
-                            {
-                                for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
-                                {
-                                    if (!await TokenCheckDelayAsync(model.AfterDelay, token))
-                                        break;
-                                    for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
-                                    {
-                                        await TriggerProcess(model.SubEventTriggers[iii], token);
-                                        if (token.IsCancellationRequested)
-                                            break;
-                                    }
-                                }
-                            }
-                            else if (model.RepeatInfo.RepeatType == RepeatType.NoSearch)
-                            {
-                                while (await TokenCheckDelayAsync(model.AfterDelay, token))
-                                {
-                                    isExcute = false;
-                                    for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
-                                    {
-                                        var childExcute = await TriggerProcess(model.SubEventTriggers[ii], token);
-                                        if (token.IsCancellationRequested)
-                                            break;
-                                        if (!isExcute && childExcute)
-                                            isExcute = childExcute;
-                                    }
-                                    if (!isExcute)
-                                        break;
-                                }
-                            }
-                            else if(model.RepeatInfo.RepeatType == RepeatType.Search)
-                            {
-                                isExcute = true;
-                            }
-                        }
-                        else
-                        {
-                            isExcute = true;
-                            if (model.EventType == EventType.Mouse)
-                            {
-                                MouseTriggerProcess(processes.ElementAt(i).Value, model);
-                            }
-                            else if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage)
-                            {
-                                location.X = location.X + (targetBmp.Width / 2);
-                                location.Y = location.Y + (targetBmp.Height / 2);
-                                ImageTriggerProcess(processes.ElementAt(i).Value, location, model);
-                            }
-                            else if (model.EventType == EventType.Keyboard)
-                            {
-                                KeyboardTriggerProcess(processes.ElementAt(i).Value, model);
-                            }
                             if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                 break;
-                        }
-                    }
-                    else
-                    {
-                        if(model.SubEventTriggers.Count > 0 && model.RepeatInfo.RepeatType == RepeatType.Search)
-                        {
-                            if (!await TokenCheckDelayAsync(model.AfterDelay, token))
-                                break;
-
-                            for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+                            for(int ii=0; ii<model.SubEventTriggers.Count; ++ii)
                             {
                                 await TriggerProcess(model.SubEventTriggers[ii], token);
                                 if (token.IsCancellationRequested)
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
+                        LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+                        Dispatcher.Invoke(() =>
+                        {
+                            captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                        });
+                        if(similarity > _config.Similarity)
+                        {
+                            if (model.SubEventTriggers.Count > 0)
+                            {
+                                if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
+                                {
+                                    for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
+                                    {
+                                        if (!await TokenCheckDelayAsync(model.AfterDelay, token))
+                                            break;
+                                        for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
+                                        {
+                                            await TriggerProcess(model.SubEventTriggers[iii], token);
+                                            if (token.IsCancellationRequested)
+                                                break;
+                                        }
+                                    }
+                                }
+                                else if(model.RepeatInfo.RepeatType == RepeatType.NoSearch)
+                                {
+                                    while(await TokenCheckDelayAsync(model.AfterDelay, token))
+                                    {
+                                        isExcute = false; ;
+                                        for(int ii=0; ii< model.SubEventTriggers.Count; ++ii)
+                                        {
+                                            var childExcute = await TriggerProcess(model.SubEventTriggers[ii], token);
+                                            if (token.IsCancellationRequested)
+                                                break;
+                                            if (!isExcute && childExcute)
+                                                isExcute = childExcute;
+                                        }
+                                        if (isExcute)
+                                            break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                isExcute = true;
+                                if (model.EventType == EventType.Mouse)
+                                {
+                                    MouseTriggerProcess(processes.ElementAt(i).Value, model);
+                                }
+                                else if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage)
+                                {
+                                    location.X = location.X + (targetBmp.Width / 2);
+                                    location.Y = location.Y + (targetBmp.Height / 2);
+                                    ImageTriggerProcess(processes.ElementAt(i).Value, location, model);
+                                }
+                                else if (model.EventType == EventType.Keyboard)
+                                {
+                                    KeyboardTriggerProcess(processes.ElementAt(i).Value, model);
+                                }
+                                if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                     break;
                             }
                         }
@@ -568,26 +568,11 @@ namespace Macro
             });
             if(saves != null)
             {
-                var index = 0;
-                while(index < saves.Count)
+                foreach(var save in saves)
                 {
+                    await TriggerProcess(save, token);
                     if (token.IsCancellationRequested)
                         break;
-                    if(saves[index].RepeatInfo.RepeatType == RepeatType.Search)
-                    {
-                        for(int i=0; i<saves[index].RepeatInfo.Count && !token.IsCancellationRequested; ++i)
-                        {
-                            if(await TriggerProcess(saves[index], token))
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        await TriggerProcess(saves[index], token);
-                    }
-                    ++index;
                 }
                 await TokenCheckDelayAsync(_config.Period, token);
             }
