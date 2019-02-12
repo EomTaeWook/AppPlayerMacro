@@ -24,6 +24,7 @@
         Once,
         Count,
         NoSearch,
+        Search,
 
         Max
     }

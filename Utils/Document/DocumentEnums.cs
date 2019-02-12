@@ -42,7 +42,7 @@
         RepeatOnce,
         RepeatCount,
         RepeatNoSearch,
-        RepeatContinue,
+        RepeatSearch,
 
         Cancel,
         Rollback,

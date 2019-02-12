@@ -220,7 +220,7 @@
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\Version.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
-    <Compile Include="Infrastructure\SystemEnum.cs" />
+    <Compile Include="Infrastructure\SystemEnums.cs" />
     <Compile Include="Models\ViewModel\ConfigEventViewModel.cs" />
     <Compile Include="Models\ViewModel\SettingViewModel.cs" />
     <Compile Include="View\CaptureView.xaml.cs">

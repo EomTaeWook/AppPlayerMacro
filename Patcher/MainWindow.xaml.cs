@@ -257,9 +257,7 @@ namespace Patcher
                     Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
                 }
                 if (File.Exists(_patchList[i].Item1))
-                {
                     File.Delete(_patchList[i].Item1);
-                }
 
                 if (File.Exists($@"{_tempPath}\{_patchList[i].Item1}"))
                     File.Move($@"{_tempPath}\{_patchList[i].Item1}", _patchList[i].Item1);
@@ -284,7 +282,9 @@ namespace Patcher
                         var index = _patchList[i].Item1.LastIndexOf(@"\");
                         Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
                     }
-                    File.Delete(_patchList[i].Item1);
+                    if(File.Exists(_patchList[i].Item1))
+                        File.Delete(_patchList[i].Item1);
+
                     if (File.Exists($@"{backupPath}\{_patchList[i].Item1}"))
                         File.Move($"{backupPath}{_patchList[i].Item1}", _patchList[i].Item1);
                 }

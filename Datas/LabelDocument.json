@@ -121,8 +121,8 @@
   },
   {
     "Code": "RepeatSubItems",
-    "Kor": "하위 아이템 반복",
-    "Eng": "Repeat Sub Items"
+    "Kor": "아이템 반복",
+    "Eng": "Repeat Items"
   },
   {
     "Code": "RepeatOnce",
@@ -137,7 +137,12 @@
   {
     "Code": "RepeatNoSearch",
     "Kor": "검색 결과가 없을 때까지",
-    "Eng": "Until there are no results"
+    "Eng": "Until there is no search result for child items"
+  },
+  {
+    "Code": "RepeatSearch",
+    "Kor": "검색이 될 때까지",
+    "Eng": "\"Until the search",
   },
   {
     "Code": "Cancel",

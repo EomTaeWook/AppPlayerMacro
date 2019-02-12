@@ -69,7 +69,7 @@ namespace Macro.View
         {
             if (sender.Equals(comboRepeatSubItem) && comboRepeatSubItem.SelectedItem is KeyValuePair<RepeatType, string> item)
             {
-                if(item.Key == RepeatType.Count)
+                if(item.Key == RepeatType.Count || item.Key == RepeatType.Search)
                 {
                     numRepeatCount.Visibility = Visibility.Visible;
                 }

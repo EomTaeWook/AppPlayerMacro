@@ -466,7 +466,7 @@ namespace Macro
                         {
                             if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
                             {
-                                for(int ii=0; ii<model.RepeatInfo.Count; ++ii)
+                                for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                                 {
                                     if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                         break;
@@ -478,7 +478,7 @@ namespace Macro
                                     }
                                 }
                             }
-                            else if(model.RepeatInfo.RepeatType == RepeatType.NoSearch)
+                            else if (model.RepeatInfo.RepeatType == RepeatType.NoSearch)
                             {
                                 while (await TokenCheckDelayAsync(model.AfterDelay, token))
                                 {
@@ -494,6 +494,10 @@ namespace Macro
                                     if (!isExcute)
                                         break;
                                 }
+                            }
+                            else if(model.RepeatInfo.RepeatType == RepeatType.Search)
+                            {
+                                isExcute = true;
                             }
                         }
                         else
@@ -515,6 +519,21 @@ namespace Macro
                             }
                             if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                 break;
+                        }
+                    }
+                    else
+                    {
+                        if(model.SubEventTriggers.Count > 0 && model.RepeatInfo.RepeatType == RepeatType.Search)
+                        {
+                            if (!await TokenCheckDelayAsync(model.AfterDelay, token))
+                                break;
+
+                            for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+                            {
+                                await TriggerProcess(model.SubEventTriggers[ii], token);
+                                if (token.IsCancellationRequested)
+                                    break;
+                            }
                         }
                     }
                 }
@@ -549,11 +568,26 @@ namespace Macro
             });
             if(saves != null)
             {
-                foreach (var save in saves) 
+                var index = 0;
+                while(index < saves.Count)
                 {
                     if (token.IsCancellationRequested)
                         break;
-                    await TriggerProcess(save, token);
+                    if(saves[index].RepeatInfo.RepeatType == RepeatType.Search)
+                    {
+                        for(int i=0; i<saves[index].RepeatInfo.Count && !token.IsCancellationRequested; ++i)
+                        {
+                            if(await TriggerProcess(saves[index], token))
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await TriggerProcess(saves[index], token);
+                    }
+                    ++index;
                 }
                 await TokenCheckDelayAsync(_config.Period, token);
             }
