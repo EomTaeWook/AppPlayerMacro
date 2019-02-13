@@ -441,44 +441,46 @@ namespace Macro
                     processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
             });
 
-            for(int i=0; i<processes.Length; ++i)
+            for (int i=0; i<processes.Length; ++i)
             {
                 var factor = CalculateFactor(processes[i].Value, model);
-                if(DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, factor.Item3))
+
+                if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
                 {
-                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
-
-                    if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
+                    var count = model.RepeatInfo.Count;
+                    while(DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, factor.Item3) && count-- > 0)
                     {
-                        var count = model.RepeatInfo.Count;
-                        var similarity = 0;
-                        while ((similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay)) < _config.Similarity && count-- > 0)
+                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
+                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
+                        LogHelper.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+                        Dispatcher.Invoke(() =>
                         {
-                            LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
-                            Dispatcher.Invoke(() =>
-                            {
-                                captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
-                            });
+                            captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                        });
 
-                            if (!await TokenCheckDelayAsync(model.AfterDelay, token))
+                        if (!await TokenCheckDelayAsync(model.AfterDelay, token) || similarity > _config.Similarity)
+                            break;
+                        for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+                        {
+                            await TriggerProcess(model.SubEventTriggers[ii], token);
+                            if (token.IsCancellationRequested)
                                 break;
-                            for(int ii=0; ii<model.SubEventTriggers.Count; ++ii)
-                            {
-                                await TriggerProcess(model.SubEventTriggers[ii], token);
-                                if (token.IsCancellationRequested)
-                                    break;
-                            }
                         }
+                        factor = CalculateFactor(processes[i].Value, model);
                     }
-                    else
+                }
+                else
+                {
+                    if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, factor.Item3))
                     {
+                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
                         LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         Dispatcher.Invoke(() =>
                         {
                             captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
                         });
-                        if(similarity > _config.Similarity)
+                        if (similarity > _config.Similarity)
                         {
                             if (model.SubEventTriggers.Count > 0)
                             {
@@ -496,12 +498,12 @@ namespace Macro
                                         }
                                     }
                                 }
-                                else if(model.RepeatInfo.RepeatType == RepeatType.NoSearch)
+                                else if (model.RepeatInfo.RepeatType == RepeatType.NoSearch)
                                 {
-                                    while(await TokenCheckDelayAsync(model.AfterDelay, token))
+                                    while (await TokenCheckDelayAsync(model.AfterDelay, token))
                                     {
                                         isExcute = false; ;
-                                        for(int ii=0; ii< model.SubEventTriggers.Count; ++ii)
+                                        for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
                                         {
                                             var childExcute = await TriggerProcess(model.SubEventTriggers[ii], token);
                                             if (token.IsCancellationRequested)
@@ -536,7 +538,7 @@ namespace Macro
                             }
                         }
                     }
-                }
+                }                
             }
             await TokenCheckDelayAsync(_config.ItemDelay, token);
             return isExcute;

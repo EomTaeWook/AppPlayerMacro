@@ -22,14 +22,18 @@ namespace Patcher
     public partial class MainWindow : MetroWindow
     {
         private List<Tuple<string, string>> _patchList;
-        private string _tempPath;
         private CancellationTokenSource _cts;
+        private readonly string TempPath;
+        private readonly string TempBackupPath;
         public MainWindow()
         {
+            TempPath = Path.GetTempPath() + "Macro";
+            TempBackupPath = $@"{ TempPath }\backup\";
             _patchList = new List<Tuple<string, string>>();
             _cts = new CancellationTokenSource();
+
             InitializeComponent();
-            Loaded += MainWindow_Loaded;
+            //Loaded += MainWindow_Loaded;
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -70,7 +74,6 @@ namespace Patcher
         }
         private void Init()
         {
-            _tempPath = Path.GetTempPath() + @"Macro";
             btnCancel.Content = ObjectCache.GetValue("Cancel");
         }
         private void InitEvent()
@@ -97,9 +100,9 @@ namespace Patcher
         {
             try
             {
-                while (Directory.Exists(_tempPath))
+                while (Directory.Exists(TempPath))
                 {
-                    Directory.Delete(_tempPath, true);
+                    Directory.Delete(TempPath, true);
                     Thread.Sleep(100);
                 }
             }
@@ -108,8 +111,8 @@ namespace Patcher
                 LogHelper.Warning(ex.Message);
             }
             
-            Directory.CreateDirectory(_tempPath);
-            Directory.CreateDirectory($@"{_tempPath}\backup");
+            Directory.CreateDirectory(TempPath);
+            Directory.CreateDirectory(TempBackupPath);
 
             CheckPatchList();
         }
@@ -188,10 +191,10 @@ namespace Patcher
                             if (_patchList[i].Item1.Contains(@"\"))
                             {
                                 var index = _patchList[i].Item1.LastIndexOf(@"\");
-                                Directory.CreateDirectory($@"{_tempPath}\{_patchList[i].Item1.Substring(0, index)}");
+                                Directory.CreateDirectory($@"{TempPath}\{_patchList[i].Item1.Substring(0, index)}");
                             }
 
-                            using (var fs = new FileStream($@"{_tempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
+                            using (var fs = new FileStream($@"{TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
                             {
                                 var buffer = new byte[4096];
                                 var read = 0;
@@ -224,16 +227,15 @@ namespace Patcher
         }
         private Task Backup()
         {
-            var path = $@"{_tempPath}\backup\";
             for(int i=0; i<_patchList.Count; ++i)
             {
                 if (_patchList[i].Item1.Contains(@"\"))
                 {
                     var index = _patchList[i].Item1.LastIndexOf(@"\");
-                    Directory.CreateDirectory($@"{path}\{_patchList[i].Item1.Substring(0, index)}");
+                    Directory.CreateDirectory($@"{TempBackupPath}{_patchList[i].Item1.Substring(0, index)}");
                 }
                 if(File.Exists(_patchList[i].Item1))
-                    File.Move(_patchList[i].Item1, $"{path}{_patchList[i].Item1}");
+                    File.Move(_patchList[i].Item1, $"{TempBackupPath}{_patchList[i].Item1}");
             }
             return Task.CompletedTask;
         }
@@ -259,8 +261,8 @@ namespace Patcher
                 if (File.Exists(_patchList[i].Item1))
                     File.Delete(_patchList[i].Item1);
 
-                if (File.Exists($@"{_tempPath}\{_patchList[i].Item1}"))
-                    File.Move($@"{_tempPath}\{_patchList[i].Item1}", _patchList[i].Item1);
+                if (File.Exists($@"{TempPath}\{_patchList[i].Item1}"))
+                    File.Move($@"{TempPath}\{_patchList[i].Item1}", _patchList[i].Item1);
             }
             return Task.CompletedTask;
         }
@@ -268,7 +270,6 @@ namespace Patcher
         {
             try
             {
-                var backupPath = $@"{_tempPath}\backup\";
                 for (int i = 0; i < _patchList.Count; ++i)
                 {
                     Dispatcher.Invoke(() =>
@@ -285,8 +286,8 @@ namespace Patcher
                     if(File.Exists(_patchList[i].Item1))
                         File.Delete(_patchList[i].Item1);
 
-                    if (File.Exists($@"{backupPath}\{_patchList[i].Item1}"))
-                        File.Move($"{backupPath}{_patchList[i].Item1}", _patchList[i].Item1);
+                    if (File.Exists($@"{TempBackupPath}{_patchList[i].Item1}"))
+                        File.Move($"{TempBackupPath}{_patchList[i].Item1}", _patchList[i].Item1);
                 }
             }
             catch (Exception ex)

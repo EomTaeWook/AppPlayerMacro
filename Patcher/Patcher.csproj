@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -52,6 +53,7 @@
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -67,8 +69,9 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsBase">
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -129,7 +132,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\NLog.dll" />
@@ -140,13 +142,11 @@
     <PostBuildEvent>IF $(ConfigurationName) == Release (
 IF NOT EXIST $(SolutionDir)\Release\exe\ mkdir "$(SolutionDir)\Release\exe"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
-del /S/Q $(SolutionDir)\Release\exe\PatchList.json)
-copy "$(SolutionDir)Utils\$(OutDir)Utils.dll" "$(ProjectDir)Resources\"
-copy "$(SolutionDir)Utils\$(OutDir)NLog.dll" "$(ProjectDir)Resources\"
-copy "$(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll" "$(ProjectDir)Resources\"</PostBuildEvent>
+del /S/Q $(SolutionDir)\Release\exe\PatchList.json)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>copy "$(SolutionDir)Utils\$(OutDir)NLog.dll" "$(ProjectDir)Resources\"
+copy "$(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll" "$(ProjectDir)Resources\"
+copy "$(SolutionDir)Utils\$(OutDir)Utils.dll" "$(ProjectDir)Resources\"</PreBuildEvent>
   </PropertyGroup>
 </Project>

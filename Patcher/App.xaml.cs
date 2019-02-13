@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Navigation;
 using Utils;
 using Utils.Document;
 using Utils.Extensions;
@@ -18,10 +19,21 @@ namespace Patcher
     {
         public App()
         {
+            //var assemblies = Assembly.GetExecutingAssembly();
+            //var resources = assemblies.GetManifestResourceNames().Where(s => s.EndsWith(".dll"));
+            //foreach (var resource in resources)
+            //{
+            //    using (var stream = assemblies.GetManifestResourceStream(resource))
+            //    {
+            //        if (stream != null)
+            //        {
+            //            var buffer = new byte[stream.Length];
+            //            stream.Read(buffer, 0, buffer.Length);
+            //            AppDomain.CurrentDomain.Load(buffer, null);
+            //        }
+            //    }
+            //}
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-#if DEBUG
-            AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
-#endif
         }
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
@@ -31,7 +43,7 @@ namespace Patcher
             if (resources.Count() > 0)
             {
                 var resourceName = resources.First();
-                using (Stream stream = assemblies.GetManifestResourceStream(resourceName))
+                using (var stream = assemblies.GetManifestResourceStream(resourceName))
                 {
                     if (stream != null)
                     {
@@ -42,8 +54,7 @@ namespace Patcher
                 }
             }
             return null;
-        }
-
+        }        
         protected override void OnStartup(StartupEventArgs e)
         {
 #if !DEBUG
@@ -53,23 +64,25 @@ namespace Patcher
                 Current.Shutdown();
             ObjectCache.SetValue("Version", compare);
 #else
+
+            AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
             ObjectCache.SetValue("Version", 1);
 #endif
-            foreach(var item in Dependency.List)
-            {
-                if(File.Exists(item))
-                    File.SetAttributes(item, FileAttributes.Hidden);
-            }
 
-            Init();
-            InitTemplate();
-            LogHelper.Init();
+            //foreach (var item in Dependency.List)
+            //{
+            //    if (File.Exists(item))
+            //        File.SetAttributes(item, FileAttributes.Hidden);
+            //}
+            //Init();
+            //InitTemplate();
+            //LogHelper.Init();
 
-            foreach (var item in Dependency.List)
-            {
-                if (File.Exists(item))
-                    File.SetAttributes(item, FileAttributes.Normal);
-            }
+            //foreach (var item in Dependency.List)
+            //{
+            //    if (File.Exists(item))
+            //        File.SetAttributes(item, FileAttributes.Normal);
+            //}
 
             base.OnStartup(e);
         }
@@ -101,7 +114,7 @@ namespace Patcher
         {
             if (args.LoadedAssembly.ManifestModule.Name.Equals("Utils.dll"))
             {
-                Trace.WriteLine($">>>>{args.LoadedAssembly.ManifestModule.Name}<<<<");
+                LogHelper.Warning($">>>>{args.LoadedAssembly.ManifestModule.Name}<<<<");
             }
         }
         private void Init()
@@ -116,13 +129,14 @@ namespace Patcher
                     ObjectCache.SetValue("language", config["Language"].ToString());
                 }
             }
+            else
+            {
+                ObjectCache.SetValue("language", Language.Kor.ToString());
+            }
         }
         private void InitTemplate()
         {
             var path = ConstHelper.DefaultDatasFile;
-#if DEBUG
-            path = $@"..\..\..\Datas\";
-#endif
             Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFile);
             Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFile);
 

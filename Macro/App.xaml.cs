@@ -33,7 +33,6 @@ namespace Macro
 #else
                 LogHelper.Warning(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #endif
-
             };
             Init();
             base.OnStartup(e);

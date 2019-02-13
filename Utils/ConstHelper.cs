@@ -1,4 +1,6 @@
-﻿namespace Utils
+﻿using System.IO;
+
+namespace Utils
 {
     public class ConstHelper
     {
