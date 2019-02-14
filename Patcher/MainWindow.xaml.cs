@@ -5,7 +5,6 @@ using Patcher.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Utils;
+using ConstHelper = Patcher.Infrastructure.ConstHelper;
 
 namespace Patcher
 {
@@ -23,34 +23,24 @@ namespace Patcher
     {
         private List<Tuple<string, string>> _patchList;
         private CancellationTokenSource _cts;
-        private readonly string TempPath;
-        private readonly string TempBackupPath;
         public MainWindow()
         {
-            TempPath = Path.GetTempPath() + "Macro";
-            TempBackupPath = $@"{ TempPath }\backup\";
             _patchList = new List<Tuple<string, string>>();
             _cts = new CancellationTokenSource();
 
             InitializeComponent();
-            //Loaded += MainWindow_Loaded;
+            Loaded += MainWindow_Loaded;
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             InitEvent();
             Init();
             if (ObjectCache.GetValue("Version").ToString().Equals("1"))
-                InitPatch();
+                CheckPatchList();
 
             Task.Run(async () =>
             {
-                var processes = Process.GetProcessesByName("Macro");
-                foreach (var process in processes)
-                {
-                    process.Kill();
-                }
                 await RunPatch(_cts.Token);
-                Process.Start(@".\Macro.exe");
                 Dispatcher.Invoke(() =>
                 {
                     Application.Current.Shutdown();
@@ -74,6 +64,7 @@ namespace Patcher
         }
         private void Init()
         {
+            LogHelper.Init();
             btnCancel.Content = ObjectCache.GetValue("Cancel");
         }
         private void InitEvent()
@@ -93,29 +84,12 @@ namespace Patcher
                 {
                     btnCancel.IsEnabled = false;
                     _cts.Cancel();
+                    Rollback().Wait();
+                    Application.Current.Shutdown();
                 }
             }
         }
-        private void InitPatch()
-        {
-            try
-            {
-                while (Directory.Exists(TempPath))
-                {
-                    Directory.Delete(TempPath, true);
-                    Thread.Sleep(100);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Warning(ex.Message);
-            }
-            
-            Directory.CreateDirectory(TempPath);
-            Directory.CreateDirectory(TempBackupPath);
-
-            CheckPatchList();
-        }
+        
         private Task RunPatch(CancellationToken token)
         {
             var tcs = new TaskCompletionSource<Task>();
@@ -191,10 +165,10 @@ namespace Patcher
                             if (_patchList[i].Item1.Contains(@"\"))
                             {
                                 var index = _patchList[i].Item1.LastIndexOf(@"\");
-                                Directory.CreateDirectory($@"{TempPath}\{_patchList[i].Item1.Substring(0, index)}");
+                                Directory.CreateDirectory($@"{ConstHelper.TempPath}\{_patchList[i].Item1.Substring(0, index)}");
                             }
 
-                            using (var fs = new FileStream($@"{TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
+                            using (var fs = new FileStream($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
                             {
                                 var buffer = new byte[4096];
                                 var read = 0;
@@ -229,13 +203,26 @@ namespace Patcher
         {
             for(int i=0; i<_patchList.Count; ++i)
             {
-                if (_patchList[i].Item1.Contains(@"\"))
+                try
                 {
-                    var index = _patchList[i].Item1.LastIndexOf(@"\");
-                    Directory.CreateDirectory($@"{TempBackupPath}{_patchList[i].Item1.Substring(0, index)}");
+                    if (_patchList[i].Item1.Contains(@"\"))
+                    {
+                        var index = _patchList[i].Item1.LastIndexOf(@"\");
+                        Directory.CreateDirectory($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1.Substring(0, index)}");
+                    }
+                    if (File.Exists(_patchList[i].Item1))
+                    {
+                        if(File.Exists($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
+                        {
+                            File.Delete($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}");
+                        }
+                        File.Move(_patchList[i].Item1, $"{ConstHelper.TempBackupPath}{_patchList[i].Item1}");
+                    }
                 }
-                if(File.Exists(_patchList[i].Item1))
-                    File.Move(_patchList[i].Item1, $"{TempBackupPath}{_patchList[i].Item1}");
+                catch(Exception ex)
+                {
+                    LogHelper.Warning(ex.Message);
+                }
             }
             return Task.CompletedTask;
         }
@@ -243,34 +230,46 @@ namespace Patcher
         {
             for(int i=0; i< _patchList.Count; ++i)
             {
-                if (token.IsCancellationRequested)
-                    return Task.FromCanceled(token);
+                try
+                {
+                    if (token.IsCancellationRequested)
+                        return Task.FromCanceled(token);
 
-                Dispatcher.Invoke(() =>
-                {
-                    lblState.Content = $"{ObjectCache.GetValue("Patching")} : {_patchList[i].Item1}";
-                    lblCount.Content = $"({i + 1}/{_patchList.Count})";
-                    progress.Value = 0;
-                });
-                
-                if (_patchList[i].Item1.Contains(@"\"))
-                {
-                    var index = _patchList[i].Item1.LastIndexOf(@"\");
-                    Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
+                    if (_patchList[i].Item1.Equals(AppDomain.CurrentDomain.FriendlyName))
+                    {
+                        ObjectCache.SetValue("Patcher", _patchList[i].Item1);
+                        continue;
+                    }
+                    Dispatcher.Invoke(() =>
+                    {
+                        lblState.Content = $"{ObjectCache.GetValue("Patching")} : {_patchList[i].Item1}";
+                        lblCount.Content = $"({i + 1}/{_patchList.Count})";
+                        progress.Value = 0;
+                    });
+
+                    if (_patchList[i].Item1.Contains(@"\"))
+                    {
+                        var index = _patchList[i].Item1.LastIndexOf(@"\");
+                        Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
+                    }
+                    if (File.Exists(_patchList[i].Item1))
+                        File.Delete(_patchList[i].Item1);
+
+                    if (File.Exists($@"{ConstHelper.TempPath}\{_patchList[i].Item1}"))
+                        File.Move($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", _patchList[i].Item1);
                 }
-                if (File.Exists(_patchList[i].Item1))
-                    File.Delete(_patchList[i].Item1);
-
-                if (File.Exists($@"{TempPath}\{_patchList[i].Item1}"))
-                    File.Move($@"{TempPath}\{_patchList[i].Item1}", _patchList[i].Item1);
+                catch (Exception ex)
+                {
+                    LogHelper.Warning(ex.Message);
+                }
             }
             return Task.CompletedTask;
         }
         private Task Rollback()
         {
-            try
+            for (int i = 0; i < _patchList.Count; ++i)
             {
-                for (int i = 0; i < _patchList.Count; ++i)
+                try
                 {
                     Dispatcher.Invoke(() =>
                     {
@@ -283,16 +282,16 @@ namespace Patcher
                         var index = _patchList[i].Item1.LastIndexOf(@"\");
                         Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
                     }
-                    if(File.Exists(_patchList[i].Item1))
+                    if (File.Exists(_patchList[i].Item1))
                         File.Delete(_patchList[i].Item1);
 
-                    if (File.Exists($@"{TempBackupPath}{_patchList[i].Item1}"))
-                        File.Move($"{TempBackupPath}{_patchList[i].Item1}", _patchList[i].Item1);
+                    if (File.Exists($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
+                        File.Move($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}", _patchList[i].Item1);
                 }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Warning(ex.Message);
+                catch (Exception ex)
+                {
+                    LogHelper.Warning(ex.Message);
+                }
             }
             return Task.CompletedTask;
         } 

@@ -53,6 +53,7 @@
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net46\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -68,7 +69,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="WindowsBase">
       <Private>True</Private>
     </Reference>
@@ -87,6 +87,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Infrastructure\ConstHelper.cs" />
     <Compile Include="Infrastructure\ObjectCache.cs" />
     <Compile Include="Infrastructure\Dependency.cs" />
     <Compile Include="Infrastructure\Version.cs" />
@@ -129,7 +130,7 @@
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{da7e0725-f356-48bc-b586-4cd4dea35803}</Project>
       <Name>Utils</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -145,8 +146,8 @@ copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
 del /S/Q $(SolutionDir)\Release\exe\PatchList.json)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)Utils\$(OutDir)NLog.dll" "$(ProjectDir)Resources\"
-copy "$(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll" "$(ProjectDir)Resources\"
-copy "$(SolutionDir)Utils\$(OutDir)Utils.dll" "$(ProjectDir)Resources\"</PreBuildEvent>
+    <PreBuildEvent>copy $(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll $(ProjectDir)Resources
+copy $(SolutionDir)Utils\$(OutDir)NLog.dl $(ProjectDir)Resources
+copy $(SolutionDir)Utils\$(OutDir)Utils.dll $(ProjectDir)Resources</PreBuildEvent>
   </PropertyGroup>
 </Project>

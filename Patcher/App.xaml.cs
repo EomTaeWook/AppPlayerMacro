@@ -1,14 +1,16 @@
 ﻿using Patcher.Infrastructure;
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
-using System.Windows.Navigation;
 using Utils;
 using Utils.Document;
 using Utils.Extensions;
+using ConstHelper = Patcher.Infrastructure.ConstHelper;
 
 namespace Patcher
 {
@@ -17,46 +19,42 @@ namespace Patcher
     /// </summary>
     public partial class App : Application
     {
+        private ConcurrentDictionary<string, Assembly> _assembies;
         public App()
         {
-            //var assemblies = Assembly.GetExecutingAssembly();
-            //var resources = assemblies.GetManifestResourceNames().Where(s => s.EndsWith(".dll"));
-            //foreach (var resource in resources)
-            //{
-            //    using (var stream = assemblies.GetManifestResourceStream(resource))
-            //    {
-            //        if (stream != null)
-            //        {
-            //            var buffer = new byte[stream.Length];
-            //            stream.Read(buffer, 0, buffer.Length);
-            //            AppDomain.CurrentDomain.Load(buffer, null);
-            //        }
-            //    }
-            //}
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-        }
-        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            var assemblies = Assembly.GetExecutingAssembly();
-            var name = args.Name.Substring(0, args.Name.IndexOf(',')) + ".dll";
-            var resources = assemblies.GetManifestResourceNames().Where(s => s.EndsWith(name));
-            if (resources.Count() > 0)
+            _assembies = new ConcurrentDictionary<string, Assembly>();
+            var resources = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(r => r.EndsWith(".dll"));
+            foreach (var resource in resources)
             {
-                var resourceName = resources.First();
-                using (var stream = assemblies.GetManifestResourceStream(resourceName))
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
                 {
                     if (stream != null)
                     {
                         var buffer = new byte[stream.Length];
                         stream.Read(buffer, 0, buffer.Length);
-                        return Assembly.Load(buffer);
+                        var assembly = Assembly.Load(buffer);
+                        _assembies.GetOrAdd(assembly.FullName, assembly);
                     }
                 }
+            }
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+        }
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            Trace.WriteLine(args.Name);
+            if(_assembies.TryGetValue(args.Name, out Assembly assembly))
+            {
+                return assembly;
             }
             return null;
         }        
         protected override void OnStartup(StartupEventArgs e)
         {
+            var processes = Process.GetProcessesByName("Macro");
+            foreach (var process in processes)
+            {
+                process.Kill();
+            }
 #if !DEBUG
             if(e.Args.Count() != 2)
                 Current.Shutdown();
@@ -64,27 +62,58 @@ namespace Patcher
                 Current.Shutdown();
             ObjectCache.SetValue("Version", compare);
 #else
-
             AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
+
             ObjectCache.SetValue("Version", 1);
 #endif
-
-            //foreach (var item in Dependency.List)
-            //{
-            //    if (File.Exists(item))
-            //        File.SetAttributes(item, FileAttributes.Hidden);
-            //}
-            //Init();
-            //InitTemplate();
-            //LogHelper.Init();
-
-            //foreach (var item in Dependency.List)
-            //{
-            //    if (File.Exists(item))
-            //        File.SetAttributes(item, FileAttributes.Normal);
-            //}
+            InitDirectory();
+            Init();
+            InitTemplate();
 
             base.OnStartup(e);
+        }
+        protected override void OnExit(ExitEventArgs e)
+        {
+            foreach (var item in Dependency.List)
+            {
+                if (File.Exists(item))
+                    continue;
+                File.Move($"{ConstHelper.TempBackupPath}{item}", item);
+            }
+            Process.Start(@".\Macro.exe", $"{ConstHelper.TempBackupPath}{ObjectCache.GetValue("Patcher") ?? ""}");
+            base.OnExit(e);
+        }
+
+        private void InitDirectory()
+        {
+            try
+            {
+                if(Directory.Exists(ConstHelper.TempBackupPath))
+                {
+                    Directory.Delete(ConstHelper.TempBackupPath, true);
+                }
+                if(Directory.Exists(ConstHelper.TempPath))
+                {
+                    Directory.Delete(ConstHelper.TempPath, true);
+                }
+                Directory.CreateDirectory(ConstHelper.TempPath);
+                Directory.CreateDirectory(ConstHelper.TempBackupPath);
+            }
+            catch(Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+
+            foreach (var item in Dependency.List)
+            {
+                if (File.Exists(item))
+                {
+                    if (File.Exists($"{ConstHelper.TempBackupPath}{item}"))
+                        File.Delete($"{ConstHelper.TempBackupPath}{item}");
+
+                    File.Move(item, $"{ConstHelper.TempBackupPath}{item}");
+                }
+            }
         }
 
         private bool VersionValidate(string[] current, string[] next, out int compare)
@@ -107,6 +136,7 @@ namespace Patcher
                 Build = Convert.ToInt32(next[2]),
             };
             compare = nextVersion.CompareTo(currentVersion);
+
             return true;
         }
 
@@ -114,12 +144,12 @@ namespace Patcher
         {
             if (args.LoadedAssembly.ManifestModule.Name.Equals("Utils.dll"))
             {
-                LogHelper.Warning($">>>>{args.LoadedAssembly.ManifestModule.Name}<<<<");
+                Trace.WriteLine($">>>>{args.LoadedAssembly.ManifestModule.Name} Loaded<<<<");
             }
         }
         private void Init()
         {
-            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
+            var path = Environment.CurrentDirectory + $@"\{Utils.ConstHelper.DefaultConfigFile}";
 
             if (File.Exists(path))
             {
@@ -136,11 +166,10 @@ namespace Patcher
         }
         private void InitTemplate()
         {
-            var path = ConstHelper.DefaultDatasFile;
-            Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFile);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFile);
+            Singleton<DocumentTemplate<Label>>.Instance.Init(Utils.ConstHelper.DefaultDatasFile);
+            Singleton<DocumentTemplate<Message>>.Instance.Init(Utils.ConstHelper.DefaultDatasFile);
 
-            ObjectCache.SetValue("PatchUrl", ConstHelper.PatchUrl.ToString());
+            ObjectCache.SetValue("PatchUrl", Utils.ConstHelper.PatchUrl.ToString());
             
             if (Enum.TryParse(ObjectCache.GetValue("language").ToString(), out Language language))
             {

@@ -34,6 +34,13 @@ namespace Macro
                 LogHelper.Warning(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #endif
             };
+            for (int i = 0; i < e.Args.Length; ++i)
+            {
+                if(File.Exists(e.Args[i]))
+                    File.Delete(e.Args[i]);
+
+                File.Move($@"{Path.GetTempPath()}Macro\{e.Args[i]}", e.Args[i]);
+            }
             Init();
             base.OnStartup(e);
         }

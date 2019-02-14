@@ -33,6 +33,7 @@ namespace Macro
 {
     public partial class MainWindow : MetroWindow
     {
+        private Random _random;
         private TaskQueue _taskQueue;
         private string _path;
         private KeyValuePair<string, Process>[] _processes;
@@ -42,6 +43,7 @@ namespace Macro
         private List<CaptureView> _captureViews;
         public MainWindow()
         {
+            _random = new Random();
             _taskQueue = new TaskQueue();
             _captureViews = new List<CaptureView>();
 
@@ -502,7 +504,7 @@ namespace Macro
                                 {
                                     while (await TokenCheckDelayAsync(model.AfterDelay, token))
                                     {
-                                        isExcute = false; ;
+                                        isExcute = false;
                                         for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
                                         {
                                             var childExcute = await TriggerProcess(model.SubEventTriggers[ii], token);
@@ -511,7 +513,7 @@ namespace Macro
                                             if (!isExcute && childExcute)
                                                 isExcute = childExcute;
                                         }
-                                        if (isExcute)
+                                        if (!isExcute)
                                             break;
                                     }
                                 }
@@ -523,7 +525,15 @@ namespace Macro
                                 {
                                     MouseTriggerProcess(processes.ElementAt(i).Value, model);
                                 }
-                                else if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage)
+                                else if (model.EventType == EventType.Image)
+                                {
+                                    var percentage = _random.NextDouble();
+
+                                    location.X = location.X + targetBmp.Width * percentage;
+                                    location.Y = location.Y + targetBmp.Height * percentage;
+                                    ImageTriggerProcess(processes.ElementAt(i).Value, location, model);
+                                }
+                                else if(model.EventType == EventType.RelativeToImage)
                                 {
                                     location.X = location.X + (targetBmp.Width / 2);
                                     location.Y = location.Y + (targetBmp.Height / 2);
