@@ -94,7 +94,7 @@ namespace Utils.Infrastructure
                     Keyboard = new KeyboardInput()
                     {
                         KeyCode = (ushort)keyCode,
-                        Scan = 0,
+                        Scan = 30,
                         Flags = IsExtendedKey(keyCode) ? (uint)(KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey) : (uint)KeyboardFlag.KeyUp,
                         Time = 0,
                         ExtraInfo = IntPtr.Zero
@@ -113,7 +113,7 @@ namespace Utils.Infrastructure
                     Keyboard = new KeyboardInput()
                     {
                         KeyCode = (ushort)keyCode,
-                        Scan = 0,
+                        Scan = 30,
                         Flags = IsExtendedKey(keyCode) ? (uint)KeyboardFlag.ExtendedKey : 0,
                         Time = 0,
                         ExtraInfo = IntPtr.Zero

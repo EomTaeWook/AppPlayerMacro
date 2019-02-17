@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Text;
 using Utils.Infrastructure;
 
 namespace Utils
@@ -19,6 +21,43 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr rect, MonitorEnumDelegate callback, int data);
         public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data);
+
+        [DllImport("user32")]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        [DllImport("user32.dll")]
+        private static extern int GetWindowTextLength(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool EnumChildWindows(IntPtr hwnd, EnumWindowProcDelegate callback, IntPtr lParam);
+        private delegate bool EnumWindowProcDelegate(IntPtr hwnd, IntPtr lParam);
+
+        public static IList<Tuple<string,IntPtr>> GetChildHandles(IntPtr mainWindowHandle)
+        {
+            var childHandles = new List<Tuple<string, IntPtr>>();
+            var gcHandle = GCHandle.Alloc(childHandles);
+            try
+            {
+                EnumChildWindows(mainWindowHandle, new EnumWindowProcDelegate((hwnd, lParam) =>
+                {
+                    var lParamHwnd = GCHandle.FromIntPtr(lParam);
+                    if (lParamHwnd.Target == null && lParamHwnd == null)
+                        return false;
+                    if (lParamHwnd.Target is List<Tuple<string, IntPtr>> list)
+                    {
+                        var sb = new StringBuilder();
+                        GetWindowText(hwnd, sb, GetWindowTextLength(hwnd) + 1);
+                        list.Add(Tuple.Create(sb.ToString(), hwnd));
+                    }
+                    return true;
+                }), GCHandle.ToIntPtr(gcHandle));
+            }
+            finally
+            {
+                if (gcHandle.IsAllocated)
+                    gcHandle.Free();
+            }
+            return childHandles;
+        }
 
         [DllImport("user32.dll")]
         public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int flags);

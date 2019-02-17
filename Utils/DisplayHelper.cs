@@ -15,17 +15,18 @@ namespace Utils
             var monitors = new List<MonitorInfo>();
             int index = 0;
 
-            NativeHelper.MonitorEnumDelegate callback = new NativeHelper.MonitorEnumDelegate((IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data) =>
-            {
-                monitors.Add(new MonitorInfo()
+            NativeHelper.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero,
+                new NativeHelper.MonitorEnumDelegate((IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data) =>
                 {
-                    Rect = rect,
-                    Index = index++,
-                    Dpi = NativeHelper.GetMonitorDPI(hMonitor)
-                });
+                    monitors.Add(new MonitorInfo()
+                    {
+                        Rect = rect,
+                        Index = index++,
+                        Dpi = NativeHelper.GetMonitorDPI(hMonitor)
+                    });
                 return true;
-            });
-            NativeHelper.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, callback, 0);
+                }
+            ), 0);
             return monitors;
         }
         public static Bitmap Capture(MonitorInfo monitor, Rect rect)

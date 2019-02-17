@@ -255,10 +255,10 @@ namespace Macro
                 }
             }
         }
-        private void ImageTriggerProcess(Process process, Point location, EventTriggerModel model)
+        private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
         {
             var currentPosition = new Rect();
-            NativeHelper.GetWindowRect(process.MainWindowHandle, ref currentPosition);
+            NativeHelper.GetWindowRect(hWnd, ref currentPosition);
 
             var targetFactorX = 1.0F;
             var targetFactorY = 1.0F;
@@ -279,14 +279,14 @@ namespace Macro
             };
 
             LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, position.ToLParam());
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
             Task.Delay(100).Wait();
-            NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, position.ToLParam());
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
         }
-        private void MouseTriggerProcess(Process process, EventTriggerModel model)
+        private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
         {
             var currentPosition = new Rect();
-            NativeHelper.GetWindowRect(process.MainWindowHandle, ref currentPosition);
+            NativeHelper.GetWindowRect(hWnd, ref currentPosition);
 
             var targetFactorX = 1.0F;
             var targetFactorY = 1.0F;
@@ -302,28 +302,28 @@ namespace Macro
             }
             var mousePosition = new Point()
             {
-                X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.StartPoint.X * -1) * targetFactorX,
-                Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.StartPoint.Y * -1) * targetFactorY
+                X = Math.Abs(model.ProcessInfo.Position.Left + (model.MouseTriggerInfo.StartPoint.X + location.X) * -1) * targetFactorX,
+                Y = Math.Abs(model.ProcessInfo.Position.Top + (model.MouseTriggerInfo.StartPoint.Y + location.Y) * -1) * targetFactorY
             };
-            
+
             if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
                 LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.RightClick)
             {
                 LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
+                NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
+                NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Drag)
             {
                 LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
                 for (int i = 0; i < model.MouseTriggerInfo.MiddlePoint.Count; ++i)
                 {
@@ -332,7 +332,7 @@ namespace Macro
                         X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1) * targetFactorX,
                         Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1) * targetFactorY
                     };
-                    NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
+                    NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                     Task.Delay(100).Wait();
                 }
                 mousePosition = new Point()
@@ -340,17 +340,19 @@ namespace Macro
                     X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1) * targetFactorX,
                     Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1) * targetFactorY
                 };
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
+                NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
-                NativeHelper.PostMessage(process.MainWindowHandle, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
                 LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
             }
         }
-        private void KeyboardTriggerProcess(Process process, EventTriggerModel model)
+        private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
         {
+            var childs = NativeHelper.GetChildHandles(hWnd);
             var hWndActive = NativeHelper.GetForegroundWindow();
+
             Task.Delay(100).Wait();
-            NativeHelper.SetForegroundWindow(process.MainWindowHandle);
+            NativeHelper.SetForegroundWindow(hWnd);
             var inputs = model.KeyboardCmd.ToUpper().Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
             var modifiedKey = inputs.Where(r =>
             {
@@ -394,13 +396,12 @@ namespace Macro
             ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             Task.Delay(100).Wait();
             LogHelper.Debug($">>>>Keyboard Event");
-            NativeHelper.SetForegroundWindow(hWndActive);
+            //NativeHelper.SetForegroundWindow(hWndActive);
         }
-        private Tuple<float, float, bool> CalculateFactor(Process process, EventTriggerModel model)
+        private Tuple<float, float> CalculateFactor(IntPtr hWnd, EventTriggerModel model, bool isDynamic)
         {
-            var isDynamic = ObjectExtensions.GetInstance<DynamicDPIManager>().Find(model.ProcessInfo.ProcessName);
             var currentPosition = new Rect();
-            NativeHelper.GetWindowRect(process.MainWindowHandle, ref currentPosition);
+            NativeHelper.GetWindowRect(hWnd, ref currentPosition);
             var factor = NativeHelper.GetSystemDpi();
             var factorX = 1.0F;
             var factorY = 1.0F;
@@ -428,7 +429,7 @@ namespace Macro
                     }
                 }
             }
-            return Tuple.Create(factorX, factorY, isDynamic);
+            return Tuple.Create(factorX, factorY);
         }
         private async Task<bool> TriggerProcess(EventTriggerModel model, CancellationToken token)
         {
@@ -442,15 +443,30 @@ namespace Macro
                 else
                     processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
             });
-
+            IntPtr hWnd = IntPtr.Zero;
+            var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(model.ProcessInfo.ProcessName) ?? new ApplicationData();
             for (int i=0; i<processes.Length; ++i)
             {
-                var factor = CalculateFactor(processes[i].Value, model);
+                var factor = CalculateFactor(processes[i].Value.MainWindowHandle, model, applciationData.IsDynamic);
 
+                if (string.IsNullOrEmpty(applciationData.HandleName))
+                {
+                    hWnd = processes[i].Value.MainWindowHandle;
+                }
+                else
+                {
+                    var item = NativeHelper.GetChildHandles(processes[i].Value.MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
+
+                    if(item != null)
+                        hWnd = item.Item2;
+                    else
+                        hWnd = processes[i].Value.MainWindowHandle;
+                }
+                
                 if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
                 {
                     var count = model.RepeatInfo.Count;
-                    while(DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, factor.Item3) && count-- > 0)
+                    while(DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
                     {
                         var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
@@ -468,12 +484,12 @@ namespace Macro
                             if (token.IsCancellationRequested)
                                 break;
                         }
-                        factor = CalculateFactor(processes[i].Value, model);
+                        factor = CalculateFactor(processes[i].Value.MainWindowHandle, model, applciationData.IsDynamic);
                     }
                 }
                 else
                 {
-                    if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, factor.Item3))
+                    if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic))
                     {
                         var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
@@ -523,7 +539,9 @@ namespace Macro
                                 isExcute = true;
                                 if (model.EventType == EventType.Mouse)
                                 {
-                                    MouseTriggerProcess(processes.ElementAt(i).Value, model);
+                                    location.X = applciationData.OffsetX;
+                                    location.Y = applciationData.OffsetY;
+                                    MouseTriggerProcess(hWnd, location, model);
                                 }
                                 else if (model.EventType == EventType.Image)
                                 {
@@ -531,17 +549,17 @@ namespace Macro
 
                                     location.X = location.X + targetBmp.Width * percentage;
                                     location.Y = location.Y + targetBmp.Height * percentage;
-                                    ImageTriggerProcess(processes.ElementAt(i).Value, location, model);
+                                    ImageTriggerProcess(hWnd, location, model);
                                 }
                                 else if(model.EventType == EventType.RelativeToImage)
                                 {
                                     location.X = location.X + (targetBmp.Width / 2);
                                     location.Y = location.Y + (targetBmp.Height / 2);
-                                    ImageTriggerProcess(processes.ElementAt(i).Value, location, model);
+                                    ImageTriggerProcess(hWnd, location, model);
                                 }
                                 else if (model.EventType == EventType.Keyboard)
                                 {
-                                    KeyboardTriggerProcess(processes.ElementAt(i).Value, model);
+                                    KeyboardTriggerProcess(processes.ElementAt(i).Value.MainWindowHandle, model);
                                 }
                                 if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                     break;

@@ -1,0 +1,16 @@
+[
+  {
+    "Code": "Nox",
+    "isDynamic" : true,
+    "HandleName" : "",
+    "offsetX":0,
+    "offsetY":0
+  },
+  {
+    "Code": "dnplayer",
+    "isDynamic" : false,
+    "HandleName" : "TheRender",
+    "offsetX":0,
+    "offsetY":-35
+  }
+]

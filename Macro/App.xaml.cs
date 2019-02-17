@@ -56,7 +56,7 @@ namespace Macro
             Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFile);
             Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFile);
 
-            Singleton<DynamicDPIManager>.Instance.Init("dynamicDPI");
+            Singleton<ApplicationDataManager>.Instance.Init("ApplicationData");
         }
         private void DependenciesResolved()
         {

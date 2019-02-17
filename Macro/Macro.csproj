@@ -204,7 +204,7 @@
     <Compile Include="Infrastructure\Impl\SettingImpl.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Impl\MainWindowImpl.cs" />
-    <Compile Include="Infrastructure\Manager\DynamicDPIManager.cs" />
+    <Compile Include="Infrastructure\Manager\ApplicationDataManager.cs" />
     <Compile Include="Infrastructure\Manager\InputManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
@@ -216,7 +216,7 @@
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Infrastructure\EventArgs.cs" />
-    <Compile Include="Infrastructure\DynamicDPI.cs" />
+    <Compile Include="Infrastructure\ApplicationData.cs" />
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\Version.cs" />
@@ -332,8 +332,7 @@
     <Error Condition="!Exists('..\packages\OpenCvSharp3-AnyCPU.4.0.0.20181129\build\OpenCvSharp3-AnyCPU.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCvSharp3-AnyCPU.4.0.0.20181129\build\OpenCvSharp3-AnyCPU.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
-IF $(ConfigurationName) == Release (
+    <PostBuildEvent>IF $(ConfigurationName) == Release (
 xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
 xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\" 
 xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
@@ -343,7 +342,9 @@ copy "$(TargetDir)patcher.exe" "$(SolutionDir)Release\exe\"
 rd /S/Q $(SolutionDir)Release\exe\Save
 del /S/Q $(SolutionDir)Release\exe\Datas\Version.json
 del /S/Q $(SolutionDir)Release\exe\patcher.exe.config
-del /S/Q $(SolutionDir)Release\exe\macro.exe.config)</PostBuildEvent>
+del /S/Q $(SolutionDir)Release\exe\macro.exe.config)
+
+xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>IF $(ConfigurationName) == Release (
