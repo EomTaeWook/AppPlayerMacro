@@ -98,8 +98,9 @@ OS 버전
 
     enter0917@naver.com
 
-
 릴리즈
+
+https://github.com/EomTaeWook/EmulatorMacro/releases
 
 2.3.4
 

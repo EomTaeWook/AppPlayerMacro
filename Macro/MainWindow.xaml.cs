@@ -3,7 +3,6 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -274,7 +273,7 @@ namespace Macro
             }
             else if(btn.Equals(btnGithub))
             {
-                Process.Start(ConstHelper.ReleaseUrl);
+                Process.Start(ConstHelper.HelpUrl);
             }
         }
     }
