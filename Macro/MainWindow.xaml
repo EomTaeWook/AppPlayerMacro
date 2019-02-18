@@ -13,6 +13,11 @@
                       mc:Ignorable="d">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
+            <Button Name="btnGithub">
+                <StackPanel Orientation="Horizontal">
+                    <IconPacks:PackIconMaterial Width="24" Height="24" Kind="GithubBox" />
+                </StackPanel>
+            </Button>
             <Button Name="btnSetting">
                 <StackPanel Orientation="Horizontal">
                     <IconPacks:PackIconMaterial Width="24" Height="24" Kind="SettingsOutline" />
