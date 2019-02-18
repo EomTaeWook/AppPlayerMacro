@@ -86,7 +86,7 @@ namespace Utils.Infrastructure
         }
         public InputBuilder AddKeyUp(KeyCode keyCode)
         {
-           _inputList.Add(new Input
+            _inputList.Add(new Input
             {
                 Type = (uint)InputType.Keyboard,
                 Data = new InputData()
@@ -94,7 +94,7 @@ namespace Utils.Infrastructure
                     Keyboard = new KeyboardInput()
                     {
                         KeyCode = (ushort)keyCode,
-                        Scan = 30,
+                        Scan = (ushort)(Enum.Parse(typeof(ScanCode), keyCode.ToString(), true) ?? 0),
                         Flags = IsExtendedKey(keyCode) ? (uint)(KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey) : (uint)KeyboardFlag.KeyUp,
                         Time = 0,
                         ExtraInfo = IntPtr.Zero
@@ -113,7 +113,7 @@ namespace Utils.Infrastructure
                     Keyboard = new KeyboardInput()
                     {
                         KeyCode = (ushort)keyCode,
-                        Scan = 30,
+                        Scan = (ushort)(Enum.Parse(typeof(ScanCode), keyCode.ToString(), true) ?? 0),
                         Flags = IsExtendedKey(keyCode) ? (uint)KeyboardFlag.ExtendedKey : 0,
                         Time = 0,
                         ExtraInfo = IntPtr.Zero

@@ -3,6 +3,7 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -193,6 +194,9 @@ namespace Macro
                         {
                             if (monitor.Rect.IsContain(rect))
                             {
+                                if(model.MonitorInfo != null)
+                                    model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
+                                
                                 model.MonitorInfo = monitor;
                                 break;
                             }

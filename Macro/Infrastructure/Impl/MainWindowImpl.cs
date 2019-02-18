@@ -257,25 +257,10 @@ namespace Macro
         }
         private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
         {
-            var currentPosition = new Rect();
-            NativeHelper.GetWindowRect(hWnd, ref currentPosition);
-
-            var targetFactorX = 1.0F;
-            var targetFactorY = 1.0F;
-            var factor = NativeHelper.GetSystemDpi();
-            foreach (var monitor in DisplayHelper.MonitorInfo())
-            {
-                if (monitor.Rect.IsContain(currentPosition))
-                {
-                    targetFactorX = monitor.Dpi.X / (factor.X * targetFactorX);
-                    targetFactorY = monitor.Dpi.Y / (factor.Y * targetFactorY);
-                    break;
-                }
-            }
             var position = new Point()
             {
-                X = (location.X + model.MouseTriggerInfo.StartPoint.X) * targetFactorX,
-                Y = (location.Y + model.MouseTriggerInfo.StartPoint.Y) * targetFactorY
+                X = location.X + model.MouseTriggerInfo.StartPoint.X,
+                Y = location.Y + model.MouseTriggerInfo.StartPoint.Y
             };
 
             LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
@@ -283,27 +268,12 @@ namespace Macro
             Task.Delay(100).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
         }
-        private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
+        private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model, Tuple<float, float> factor)
         {
-            var currentPosition = new Rect();
-            NativeHelper.GetWindowRect(hWnd, ref currentPosition);
-
-            var targetFactorX = 1.0F;
-            var targetFactorY = 1.0F;
-
-            foreach (var monitor in DisplayHelper.MonitorInfo())
-            {
-                if (monitor.Rect.IsContain(currentPosition))
-                {
-                    targetFactorX = monitor.Dpi.X / (model.MonitorInfo.Dpi.X * targetFactorX);
-                    targetFactorY = monitor.Dpi.Y / (model.MonitorInfo.Dpi.Y * targetFactorY);
-                    break;
-                }
-            }
             var mousePosition = new Point()
             {
-                X = Math.Abs(model.ProcessInfo.Position.Left + (model.MouseTriggerInfo.StartPoint.X + location.X) * -1) * targetFactorX,
-                Y = Math.Abs(model.ProcessInfo.Position.Top + (model.MouseTriggerInfo.StartPoint.Y + location.Y) * -1) * targetFactorY
+                X = Math.Abs(model.ProcessInfo.Position.Left + (model.MouseTriggerInfo.StartPoint.X + location.X) * -1) * factor.Item1,
+                Y = Math.Abs(model.ProcessInfo.Position.Top + (model.MouseTriggerInfo.StartPoint.Y + location.Y) * -1) * factor.Item2
             };
 
             if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
@@ -329,16 +299,16 @@ namespace Macro
                 {
                     mousePosition = new Point()
                     {
-                        X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1) * targetFactorX,
-                        Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1) * targetFactorY
+                        X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1) * factor.Item1,
+                        Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1) * factor.Item2
                     };
                     NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                     Task.Delay(100).Wait();
                 }
                 mousePosition = new Point()
                 {
-                    X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1) * targetFactorX,
-                    Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1) * targetFactorY
+                    X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1) * factor.Item1,
+                    Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1) * factor.Item2
                 };
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
@@ -396,40 +366,41 @@ namespace Macro
             ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             Task.Delay(100).Wait();
             LogHelper.Debug($">>>>Keyboard Event");
-            //NativeHelper.SetForegroundWindow(hWndActive);
+            NativeHelper.SetForegroundWindow(hWndActive);
         }
-        private Tuple<float, float> CalculateFactor(IntPtr hWnd, EventTriggerModel model, bool isDynamic)
+        private Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, EventTriggerModel model, bool isDynamic)
         {
             var currentPosition = new Rect();
             NativeHelper.GetWindowRect(hWnd, ref currentPosition);
             var factor = NativeHelper.GetSystemDpi();
             var factorX = 1.0F;
             var factorY = 1.0F;
+            var positionFactorX = 1.0F;
+            var positionFactorY = 1.0F;
             if (isDynamic)
             {
                 foreach (var monitor in DisplayHelper.MonitorInfo())
                 {
                     if (monitor.Rect.IsContain(currentPosition))
                     {
-                        factorX = monitor.Dpi.X * factorX / model.MonitorInfo.Dpi.X * (factor.X * factorX / monitor.Dpi.X);
-                        factorY = monitor.Dpi.Y * factorY / model.MonitorInfo.Dpi.Y * (factor.X * factorY / monitor.Dpi.Y);
+                        factorX = factor.X * factorX / model.MonitorInfo.Dpi.X;
+                        factorY = factor.Y * factorY / model.MonitorInfo.Dpi.Y;
+
+                        if(model.EventType == EventType.Mouse)
+                        {
+                            positionFactorX = positionFactorX * monitor.Dpi.X / model.MonitorInfo.Dpi.X;
+                            positionFactorY = positionFactorY * monitor.Dpi.Y / model.MonitorInfo.Dpi.Y;
+                        }
+                        else
+                        {
+                            positionFactorX = positionFactorX * factor.X / monitor.Dpi.X;
+                            positionFactorY = positionFactorY * factor.Y / monitor.Dpi.Y;
+                        }
                         break;
                     }
                 }
             }
-            else
-            {
-                foreach (var monitor in DisplayHelper.MonitorInfo())
-                {
-                    if (monitor.Rect.IsContain(currentPosition))
-                    {
-                        factorX = monitor.Dpi.X * factorX / ConstHelper.DefaultDPI;
-                        factorY = monitor.Dpi.Y * factorY / ConstHelper.DefaultDPI;
-                        break;
-                    }
-                }
-            }
-            return Tuple.Create(factorX, factorY);
+            return Tuple.Create(Tuple.Create(factorX, factorY), Tuple.Create(positionFactorX, positionFactorY));
         }
         private async Task<bool> TriggerProcess(EventTriggerModel model, CancellationToken token)
         {
@@ -468,7 +439,7 @@ namespace Macro
                     var count = model.RepeatInfo.Count;
                     while(DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
                     {
-                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
+                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item1));
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
                         LogHelper.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         Dispatcher.Invoke(() =>
@@ -491,7 +462,7 @@ namespace Macro
                 {
                     if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic))
                     {
-                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1), (int)Math.Truncate(model.Image.Height * factor.Item2));
+                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item2));
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
                         LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         Dispatcher.Invoke(() =>
@@ -541,20 +512,20 @@ namespace Macro
                                 {
                                     location.X = applciationData.OffsetX;
                                     location.Y = applciationData.OffsetY;
-                                    MouseTriggerProcess(hWnd, location, model);
+                                    MouseTriggerProcess(hWnd, location, model, factor.Item2);
                                 }
                                 else if (model.EventType == EventType.Image)
                                 {
                                     var percentage = _random.NextDouble();
 
-                                    location.X = location.X + targetBmp.Width * percentage;
-                                    location.Y = location.Y + targetBmp.Height * percentage;
+                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
+                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height/ factor.Item2.Item2 * percentage);
                                     ImageTriggerProcess(hWnd, location, model);
                                 }
                                 else if(model.EventType == EventType.RelativeToImage)
                                 {
-                                    location.X = location.X + (targetBmp.Width / 2);
-                                    location.Y = location.Y + (targetBmp.Height / 2);
+                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 / 2);
+                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item2 / 2);
                                     ImageTriggerProcess(hWnd, location, model);
                                 }
                                 else if (model.EventType == EventType.Keyboard)

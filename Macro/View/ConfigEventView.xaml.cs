@@ -262,6 +262,10 @@ namespace Macro.View
             else if(sender.Equals(rbImage))
             {
                 CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Image;
+                if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                {
+                    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                }
             }
             else if(sender.Equals(rbRelativeToImage))
             {

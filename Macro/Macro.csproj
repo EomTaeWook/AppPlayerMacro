@@ -332,7 +332,9 @@
     <Error Condition="!Exists('..\packages\OpenCvSharp3-AnyCPU.4.0.0.20181129\build\OpenCvSharp3-AnyCPU.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCvSharp3-AnyCPU.4.0.0.20181129\build\OpenCvSharp3-AnyCPU.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>IF $(ConfigurationName) == Release (
+    <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
+
+IF $(ConfigurationName) == Release (
 xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
 xcopy /S/Y "$(TargetDir)*.config" "$(SolutionDir)Release\exe\" 
 xcopy /S/Y "$(TargetDir)*.json" "$(SolutionDir)Release\exe\"
@@ -342,9 +344,7 @@ copy "$(TargetDir)patcher.exe" "$(SolutionDir)Release\exe\"
 rd /S/Q $(SolutionDir)Release\exe\Save
 del /S/Q $(SolutionDir)Release\exe\Datas\Version.json
 del /S/Q $(SolutionDir)Release\exe\patcher.exe.config
-del /S/Q $(SolutionDir)Release\exe\macro.exe.config)
-
-xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"</PostBuildEvent>
+del /S/Q $(SolutionDir)Release\exe\macro.exe.config)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>IF $(ConfigurationName) == Release (
