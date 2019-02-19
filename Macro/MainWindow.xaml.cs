@@ -3,7 +3,6 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -40,6 +39,7 @@ namespace Macro
             btnStart.Click += Button_Click;
             btnStop.Click += Button_Click;
             btnSetting.Click += Button_Click;
+            btnGithub.Click += Button_Click;
             checkFix.Checked += CheckFix_Checked;
             checkFix.Unchecked += CheckFix_Checked;
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
@@ -270,6 +270,10 @@ namespace Macro
             else if(btn.Equals(btnSetting))
             {
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
+            }
+            else if(btn.Equals(btnGithub))
+            {
+                Process.Start(ConstHelper.HelpUrl);
             }
         }
     }
