@@ -106,7 +106,7 @@ namespace Macro
             var checkBoxs = ObjectExtensions.FindChildren<CheckBox>(this);
             foreach (var checkBox in checkBoxs)
             {
-                if (checkBox.Content is string || checkBox.Content == null)
+                if (checkBox.Content == null || !(checkBox.Content is string))
                     continue;
 
                 BindingOperations.GetBindingExpressionBase(checkBox, ContentProperty).UpdateTarget();

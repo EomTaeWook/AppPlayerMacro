@@ -1,16 +1,23 @@
 [
   {
     "Code": "Nox",
-    "isDynamic" : true,
-    "HandleName" : "",
-    "offsetX":0,
-    "offsetY":0
+    "isDynamic": true,
+    "HandleName": "",
+    "offsetX": 0,
+    "offsetY": 0
   },
   {
     "Code": "dnplayer",
-    "isDynamic" : false,
-    "HandleName" : "TheRender",
-    "offsetX":0,
-    "offsetY":-35
+    "isDynamic": false,
+    "HandleName": "TheRender",
+    "offsetX": 0,
+    "offsetY": -35
+  },
+  {
+    "Code": "Peak",
+    "isDynamic": false,
+    "HandleName": "kaopu001_tiantianplayer_opengl_wndWindow",
+    "offsetX": 0,
+    "offsetY": -35
   }
 ]
