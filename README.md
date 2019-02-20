@@ -9,7 +9,11 @@
     
 OS 버전
 
-    Window 8.0 이상 Window 7 에서는 작동 안하는 기능이 있음.
+    Window 8.0 이상
+
+다운로드
+
+    https://github.com/EomTaeWook/EmulatorMacro/releases
 
 사용 방법
     
@@ -100,7 +104,11 @@ OS 버전
 
 릴리즈
 
-https://github.com/EomTaeWook/EmulatorMacro/releases
+2.3.5
+
+    1.Peak 지원
+    
+    2.위치 변경시 저장 버튼 눌러야 적용 => 자동 저장 변경
 
 2.3.4
 

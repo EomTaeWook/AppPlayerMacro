@@ -80,7 +80,7 @@ namespace Patcher
                     continue;
                 File.Move($"{ConstHelper.TempBackupPath}{item}", item);
             }
-            Process.Start(@".\Macro.exe", $"{ConstHelper.TempBackupPath}{ObjectCache.GetValue("Patcher") ?? ""}");
+            Process.Start(@".\Macro.exe", $"{ObjectCache.GetValue("Patcher") ?? ""}");
             base.OnExit(e);
         }
 

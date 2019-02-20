@@ -7,6 +7,7 @@ namespace Macro.Infrastructure
         public static event Action<ConfigEventArgs> ConfigChanged;
         public static event Action<MousePointEventArgs> MousePositionDataBind;
         public static event Action<CaptureEventArgs> ScreenCaptureDataBind;
+        public static event Action<EventTriggerOrderChangedEventArgs> TreeItemOrderChanged;
         public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
         public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
 
@@ -23,11 +24,14 @@ namespace Macro.Infrastructure
                 case EventType.ScreenCapture:
                     ScreenCaptureDataBind? .Invoke(args as CaptureEventArgs);
                     break;
-                case EventType.EventTriggerOrderChanged:
-                    EventTriggerOrderChanged ? .Invoke(args as EventTriggerOrderChangedEventArgs);
+                case EventType.TreeItemOrderChanged:
+                    TreeItemOrderChanged? .Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
                 case EventType.SelctTreeViewItemChanged:
                     SelectTreeViewChanged?.Invoke(args as SelctTreeViewItemChangedEventArgs);
+                    break;
+                case EventType.EventTriggerOrderChanged:
+                    EventTriggerOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
             }
         }

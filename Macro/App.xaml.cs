@@ -2,7 +2,9 @@
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using Unity;
 using Utils;
@@ -36,10 +38,21 @@ namespace Macro
             };
             for (int i = 0; i < e.Args.Length; ++i)
             {
-                if(File.Exists(e.Args[i]))
+                if (string.IsNullOrEmpty(e.Args[i]))
+                    continue;
+                if (Process.GetProcesses().Any(r => r.ProcessName.Equals(Path.GetFileNameWithoutExtension(e.Args[i]))))
+                {
+                    var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(e.Args[i])).ToArray();
+                    foreach (var process in processes)
+                    {
+                        process.Kill();
+                    }
+                }
+                if (File.Exists($@"{Path.GetTempPath()}Macro\{e.Args[i]}"))
+                {
                     File.Delete(e.Args[i]);
-
-                File.Move($@"{Path.GetTempPath()}Macro\{e.Args[i]}", e.Args[i]);
+                    File.Move($@"{Path.GetTempPath()}Macro\{e.Args[i]}", e.Args[i]);
+                }
             }
             Init();
             base.OnStartup(e);

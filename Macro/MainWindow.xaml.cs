@@ -46,9 +46,19 @@ namespace Macro
 
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
-            NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
+            NotifyHelper.TreeItemOrderChanged += NotifyHelper_TreeItemOrderChanged;
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
+            NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
+
             Unloaded += MainWindow_Unloaded;
+        }
+
+        private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
+        {
+            _taskQueue.Enqueue(() =>
+            {
+                return Save();
+            });
         }
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -102,12 +112,12 @@ namespace Macro
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
             }
         }
-        private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs e)
+        private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
             _taskQueue.Enqueue(() => 
             {
                 return Delete();
-            }).Finally((state) => 
+            }).Finally(state => 
             {
                 Dispatcher.Invoke(() => 
                 {

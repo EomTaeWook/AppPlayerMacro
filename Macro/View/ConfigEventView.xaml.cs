@@ -97,11 +97,24 @@ namespace Macro.View
                 {
                     itemContainer.Swap(currentIndex, currentIndex - 1);
                     CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex - 1]) ?? _dummyTreeGridViewItem;
+
+                    NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    {
+                        TriggerModel1 = itemContainer[currentIndex],
+                        TriggerModel2 = itemContainer[currentIndex - 1]
+                    });
                 }
-                else if(currentIndex < itemContainer.Count - 1 && sender.Equals(btnTreeItemDown))
+                else if (currentIndex < itemContainer.Count - 1 && sender.Equals(btnTreeItemDown))
                 {
                     itemContainer.Swap(currentIndex, currentIndex + 1);
                     CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex + 1]) ?? _dummyTreeGridViewItem;
+
+                    NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    {
+                        TriggerModel1 = itemContainer[currentIndex],
+                        TriggerModel2 = itemContainer[currentIndex + 1]
+                    });
+
                 }
             }
         }
@@ -157,12 +170,11 @@ namespace Macro.View
                 ItemContainerPositionChange(targetRow);
                 var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 Clear();
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.TreeItemOrderChanged, new EventTriggerOrderChangedEventArgs()
                 {
                     TriggerModel1 = item,
                     TriggerModel2 = targetRow?.DataContext<EventTriggerModel>()
                 });
-                
             }
         }
         private void TreeSaves_MouseMove(object sender, MouseEventArgs e)

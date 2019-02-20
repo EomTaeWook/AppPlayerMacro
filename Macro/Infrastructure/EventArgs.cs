@@ -10,8 +10,9 @@ namespace Macro.Infrastructure
         ConfigChanged,
         MousePointDataBind,
         ScreenCapture,
-        EventTriggerOrderChanged,
+        TreeItemOrderChanged,
         SelctTreeViewItemChanged,
+        EventTriggerOrderChanged,
 
         Max
     }
