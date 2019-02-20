@@ -44,28 +44,11 @@ namespace Macro
                 {
                     process.Kill();
                 }
-            }
-            for (int i = 0; i < e.Args.Length; ++i)
-            {
-                if (string.IsNullOrEmpty(e.Args[i]))
-                    continue;
-
-                if (File.Exists($@"{Path.GetTempPath()}Macro\{e.Args[i]}"))
+                var fileName = Path.GetFileName(exeList[i]);
+                if (File.Exists(fileName))
                 {
-                    File.Delete(e.Args[i]);
-                    File.Move($@"{Path.GetTempPath()}Macro\{e.Args[i]}", e.Args[i]);
-                }
-                else if(File.Exists($@"{e.Args[i]}"))
-                {
-                    var tempName = @"Temp\Macro\";
-                    var index = e.Args[i].LastIndexOf(tempName);
-                    if(index != -1)
-                    {
-                        index += tempName.Length;
-                        var fileName = e.Args[i].Substring(index, e.Args[i].Length - index);
-                        File.Delete(fileName);
-                        File.Move(e.Args[i], fileName);
-                    }
+                    File.Delete(fileName);
+                    File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
                 }
             }
             Init();

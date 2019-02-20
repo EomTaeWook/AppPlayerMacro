@@ -35,6 +35,7 @@ namespace Patcher
         {
             InitEvent();
             Init();
+            Topmost = true;
             if (ObjectCache.GetValue("Version").ToString().Equals("1"))
                 CheckPatchList();
 
