@@ -36,22 +36,36 @@ namespace Macro
                 LogHelper.Warning(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #endif
             };
+            var exeList = e.Args.Where(r => Path.GetExtension(r).Equals(".exe")).ToArray();
+            for(int i=0; i< exeList.Length; ++i)
+            {
+                var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(exeList[i])).ToArray();
+                foreach (var process in processes)
+                {
+                    process.Kill();
+                }
+            }
             for (int i = 0; i < e.Args.Length; ++i)
             {
                 if (string.IsNullOrEmpty(e.Args[i]))
                     continue;
-                if (Process.GetProcesses().Any(r => r.ProcessName.Equals(Path.GetFileNameWithoutExtension(e.Args[i]))))
-                {
-                    var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(e.Args[i])).ToArray();
-                    foreach (var process in processes)
-                    {
-                        process.Kill();
-                    }
-                }
+
                 if (File.Exists($@"{Path.GetTempPath()}Macro\{e.Args[i]}"))
                 {
                     File.Delete(e.Args[i]);
                     File.Move($@"{Path.GetTempPath()}Macro\{e.Args[i]}", e.Args[i]);
+                }
+                else if(File.Exists($@"{e.Args[i]}"))
+                {
+                    var tempName = @"Temp\Macro\";
+                    var index = e.Args[i].LastIndexOf(tempName);
+                    if(index != -1)
+                    {
+                        index += tempName.Length;
+                        var fileName = e.Args[i].Substring(index, e.Args[i].Length - index);
+                        File.Delete(fileName);
+                        File.Move(e.Args[i], fileName);
+                    }
                 }
             }
             Init();

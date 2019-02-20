@@ -19,6 +19,6 @@
     </StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>Patcher.exe</StartArguments>
+    <StartArguments>C:\Users\pc\AppData\Local\Temp\Macro\Patcher.exe</StartArguments>
   </PropertyGroup>
 </Project>
