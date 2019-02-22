@@ -22,8 +22,8 @@ namespace Macro.Models
         private int _period = ConstHelper.MinPeriod;
         private int _ItemDelay = ConstHelper.MinItemDelay;
         private int _similarity = ConstHelper.DefaultSimilarity;
-        private bool _searchResultDisplay = false;
-        private bool _versionCheck = false;
+        private bool _searchResultDisplay = true;
+        private bool _versionCheck = true;
 
         public Language Language
         {

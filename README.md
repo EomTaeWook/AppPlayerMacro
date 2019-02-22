@@ -3,6 +3,10 @@
 
 <img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/capture.png" width="100%"></img>
 
+
+다운로드 : https://github.com/EomTaeWook/EmulatorMacro/releases
+
+
 개발환경
 
     WPF, C#, .net 4.6.1
@@ -11,9 +15,9 @@ OS 버전
 
     Window 8.0 이상
 
-다운로드
+Macro 실행시 앱플레이어 이미지에 여백이 발생하는 경우
 
-    https://github.com/EomTaeWook/EmulatorMacro/releases
+    - Datas\ApplicationData.json => IsDynamic [true][false]를 변경하시면 됩니다.
 
 사용 방법
     
@@ -69,7 +73,7 @@ OS 버전
         
         - 프로세스가 목록에 없는 경우 또는 종료되거나 새로운 프로세스를 실행 시켰을시엔 새로고침 버튼을 눌러주세요.
 
-        - 연결 프로세스를 고정하게 되면 save된 프로세스 이름으로 전체를 검색하는 것이 아닌 고정된 프로세스에서만 검색하게 됩니다.(녹스 여러개 대응)
+        - 연결 프로세스를 고정하게 되면 save된 프로세스 이름으로 전체를 검색하는 것이 아닌 고정된 프로세스에서만 검색하게 됩니다.(녹스 여러개 대응)    
 
 이미지 조합을 통한 이벤트 발생 방법
 
