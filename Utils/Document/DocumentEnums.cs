@@ -22,6 +22,8 @@
         EventDataSet,
         TriggerList,
         MouseCoordinates,
+        MouseWheel,
+        WheelData,
         Save,
         Delete,
         Start,

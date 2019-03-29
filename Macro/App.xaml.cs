@@ -45,7 +45,7 @@ namespace Macro
                     process.Kill();
                 }
                 var fileName = Path.GetFileName(exeList[i]);
-                if (File.Exists(fileName))
+                if (File.Exists(fileName) && File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
                 {
                     File.Delete(fileName);
                     File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);

@@ -60,7 +60,11 @@ namespace Utils.Infrastructure
         LButtonDoubleClick,
         RButtonDown,
         RButtonUp,
-        RButtonDoubleClick
+        RButtonDoubleClick,
+
+        MouseWheel = 0x20A,
+
+        Max
     }
     
     [StructLayout(LayoutKind.Sequential)]

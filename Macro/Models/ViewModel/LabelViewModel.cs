@@ -18,6 +18,14 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.MouseCoordinates);
         }
+        public string MouseWheel
+        {
+            get => DocumentHelper.Get(Label.MouseWheel);
+        }
+        public string WheelData
+        {
+            get => DocumentHelper.Get(Label.WheelData);
+        }
         public string TriggerList
         {
             get => DocumentHelper.Get(Label.TriggerList);

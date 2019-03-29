@@ -84,6 +84,8 @@ namespace Macro.View
         {
             if (sender.Equals(btnMouseCoordinate))
             {
+                lblWheelData.Visibility = Visibility.Collapsed;
+                gridWheelData.Visibility = Visibility.Collapsed;
                 ShowMousePoisitionView();
             }
             else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
@@ -116,6 +118,11 @@ namespace Macro.View
                     });
 
                 }
+            }
+            else if(sender.Equals(btnMouseWheel))
+            {
+                lblWheelData.Visibility = Visibility.Visible;
+                gridWheelData.Visibility = Visibility.Visible;
             }
         }
 

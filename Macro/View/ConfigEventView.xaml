@@ -19,6 +19,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -42,10 +43,17 @@
                 <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*"></ColumnDefinition>
-                        <ColumnDefinition Width="5*"></ColumnDefinition>
+                        <ColumnDefinition Width="6.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="3.5*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnMouseCoordinate" DockPanel.Dock="Left" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0" IsEnabled="False"></Button>
+                    <Grid Name="gridMouse" Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5.5*"></ColumnDefinition>
+                            <ColumnDefinition Width="4.5*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button Name="btnMouseCoordinate" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0"></Button>
+                        <Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>
+                    </Grid>
                     <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>
                     <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=CurrentTreeViewItem.DataContext.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}"></Label>
                     <Grid Name="gridRelative" Grid.Column="0" Visibility="Collapsed">
@@ -61,16 +69,25 @@
                         <Controls:NumericUpDown FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Name="numRelativeY" Grid.Column="3" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
                     </Grid>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="2" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Column="1" Grid.Row="2">
+                <Label Grid.Column="0" Grid.Row="2" Content="{Binding Path=LabelViewModel.WheelData, Source={StaticResource Locator}}" Visibility="Collapsed" Name="lblWheelData"></Label>
+                <Grid Grid.Column="1" Grid.Row="2" Visibility="Collapsed" Name="gridWheelData">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Controls:NumericUpDown Name="numWheelData" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
+                </Grid>
+                
+                <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
-                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
-                <Grid Grid.Column="1" Grid.Row="3" Visibility="Collapsed" Name="gridRepeat">
+                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="4" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
+                <Grid Grid.Column="1" Grid.Row="4" Visibility="Collapsed" Name="gridRepeat">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -79,7 +96,6 @@
                     </ComboBox>
                     <Controls:NumericUpDown Name="numRepeatCount" Minimum="1" Grid.Column="1" Value="{Binding Path=CurrentTreeViewItem.DataContext.RepeatInfo.Count, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
-
             </Grid>
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
                 <Grid DockPanel.Dock="Top">

@@ -177,29 +177,43 @@ namespace Macro.View
         {
             if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Mouse)
             {
-                btnMouseCoordinate.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
+
+                btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = true;
+                btnMouseWheel.Visibility = Visibility.Visible;
+                btnMouseWheel.IsEnabled = true;
             }
             else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Keyboard)
             {
                 txtKeyboardCmd.Visibility = Visibility.Visible;
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
+
+                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                btnMouseCoordinate.IsEnabled = false;
+                btnMouseWheel.Visibility = Visibility.Collapsed;
+                btnMouseWheel.IsEnabled = false;
             }
             else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.RelativeToImage)
             {
                 gridRelative.Visibility = Visibility.Visible;
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
+
+                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                btnMouseCoordinate.IsEnabled = false;
+                btnMouseWheel.Visibility = Visibility.Collapsed;
+                btnMouseWheel.IsEnabled = false;
             }
             else
             {
-                btnMouseCoordinate.Visibility = Visibility.Visible;
                 gridRelative.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
+
+                btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = false;
+                btnMouseWheel.Visibility = Visibility.Visible;
+                btnMouseWheel.IsEnabled = false;
             }
         }
     }

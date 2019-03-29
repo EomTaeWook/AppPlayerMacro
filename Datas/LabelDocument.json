@@ -45,6 +45,16 @@
     "Eng": "MouseCoordinate"
   },
   {
+    "Code": "MouseWheel",
+    "Kor": "마우스 휠 버튼",
+    "Eng": "MouseWheel"
+  },
+  {
+    "Code": "WheelData",
+    "Kor": "휠 버튼 데이터",
+    "Eng": "MouseWheelData"
+  },
+  {
     "Code": "Save",
     "Kor": "저장",
     "Eng": "Save"
@@ -142,7 +152,7 @@
   {
     "Code": "RepeatSearch",
     "Kor": "검색 될 때까지",
-    "Eng": "\"Until the search",
+    "Eng": "\"Until the search"
   },
   {
     "Code": "Cancel",
