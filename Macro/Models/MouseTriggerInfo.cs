@@ -11,5 +11,6 @@ namespace Macro.Models
         public Point StartPoint { get; set; } = new Point();
         public List<Point> MiddlePoint { get; set; } = new List<Point>();
         public Point EndPoint { get; set; } = new Point();
+        public short WheelData { get; set; }
     }
 }

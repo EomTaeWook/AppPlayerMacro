@@ -182,8 +182,9 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = true;
+
                 btnMouseWheel.Visibility = Visibility.Visible;
-                btnMouseWheel.IsEnabled = true;
+                btnMouseWheel.IsEnabled = false;
             }
             else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Keyboard)
             {
@@ -194,6 +195,9 @@ namespace Macro.View
                 btnMouseCoordinate.IsEnabled = false;
                 btnMouseWheel.Visibility = Visibility.Collapsed;
                 btnMouseWheel.IsEnabled = false;
+
+                lblWheelData.Visibility = Visibility.Collapsed;
+                gridWheelData.Visibility = Visibility.Collapsed;
             }
             else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.RelativeToImage)
             {
@@ -204,6 +208,9 @@ namespace Macro.View
                 btnMouseCoordinate.IsEnabled = false;
                 btnMouseWheel.Visibility = Visibility.Collapsed;
                 btnMouseWheel.IsEnabled = false;
+
+                lblWheelData.Visibility = Visibility.Collapsed;
+                gridWheelData.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -214,6 +221,9 @@ namespace Macro.View
                 btnMouseCoordinate.IsEnabled = false;
                 btnMouseWheel.Visibility = Visibility.Visible;
                 btnMouseWheel.IsEnabled = false;
+
+                lblWheelData.Visibility = Visibility.Collapsed;
+                gridWheelData.Visibility = Visibility.Collapsed;
             }
         }
     }

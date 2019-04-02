@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Utils.Document;
 using EventType = Macro.Models.EventType;
 
 namespace Macro.View
@@ -86,6 +87,10 @@ namespace Macro.View
             {
                 lblWheelData.Visibility = Visibility.Collapsed;
                 gridWheelData.Visibility = Visibility.Collapsed;
+                if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                {
+                    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                }
                 ShowMousePoisitionView();
             }
             else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
@@ -116,13 +121,13 @@ namespace Macro.View
                         TriggerModel1 = itemContainer[currentIndex],
                         TriggerModel2 = itemContainer[currentIndex + 1]
                     });
-
                 }
             }
             else if(sender.Equals(btnMouseWheel))
             {
                 lblWheelData.Visibility = Visibility.Visible;
                 gridWheelData.Visibility = Visibility.Visible;
+                CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType = MouseEventType.Wheel;
             }
         }
 
@@ -143,6 +148,13 @@ namespace Macro.View
                 else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Mouse)
                 {
                     RadioButton_Click(rbMouse, null);
+                    btnMouseWheel.IsEnabled = true;
+
+                    if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
+                    {
+                        lblWheelData.Visibility = Visibility.Visible;
+                        gridWheelData.Visibility = Visibility.Visible;
+                    }
                 }
                 else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
                 {
@@ -229,6 +241,9 @@ namespace Macro.View
             {
                 item.Hide();
             }
+
+            btnMouseWheel.Visibility = Visibility.Visible;
+            btnMouseWheel.IsEnabled = true;
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs args)

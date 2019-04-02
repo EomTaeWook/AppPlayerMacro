@@ -75,7 +75,7 @@
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Controls:NumericUpDown Name="numWheelData" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
+                    <Controls:NumericUpDown Name="numWheelData" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.MouseTriggerInfo.WheelData, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
                 
                 <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>

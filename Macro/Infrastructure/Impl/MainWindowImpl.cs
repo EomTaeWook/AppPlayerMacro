@@ -315,6 +315,11 @@ namespace Macro
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
                 LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
             }
+            else if(model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
+            {
+                LogHelper.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                
+            }
         }
         private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
         {

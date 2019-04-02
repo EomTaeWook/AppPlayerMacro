@@ -105,7 +105,7 @@ namespace Macro.Models
                 OnPropertyChanged("RepeatInfo");
             }
         }
-
+        
         public string Desc
         {
             get
@@ -119,6 +119,17 @@ namespace Macro.Models
                     else if(MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
                     {
                         return "";
+                    }
+                    else if(MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
+                    {
+                        if(MouseTriggerInfo.WheelData > 0)
+                        {
+                            return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() } Wheel Up : {MouseTriggerInfo.WheelData}";
+                        }
+                        else
+                        {
+                            return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() } Wheel Down : {MouseTriggerInfo.WheelData}";
+                        }
                     }
                     else 
                     {
