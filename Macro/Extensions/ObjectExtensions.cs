@@ -120,6 +120,10 @@ namespace Macro.Extensions
                 });
             });
         }
+        public static int MakeWParam(int low, int high)
+        {
+            return low | high << 16;
+        }
         public static int ToLParam(this Point point)
         {
             return (int)point.X & 0xFFFF | ((int)point.Y << 0x10);

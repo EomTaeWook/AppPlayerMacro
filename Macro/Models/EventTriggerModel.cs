@@ -112,7 +112,7 @@ namespace Macro.Models
             {
                 if (EventType == EventType.Mouse)
                 {
-                    if(MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                    if(MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None && MouseTriggerInfo.MouseInfoEventType != MouseEventType.Wheel)
                     {
                         return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() }";
                     }
@@ -124,11 +124,11 @@ namespace Macro.Models
                     {
                         if(MouseTriggerInfo.WheelData > 0)
                         {
-                            return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() } Wheel Up : {MouseTriggerInfo.WheelData}";
+                            return $"Wheel Up";
                         }
                         else
                         {
-                            return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() } Wheel Down : {MouseTriggerInfo.WheelData}";
+                            return $"Wheel Down";
                         }
                     }
                     else 

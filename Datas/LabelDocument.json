@@ -46,13 +46,13 @@
   },
   {
     "Code": "MouseWheel",
-    "Kor": "마우스 휠 버튼",
+    "Kor": "마우스 휠",
     "Eng": "MouseWheel"
   },
   {
     "Code": "WheelData",
-    "Kor": "휠 버튼 데이터",
-    "Eng": "MouseWheelData"
+    "Kor": "휠 스크롤",
+    "Eng": "MouseWheelScroll"
   },
   {
     "Code": "Save",

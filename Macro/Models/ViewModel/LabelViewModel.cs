@@ -118,6 +118,10 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.RepeatSubItems);
         }
+        public string Cancel
+        {
+            get => DocumentHelper.Get(Label.Cancel);
+        }
         public string X
         {
             get => "X";
