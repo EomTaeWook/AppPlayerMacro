@@ -120,14 +120,11 @@ namespace Macro.Extensions
                 });
             });
         }
-        public static int MakeWParam(int low, int high)
-        {
-            return low | high << 16;
-        }
-        public static int ToLParam(this Point point)
-        {
-            return (int)point.X & 0xFFFF | ((int)point.Y << 0x10);
-        }
+
+        public static int MakeWParam(int low, int high) => (low & 0xFFFF) | (high << 16);
+
+        public static int ToLParam(this Point point) => (int)point.X & 0xFFFF | ((int)point.Y << 0x10);
+
         public static Bitmap Resize(this Bitmap source, int width, int height)
         {
             var bmp = new Bitmap(width, height);
