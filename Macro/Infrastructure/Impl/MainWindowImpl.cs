@@ -318,21 +318,18 @@ namespace Macro
             else if(model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
             {
                 LogHelper.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-                Task.Delay(100).Wait();
-                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+                //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
+                //Task.Delay(100).Wait();
+                //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
                 //NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam((uint)WindowMessage.MKControl, (uint)(model.MouseTriggerInfo.WheelData * -1)), 0);
                 //var hwnd = NativeHelper.FindWindowEx(NativeHelper.FindWindow(null, "Test.txt - 메모장"), IntPtr.Zero, "Edit", null);
                 //var p = new System.Drawing.Point(0, 0);
-
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
             }
         }
         private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
         {
-            var childs = NativeHelper.GetChildHandles(hWnd);
             var hWndActive = NativeHelper.GetForegroundWindow();
-
             Task.Delay(100).Wait();
             NativeHelper.SetForegroundWindow(hWnd);
             var inputs = model.KeyboardCmd.ToUpper().Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
