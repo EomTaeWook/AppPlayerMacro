@@ -52,7 +52,7 @@
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Button Name="btnMouseCoordinate" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0"></Button>
-                        <Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>
+                        <!--<Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
                     </Grid>
                     <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>
                     <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=CurrentTreeViewItem.DataContext.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}"></Label>
@@ -141,14 +141,14 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Desc" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.4*}">
+                        <GridViewColumn Header="Desc" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.32*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Desc}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn  Header="ProcessName" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn  Header="ProcessName" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.18*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding ProcessInfo.ProcessName}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />

@@ -122,6 +122,10 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Cancel);
         }
+        public string AddSameContent
+        {
+            get => DocumentHelper.Get(Label.AddSameContent);
+        }
         public string X
         {
             get => "X";

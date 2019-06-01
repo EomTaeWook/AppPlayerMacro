@@ -51,6 +51,7 @@
         Download,
         SearchPatchList,
         Patching,
+        AddSameContent,
 
         Max
     }

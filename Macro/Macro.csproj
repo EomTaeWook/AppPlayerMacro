@@ -191,6 +191,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />

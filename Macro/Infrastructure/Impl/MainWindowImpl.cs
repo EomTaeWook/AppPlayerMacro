@@ -155,6 +155,7 @@ namespace Macro
         private void Clear()
         {
             btnDelete.Visibility = Visibility.Collapsed;
+            btnAddSameContent.Visibility = Visibility.Collapsed;
             _bitmap = null;
             captureImage.Background = System.Windows.Media.Brushes.White;
             configView.Clear();
@@ -177,7 +178,7 @@ namespace Macro
             }
             return Task.CompletedTask;
         }
-        private Task Save()
+        private Task SaveFile()
         {
             if (File.Exists(_path))
                 File.Delete(_path);
@@ -192,6 +193,59 @@ namespace Macro
                 fs.Close();
             }
             return Task.CompletedTask;
+        }
+        private void Save()
+        {
+            var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
+            model.Image = _bitmap;
+
+            if (model.EventType == Models.EventType.RelativeToImage)
+            {
+                model.MouseTriggerInfo.StartPoint = new System.Windows.Point(configView.RelativePosition.X, configView.RelativePosition.Y);
+            }
+
+            var process = comboProcess.SelectedValue as Process;
+
+            model.ProcessInfo = new ProcessInfo()
+            {
+                ProcessName = process?.ProcessName,
+                Position = new Rect()
+            };
+
+            if (TryModelValidate(model, out Message error))
+            {
+                var rect = new Rect();
+
+                NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
+                model.ProcessInfo.Position = rect;
+                if (model.EventType != Models.EventType.Mouse)
+                {
+                    foreach (var monitor in DisplayHelper.MonitorInfo())
+                    {
+                        if (monitor.Rect.IsContain(rect))
+                        {
+                            if (model.MonitorInfo != null)
+                                model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
+
+                            model.MonitorInfo = monitor;
+                            break;
+                        }
+                    }
+                }
+                configView.InsertCurrentItem();
+
+                _taskQueue.Enqueue(SaveFile).ContinueWith(task =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        Clear();
+                    });
+                });
+            }
+            else
+            {
+                this.MessageShow("Error", DocumentHelper.Get(error));
+            }
         }
         private Task SaveLoad(object state)
         {
@@ -213,6 +267,7 @@ namespace Macro
             }, DispatcherPriority.Send);
             return task.Task;
         }
+        
         private void VersionCheck()
         {
             if (!_config.VersionCheck)

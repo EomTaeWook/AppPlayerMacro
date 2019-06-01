@@ -84,6 +84,21 @@ namespace Macro.View
             foreach (var item in items)
                 this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(item);
         }
+        public void CopyAndInsertCurrentItem()
+        {
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
+                return;
+            Dispatcher.Invoke(() =>
+            {
+                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                if (treeVIewItem != null)
+                {
+                    var item = new EventTriggerModel(treeVIewItem.DataContext<EventTriggerModel>());
+                    this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(item);
+                }
+                Clear();
+            });
+        }
         public void InsertCurrentItem()
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
@@ -183,8 +198,8 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = true;
 
-                btnMouseWheel.Visibility = Visibility.Visible;
-                btnMouseWheel.IsEnabled = false;
+                //btnMouseWheel.Visibility = Visibility.Visible;
+                //btnMouseWheel.IsEnabled = false;
             }
             else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Keyboard)
             {
@@ -193,8 +208,8 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
-                btnMouseWheel.Visibility = Visibility.Collapsed;
-                btnMouseWheel.IsEnabled = false;
+                //btnMouseWheel.Visibility = Visibility.Collapsed;
+                //btnMouseWheel.IsEnabled = false;
 
                 lblWheelData.Visibility = Visibility.Collapsed;
                 gridWheelData.Visibility = Visibility.Collapsed;
@@ -206,8 +221,8 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
-                btnMouseWheel.Visibility = Visibility.Collapsed;
-                btnMouseWheel.IsEnabled = false;
+                //btnMouseWheel.Visibility = Visibility.Collapsed;
+                //btnMouseWheel.IsEnabled = false;
 
                 lblWheelData.Visibility = Visibility.Collapsed;
                 gridWheelData.Visibility = Visibility.Collapsed;
@@ -219,8 +234,8 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = false;
-                btnMouseWheel.Visibility = Visibility.Visible;
-                btnMouseWheel.IsEnabled = false;
+                //btnMouseWheel.Visibility = Visibility.Visible;
+                //btnMouseWheel.IsEnabled = false;
 
                 lblWheelData.Visibility = Visibility.Collapsed;
                 gridWheelData.Visibility = Visibility.Collapsed;

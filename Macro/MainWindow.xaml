@@ -88,6 +88,7 @@
             <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" FontSize="25" Content="{Binding Path=LabelViewModel.Config, Source={StaticResource Locator}}"></Label>
+                    <Button Name="btnAddSameContent" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.AddSameContent, Source={StaticResource Locator}}"></Button>
                     <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Delete, Source={StaticResource Locator}}"></Button>
                     <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
                 </DockPanel>

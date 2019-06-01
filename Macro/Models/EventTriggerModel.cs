@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using Utils.Infrastructure;
+using Macro.Extensions;
+using System.Linq;
 
 namespace Macro.Models
 {
@@ -20,6 +22,25 @@ namespace Macro.Models
 
         [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public EventTriggerModel()
+        {
+            _keyboardCmd = "";
+            _eventType = EventType.Image;
+        }
+
+        public EventTriggerModel(EventTriggerModel model)
+        {
+            Image = model.Image.Clone() as Bitmap;
+            EventType = model.EventType;
+            MouseTriggerInfo = model.MouseTriggerInfo.Clone();
+            MonitorInfo = model.MonitorInfo.Clone();
+            KeyboardCmd = model.KeyboardCmd.Clone() as string;
+            ProcessInfo = model.ProcessInfo.Clone();
+            SubEventTriggers = new ObservableCollection<EventTriggerModel>(model.SubEventTriggers);
+            AfterDelay = model.AfterDelay;
+            RepeatInfo = model.RepeatInfo.Clone();
+        }
 
         [Order(1)]
         public Bitmap Image { get; set; }
@@ -151,25 +172,6 @@ namespace Macro.Models
                 }
             }
         }
-
-        public EventTriggerModel()
-        {
-            _keyboardCmd = "";
-            _eventType = EventType.Image;
-        }
-        
-        public EventTriggerModel(EventTriggerModel obj)
-        {
-            Image = obj.Image;
-            EventType = obj.EventType;
-            MouseTriggerInfo = obj.MouseTriggerInfo;
-            KeyboardCmd = obj.KeyboardCmd;
-            ProcessInfo = obj.ProcessInfo;
-            MonitorInfo = obj.MonitorInfo;
-            AfterDelay = obj.AfterDelay;
-            RepeatInfo = obj.RepeatInfo;
-        }
-
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -36,6 +36,7 @@ namespace Macro
             btnRefresh.Click += Button_Click;
             btnSave.Click += Button_Click;
             btnDelete.Click += Button_Click;
+            btnAddSameContent.Click += Button_Click;
             btnStart.Click += Button_Click;
             btnStop.Click += Button_Click;
             btnSetting.Click += Button_Click;
@@ -57,7 +58,7 @@ namespace Macro
         {
             _taskQueue.Enqueue(() =>
             {
-                return Save();
+                return SaveFile();
             });
         }
 
@@ -108,6 +109,8 @@ namespace Macro
                     comboProcess.SelectedValue = _fixProcess.Value.Value;
 
                 btnDelete.Visibility = Visibility.Visible;
+                btnAddSameContent.Visibility = Visibility.Visible;
+
                 _bitmap = model.Image;
                 captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
             }
@@ -176,56 +179,7 @@ namespace Macro
             }
             else if (btn.Equals(btnSave))
             {
-                var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
-                model.Image = _bitmap;
-
-                if(model.EventType == Models.EventType.RelativeToImage)
-                {
-                    model.MouseTriggerInfo.StartPoint = new System.Windows.Point(configView.RelativePosition.X, configView.RelativePosition.Y);
-                }
-
-                var process = comboProcess.SelectedValue as Process;
-
-                model.ProcessInfo = new ProcessInfo()
-                {
-                    ProcessName = process ? .ProcessName,
-                    Position = new Rect()
-                };
-
-                if (TryModelValidate(model, out Message error))
-                {
-                    var rect = new Rect();
-
-                    NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
-                    model.ProcessInfo.Position = rect;
-                    if(model.EventType != Models.EventType.Mouse)
-                    {
-                        foreach (var monitor in DisplayHelper.MonitorInfo())
-                        {
-                            if (monitor.Rect.IsContain(rect))
-                            {
-                                if(model.MonitorInfo != null)
-                                    model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
-                                
-                                model.MonitorInfo = monitor;
-                                break;
-                            }
-                        }
-                    }
-                    configView.InsertCurrentItem();
-
-                    _taskQueue.Enqueue(Save).ContinueWith(task =>
-                    {
-                        Dispatcher.Invoke(() =>
-                        {
-                            Clear();
-                        });
-                    });
-                }
-                else
-                {
-                    this.MessageShow("Error", DocumentHelper.Get(error));
-                }
+                Save();
             }
             else if(btn.Equals(btnDelete))
             {
@@ -239,6 +193,11 @@ namespace Macro
                     });
                     return task.Task;
                 }, null);
+            }
+            else if(btn.Equals(btnAddSameContent))
+            {
+                configView.CopyAndInsertCurrentItem();
+                Save();
             }
             else if(btn.Equals(btnStart))
             {

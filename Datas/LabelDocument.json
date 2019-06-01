@@ -178,6 +178,11 @@
     "Code": "Patching",
     "Kor": "패치 진행",
     "Eng": "Patch in progress"
+  },
+  {
+    "Code": "AddSameContent",
+    "Kor": "동일한 내용 추가",
+    "Eng": "Add the same content"
   }
 ]
 

@@ -123,12 +123,12 @@ namespace Macro.View
                     });
                 }
             }
-            else if(sender.Equals(btnMouseWheel))
-            {
-                lblWheelData.Visibility = Visibility.Visible;
-                gridWheelData.Visibility = Visibility.Visible;
-                CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType = MouseEventType.Wheel;
-            }
+            //else if(sender.Equals(btnMouseWheel))
+            //{
+            //    lblWheelData.Visibility = Visibility.Visible;
+            //    gridWheelData.Visibility = Visibility.Visible;
+            //    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType = MouseEventType.Wheel;
+            //}
             else if(sender.Equals(btnWheelCancel))
             {
                 lblWheelData.Visibility = Visibility.Collapsed;
@@ -161,7 +161,7 @@ namespace Macro.View
                 else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Mouse)
                 {
                     RadioButton_Click(rbMouse, null);
-                    btnMouseWheel.IsEnabled = true;
+                    //btnMouseWheel.IsEnabled = true;
                     lblWheelData.Visibility = Visibility.Collapsed;
                     gridWheelData.Visibility = Visibility.Collapsed;
 
@@ -257,8 +257,8 @@ namespace Macro.View
                 item.Hide();
             }
 
-            btnMouseWheel.Visibility = Visibility.Visible;
-            btnMouseWheel.IsEnabled = true;
+            //btnMouseWheel.Visibility = Visibility.Visible;
+            //btnMouseWheel.IsEnabled = true;
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs args)
