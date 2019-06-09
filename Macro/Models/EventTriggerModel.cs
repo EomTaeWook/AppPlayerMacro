@@ -1,11 +1,10 @@
-﻿using Macro.Infrastructure.Serialize;
+﻿using Macro.Extensions;
+using Macro.Infrastructure.Serialize;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using Utils.Infrastructure;
-using Macro.Extensions;
-using System.Linq;
 
 namespace Macro.Models
 {
@@ -19,6 +18,8 @@ namespace Macro.Models
         private ObservableCollection<EventTriggerModel> _subEventTriggers;
         private int _afterDelay;
         private RepeatInfoModel _repeatInfo;
+        private string _eventToNext;
+        private int _eventIndex = 0;
 
         [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
@@ -40,6 +41,8 @@ namespace Macro.Models
             SubEventTriggers = new ObservableCollection<EventTriggerModel>(model.SubEventTriggers);
             AfterDelay = model.AfterDelay;
             RepeatInfo = model.RepeatInfo.Clone();
+            EventToNext = model.EventToNext.Clone() as string;
+            _eventIndex = 0;
         }
 
         [Order(1)]
@@ -126,7 +129,27 @@ namespace Macro.Models
                 OnPropertyChanged("RepeatInfo");
             }
         }
-        
+        [Order(10)]
+        public int EventIndex
+        {
+            set
+            {
+                _eventIndex = value;
+                OnPropertyChanged("EventIndex");
+            }
+            get => _eventIndex;
+        }
+
+        [Order(11)]
+        public string EventToNext
+        {
+            set
+            {
+                _eventToNext = value;
+                OnPropertyChanged("EventToNext");
+            }
+            get => _eventToNext;
+        }
         public string Desc
         {
             get

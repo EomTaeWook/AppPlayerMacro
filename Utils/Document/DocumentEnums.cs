@@ -52,6 +52,7 @@
         SearchPatchList,
         Patching,
         AddSameContent,
+        TriggerToNext,
 
         Max
     }

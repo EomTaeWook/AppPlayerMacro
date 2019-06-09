@@ -33,14 +33,14 @@ namespace Macro
 {
     public partial class MainWindow : MetroWindow
     {
-        private Random _random;
-        private TaskQueue _taskQueue;
+        private readonly Random _random;
+        private readonly TaskQueue _taskQueue;
         private string _path;
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
         private IConfig _config;
         private Bitmap _bitmap;
-        private List<CaptureView> _captureViews;
+        private readonly List<CaptureView> _captureViews;
         public MainWindow()
         {
             _random = new Random();
@@ -261,7 +261,7 @@ namespace Macro
                 catch (Exception ex)
                 {
                     File.Delete(_path);
-                    LogHelper.Warning(ex.Message);
+                    LogHelper.Warning(ex);
                     Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
                 }
             }, DispatcherPriority.Send);
@@ -286,7 +286,7 @@ namespace Macro
             }
             catch(Exception ex)
             {
-                LogHelper.Warning(ex.Message);
+                LogHelper.Warning(ex);
             }
             
             if(version != null)
@@ -309,6 +309,13 @@ namespace Macro
                     }
                 }
             }
+        }
+        private bool FindTriggerToNext(EventTriggerModel model, ref string[] depth, int currentDepth, out EventTriggerModel currentEventTriggerModel)
+        {
+
+            currentEventTriggerModel = model;
+
+            return true;
         }
         private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
         {

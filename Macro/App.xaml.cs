@@ -33,7 +33,7 @@ namespace Macro
 #if DEBUG
                 LogHelper.Debug(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #else
-                LogHelper.Warning(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
+                LogHelper.Warning(ex.Exception);
 #endif
             };
             var exeList = e.Args.Where(r => Path.GetExtension(r).Equals(".exe")).ToArray();
@@ -89,7 +89,7 @@ namespace Macro
         private void ExceptionProcess(object sender, Exception ex)
         {
             //Debug.Assert(false, ex.Message);
-            LogHelper.Warning(ex.Message);
+            LogHelper.Warning(ex);
         }
     }
 }

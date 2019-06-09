@@ -19,7 +19,7 @@ namespace Patcher
     /// </summary>
     public partial class App : Application
     {
-        private ConcurrentDictionary<string, Assembly> _assembies;
+        private readonly ConcurrentDictionary<string, Assembly> _assembies;
         public App()
         {
             _assembies = new ConcurrentDictionary<string, Assembly>();
@@ -154,7 +154,7 @@ namespace Patcher
             if (File.Exists(path))
             {
                 var config = JsonHelper.DeserializeObject<dynamic>(File.ReadAllText(path));
-                if (Enum.TryParse(config["Language"].ToString(), true, out Language language))
+                if (Enum.TryParse(config["Language"].ToString(), true, result: out Language _))
                 {
                     ObjectCache.SetValue("language", config["Language"].ToString());
                 }

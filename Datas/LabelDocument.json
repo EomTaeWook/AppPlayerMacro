@@ -183,6 +183,12 @@
     "Code": "AddSameContent",
     "Kor": "동일한 내용 추가",
     "Eng": "Add the same content"
+  },
+  {
+    "Code": "TriggerToNext",
+    "Kor": "트리거 바로 이동",
+    "Eng": "TriggerToNext"
   }
+
 ]
 

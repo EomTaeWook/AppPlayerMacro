@@ -14,6 +14,11 @@ namespace Utils.Extensions
         }
         public static string Get<Enum>(this IDocument document, Language language, string code) where Enum : struct
         {
+            if (document == null)
+            {
+                throw new System.ArgumentNullException(nameof(document));
+            }
+
             Enum @enum = (Enum)System.Enum.Parse(typeof(Enum), code);
             return Singleton<DocumentTemplate<Enum>>.Instance[@enum, language];
         }

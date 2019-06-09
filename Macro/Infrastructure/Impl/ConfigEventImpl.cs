@@ -31,11 +31,12 @@ namespace Macro.View
             private set => this.DataContext<ConfigEventViewModel>().RelativePosition = value;
         }
 
-        private List<MousePositionView> _mousePointViews;
-        private TreeGridViewItem _dummyTreeGridViewItem;
-        private PointModel _dummyRelativePosition;
+        private readonly List<MousePositionView> _mousePointViews;
+        private readonly TreeGridViewItem _dummyTreeGridViewItem;
+        private readonly PointModel _dummyRelativePosition;
         private bool _isDrag;
-        private ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems;
+        private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems;
+
         public ConfigEventView()
         {
             _isDrag = false;

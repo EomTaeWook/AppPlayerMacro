@@ -49,7 +49,7 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                LogHelper.Warning(ex.Message);
+                LogHelper.Warning(ex);
                 return null;
             }
         }
@@ -99,7 +99,7 @@ namespace Utils
             }
             catch(Exception ex)
             {
-                LogHelper.Warning(ex.Message);
+                LogHelper.Warning(ex);
                 bmp = null;
                 return false;
             }

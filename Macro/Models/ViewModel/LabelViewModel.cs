@@ -1,5 +1,4 @@
-﻿using Macro.Extensions;
-using Macro.Infrastructure;
+﻿using Macro.Infrastructure;
 using Utils.Document;
 
 namespace Macro.Models.ViewModel
@@ -125,6 +124,10 @@ namespace Macro.Models.ViewModel
         public string AddSameContent
         {
             get => DocumentHelper.Get(Label.AddSameContent);
+        }
+        public string TriggerToNext
+        {
+            get => DocumentHelper.Get(Label.TriggerToNext);
         }
         public string X
         {

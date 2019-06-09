@@ -137,7 +137,7 @@ namespace Macro.Extensions
         public static T TryFindFromPoint<T>(this UIElement element, Point point) where T : class
         {
             if (!(element.InputHitTest(point) is DependencyObject @object))
-                return default(T);
+                return default;
             else if (@object is T)
                 return @object as T;
             else

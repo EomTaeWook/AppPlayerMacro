@@ -13,9 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
-using Utils.Document;
-using Utils.Extensions;
-using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
 {

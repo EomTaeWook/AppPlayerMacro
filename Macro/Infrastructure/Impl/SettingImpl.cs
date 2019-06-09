@@ -15,7 +15,7 @@ namespace Macro.View
     {
         public IConfig Config { get; private set; }
 
-        private TaskQueue _taskQueue;
+        private readonly TaskQueue _taskQueue;
         public SettingView()
         {
             _taskQueue = new TaskQueue();          

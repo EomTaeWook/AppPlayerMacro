@@ -20,6 +20,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -87,8 +88,16 @@
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
-                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="4" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
-                <Grid Grid.Column="1" Grid.Row="4" Visibility="Collapsed" Name="gridRepeat">
+                <Label Grid.Column="0" Grid.Row="4" Content="{Binding Path=LabelViewModel.TriggerToNext, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+                
+                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
+                <Grid Grid.Column="1" Grid.Row="5" Visibility="Collapsed" Name="gridRepeat">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>

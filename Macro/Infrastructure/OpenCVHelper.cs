@@ -19,7 +19,7 @@ namespace Macro.Infrastructure
             }
 
             var match = sourceMat.MatchTemplate(targetMat, TemplateMatchModes.CCoeffNormed);
-            Cv2.MinMaxLoc(match, out double min, out double max, out Point minLoc, out Point maxLoc);
+            Cv2.MinMaxLoc(match, out _, out double max, out _, out Point maxLoc);
 
             location = new System.Windows.Point()
             {

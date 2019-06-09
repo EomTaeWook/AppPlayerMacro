@@ -21,8 +21,8 @@ namespace Patcher
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        private List<Tuple<string, string>> _patchList;
-        private CancellationTokenSource _cts;
+        private readonly List<Tuple<string, string>> _patchList;
+        private readonly CancellationTokenSource _cts;
         public MainWindow()
         {
             _patchList = new List<Tuple<string, string>>();
@@ -138,7 +138,7 @@ namespace Patcher
             }
             catch(Exception ex)
             {
-                LogHelper.Warning(ex.Message);
+                LogHelper.Warning(ex);
             }
         }
         private Task DownloadFiles(CancellationToken token)
@@ -194,7 +194,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Warning(ex.Message);
+                    LogHelper.Warning(ex);
                     i--;
                 }
             }
@@ -222,7 +222,7 @@ namespace Patcher
                 }
                 catch(Exception ex)
                 {
-                    LogHelper.Warning(ex.Message);
+                    LogHelper.Warning(ex);
                 }
             }
             return Task.CompletedTask;
@@ -261,7 +261,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Warning(ex.Message);
+                    LogHelper.Warning(ex);
                 }
             }
             return Task.CompletedTask;
@@ -291,7 +291,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Warning(ex.Message);
+                    LogHelper.Warning(ex);
                 }
             }
             return Task.CompletedTask;
