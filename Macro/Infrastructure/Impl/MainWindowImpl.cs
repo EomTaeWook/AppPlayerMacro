@@ -608,12 +608,14 @@ namespace Macro
                                 {
                                     KeyboardTriggerProcess(processes.ElementAt(i).Value.MainWindowHandle, model);
                                 }
-                                if(model.EventToNext >=0 && model.TriggerIndex != model.EventToNext)
+
+                                if (!await TokenCheckDelayAsync(model.AfterDelay, token))
+                                    break;
+
+                                if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
                                 {
                                     await OnNextEventTriggerAsync(model, token);
                                 }
-                                if (!await TokenCheckDelayAsync(model.AfterDelay, token))
-                                    break;
                             }
                         }
                     }
@@ -624,13 +626,16 @@ namespace Macro
         }
         private async Task OnNextEventTriggerAsync(EventTriggerModel currentModel, CancellationToken token)
         {
-            var nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(currentModel.EventToNext);
-            if(nextModel != null)
-            {
-                await Task.Run(() => {
-                    _ = TriggerProcess(nextModel, token);
-                });
-            }
+            await Task.Run(async () =>
+             {
+                 if (token.IsCancellationRequested)
+                     return;
+                 var nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(currentModel.EventToNext);
+                 if (nextModel != null)
+                 {
+                     await TriggerProcess(nextModel, token);
+                 }
+             });
         }
         private async Task<bool> TokenCheckDelayAsync(int millisecondsDelay, CancellationToken token)
         {

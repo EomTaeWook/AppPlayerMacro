@@ -23,10 +23,15 @@ namespace Macro.Infrastructure.Manager
         public bool CheckAndMakeCacheFile(List<EventTriggerModel> saves)
         {
             var isNewCreated = false;
-            if (File.Exists(ConstHelper.DefaultCacheFile))
+            var isExists = File.Exists(ConstHelper.DefaultCacheFile);
+            if (isExists && saves.Count > 0)
             {
                 var bytes = File.ReadAllBytes(ConstHelper.DefaultCacheFile);
                 _cacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
+            }
+            else if(isExists && saves.Count == 0)
+            {
+                _cacheData = new CacheModel(1);
             }
             else
             {
