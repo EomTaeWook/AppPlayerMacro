@@ -70,7 +70,7 @@
                         <Controls:NumericUpDown FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Name="numRelativeY" Grid.Column="3" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
                     </Grid>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="2" Content="{Binding Path=LabelViewModel.WheelData, Source={StaticResource Locator}}" Visibility="Collapsed" Name="lblWheelData"></Label>
+                <!--<Label Grid.Column="0" Grid.Row="2" Content="{Binding Path=LabelViewModel.WheelData, Source={StaticResource Locator}}" Visibility="Collapsed" Name="lblWheelData"></Label>
                 <Grid Grid.Column="1" Grid.Row="2" Visibility="Collapsed" Name="gridWheelData">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
@@ -78,7 +78,7 @@
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numWheelData" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.MouseTriggerInfo.WheelData, Mode=TwoWay}"></Controls:NumericUpDown>
                     <Button Name="btnWheelCancel" Grid.Column="1" Content="{Binding Path=LabelViewModel.Cancel, Source={StaticResource Locator}}"></Button>
-                </Grid>
+                </Grid>-->
                 
                 <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="3">
@@ -88,12 +88,14 @@
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
+                
                 <Label Grid.Column="0" Grid.Row="4" Content="{Binding Path=LabelViewModel.TriggerToNext, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
+                    <Controls:NumericUpDown Name="numEventToNext" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.EventToNext, Mode=TwoWay}" HideUpDownButtons="True" Minimum="0" NumericInputMode="Numbers" ></Controls:NumericUpDown>
                 </Grid>
                 
                 <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
@@ -131,7 +133,6 @@
                     <UI:TreeGridView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />
                     </UI:TreeGridView.ItemTemplate>
-
                     <UI:TreeGridView.Columns>
                         <GridViewColumn Header="Image" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}}, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
                             <GridViewColumn.CellTemplate>
@@ -140,6 +141,13 @@
                                         <UI:TreeGridViewExpander/>
                                         <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Image, Converter={StaticResource ResourceKey=ImageConverter}}" Style="{StaticResource Sumnail}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                                     </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Index" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:TreeGridView}},Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.08*}">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TriggerIndex}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

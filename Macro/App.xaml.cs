@@ -84,6 +84,7 @@ namespace Macro
             container.RegisterInstance<IConfig>(config);
             container.RegisterInstance(new DocumentHelper());
 
+            container.RegisterSingleton<CacheDataManager>();
             container.RegisterSingleton<ProcessManager>();
         }
         private void ExceptionProcess(object sender, Exception ex)

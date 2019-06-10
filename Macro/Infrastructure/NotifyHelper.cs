@@ -9,7 +9,11 @@ namespace Macro.Infrastructure
         public static event Action<CaptureEventArgs> ScreenCaptureDataBind;
         public static event Action<EventTriggerOrderChangedEventArgs> TreeItemOrderChanged;
         public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
+        public static event Action<EventTriggerEventArgs> EventTriggerInserted;
+        public static event Action<EventTriggerEventArgs> EventTriggerRemoved;
+
         public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
+        
 
         public static void InvokeNotify(EventType eventType, INotifyEventArgs args)
         {
@@ -32,6 +36,12 @@ namespace Macro.Infrastructure
                     break;
                 case EventType.EventTriggerOrderChanged:
                     EventTriggerOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
+                    break;
+                case EventType.EventTriggerInserted:
+                    EventTriggerInserted?.Invoke(args as EventTriggerEventArgs);
+                    break;
+                case EventType.EventTriggerRemoved:
+                    EventTriggerRemoved?.Invoke(args as EventTriggerEventArgs);
                     break;
             }
         }

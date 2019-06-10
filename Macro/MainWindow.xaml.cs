@@ -148,7 +148,7 @@ namespace Macro
                 _config = e.Config;
                 (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
                 Refresh();
-                SaveLoad(null);
+                SaveFileLoad(null);
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
                 return Task.CompletedTask;
             });
@@ -193,7 +193,7 @@ namespace Macro
             }
             else if(btn.Equals(btnAddSameContent))
             {
-                configView.CopyAndInsertCurrentItem();
+                configView.CopyCurrentItem();
                 Save();
             }
             else if(btn.Equals(btnStart))

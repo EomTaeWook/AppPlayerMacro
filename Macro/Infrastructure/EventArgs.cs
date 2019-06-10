@@ -13,6 +13,8 @@ namespace Macro.Infrastructure
         TreeItemOrderChanged,
         SelctTreeViewItemChanged,
         EventTriggerOrderChanged,
+        EventTriggerInserted,
+        EventTriggerRemoved,
 
         Max
     }
@@ -43,4 +45,10 @@ namespace Macro.Infrastructure
     {
         public TreeViewItem TreeViewItem { get; set; }
     }
+    public class EventTriggerEventArgs : INotifyEventArgs
+    {
+        public ulong Index { get; set; }
+        public EventTriggerModel TriggerModel { get; set; }
+    }
+
 }

@@ -85,8 +85,8 @@ namespace Macro.View
         {
             if (sender.Equals(btnMouseCoordinate))
             {
-                lblWheelData.Visibility = Visibility.Collapsed;
-                gridWheelData.Visibility = Visibility.Collapsed;
+                //lblWheelData.Visibility = Visibility.Collapsed;
+                //gridWheelData.Visibility = Visibility.Collapsed;
                 if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
                 {
                     CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
@@ -129,19 +129,19 @@ namespace Macro.View
             //    gridWheelData.Visibility = Visibility.Visible;
             //    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType = MouseEventType.Wheel;
             //}
-            else if(sender.Equals(btnWheelCancel))
-            {
-                lblWheelData.Visibility = Visibility.Collapsed;
-                gridWheelData.Visibility = Visibility.Collapsed;
-                CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo()
-                {
-                    WheelData = 0,
-                    MouseInfoEventType = MouseEventType.LeftClick,
-                    EndPoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.EndPoint,
-                    MiddlePoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MiddlePoint,
-                    StartPoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.StartPoint
-                };
-            }
+            //else if(sender.Equals(btnWheelCancel))
+            //{
+            //    lblWheelData.Visibility = Visibility.Collapsed;
+            //    gridWheelData.Visibility = Visibility.Collapsed;
+            //    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo()
+            //    {
+            //        WheelData = 0,
+            //        MouseInfoEventType = MouseEventType.LeftClick,
+            //        EndPoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.EndPoint,
+            //        MiddlePoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MiddlePoint,
+            //        StartPoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.StartPoint
+            //    };
+            //}
         }
 
         private void TreeSaves_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -162,14 +162,14 @@ namespace Macro.View
                 {
                     RadioButton_Click(rbMouse, null);
                     //btnMouseWheel.IsEnabled = true;
-                    lblWheelData.Visibility = Visibility.Collapsed;
-                    gridWheelData.Visibility = Visibility.Collapsed;
+                    //lblWheelData.Visibility = Visibility.Collapsed;
+                    //gridWheelData.Visibility = Visibility.Collapsed;
 
-                    if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
-                    {
-                        lblWheelData.Visibility = Visibility.Visible;
-                        gridWheelData.Visibility = Visibility.Visible;
-                    }
+                    //if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
+                    //{
+                    //    lblWheelData.Visibility = Visibility.Visible;
+                    //    gridWheelData.Visibility = Visibility.Visible;
+                    //}
                 }
                 else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
                 {

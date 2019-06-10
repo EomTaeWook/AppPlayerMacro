@@ -186,9 +186,8 @@
   },
   {
     "Code": "TriggerToNext",
-    "Kor": "트리거 바로 이동",
-    "Eng": "TriggerToNext"
+    "Kor": "바로 이동",
+    "Eng": "ToNext"
   }
-
 ]
 

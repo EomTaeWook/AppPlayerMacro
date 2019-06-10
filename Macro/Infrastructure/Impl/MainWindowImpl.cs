@@ -41,6 +41,7 @@ namespace Macro
         private IConfig _config;
         private Bitmap _bitmap;
         private readonly List<CaptureView> _captureViews;
+        
         public MainWindow()
         {
             _random = new Random();
@@ -69,9 +70,17 @@ namespace Macro
 
             Refresh();
             ProcessManager.AddJob(OnProcessCallback);
-            _taskQueue.Enqueue(SaveLoad, _path);
+            _taskQueue.Enqueue(SaveFileLoad, _path);
+            _taskQueue.Enqueue(() => 
+            {
+                if(ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves))
+                {
+                    _taskQueue.Enqueue(SaveFile);
+                }
+                return Task.CompletedTask;
+            });
         }
-
+        
         private void Refresh()
         {
             _path = _config.SavePath;
@@ -199,9 +208,9 @@ namespace Macro
             var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
             model.Image = _bitmap;
 
-            if (model.EventType == Models.EventType.RelativeToImage)
+            if (model.EventType == EventType.RelativeToImage)
             {
-                model.MouseTriggerInfo.StartPoint = new System.Windows.Point(configView.RelativePosition.X, configView.RelativePosition.Y);
+                model.MouseTriggerInfo.StartPoint = new Point(configView.RelativePosition.X, configView.RelativePosition.Y);
             }
 
             var process = comboProcess.SelectedValue as Process;
@@ -218,7 +227,7 @@ namespace Macro
 
                 NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
                 model.ProcessInfo.Position = rect;
-                if (model.EventType != Models.EventType.Mouse)
+                if (model.EventType != EventType.Mouse)
                 {
                     foreach (var monitor in DisplayHelper.MonitorInfo())
                     {
@@ -232,6 +241,8 @@ namespace Macro
                         }
                     }
                 }
+                ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
+
                 configView.InsertCurrentItem();
 
                 _taskQueue.Enqueue(SaveFile).ContinueWith(task =>
@@ -247,7 +258,7 @@ namespace Macro
                 this.MessageShow("Error", DocumentHelper.Get(error));
             }
         }
-        private Task SaveLoad(object state)
+        private Task SaveFileLoad(object state)
         {
             var task = new TaskCompletionSource<Task>();
             Dispatcher.Invoke(() => 
@@ -310,13 +321,7 @@ namespace Macro
                 }
             }
         }
-        private bool FindTriggerToNext(EventTriggerModel model, ref string[] depth, int currentDepth, out EventTriggerModel currentEventTriggerModel)
-        {
 
-            currentEventTriggerModel = model;
-
-            return true;
-        }
         private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
         {
             var position = new Point()
@@ -603,6 +608,10 @@ namespace Macro
                                 {
                                     KeyboardTriggerProcess(processes.ElementAt(i).Value.MainWindowHandle, model);
                                 }
+                                if(model.EventToNext >=0 && model.TriggerIndex != model.EventToNext)
+                                {
+                                    await OnNextEventTriggerAsync(model, token);
+                                }
                                 if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                     break;
                             }
@@ -612,6 +621,16 @@ namespace Macro
             }
             await TokenCheckDelayAsync(_config.ItemDelay, token);
             return isExcute;
+        }
+        private async Task OnNextEventTriggerAsync(EventTriggerModel currentModel, CancellationToken token)
+        {
+            var nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(currentModel.EventToNext);
+            if(nextModel != null)
+            {
+                await Task.Run(() => {
+                    _ = TriggerProcess(nextModel, token);
+                });
+            }
         }
         private async Task<bool> TokenCheckDelayAsync(int millisecondsDelay, CancellationToken token)
         {
@@ -640,7 +659,7 @@ namespace Macro
             });
             if(saves != null)
             {
-                foreach(var save in saves)
+                foreach (var save in saves)
                 {
                     await TriggerProcess(save, token);
                     if (token.IsCancellationRequested)

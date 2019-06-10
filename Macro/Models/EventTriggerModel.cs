@@ -11,23 +11,21 @@ namespace Macro.Models
     [Serializable]
     public class EventTriggerModel : INotifyPropertyChanged
     {
-        private EventType _eventType;
+        private EventType _eventType = EventType.Image;
         private MouseTriggerInfo _mouseTriggerInfo;
-        private string _keyboardCmd;
+        private string _keyboardCmd = "";
         private ProcessInfo _processInfo;
         private ObservableCollection<EventTriggerModel> _subEventTriggers;
         private int _afterDelay;
         private RepeatInfoModel _repeatInfo;
-        private string _eventToNext;
-        private int _eventIndex = 0;
+        private ulong _eventToNext = 0;
+        private ulong _triggerIndex = 0;
 
         [field:NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         public EventTriggerModel()
         {
-            _keyboardCmd = "";
-            _eventType = EventType.Image;
         }
 
         public EventTriggerModel(EventTriggerModel model)
@@ -38,11 +36,15 @@ namespace Macro.Models
             MonitorInfo = model.MonitorInfo.Clone();
             KeyboardCmd = model.KeyboardCmd.Clone() as string;
             ProcessInfo = model.ProcessInfo.Clone();
-            SubEventTriggers = new ObservableCollection<EventTriggerModel>(model.SubEventTriggers);
+            _subEventTriggers = new ObservableCollection<EventTriggerModel>();
+            foreach(var item in model.SubEventTriggers)
+            {
+                _subEventTriggers.Add(new EventTriggerModel(item));
+            }
             AfterDelay = model.AfterDelay;
             RepeatInfo = model.RepeatInfo.Clone();
-            EventToNext = model.EventToNext.Clone() as string;
-            _eventIndex = 0;
+            EventToNext = model.EventToNext;
+            _triggerIndex = 0;
         }
 
         [Order(1)]
@@ -130,18 +132,18 @@ namespace Macro.Models
             }
         }
         [Order(10)]
-        public int EventIndex
+        public ulong TriggerIndex
         {
             set
             {
-                _eventIndex = value;
-                OnPropertyChanged("EventIndex");
+                _triggerIndex = value;
+                OnPropertyChanged("TriggerIndex");
             }
-            get => _eventIndex;
+            get => _triggerIndex;
         }
 
         [Order(11)]
-        public string EventToNext
+        public ulong EventToNext
         {
             set
             {

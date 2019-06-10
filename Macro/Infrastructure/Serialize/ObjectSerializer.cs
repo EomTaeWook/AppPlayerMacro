@@ -73,10 +73,10 @@ namespace Macro.Infrastructure.Serialize
                         }
                         prop.SetValue(@object, val);
                     }
-                    if(isComplete)
+                    if (isComplete)
                     {
                         var endTag = bf.Deserialize(ms);
-                        if(!endTag.Equals("\uFF1E"))
+                        if (!endTag.Equals("\uFF1E"))
                             throw new FormatException(DocumentHelper.Get(Utils.Document.Message.FailedFileBroken));
                     }
                     list.Add(@object);

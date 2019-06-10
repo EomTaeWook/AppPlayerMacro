@@ -85,7 +85,7 @@ namespace Macro.View
             foreach (var item in items)
                 this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(item);
         }
-        public void CopyAndInsertCurrentItem()
+        public void CopyCurrentItem()
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
                 return;
@@ -94,10 +94,11 @@ namespace Macro.View
                 var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 if (treeVIewItem != null)
                 {
-                    var item = new EventTriggerModel(treeVIewItem.DataContext<EventTriggerModel>());
-                    this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(item);
+                    CurrentTreeViewItem = new TreeGridViewItem()
+                    {
+                        DataContext = new EventTriggerModel(treeVIewItem.DataContext<EventTriggerModel>())
+                    };
                 }
-                Clear();
             });
         }
         public void InsertCurrentItem()
@@ -111,7 +112,13 @@ namespace Macro.View
 
                 if (treeVIewItem == null)
                 {
-                    this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                    var model = CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                    this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(model);
+                    NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerInserted, new EventTriggerEventArgs()
+                    {
+                        Index = model.TriggerIndex,
+                        TriggerModel = model
+                    });
                 }
                 Clear();
             });
@@ -122,6 +129,8 @@ namespace Macro.View
                 return;
             Dispatcher.Invoke(() =>
             {
+                var model = CurrentTreeViewItem.DataContext<EventTriggerModel>();
+
                 if (CurrentTreeViewItem.ParentItem == null)
                 {
                     this.DataContext<ConfigEventViewModel>().TriggerSaves.Remove(CurrentTreeViewItem.DataContext<EventTriggerModel>());
@@ -130,6 +139,11 @@ namespace Macro.View
                 {
                     CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers.Remove(CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 }
+                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerRemoved, new EventTriggerEventArgs()
+                {
+                    Index = model.TriggerIndex,
+                    TriggerModel = model
+                });
             });
         }
         public void Clear()
@@ -212,8 +226,8 @@ namespace Macro.View
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
-                lblWheelData.Visibility = Visibility.Collapsed;
-                gridWheelData.Visibility = Visibility.Collapsed;
+                //lblWheelData.Visibility = Visibility.Collapsed;
+                //gridWheelData.Visibility = Visibility.Collapsed;
             }
             else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.RelativeToImage)
             {
@@ -225,8 +239,8 @@ namespace Macro.View
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
-                lblWheelData.Visibility = Visibility.Collapsed;
-                gridWheelData.Visibility = Visibility.Collapsed;
+                //lblWheelData.Visibility = Visibility.Collapsed;
+                //gridWheelData.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -238,8 +252,8 @@ namespace Macro.View
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
 
-                lblWheelData.Visibility = Visibility.Collapsed;
-                gridWheelData.Visibility = Visibility.Collapsed;
+                //lblWheelData.Visibility = Visibility.Collapsed;
+                //gridWheelData.Visibility = Visibility.Collapsed;
             }
         }
     }
