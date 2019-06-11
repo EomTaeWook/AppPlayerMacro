@@ -7,12 +7,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
+using Utils.Infrastructure;
 
 namespace Macro
 {
@@ -207,31 +209,34 @@ namespace Macro
                 }
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
-                var task = ProcessManager.Start();
-                if(task.IsFaulted)
-                {
-                    ProcessManager.Stop();
-                    ProcessManager.Start();
-                }
+
+                var job = TaskBuilder.Build(()=> { }, out CancellationToken token);
+
+                //var task = ProcessManager.Start();
+                //if(task.IsFaulted)
+                //{
+                //    ProcessManager.Stop();
+                //    ProcessManager.Start();
+                //}
             }
             else if(btn.Equals(btnStop))
             {
-                this.ProgressbarShow(ProcessManager.Stop).ContinueWith(task =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        var buttons = this.FindChildren<Button>();
-                        foreach (var button in buttons)
-                        {
-                            if (button.Equals(btnStart) || button.Equals(btnStop))
-                                continue;
-                            button.IsEnabled = true;
-                        }
-                        btnStart.Visibility = Visibility.Visible;
-                        btnStop.Visibility = Visibility.Collapsed;
-                        configView.Clear();
-                    });
-                });
+                //this.ProgressbarShow(ProcessManager.Stop).ContinueWith(task =>
+                //{
+                //    Dispatcher.Invoke(() =>
+                //    {
+                //        var buttons = this.FindChildren<Button>();
+                //        foreach (var button in buttons)
+                //        {
+                //            if (button.Equals(btnStart) || button.Equals(btnStop))
+                //                continue;
+                //            button.IsEnabled = true;
+                //        }
+                //        btnStart.Visibility = Visibility.Visible;
+                //        btnStop.Visibility = Visibility.Collapsed;
+                //        configView.Clear();
+                //    });
+                //});
             }
             else if(btn.Equals(btnSetting))
             {
