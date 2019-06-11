@@ -33,9 +33,9 @@ namespace Utils
         {
             try
             {
-                var factor = NativeHelper.GetSystemDpi();
-                var factorX = factor.X / ConstHelper.DefaultDPI;
-                var factorY = factor.Y / ConstHelper.DefaultDPI;
+                //var factor = NativeHelper.GetSystemDPI();
+                var factorX = monitor.Dpi.X / ConstHelper.DefaultDPI;
+                var factorY = monitor.Dpi.Y / ConstHelper.DefaultDPI;
 
                 Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY));
                 using (var g = Graphics.FromImage(bmp))
@@ -64,7 +64,7 @@ namespace Utils
                     bmp = null;
                     return false;
                 }
-                var factor = NativeHelper.GetSystemDpi();
+                var factor = NativeHelper.GetSystemDPI();
                 Rect rect = new Rect();
                 NativeHelper.GetWindowRect(hWnd, ref rect);
                 if (rect.Width == 0 || rect.Height == 0)

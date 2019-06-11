@@ -18,8 +18,10 @@ namespace Macro.View
     {
         private bool _isDrag;
         private Point _originPoint;
-        private MonitorInfo _monitorInfo;
-        private Border _dummyBorder, _dragBorder;
+        private readonly MonitorInfo _monitorInfo;
+        private readonly Border _dummyBorder;
+        private Border _dragBorder;
+        private Point _factor;
 
         public CaptureView(MonitorInfo monitorInfo)
         {
@@ -33,6 +35,13 @@ namespace Macro.View
                 Opacity = 1,
                 CornerRadius = new CornerRadius(1)
             };
+            var systemDPI = NativeHelper.GetSystemDPI();
+            _factor = new Point()
+            {
+                X = _monitorInfo.Dpi.X * 1.0F / systemDPI.X,
+                Y = _monitorInfo.Dpi.Y * 1.0F / systemDPI.Y
+            };
+
             InitializeComponent();
             Loaded += CaptureView_Loaded;
         }
@@ -63,7 +72,6 @@ namespace Macro.View
             Height = _monitorInfo.Rect.Height;
 
             WindowState = WindowState.Maximized;
-            
         }
         private void Clear()
         {
@@ -134,7 +142,7 @@ namespace Macro.View
 
         private void CaptureZone_MouseLeave(object sender, MouseEventArgs e)
         {
-            if(_isDrag && IsVisible)
+            if (_isDrag && IsVisible)
             {
                 WindowState = WindowState.Minimized;
                 NotifyHelper.InvokeNotify(EventType.ScreenCapture, new CaptureEventArgs()
@@ -143,9 +151,9 @@ namespace Macro.View
                     CaptureImage = DisplayHelper.Capture(_monitorInfo, new Rect()
                     {
                         Left = (int)Canvas.GetLeft(_dragBorder),
-                        Bottom = (int)_dragBorder.Height + (int)Canvas.GetTop(_dragBorder),
-                        Top = (int)Canvas.GetTop(_dragBorder),
-                        Right = (int)_dragBorder.Width + (int)Canvas.GetLeft(_dragBorder),
+                        Right = (int)(_dragBorder.Width + Canvas.GetLeft(_dragBorder)),
+                        Bottom = (int)(_dragBorder.Height + Canvas.GetTop(_dragBorder)),
+                        Top = (int)Canvas.GetTop(_dragBorder)
                     })
                 });
                 e.Handled = true;

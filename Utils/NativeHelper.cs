@@ -76,7 +76,7 @@ namespace Utils
         private static extern IntPtr GetDC(IntPtr hWnd);
         [DllImport("user32.dll")]
         private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
-        public static Point GetSystemDpi()
+        public static Point GetSystemDPI()
         {
             Point result = new Point();
             IntPtr hDC = GetDC(IntPtr.Zero);

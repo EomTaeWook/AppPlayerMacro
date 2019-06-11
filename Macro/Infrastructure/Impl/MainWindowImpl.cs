@@ -448,7 +448,7 @@ namespace Macro
         {
             var currentPosition = new Rect();
             NativeHelper.GetWindowRect(hWnd, ref currentPosition);
-            var factor = NativeHelper.GetSystemDpi();
+            var factor = NativeHelper.GetSystemDPI();
             var factorX = 1.0F;
             var factorY = 1.0F;
             var positionFactorX = 1.0F;
