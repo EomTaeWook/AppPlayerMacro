@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         WindowStyle="None" ResizeMode="NoResize" Opacity="0.5" WindowStartupLocation="Manual"
             AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0">
-    <Grid >
+    <Grid>
         <Path Stroke="Black" StrokeThickness="1" x:Name="pathMousePoint">
         </Path>
     </Grid>

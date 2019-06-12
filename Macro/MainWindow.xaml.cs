@@ -1,6 +1,5 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
-using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
 using System.Collections.Generic;
@@ -116,16 +115,16 @@ namespace Macro
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
-            _taskQueue.Enqueue(() => 
+            _taskQueue.Enqueue(() =>
             {
                 return Delete();
-            }).Finally(state => 
+            }).ContinueWith((task) =>
             {
-                Dispatcher.Invoke(() => 
+                Dispatcher.Invoke(() =>
                 {
                     Clear();
                 });
-            }, this);
+            });
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
@@ -150,7 +149,7 @@ namespace Macro
                 _config = e.Config;
                 (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
                 Refresh();
-                SaveFileLoad(null);
+                SaveFileLoad(_config.SavePath);
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
                 return Task.CompletedTask;
             });
@@ -209,34 +208,39 @@ namespace Macro
                 }
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
-
-                var job = TaskBuilder.Build(()=> { }, out CancellationToken token);
-
-                //var task = ProcessManager.Start();
-                //if(task.IsFaulted)
-                //{
-                //    ProcessManager.Stop();
-                //    ProcessManager.Start();
-                //}
+                if(tokenSource == null)
+                {
+                    TaskBuilder.Build(ProcessStartAsync, out CancellationTokenSource cancellationTokenSource);
+                    tokenSource = cancellationTokenSource;
+                }
             }
             else if(btn.Equals(btnStop))
             {
-                //this.ProgressbarShow(ProcessManager.Stop).ContinueWith(task =>
-                //{
-                //    Dispatcher.Invoke(() =>
-                //    {
-                //        var buttons = this.FindChildren<Button>();
-                //        foreach (var button in buttons)
-                //        {
-                //            if (button.Equals(btnStart) || button.Equals(btnStop))
-                //                continue;
-                //            button.IsEnabled = true;
-                //        }
-                //        btnStart.Visibility = Visibility.Visible;
-                //        btnStop.Visibility = Visibility.Collapsed;
-                //        configView.Clear();
-                //    });
-                //});
+                this.ProgressbarShow(()=> 
+                {
+                    if(tokenSource !=null)
+                    {
+                        tokenSource.Cancel();
+                        tokenSource = null;
+                    }
+                    _taskQueue.Clear();
+                    return Task.CompletedTask;
+                }).ContinueWith(task =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var buttons = this.FindChildren<Button>();
+                        foreach (var button in buttons)
+                        {
+                            if (button.Equals(btnStart) || button.Equals(btnStop))
+                                continue;
+                            button.IsEnabled = true;
+                        }
+                        btnStart.Visibility = Visibility.Visible;
+                        btnStop.Visibility = Visibility.Collapsed;
+                        configView.Clear();
+                    });
+                });
             }
             else if(btn.Equals(btnSetting))
             {

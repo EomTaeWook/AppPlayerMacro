@@ -35,14 +35,14 @@ namespace Macro
     {
         private readonly Random _random;
         private readonly TaskQueue _taskQueue;
-        private readonly Task _currentJobTask;
         private string _path;
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
         private IConfig _config;
         private Bitmap _bitmap;
         private readonly List<CaptureView> _captureViews;
-        
+        private CancellationTokenSource tokenSource = null;
+
         public MainWindow()
         {
             _random = new Random();
@@ -71,15 +71,7 @@ namespace Macro
 
             Refresh();
             
-            _taskQueue.Enqueue(SaveFileLoad, _path);
-            _taskQueue.Enqueue(() => 
-            {
-                if(ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves))
-                {
-                    _taskQueue.Enqueue(SaveFile);
-                }
-                return Task.CompletedTask;
-            });
+            _taskQueue.Enqueue(SaveFileLoad, _config.SavePath);
         }
         
         private void Refresh()
@@ -261,23 +253,31 @@ namespace Macro
         }
         private Task SaveFileLoad(object state)
         {
-            var task = new TaskCompletionSource<Task>();
-            Dispatcher.Invoke(() => 
+            if(state is string path)
             {
-                try
+                var task = new TaskCompletionSource<Task>();
+                Dispatcher.Invoke(() =>
                 {
-                    var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(_path));
-                    configView.BindingItems(models);
-                    task.SetResult(Task.CompletedTask);
-                }
-                catch (Exception ex)
-                {
-                    File.Delete(_path);
-                    LogHelper.Warning(ex);
-                    Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
-                }
-            }, DispatcherPriority.Send);
-            return task.Task;
+                    try
+                    {
+                        var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes($@"{path}\{ConstHelper.DefaultSaveFile}"));
+                        configView.BindingItems(models);
+                        if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves, path))
+                        {
+                            _taskQueue.Enqueue(SaveFile);
+                        }
+                        task.SetResult(Task.CompletedTask);
+                    }
+                    catch (Exception ex)
+                    {
+                        File.Delete($@"{path}\{ConstHelper.DefaultSaveFile}");
+                        LogHelper.Warning(ex);
+                        Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
+                    }
+                }, DispatcherPriority.Send);
+                return task.Task;
+            }
+            return Task.CompletedTask;
         }
         
         private void VersionCheck()
@@ -548,11 +548,6 @@ namespace Macro
                         });
                         if (similarity > _config.Similarity)
                         {
-                            if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
-                            {
-                                await OnNextEventTriggerAsync(model, token);
-                            }
-
                             if (model.SubEventTriggers.Count > 0)
                             {
                                 if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
@@ -614,9 +609,28 @@ namespace Macro
                                 {
                                     KeyboardTriggerProcess(processes.ElementAt(i).Value.MainWindowHandle, model);
                                 }
-
                                 if (!await TokenCheckDelayAsync(model.AfterDelay, token))
                                     break;
+
+                                if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
+                                {
+                                    EventTriggerModel nextModel = null;
+                                    Dispatcher.Invoke(() =>
+                                    {
+                                        nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(model.EventToNext);
+                                    });
+
+                                    if (nextModel != null)
+                                    {
+                                        LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {model.TriggerIndex} ] NextIndex [ {nextModel.TriggerIndex} ] ");
+                                        var job = new JobModel()
+                                        {
+                                            Model = nextModel,
+                                            Token = token
+                                        };
+                                        await _taskQueue.Enqueue(InvokeNextEventTriggerAsync, job);
+                                    }
+                                }
                             }
                         }
                     }
@@ -624,15 +638,6 @@ namespace Macro
             }
             await TokenCheckDelayAsync(_config.ItemDelay, token);
             return isExcute;
-        }
-        private async Task OnNextEventTriggerAsync(EventTriggerModel currentModel, CancellationToken token)
-        {
-            if (token.IsCancellationRequested)
-                return;
-            var nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(currentModel.EventToNext);
-            if (nextModel == null)
-                return;
-            await Task.Run(async () => { await TriggerProcess(nextModel, token); });
         }
         private async Task<bool> TokenCheckDelayAsync(int millisecondsDelay, CancellationToken token)
         {
@@ -651,24 +656,47 @@ namespace Macro
             }
             return !token.IsCancellationRequested;
         }
-        //private async Task OnProcessCallback()
-        //{
-        //    List<EventTriggerModel> saves = null;
-            
-        //    Dispatcher.Invoke(() => 
-        //    {
-        //        saves = configView.TriggerSaves;
-        //    });
-        //    if(saves != null)
-        //    {
-        //        foreach (var save in saves)
-        //        {
-        //            await TriggerProcess(save, token);
-        //            if (token.IsCancellationRequested)
-        //                break;
-        //        }
-        //        await TokenCheckDelayAsync(_config.Period, token);
-        //    }
-        //}
+
+        private async Task InvokeNextEventTriggerAsync(object state)
+        {
+            if (state is JobModel job)
+            {
+                if (job.Token.IsCancellationRequested)
+                    return;
+                await TriggerProcess(job.Model, job.Token);
+            }
+        }
+        private async Task ProcessStartAsync(object state)
+        {
+            List<EventTriggerModel> saves = null;
+            if(state is CancellationToken token)
+            {
+                if (token.IsCancellationRequested)
+                    return;
+                Dispatcher.Invoke(() =>
+                {
+                    saves = configView.TriggerSaves;
+                });
+                if (saves != null)
+                {
+                    foreach (var save in saves)
+                    {
+                        await _taskQueue.Enqueue(async () =>
+                        {
+                            var job = new JobModel()
+                            {
+                                Model = save,
+                                Token = token
+                            };
+                            await InvokeNextEventTriggerAsync(job);
+                        });
+                        if (token.IsCancellationRequested)
+                            break;
+                    }
+                    await TokenCheckDelayAsync(_config.Period, token);
+                }
+                await _taskQueue.Enqueue(ProcessStartAsync, token);
+            }
+        }
     }
 }

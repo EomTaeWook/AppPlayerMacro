@@ -17,25 +17,28 @@ namespace Macro.Infrastructure.Manager
         public CacheDataManager()
         {
             _indexTriggerModels = new Dictionary<ulong, EventTriggerModel>();
+
             NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
             NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
         }
-        public bool CheckAndMakeCacheFile(List<EventTriggerModel> saves)
+
+        public bool CheckAndMakeCacheFile(List<EventTriggerModel> saves, string path)
         {
             var isNewCreated = false;
-            var isExists = File.Exists(ConstHelper.DefaultCacheFile);
+            var fullPath = $@"{path}\{ConstHelper.DefaultCacheFile}";
+            var isExists = File.Exists(fullPath);
             if (isExists && saves.Count > 0)
             {
-                var bytes = File.ReadAllBytes(ConstHelper.DefaultCacheFile);
+                var bytes = File.ReadAllBytes(fullPath);
                 _cacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
             }
             else if(isExists && saves.Count == 0)
             {
-                _cacheData = new CacheModel(1);
+                _cacheData = new CacheModel(0);
             }
             else
             {
-                _cacheData = new CacheModel(1);   
+                _cacheData = new CacheModel(0);   
                 isNewCreated = true;
             }
             foreach (var save in saves)

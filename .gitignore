@@ -18,3 +18,4 @@ Patcher/obj/
 .vs/
 Patcher/bin/
 Macro/Macro.csproj.user
+*.user

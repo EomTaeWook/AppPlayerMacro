@@ -95,7 +95,7 @@ namespace Macro.Extensions
 
         public static Task ProgressbarShow(this MetroWindow @object, Func<Task> action)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 @object.Dispatcher.Invoke(() =>
                 {

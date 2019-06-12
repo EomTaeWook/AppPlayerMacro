@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using Utils;
 using Utils.Document;
+using Utils.Infrastructure;
 
 namespace Macro.View
 {

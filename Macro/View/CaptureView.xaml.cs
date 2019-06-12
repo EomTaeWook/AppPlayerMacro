@@ -21,7 +21,6 @@ namespace Macro.View
         private readonly MonitorInfo _monitorInfo;
         private readonly Border _dummyBorder;
         private Border _dragBorder;
-        private Point _factor;
 
         public CaptureView(MonitorInfo monitorInfo)
         {
@@ -34,12 +33,6 @@ namespace Macro.View
                 SnapsToDevicePixels = true,
                 Opacity = 1,
                 CornerRadius = new CornerRadius(1)
-            };
-            var systemDPI = NativeHelper.GetSystemDPI();
-            _factor = new Point()
-            {
-                X = _monitorInfo.Dpi.X * 1.0F / systemDPI.X,
-                Y = _monitorInfo.Dpi.Y * 1.0F / systemDPI.Y
             };
 
             InitializeComponent();

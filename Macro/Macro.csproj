@@ -45,6 +45,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,6 +56,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -182,7 +184,6 @@
     <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />
     <Compile Include="Command\FolderBrowserDialogCommand.cs" />
@@ -199,18 +200,17 @@
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
-    <Compile Include="Infrastructure\Manager\ProcessManager.cs" />
     <Compile Include="Models\CacheModel.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\RepeatInfoModel.cs" />
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
-    <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Infrastructure\EventArgs.cs" />
     <Compile Include="Infrastructure\ApplicationData.cs" />
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\Version.cs" />
+    <Compile Include="Models\JobModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\SystemEnums.cs" />
     <Compile Include="Models\ViewModel\ConfigEventViewModel.cs" />

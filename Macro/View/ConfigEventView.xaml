@@ -3,8 +3,8 @@
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:UI="clr-namespace:Macro.UI"
-             xmlns:util="clr-namespace:Utils;assembly=Utils"
-             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:util="clr-namespace:Utils;assembly=Utils">
 
     <UserControl.Resources>
         <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>

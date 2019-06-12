@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -100,12 +102,15 @@
     <Compile Include="Document\DocumentBase.cs" />
     <Compile Include="Extensions\DocumentExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
+    <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Infrastructure\InputBuilder.cs" />
     <Compile Include="Infrastructure\DpiFlags.cs" />
     <Compile Include="Infrastructure\InputStruct.cs" />
     <Compile Include="Infrastructure\KeyCode.cs" />
     <Compile Include="Infrastructure\MonitorInfo.cs" />
     <Compile Include="Infrastructure\Point.cs" />
+    <Compile Include="Infrastructure\TaskBuilder.cs" />
+    <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Infrastructure\WindowPosFlags.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="LogHelper.cs" />
