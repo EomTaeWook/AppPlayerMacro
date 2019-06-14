@@ -13,10 +13,9 @@ namespace Macro.View
     /// </summary>
     public partial class MousePositionView : Window
     {
-        private MonitorInfo _monitorInfo;
+        private readonly MonitorInfo _monitorInfo;
         private bool _isDrag;
-        private PathFigure _pathFigure;
-        private Point _factor;
+        private readonly PathFigure _pathFigure;
         public MousePositionView(MonitorInfo monitorInfo)
         {
             _pathFigure = new PathFigure
@@ -59,12 +58,9 @@ namespace Macro.View
 
             if (_isDrag && e.LeftButton == MouseButtonState.Pressed && IsVisible)
             {
-                var position = e.GetPosition(this);
-                position.X *= _factor.X;
-                position.Y *= _factor.Y;
                 LineSegment segment = new LineSegment
                 {
-                    Point = position
+                    Point = e.GetPosition(this)
                 };
                 _pathFigure.Segments.Add(segment);
             }
@@ -75,15 +71,12 @@ namespace Macro.View
             e.Handled = true;
             if (IsVisible && !_isDrag)
             {
-                var position = e.GetPosition(this);
-                position.X *= _factor.X;
-                position.Y *= _factor.Y;
                 NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
                 {
                     MouseTriggerInfo = new Models.MouseTriggerInfo()
                     {
                         MouseInfoEventType = Models.MouseEventType.RightClick,
-                        StartPoint = PointToScreen(position)
+                        StartPoint = PointToScreen(e.GetPosition(this))
                     },
                     MonitorInfo = _monitorInfo
                 });
@@ -94,10 +87,6 @@ namespace Macro.View
         private void MousePositionView_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            var position = e.GetPosition(this);
-            position.X *= _factor.X;
-            position.Y *= _factor.Y;
-
             if (IsVisible && !_isDrag)
             {
                 NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
@@ -105,7 +94,7 @@ namespace Macro.View
                     MouseTriggerInfo = new Models.MouseTriggerInfo()
                     {
                         MouseInfoEventType = Models.MouseEventType.LeftClick,
-                        StartPoint = PointToScreen(position)
+                        StartPoint = PointToScreen(e.GetPosition(this))
                     },
                     MonitorInfo = _monitorInfo
                 });
@@ -119,7 +108,7 @@ namespace Macro.View
                         MouseInfoEventType = Models.MouseEventType.Drag,
                         StartPoint = PointToScreen(_pathFigure.StartPoint),
                         MiddlePoint = _pathFigure.Segments.Select(r => PointToScreen((r as LineSegment).Point)).ToList(),
-                        EndPoint = PointToScreen(position),
+                        EndPoint = PointToScreen(e.GetPosition(this)),
                     },
                     MonitorInfo = _monitorInfo
                 });
@@ -131,10 +120,7 @@ namespace Macro.View
         {
             if (IsVisible)
                 _isDrag = false;
-            var position = e.GetPosition(this);
-            position.X *= _factor.X;
-            position.Y *= _factor.Y;
-            _pathFigure.StartPoint = position;
+            _pathFigure.StartPoint = e.GetPosition(this);
             e.Handled = true;
         }
 
@@ -172,14 +158,6 @@ namespace Macro.View
             Top = _monitorInfo.Rect.Top;
             Height = _monitorInfo.Rect.Height;
             WindowState = WindowState.Maximized;
-
-            var systemDPI = NativeHelper.GetSystemDPI();
-            _factor = new Point()
-            {
-                X = _monitorInfo.Dpi.X * 1.0F / systemDPI.X,
-                Y = _monitorInfo.Dpi.Y * 1.0F / systemDPI.Y
-            };
-
         }
     }
 }

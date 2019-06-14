@@ -33,15 +33,17 @@ namespace Utils
         {
             try
             {
-                //var factor = NativeHelper.GetSystemDPI();
-                var factorX = monitor.Dpi.X / ConstHelper.DefaultDPI;
-                var factorY = monitor.Dpi.Y / ConstHelper.DefaultDPI;
+                var factor = NativeHelper.GetSystemDPI();
+                var factorX = 1.0F * factor.X / ConstHelper.DefaultDPI;
+                var factorY = 1.0F * factor.Y / ConstHelper.DefaultDPI;
+
+                LogHelper.DebugWriteFile($@"factor X : {factorX} factor Y : {factorY} Monitor : [ {monitor.Dpi.X} ]");
 
                 Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY));
                 using (var g = Graphics.FromImage(bmp))
                 {
                     g.CopyFromScreen(monitor.Rect.Left, monitor.Rect.Top,
-                       (int)Math.Truncate(rect.Left * -1 * factorX), (int)Math.Truncate(rect.Top * -1 * factorY),
+                       (int)Math.Truncate(rect.Left * -1.0F * factorX), (int)Math.Truncate(rect.Top * -1.0F * factorY),
                         new Size(monitor.Rect.Width, monitor.Rect.Height),
                         CopyPixelOperation.SourceCopy);
                 }

@@ -105,6 +105,9 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern bool SetProcessDpiAwarenessContext(PROCESS_DPI_AWARENESS value);
 
+        [DllImport("shcore.dll")]
+        public static extern uint GetProcessDpiAwareness(IntPtr handle, out PROCESS_DPI_AWARENESS awareness);
+
         [DllImport("Shcore.dll")]
         private static extern IntPtr GetDpiForMonitor(IntPtr hMonitor, DpiFlags dpiType, out uint dpiX, out uint dpiY);
         public static Point GetMonitorDPI(IntPtr hMonitor)

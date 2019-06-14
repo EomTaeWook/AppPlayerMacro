@@ -72,5 +72,13 @@ namespace Utils
             }
             _logger.Debug(message, callerLine);
         }
+        public static void DebugWriteFile(string message, [CallerLineNumber] int callerLine = 0, [CallerFilePath] string className = "")
+        {
+            if (string.IsNullOrWhiteSpace(className))
+            {
+                throw new ArgumentException("message", nameof(className));
+            }
+            _logger.Error(message, callerLine);
+        }
     }
 }

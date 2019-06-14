@@ -11,7 +11,7 @@
         PROCESS_DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = 18,
         PROCESS_DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = 34
     }
-    
+
     public enum DpiFlags
     {
         Effective = 0,

@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,6 +22,7 @@ namespace Macro.View
         private readonly MonitorInfo _monitorInfo;
         private readonly Border _dummyBorder;
         private Border _dragBorder;
+        private Point _factor;
 
         public CaptureView(MonitorInfo monitorInfo)
         {
@@ -34,7 +36,9 @@ namespace Macro.View
                 Opacity = 1,
                 CornerRadius = new CornerRadius(1)
             };
-
+            var systemDPI = NativeHelper.GetSystemDPI();
+            _factor.X = 1.0F * _monitorInfo.Dpi.X / systemDPI.X;
+            _factor.Y = 1.0F *_monitorInfo.Dpi.Y / systemDPI.Y;
             InitializeComponent();
             Loaded += CaptureView_Loaded;
         }
@@ -105,7 +109,7 @@ namespace Macro.View
         {
             if (_isDrag && e.LeftButton == MouseButtonState.Pressed)
             {
-                Point currentPoint = e.GetPosition(captureZone);
+                var currentPoint = e.GetPosition(captureZone);
                 UpdateDragSelectionRect(_originPoint, currentPoint);
                 e.Handled = true;
             }
@@ -127,7 +131,7 @@ namespace Macro.View
             else
                 _dragBorder.Width = origin.X - current.X;
 
-            if (current.Y > origin.Y)
+           if (current.Y > origin.Y)
                 _dragBorder.Height = current.Y - origin.Y;
             else
                 _dragBorder.Height = origin.Y - current.Y;
@@ -138,15 +142,19 @@ namespace Macro.View
             if (_isDrag && IsVisible)
             {
                 WindowState = WindowState.Minimized;
+                int left = (int)(Canvas.GetLeft(_dragBorder) * _factor.X);
+                int top = (int)(Canvas.GetTop(_dragBorder) * _factor.Y);
+                int width = (int)(_dragBorder.Width * _factor.X);
+                int height = (int)(_dragBorder.Height * _factor.Y);
                 NotifyHelper.InvokeNotify(EventType.ScreenCapture, new CaptureEventArgs()
                 {
                     MonitorInfo = _monitorInfo,
-                    CaptureImage = DisplayHelper.Capture(_monitorInfo, new Rect()
+                    CaptureImage = DisplayHelper.Capture(_monitorInfo, new Rect
                     {
-                        Left = (int)Canvas.GetLeft(_dragBorder),
-                        Right = (int)(_dragBorder.Width + Canvas.GetLeft(_dragBorder)),
-                        Bottom = (int)(_dragBorder.Height + Canvas.GetTop(_dragBorder)),
-                        Top = (int)Canvas.GetTop(_dragBorder)
+                        Left = left,
+                        Right = width + left,
+                        Bottom = top + height,
+                        Top = top
                     })
                 });
                 e.Handled = true;

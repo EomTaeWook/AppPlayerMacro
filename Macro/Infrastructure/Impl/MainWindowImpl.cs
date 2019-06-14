@@ -52,10 +52,10 @@ namespace Macro
             InitializeComponent();
             Loaded += MainWindow_Loaded;
         }
-        
+
         private void Init()
         {
-            if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
+            if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 1)
             {
                 if (Environment.OSVersion.Version >= new System.Version(10, 0, 15063))
                 {
@@ -64,13 +64,15 @@ namespace Macro
                 else
                 {
                     NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
-                }                
+                }
+                NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
             }
             else
             {
                 this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
+                Process.GetCurrentProcess().Kill();
             }
-            foreach(var item in DisplayHelper.MonitorInfo())
+            foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _captureViews.Add(new CaptureView(item));
             }

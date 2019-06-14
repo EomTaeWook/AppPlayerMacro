@@ -80,7 +80,7 @@ namespace Macro.Extensions
             };
             return item;
         }
-        
+
         public static T GetInstance<T>()
         {
             if(Singleton<UnityContainer>.Instance.IsRegistered<T>())

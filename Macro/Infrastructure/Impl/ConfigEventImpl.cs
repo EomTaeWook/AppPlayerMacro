@@ -149,6 +149,8 @@ namespace Macro.View
         public void Clear()
         {
             CurrentTreeViewItem.IsSelected = false;
+            _dummyTreeGridViewItem.DataContext<EventTriggerModel>().Clear();
+
             if (CurrentTreeViewItem != _dummyTreeGridViewItem)
             {
                 CurrentTreeViewItem = _dummyTreeGridViewItem;

@@ -1,4 +1,5 @@
 ﻿using Macro.Models;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Utils.Infrastructure;
 
@@ -10,6 +11,21 @@ namespace Macro.Extensions
         {
             return new EventTriggerModel(source);
         }
+        public static void Clear(this EventTriggerModel source)
+        {
+            source.Image = null;
+            source.EventType = EventType.Image;
+            source.MouseTriggerInfo = new MouseTriggerInfo();
+            source.MonitorInfo = new MonitorInfo();
+            source.KeyboardCmd = "";
+            source.ProcessInfo = new ProcessInfo();
+            source.SubEventTriggers = new ObservableCollection<EventTriggerModel>();
+            source.AfterDelay = 0;
+            source.RepeatInfo = new RepeatInfoModel();
+            source.EventToNext = 0;
+            source.TriggerIndex = 0;
+        }
+
         public static MouseTriggerInfo Clone(this MouseTriggerInfo source)
         {
             return new MouseTriggerInfo()
