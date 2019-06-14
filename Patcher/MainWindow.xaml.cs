@@ -174,6 +174,7 @@ namespace Patcher
 
                     var request = (HttpWebRequest)WebRequest.Create(_patchList[i].Item2);
                     request.ContentType = "application/octet-stream";
+                    request.ContentLength = 0;
                     using (var response = (HttpWebResponse)request.GetResponse())
                     {
                         var total = response.ContentLength;
@@ -184,7 +185,6 @@ namespace Patcher
                                 var index = _patchList[i].Item1.LastIndexOf(@"\");
                                 Directory.CreateDirectory($@"{ConstHelper.TempPath}\{_patchList[i].Item1.Substring(0, index)}");
                             }
-
                             using (var fs = new FileStream($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
                             {
                                 var buffer = new byte[4096];
@@ -192,10 +192,10 @@ namespace Patcher
                                 var current = 0L;
                                 while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
                                 {
-                                    fs.Write(buffer, 0, read);
-                                    current += read;
                                     Dispatcher.Invoke(() =>
                                     {
+                                        fs.Write(buffer, 0, read);
+                                        current += read;
                                         progress.Value = 100 - total * 1.0 / current;
                                     });
                                 }
