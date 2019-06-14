@@ -46,15 +46,15 @@ namespace Macro.Infrastructure.Manager
                 MakeIndexTriggerModel(save);
                 InsertIndexTriggerModel(save);
             }
-            UpdateCacheData();
+            UpdateCacheData(fullPath);
             return isNewCreated;
         }
-        public void UpdateCacheData()
+        public void UpdateCacheData(string path)
         {
             _cacheData.LatestCheckDateTime = DateTime.Now.Ticks;
 
             var bytes = ObjectSerializer.SerializeObject(_cacheData);
-            File.WriteAllBytes(ConstHelper.DefaultCacheFile, bytes);
+            File.WriteAllBytes(path, bytes);
         }
         public bool IsUpdated()
         {

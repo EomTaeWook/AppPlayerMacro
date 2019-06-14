@@ -54,6 +54,8 @@
         AddSameContent,
         TriggerToNext,
 
+        FailedPatch,
+
         Max
     }
 
@@ -74,6 +76,7 @@
 
         NewVersion,
         CancelPatch,
+        FailedPatchUpdate,
 
         Max
     }

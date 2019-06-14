@@ -9,6 +9,10 @@ namespace Patcher.Infrastructure
             "Newtonsoft.Json.dll",
             "NLog.dll",
             "Utils.dll",
+            "ControlzEx.dll",
+            "MahApps.Metro.dll",
+            "System.Windows.Interactivity.dll",
+            "WindowsBase.dll"
         };
     }
 }

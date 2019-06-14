@@ -188,6 +188,11 @@
     "Code": "TriggerToNext",
     "Kor": "바로 이동",
     "Eng": "ToNext"
+  },
+  {
+    "Code": "FailedPatch",
+    "Kor": "패치 실패",
+    "Eng": "FailedPatch"
   }
 ]
 

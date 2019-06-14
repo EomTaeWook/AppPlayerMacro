@@ -2,9 +2,11 @@
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
 using Patcher.Infrastructure;
+using Patcher.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -125,13 +127,27 @@ namespace Patcher
                     using (var stream = new StreamReader(response.GetResponseStream()))
                     {
                         var json = stream.ReadToEnd();
-                        var lists = JsonHelper.DeserializeObject<List<string>>(json);
-                        _patchList.AddRange(lists.Where(r => r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 2)
-                            .Select(r => 
+                        var patchModels = JsonHelper.DeserializeObject<Dictionary<string, PatchInfoModel>>(json);
+                        var version = ObjectCache.GetValue("PathchVersion") as Infrastructure.Version;
+                        if (patchModels.ContainsKey(version.ToVersionString()))
+                        {
+                            var patchModel = patchModels[version.ToVersionString()];
+                            ObjectCache.SetValue("PatchMethod", patchModel.Method);
+                            if (patchModel.Method == PatchMethod.Exe)
                             {
-                                var split = r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                return new Tuple<string, string>(split[0], split[1]);
-                            }));
+                                _patchList.AddRange(patchModel.List.Where(r => r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 2)
+                                .Select(r =>
+                                {
+                                    var split = r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    return new Tuple<string, string>(split[0], split[1]);
+                                }));
+                            }
+                            else
+                            {
+                                Process.Start(Utils.ConstHelper.ReleaseUrl);
+                                Application.Current.Shutdown();
+                            }
+                        }
                     }
                 }
                 lblCount.Content = $"(0/{_patchList.Count})";
@@ -262,6 +278,8 @@ namespace Patcher
                 catch (Exception ex)
                 {
                     LogHelper.Warning(ex);
+                    MessageBox.Show(ObjectCache.GetValue("FailedPatchUpdate").ToString(), ObjectCache.GetValue("FailedPatch").ToString());
+                    return Task.FromException(ex);
                 }
             }
             return Task.CompletedTask;

@@ -55,7 +55,7 @@ namespace Macro
 
         private void Init()
         {
-            if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 1)
+            if (Environment.OSVersion.Version >= new System.Version(6,1,0))
             {
                 if (Environment.OSVersion.Version >= new System.Version(10, 0, 15063))
                 {
@@ -65,7 +65,6 @@ namespace Macro
                 {
                     NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
                 }
-                NativeHelper.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
             }
             else
             {

@@ -37,8 +37,6 @@ namespace Utils
                 var factorX = 1.0F * factor.X / ConstHelper.DefaultDPI;
                 var factorY = 1.0F * factor.Y / ConstHelper.DefaultDPI;
 
-                LogHelper.DebugWriteFile($@"factor X : {factorX} factor Y : {factorY} Monitor : [ {monitor.Dpi.X} ]");
-
                 Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY));
                 using (var g = Graphics.FromImage(bmp))
                 {

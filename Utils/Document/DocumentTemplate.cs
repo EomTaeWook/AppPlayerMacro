@@ -30,12 +30,6 @@ namespace Utils.Document
                 }
             }
         }
-        public string this[T code, Language language]
-        {
-            get
-            {
-                return _datas[code][language];
-            }
-        }
+        public string this[T code, Language language] => _datas[code][language];
     }
 }
