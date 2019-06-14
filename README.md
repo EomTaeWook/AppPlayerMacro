@@ -83,7 +83,11 @@ OS 버전
 
         - 연결 프로세스를 고정하게 되면 save된 프로세스 이름으로 전체를 검색하는 것이 아닌 고정된 프로세스에서만 검색하게 됩니다.(녹스 여러개 대응)    
 
-이미지 조합을 통한 이벤트 발생 방법
+    5.바로가기
+
+        - 입력된 이벤트로 바로 이동합니다.
+
+※ 이미지 조합을 통한 이벤트 발생 방법
 
 <img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/imageCombination.png" width="100%"></img>
 
@@ -117,12 +121,13 @@ OS 버전
     enter0917@naver.com
 
 릴리즈
-
 2.4.0
 
     1.바로가기 기능 추가
 
-    2. Target 버전 .Net 4.7.1 변경(닷넷 프레임워크 4.7.1 이상 필요합니다.)
+    2.Target 버전 .Net 4.7.1 변경(닷넷 프레임워크 4.7.1 이상 필요합니다.)
+
+    3.패쳐 수정
 
 2.3.6
 
