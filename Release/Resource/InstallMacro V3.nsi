@@ -2,15 +2,15 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Macro"
-!define PRODUCT_VERSION "2.4.0"
+!define PRODUCT_VERSION "2.4.1"
 !define PRODUCT_PUBLISHER "Eomtaewook"
 !define PRODUCT_WEB_SITE "https://github.com/EomTaeWook/EmulatorMacro"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Macro.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-!define BASEPATH "E:\Project\Macro"
-!define PATH "E:\Project\Macro\Release\exe"
+!define BASEPATH "D:\privateSource\EmulatorMacro"
+!define PATH "D:\privateSource\EmulatorMacro\Release\exe"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -140,6 +140,7 @@ Section Uninstall
   Delete "$INSTDIR\ControlzEx.dll"
   Delete "$INSTDIR\config.json"
   Delete "$INSTDIR\Error.log"
+  Delete "$INSTDIR\Cache.dll"
 
   Delete "$SMPROGRAMS\Macro\Uninstall.lnk"
   Delete "$DESKTOP\Macro.lnk"

@@ -332,6 +332,8 @@ copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
 copy "$(TargetDir)patcher.exe" "$(SolutionDir)Release\exe\"
 rd /S/Q $(SolutionDir)Release\exe\Save
 del /S/Q $(SolutionDir)Release\exe\Datas\Version.json
+del /S/Q $(SolutionDir)Release\exe\Datas\PatchList.json
+del /S/Q $(SolutionDir)Release\exe\Datas\PatchListV2.json
 del /S/Q $(SolutionDir)Release\exe\patcher.exe.config
 del /S/Q $(SolutionDir)Release\exe\macro.exe.config)</PostBuildEvent>
   </PropertyGroup>

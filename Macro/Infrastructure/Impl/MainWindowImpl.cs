@@ -35,13 +35,13 @@ namespace Macro
     {
         private readonly Random _random;
         private readonly TaskQueue _taskQueue;
-        private string _path;
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
         private IConfig _config;
         private Bitmap _bitmap;
         private readonly List<CaptureView> _captureViews;
         private CancellationTokenSource tokenSource = null;
+        private string _savePath;
 
         public MainWindow()
         {
@@ -79,19 +79,18 @@ namespace Macro
 
             Refresh();
             
-            _taskQueue.Enqueue(SaveFileLoad, _config.SavePath);
+            _taskQueue.Enqueue(SaveFileLoad, _savePath);
         }
         
         private void Refresh()
         {
-            _path = _config.SavePath;
-            if (string.IsNullOrEmpty(_path))
-                _path = ConstHelper.DefaultSavePath;
+            _savePath = _config.SavePath;
+            if (string.IsNullOrEmpty(_config.SavePath))
+                _savePath = ConstHelper.DefaultSavePath;
             else
-                _path += @"\";
-            if (!Directory.Exists(_path))
-                Directory.CreateDirectory(_path);
-            _path = $"{_path}{ConstHelper.DefaultSaveFile}";
+                _savePath += @"\";
+            if (!Directory.Exists(_savePath))
+                Directory.CreateDirectory(_savePath);
 
             _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero)
                                                 .Select(r => new KeyValuePair<string, Process>(r.ProcessName, r))
@@ -170,37 +169,50 @@ namespace Macro
             captureImage.Background = System.Windows.Media.Brushes.White;
             configView.Clear();
         }
-        private Task Delete()
+        private Task Delete(object state)
         {
-            configView.CurrentRemove();
-            if (File.Exists(_path))
+            if (state is string path)
             {
-                File.Delete(_path);
-                using (var fs = new FileStream(_path, FileMode.CreateNew))
+                configView.CurrentRemove();
+
+                path += $@"{ConstHelper.DefaultSaveFile}";
+
+                if (File.Exists(path))
                 {
-                    foreach (var data in this.configView.DataContext<Models.ViewModel.ConfigEventViewModel>().TriggerSaves)
+                    File.Delete(path);
+                    using (var fs = new FileStream(path, FileMode.CreateNew))
+                    {
+                        foreach (var data in this.configView.DataContext<Models.ViewModel.ConfigEventViewModel>().TriggerSaves)
+                        {
+                            var bytes = ObjectSerializer.SerializeObject(data);
+                            fs.Write(bytes, 0, bytes.Count());
+                        }
+                        fs.Close();
+                    }
+                }
+            }
+                
+            
+            return Task.CompletedTask;
+        }
+        private Task SaveFile(object state)
+        {
+            if (state is string path)
+            {
+                path += $@"{ConstHelper.DefaultSaveFile}";
+
+                if (File.Exists(path))
+                    File.Delete(path);
+                using (var fs = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    var saves = (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
+                    foreach (var data in saves)
                     {
                         var bytes = ObjectSerializer.SerializeObject(data);
                         fs.Write(bytes, 0, bytes.Count());
                     }
                     fs.Close();
                 }
-            }
-            return Task.CompletedTask;
-        }
-        private Task SaveFile()
-        {
-            if (File.Exists(_path))
-                File.Delete(_path);
-            using (var fs = new FileStream(_path, FileMode.OpenOrCreate))
-            {
-                var saves = (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
-                foreach (var data in saves)
-                {
-                    var bytes = ObjectSerializer.SerializeObject(data);
-                    fs.Write(bytes, 0, bytes.Count());
-                }
-                fs.Close();
             }
             return Task.CompletedTask;
         }
@@ -246,7 +258,7 @@ namespace Macro
 
                 configView.InsertCurrentItem();
 
-                _taskQueue.Enqueue(SaveFile).ContinueWith(task =>
+                _taskQueue.Enqueue(SaveFile, _savePath).ContinueWith(task =>
                 {
                     Dispatcher.Invoke(() =>
                     {
@@ -263,25 +275,27 @@ namespace Macro
         {
             if(state is string path)
             {
+                path += $@"{ConstHelper.DefaultSaveFile}";
                 var task = new TaskCompletionSource<Task>();
                 Dispatcher.Invoke(() =>
                 {
                     try
                     {
-                        var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes($@"{path}\{ConstHelper.DefaultSaveFile}"));
+                        var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(path));
                         configView.BindingItems(models);
-                        if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves, path))
+                        if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves, state as string))
                         {
-                            _taskQueue.Enqueue(SaveFile);
+                            _taskQueue.Enqueue(SaveFile, _savePath);
                         }
                         task.SetResult(Task.CompletedTask);
                     }
                     catch (Exception ex)
                     {
-                        File.Delete($@"{path}\{ConstHelper.DefaultSaveFile}");
+                        File.Delete(path);
                         LogHelper.Warning(ex);
                         Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
                     }
+
                 }, DispatcherPriority.Send);
                 return task.Task;
             }

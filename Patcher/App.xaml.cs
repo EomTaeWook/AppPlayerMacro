@@ -65,7 +65,7 @@ namespace Patcher
 #else
             AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
             ObjectCache.SetValue("Version", 1);
-            ObjectCache.SetValue("PathchVersion", new Infrastructure.Version(2, 4, 0));
+            ObjectCache.SetValue("PathchVersion", new Infrastructure.Version(2, 4, 1));
 #endif
             InitDirectory();
             Init();

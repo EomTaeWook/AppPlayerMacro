@@ -56,7 +56,7 @@ namespace Macro
         {
             _taskQueue.Enqueue(() =>
             {
-                return SaveFile();
+                return SaveFile(_savePath);
             });
         }
 
@@ -117,7 +117,7 @@ namespace Macro
         {
             _taskQueue.Enqueue(() =>
             {
-                return Delete();
+                return Delete(_savePath);
             }).ContinueWith((task) =>
             {
                 Dispatcher.Invoke(() =>
@@ -149,7 +149,7 @@ namespace Macro
                 _config = e.Config;
                 (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
                 Refresh();
-                SaveFileLoad(_config.SavePath);
+                SaveFileLoad(_savePath);
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
                 return Task.CompletedTask;
             });
@@ -186,7 +186,7 @@ namespace Macro
                     var task = new TaskCompletionSource<Task>();
                     Dispatcher.Invoke(() =>
                     {
-                        task.SetResult(Delete());
+                        task.SetResult(Delete(_savePath));
                         Clear();
                     });
                     return task.Task;

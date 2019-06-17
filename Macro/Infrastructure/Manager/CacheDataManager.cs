@@ -18,6 +18,8 @@ namespace Macro.Infrastructure.Manager
         {
             _indexTriggerModels = new Dictionary<ulong, EventTriggerModel>();
 
+            _cacheData = new CacheModel(0);
+
             NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
             NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
         }
@@ -25,20 +27,15 @@ namespace Macro.Infrastructure.Manager
         public bool CheckAndMakeCacheFile(List<EventTriggerModel> saves, string path)
         {
             var isNewCreated = false;
-            var fullPath = $@"{path}\{ConstHelper.DefaultCacheFile}";
+            var fullPath = $@"{path}{ConstHelper.DefaultCacheFile}";
             var isExists = File.Exists(fullPath);
             if (isExists && saves.Count > 0)
             {
                 var bytes = File.ReadAllBytes(fullPath);
                 _cacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
             }
-            else if(isExists && saves.Count == 0)
-            {
-                _cacheData = new CacheModel(0);
-            }
             else
             {
-                _cacheData = new CacheModel(0);   
                 isNewCreated = true;
             }
             foreach (var save in saves)

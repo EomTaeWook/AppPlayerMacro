@@ -155,7 +155,8 @@
     <PostBuildEvent>IF $(ConfigurationName) == Release (
 IF NOT EXIST $(SolutionDir)\Release\exe\ mkdir "$(SolutionDir)\Release\exe"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
-del /S/Q $(SolutionDir)\Release\exe\PatchList.json)</PostBuildEvent>
+del /S/Q $(SolutionDir)\Release\exe\Datas\PatchList.json)
+del /S/Q $(SolutionDir)\Release\exe\Datas\PatchListV2.json)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>copy $(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll $(ProjectDir)Resources
