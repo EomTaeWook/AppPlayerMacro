@@ -37,17 +37,42 @@ namespace Macro
 #endif
             };
             var exeList = e.Args.Where(r => Path.GetExtension(r).Equals(".exe")).ToArray();
-            for(int i=0; i< exeList.Length; ++i)
+            if(exeList.Count() > 0)
             {
-                var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(exeList[i])).ToArray();
+                for (int i = 0; i < exeList.Length; ++i)
+                {
+                    var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(Path.GetFileNameWithoutExtension(exeList[i]))).ToArray();
+                    foreach (var process in processes)
+                    {
+                        process.Kill();
+                    }
+                    var fileName = Path.GetFileName(exeList[i]);
+                    if (File.Exists(fileName) && File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
+                    {
+                        File.Delete(fileName);
+                        File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
+                    }
+                    else if (File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
+                    {
+                        File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
+                    }
+                }
+            }
+            else
+            {
+                var fileName = "Patcher.exe";
+                var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(Path.GetFileNameWithoutExtension(fileName))).ToArray();
                 foreach (var process in processes)
                 {
                     process.Kill();
                 }
-                var fileName = Path.GetFileName(exeList[i]);
                 if (File.Exists(fileName) && File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
                 {
                     File.Delete(fileName);
+                    File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
+                }
+                else if (File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
+                {
                     File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
                 }
             }
