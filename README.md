@@ -130,9 +130,9 @@ OS 버전
 
 2.4.1
 
-    - 저장 버그 수정
+    1.저장 버그 수정
 
-    - 녹스 앱플레이어 사용시 {설치 경로}\\Datas\\ApplicationData.json 에서 Nox 부분을
+    2.녹스 앱플레이어 사용시 {설치 경로}\\Datas\\ApplicationData.json 에서 Nox 부분을
     {
         "Code": "Nox",
         "IsDynamic": true,
@@ -140,6 +140,8 @@ OS 버전
         "OffsetX": 0,
         "OffsetY": 0
     },
+
+    변경이 필요합니다.
 
 2.4.0
 
