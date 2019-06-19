@@ -618,7 +618,7 @@ namespace Macro
                                     var percentage = _random.NextDouble();
 
                                     location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
-                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height/ factor.Item2.Item2 * percentage);
+                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item1 * percentage);
                                     ImageTriggerProcess(hWnd, location, model);
                                 }
                                 else if(model.EventType == EventType.RelativeToImage)

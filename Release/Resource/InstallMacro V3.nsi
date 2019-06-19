@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Macro"
-!define PRODUCT_VERSION "2.4.1"
+!define PRODUCT_VERSION "2.4.2"
 !define PRODUCT_PUBLISHER "Eomtaewook"
 !define PRODUCT_WEB_SITE "https://github.com/EomTaeWook/EmulatorMacro"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Macro.exe"
