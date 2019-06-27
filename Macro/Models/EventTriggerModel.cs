@@ -1,4 +1,5 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Macro.Infrastructure.Serialize;
 using System;
 using System.Collections.ObjectModel;

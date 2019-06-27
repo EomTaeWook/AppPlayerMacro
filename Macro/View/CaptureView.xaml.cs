@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Models;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -89,7 +90,7 @@ namespace Macro.View
             if(e.Key == Key.Escape)
             {
                 e.Handled = true;
-                NotifyHelper.InvokeNotify(EventType.ScreenCapture, new CaptureEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.ScreenCapture, new CaptureEventArgs()
                 {
                     MonitorInfo = _monitorInfo,
                     CaptureImage = null
@@ -145,7 +146,7 @@ namespace Macro.View
                 int top = (int)(Canvas.GetTop(_dragBorder) * _factor.Y);
                 int width = (int)(_dragBorder.Width * _factor.X);
                 int height = (int)(_dragBorder.Height * _factor.Y);
-                NotifyHelper.InvokeNotify(EventType.ScreenCapture, new CaptureEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.ScreenCapture, new CaptureEventArgs()
                 {
                     MonitorInfo = _monitorInfo,
                     CaptureImage = DisplayHelper.Capture(_monitorInfo, new Rect

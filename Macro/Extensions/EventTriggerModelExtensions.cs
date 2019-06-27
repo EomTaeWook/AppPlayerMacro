@@ -1,4 +1,5 @@
-﻿using Macro.Models;
+﻿using Macro.Infrastructure;
+using Macro.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Utils.Infrastructure;

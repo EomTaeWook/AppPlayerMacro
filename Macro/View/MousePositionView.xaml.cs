@@ -1,9 +1,9 @@
 ﻿using Macro.Infrastructure;
+using Macro.Models;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Utils;
 using Utils.Infrastructure;
 
 namespace Macro.View
@@ -71,11 +71,11 @@ namespace Macro.View
             e.Handled = true;
             if (IsVisible && !_isDrag)
             {
-                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    MouseTriggerInfo = new MouseTriggerInfo()
                     {
-                        MouseInfoEventType = Models.MouseEventType.RightClick,
+                        MouseInfoEventType = MouseEventType.RightClick,
                         StartPoint = PointToScreen(e.GetPosition(this))
                     },
                     MonitorInfo = _monitorInfo
@@ -89,11 +89,11 @@ namespace Macro.View
             e.Handled = true;
             if (IsVisible && !_isDrag)
             {
-                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    MouseTriggerInfo = new MouseTriggerInfo()
                     {
-                        MouseInfoEventType = Models.MouseEventType.LeftClick,
+                        MouseInfoEventType = MouseEventType.LeftClick,
                         StartPoint = PointToScreen(e.GetPosition(this))
                     },
                     MonitorInfo = _monitorInfo
@@ -101,11 +101,11 @@ namespace Macro.View
             }
             else if (IsVisible && _isDrag)
             {
-                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    MouseTriggerInfo = new MouseTriggerInfo()
                     {
-                        MouseInfoEventType = Models.MouseEventType.Drag,
+                        MouseInfoEventType = MouseEventType.Drag,
                         StartPoint = PointToScreen(_pathFigure.StartPoint),
                         MiddlePoint = _pathFigure.Segments.Select(r => PointToScreen((r as LineSegment).Point)).ToList(),
                         EndPoint = PointToScreen(e.GetPosition(this)),
@@ -128,11 +128,11 @@ namespace Macro.View
         {
             if (e.Key == Key.Escape)
             {
-                NotifyHelper.InvokeNotify(EventType.MousePointDataBind, new MousePointEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new Models.MouseTriggerInfo()
+                    MouseTriggerInfo = new MouseTriggerInfo()
                     {
-                        MouseInfoEventType = Models.MouseEventType.None,
+                        MouseInfoEventType = MouseEventType.None,
                     },
                     MonitorInfo = _monitorInfo
                 });

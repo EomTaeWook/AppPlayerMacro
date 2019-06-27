@@ -57,7 +57,7 @@ namespace Macro.View
         {
             var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
             File.WriteAllText(path, JsonHelper.SerializeObject(state, true));
-            NotifyHelper.InvokeNotify(Infrastructure.EventType.ConfigChanged, new ConfigEventArgs() { Config = state as Config });
+            NotifyHelper.InvokeNotify(NotifyEventType.ConfigChanged, new ConfigEventArgs() { Config = state as Config });
             return Task.CompletedTask;
         }
     }

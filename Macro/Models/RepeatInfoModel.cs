@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Macro.Infrastructure;
+using System;
 using System.ComponentModel;
 
 namespace Macro.Models

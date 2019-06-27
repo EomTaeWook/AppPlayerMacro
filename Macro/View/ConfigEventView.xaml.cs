@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using EventType = Macro.Models.EventType;
 
 namespace Macro.View
 {
@@ -104,7 +103,7 @@ namespace Macro.View
                     itemContainer.Swap(currentIndex, currentIndex - 1);
                     CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex - 1]) ?? _dummyTreeGridViewItem;
 
-                    NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
                         TriggerModel1 = itemContainer[currentIndex],
                         TriggerModel2 = itemContainer[currentIndex - 1]
@@ -115,7 +114,7 @@ namespace Macro.View
                     itemContainer.Swap(currentIndex, currentIndex + 1);
                     CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex + 1]) ?? _dummyTreeGridViewItem;
 
-                    NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
                         TriggerModel1 = itemContainer[currentIndex],
                         TriggerModel2 = itemContainer[currentIndex + 1]
@@ -148,7 +147,7 @@ namespace Macro.View
             if(treeSaves.SelectedItem is EventTriggerModel item)
             {
                 CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem) ?? _dummyTreeGridViewItem;
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
                 {
                     TreeViewItem = CurrentTreeViewItem
                 });
@@ -203,7 +202,7 @@ namespace Macro.View
                 ItemContainerPositionChange(targetRow);
                 var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 Clear();
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.TreeItemOrderChanged, new EventTriggerOrderChangedEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.TreeItemOrderChanged, new EventTriggerOrderChangedEventArgs()
                 {
                     TriggerModel1 = item,
                     TriggerModel2 = targetRow?.DataContext<EventTriggerModel>()
@@ -234,7 +233,7 @@ namespace Macro.View
             if (e.Key == Key.Escape)
             {
                 Clear();
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs());
+                NotifyHelper.InvokeNotify(NotifyEventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs());
                 e.Handled = true;
             }
             base.OnPreviewKeyDown(e);

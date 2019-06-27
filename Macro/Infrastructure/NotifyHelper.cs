@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Macro.Models;
+using System;
 
 namespace Macro.Infrastructure
 {
@@ -15,32 +16,32 @@ namespace Macro.Infrastructure
         public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
         
 
-        public static void InvokeNotify(EventType eventType, INotifyEventArgs args)
+        public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {
             switch(eventType)
             {
-                case EventType.ConfigChanged:
+                case NotifyEventType.ConfigChanged:
                     ConfigChanged? .Invoke(args as ConfigEventArgs);
                     break;
-                case EventType.MousePointDataBind:
+                case NotifyEventType.MousePointDataBind:
                     MousePositionDataBind? .Invoke(args as MousePointEventArgs);
                     break;
-                case EventType.ScreenCapture:
+                case NotifyEventType.ScreenCapture:
                     ScreenCaptureDataBind? .Invoke(args as CaptureEventArgs);
                     break;
-                case EventType.TreeItemOrderChanged:
+                case NotifyEventType.TreeItemOrderChanged:
                     TreeItemOrderChanged? .Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
-                case EventType.SelctTreeViewItemChanged:
+                case NotifyEventType.SelctTreeViewItemChanged:
                     SelectTreeViewChanged?.Invoke(args as SelctTreeViewItemChangedEventArgs);
                     break;
-                case EventType.EventTriggerOrderChanged:
+                case NotifyEventType.EventTriggerOrderChanged:
                     EventTriggerOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
-                case EventType.EventTriggerInserted:
+                case NotifyEventType.EventTriggerInserted:
                     EventTriggerInserted?.Invoke(args as EventTriggerEventArgs);
                     break;
-                case EventType.EventTriggerRemoved:
+                case NotifyEventType.EventTriggerRemoved:
                     EventTriggerRemoved?.Invoke(args as EventTriggerEventArgs);
                     break;
             }

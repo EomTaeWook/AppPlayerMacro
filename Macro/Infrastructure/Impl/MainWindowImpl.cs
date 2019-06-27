@@ -22,7 +22,6 @@ using System.Windows.Threading;
 using Utils;
 using Utils.Extensions;
 using Utils.Infrastructure;
-using EventType = Macro.Models.EventType;
 using InputManager = Macro.Infrastructure.Manager.InputManager;
 using Message = Utils.Document.Message;
 using Point = System.Windows.Point;
@@ -514,7 +513,7 @@ namespace Macro
                     processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
             });
             IntPtr hWnd = IntPtr.Zero;
-            var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(model.ProcessInfo.ProcessName) ?? new ApplicationData();
+            var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
             for (int i=0; i<processes.Length; ++i)
             {
                 var factor = CalculateFactor(processes[i].Value.MainWindowHandle, model, applciationData.IsDynamic);

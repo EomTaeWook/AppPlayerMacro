@@ -10,7 +10,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Utils;
-using EventType = Macro.Models.EventType;
 
 namespace Macro.View
 {
@@ -114,7 +113,7 @@ namespace Macro.View
                 {
                     var model = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                     this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(model);
-                    NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerInserted, new EventTriggerEventArgs()
+                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerInserted, new EventTriggerEventArgs()
                     {
                         Index = model.TriggerIndex,
                         TriggerModel = model
@@ -139,7 +138,7 @@ namespace Macro.View
                 {
                     CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers.Remove(CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 }
-                NotifyHelper.InvokeNotify(Infrastructure.EventType.EventTriggerRemoved, new EventTriggerEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerRemoved, new EventTriggerEventArgs()
                 {
                     Index = model.TriggerIndex,
                     TriggerModel = model

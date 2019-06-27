@@ -1,23 +1,9 @@
-﻿using Macro.Models;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Controls;
 using Utils.Infrastructure;
 
-namespace Macro.Infrastructure
+namespace Macro.Models
 {
-    public enum EventType
-    {
-        ConfigChanged,
-        MousePointDataBind,
-        ScreenCapture,
-        TreeItemOrderChanged,
-        SelctTreeViewItemChanged,
-        EventTriggerOrderChanged,
-        EventTriggerInserted,
-        EventTriggerRemoved,
-
-        Max
-    }
     public interface INotifyEventArgs
     { }
 

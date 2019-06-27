@@ -1,14 +1,8 @@
-﻿using Macro.Infrastructure;
-using Macro.Infrastructure.Manager;
-using Macro.Models;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Unity;
 using Utils;
-using Utils.Document;
 
 namespace Macro
 {
@@ -22,11 +16,11 @@ namespace Macro
             DispatcherUnhandledException += (s, ex) =>
             {
                 ex.Handled = true;
-                ExceptionProcess(s, ex.Exception);
+                LogHelper.Warning(ex.Exception);
             };
             AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
             {
-                ExceptionProcess(s, ex.ExceptionObject as Exception);
+                LogHelper.Warning(ex.ExceptionObject as Exception);
             };
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
@@ -41,80 +35,15 @@ namespace Macro
             {
                 for (int i = 0; i < exeList.Length; ++i)
                 {
-                    var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(Path.GetFileNameWithoutExtension(exeList[i]))).ToArray();
-                    foreach (var process in processes)
-                    {
-                        process.Kill();
-                    }
-                    var fileName = Path.GetFileName(exeList[i]);
-                    if (File.Exists(fileName) && File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
-                    {
-                        File.Delete(fileName);
-                        File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
-                    }
-                    else if (File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
-                    {
-                        File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
-                    }
+                    TempFolderFileMove(exeList[i]);
                 }
             }
             else
             {
-                var fileName = "Patcher.exe";
-                var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(Path.GetFileNameWithoutExtension(fileName))).ToArray();
-                foreach (var process in processes)
-                {
-                    process.Kill();
-                }
-                if (File.Exists(fileName) && File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
-                {
-                    File.Delete(fileName);
-                    File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
-                }
-                else if (File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
-                {
-                    File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
-                }
+                TempFolderFileMove(ConstHelper.DefaultPatcherName);
             }
             Init();
             base.OnStartup(e);
-        }
-        private void Init()
-        {
-            DependenciesResolved();
-            InitTemplate();
-            LogHelper.Init();
-            ShutdownMode = ShutdownMode.OnLastWindowClose;
-        }
-        private void InitTemplate()
-        {
-            Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFile);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFile);
-
-            Singleton<ApplicationDataManager>.Instance.Init("ApplicationData");
-        }
-        private void DependenciesResolved()
-        {
-            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
-            if (!File.Exists(path))
-                File.WriteAllText(path, JsonHelper.SerializeObject(new Config(), true));
-
-            var config = JsonHelper.Load<Config>(path);
-
-            var container = Singleton<UnityContainer>.Instance;
-            container.RegisterType<IMouseInput, MouseInput>();
-            container.RegisterType<IKeyboardInput, KeyboardInput>();
-            container.RegisterType<InputManager>();
-
-            container.RegisterInstance<IConfig>(config);
-            container.RegisterInstance(new DocumentHelper());
-
-            container.RegisterSingleton<CacheDataManager>();
-        }
-        private void ExceptionProcess(object sender, Exception ex)
-        {
-            //Debug.Assert(false, ex.Message);
-            LogHelper.Warning(ex);
         }
     }
 }

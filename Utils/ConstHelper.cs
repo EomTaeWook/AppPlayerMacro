@@ -9,6 +9,7 @@
         public static readonly string DefaultConfigFile = "config.json";
         public static readonly string DefaultDatasFile = @".\Datas\";
         public static readonly string DefaultCacheFile = @"Cache.dll";
+        public static readonly string DefaultPatcherName = @"Patcher.exe";
 
 
         public static readonly int MinPeriod = 100;

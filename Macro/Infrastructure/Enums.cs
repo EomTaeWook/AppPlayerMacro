@@ -1,4 +1,4 @@
-﻿namespace Macro.Models
+﻿namespace Macro.Infrastructure
 {
     public enum EventType
     {
@@ -16,6 +16,20 @@
         RightClick,
         Drag,
         Wheel,
+
+        Max
+    }
+
+    public enum NotifyEventType
+    {
+        ConfigChanged,
+        MousePointDataBind,
+        ScreenCapture,
+        TreeItemOrderChanged,
+        SelctTreeViewItemChanged,
+        EventTriggerOrderChanged,
+        EventTriggerInserted,
+        EventTriggerRemoved,
 
         Max
     }
