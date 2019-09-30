@@ -84,10 +84,10 @@ namespace Macro.View
             foreach (var item in items)
                 this.DataContext<ConfigEventViewModel>().TriggerSaves.Add(item);
         }
-        public void CopyCurrentItem()
+        public TreeGridViewItem CopyCurrentItem()
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
-                return;
+                return null;
             Dispatcher.Invoke(() =>
             {
                 var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
@@ -99,6 +99,7 @@ namespace Macro.View
                     };
                 }
             });
+            return CurrentTreeViewItem;
         }
         public void InsertCurrentItem()
         {

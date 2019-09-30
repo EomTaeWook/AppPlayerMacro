@@ -21,11 +21,6 @@ namespace Macro.View
         {
             _captureViews = new List<CaptureView>();
             InitializeComponent();
-            this.Loaded += CommonContentView_Loaded;
-        }
-
-        private void CommonContentView_Loaded(object sender, RoutedEventArgs e)
-        {
             InitEvent();
             Init();
         }
@@ -108,7 +103,14 @@ namespace Macro.View
             }
             else if(btn.Equals(btnAddSameContent))
             {
-
+                var item = configView.CopyCurrentItem();
+                if (item == null)
+                    return;
+                var model = item.DataContext<EventTriggerModel>();
+                NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
+                {
+                    CurrentEventTriggerModel = model,
+                });
             }
         }
     }
