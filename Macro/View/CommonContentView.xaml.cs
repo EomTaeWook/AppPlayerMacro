@@ -2,6 +2,7 @@
 using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
 using Macro.Models;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,8 +16,10 @@ namespace Macro.View
     /// </summary>
     public partial class CommonContentView : BaseContentView
     {
+        private readonly List<CaptureView> _captureViews;
         public CommonContentView()
         {
+            _captureViews = new List<CaptureView>();
             InitializeComponent();
             this.Loaded += CommonContentView_Loaded;
         }
@@ -48,7 +51,7 @@ namespace Macro.View
             _captureViews.Clear();
         }
 
-        private void NotifyHelper_ScreenCaptureDataBind(Models.CaptureEventArgs e)
+        private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
         {
             foreach (var item in _captureViews)
             {
@@ -88,10 +91,12 @@ namespace Macro.View
             else if (btn.Equals(btnSave))
             {
                 var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                model.Image = _bitmap;
                 if (model.EventType == EventType.RelativeToImage)
                 {
                     model.MouseTriggerInfo.StartPoint = new Point(configView.RelativePosition.X, configView.RelativePosition.Y);
                 }
+                
                 NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = model,

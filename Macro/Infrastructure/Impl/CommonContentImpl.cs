@@ -14,13 +14,13 @@ namespace Macro.View
     public partial class CommonContentView : BaseContentView
     {
         private Bitmap _bitmap;
-        private readonly List<CaptureView> _captureViews = new List<CaptureView>();
         private void Init()
         {
             foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _captureViews.Add(new CaptureView(item));
             }
+            Clear();
         }
         public override void Clear()
         {

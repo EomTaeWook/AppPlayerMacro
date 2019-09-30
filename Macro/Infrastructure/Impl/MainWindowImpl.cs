@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
@@ -37,7 +38,6 @@ namespace Macro
         private KeyValuePair<string, Process>? _fixProcess;
         private IConfig _config;
         
-        private readonly List<CaptureView> _captureViews;
         private CancellationTokenSource tokenSource = null;
         private string _savePath;
 
@@ -45,7 +45,6 @@ namespace Macro
         {
             _random = new Random();
             _taskQueue = new TaskQueue();
-            _captureViews = new List<CaptureView>();
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
@@ -68,10 +67,6 @@ namespace Macro
             {
                 this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
                 Process.GetCurrentProcess().Kill();
-            }
-            foreach (var item in DisplayHelper.MonitorInfo())
-            {
-                _captureViews.Add(new CaptureView(item));
             }
             _config = ObjectExtensions.GetInstance<IConfig>();
 
@@ -119,7 +114,6 @@ namespace Macro
                 BindingOperations.GetBindingExpressionBase(checkBox, ContentProperty).UpdateTarget();
             }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
-            //configView.Clear();
         }
 
         private bool TryModelValidate(EventTriggerModel model, out Message message)
@@ -151,56 +145,13 @@ namespace Macro
         }
         private void Clear()
         {
-            //btnDelete.Visibility = Visibility.Collapsed;
-            //btnAddSameContent.Visibility = Visibility.Collapsed;
-            //_bitmap = null;
-            //captureImage.Background = System.Windows.Media.Brushes.White;
-            //configView.Clear();
-        }
-        private Task Delete(object state)
-        {
-            if (state is string path)
+            for(int i=0; i< tab_content.Items.Count; i++)
             {
-               // configView.CurrentRemove();
-
-                path += $@"{ConstHelper.DefaultSaveFileName}";
-
-                if (File.Exists(path))
+                if((tab_content.Items[i] as MetroTabItem).Content is BaseContentView view)
                 {
-                    File.Delete(path);
-                    using (var fs = new FileStream(path, FileMode.CreateNew))
-                    {
-                        //foreach (var data in this.configView.DataContext<Models.ViewModel.ConfigEventViewModel>().TriggerSaves)
-                        //{
-                        //    var bytes = ObjectSerializer.SerializeObject(data);
-                        //    fs.Write(bytes, 0, bytes.Count());
-                        //}
-                        fs.Close();
-                    }
+                    view.Clear();
                 }
             }
-            return Task.CompletedTask;
-        }
-        private Task SaveFile(object state)
-        {
-            if (state is string path)
-            {
-                path += $@"{ConstHelper.DefaultSaveFileName}";
-
-                if (File.Exists(path))
-                    File.Delete(path);
-                using (var fs = new FileStream(path, FileMode.OpenOrCreate))
-                {
-                    //var saves = (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
-                    //foreach (var data in saves)
-                    //{
-                    //    var bytes = ObjectSerializer.SerializeObject(data);
-                    //    fs.Write(bytes, 0, bytes.Count());
-                    //}
-                    fs.Close();
-                }
-            }
-            return Task.CompletedTask;
         }
         private bool Validate(EventTriggerModel model)
         {

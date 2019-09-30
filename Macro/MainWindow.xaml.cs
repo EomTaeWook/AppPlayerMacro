@@ -75,13 +75,32 @@ namespace Macro
                 }
             }
         }
-
+        private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
+        {
+            if (tab_content.SelectedContent is BaseContentView view)
+            {
+                _taskQueue.Enqueue(() =>
+                {
+                    return view.Delete(_savePath + $"{ConstHelper.DefaultSaveFileName}");
+                }).ContinueWith(task => 
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        view.Clear();
+                        Clear();
+                    });
+                }); ;
+            }
+        }
         private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
         {
-            _taskQueue.Enqueue(() =>
+            if(tab_content.SelectedContent is BaseContentView view)
             {
-                return SaveFile(_savePath);
-            });
+                _taskQueue.Enqueue(() =>
+                {
+                    return view.Save(_savePath + $"{ConstHelper.DefaultSaveFileName}");
+                });
+            }
         }
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -131,20 +150,6 @@ namespace Macro
                     comboProcess.SelectedValue = _fixProcess.Value.Value;
             }
         }
-        private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
-        {
-            _taskQueue.Enqueue(() =>
-            {
-                return Delete(_savePath);
-            }).ContinueWith((task) =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    Clear();
-                });
-            });
-        }
-
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
         {
             this.ProgressbarShow(() =>
@@ -165,14 +170,61 @@ namespace Macro
             {
                 Refresh();
             }
+            else if (btn.Equals(btnStart))
+            {
+                var buttons = this.FindChildren<Button>();
+                foreach (var button in buttons)
+                {
+                    if (button.Equals(btnStart) || button.Equals(btnStop))
+                        continue;
+                    button.IsEnabled = false;
+                }
+                btnStop.Visibility = Visibility.Visible;
+                btnStart.Visibility = Visibility.Collapsed;
+                if (tokenSource == null)
+                {
+                    TaskBuilder.Build(ProcessStartAsync, out CancellationTokenSource cancellationTokenSource);
+                    tokenSource = cancellationTokenSource;
+                }
+            }
+            else if (btn.Equals(btnStop))
+            {
+                this.ProgressbarShow(() =>
+                {
+                    if (tokenSource != null)
+                    {
+                        tokenSource.Cancel();
+                        tokenSource = null;
+                    }
+                    _taskQueue.Clear();
+                    return Task.CompletedTask;
+                }).ContinueWith(task =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var buttons = this.FindChildren<Button>();
+                        foreach (var button in buttons)
+                        {
+                            if (button.Equals(btnStart) || button.Equals(btnStop))
+                                continue;
+                            button.IsEnabled = true;
+                        }
+                        btnStart.Visibility = Visibility.Visible;
+                        btnStop.Visibility = Visibility.Collapsed;
+                    });
+                });
+            }
+            else if (btn.Equals(btnSetting))
+            {
+                settingFlyout.IsOpen = !settingFlyout.IsOpen;
+            }
+            else if (btn.Equals(btnGithub))
+            {
+                Process.Start(ConstHelper.HelpUrl);
+            }
             //if (btn.Equals(btnCapture))
             //{
             //    Capture();
-            //}
-            //else 
-            //else if (btn.Equals(btnSave))
-            //{
-            //    Save();
             //}
             //else if(btn.Equals(btnDelete))
             //{
@@ -191,59 +243,6 @@ namespace Macro
             //{
             //    configView.CopyCurrentItem();
             //    Save();
-            //}
-            //else if(btn.Equals(btnStart))
-            //{
-            //    var buttons = this.FindChildren<Button>();
-            //    foreach (var button in buttons)
-            //    {
-            //        if (button.Equals(btnStart) || button.Equals(btnStop))
-            //            continue;
-            //        button.IsEnabled = false;
-            //    }
-            //    btnStop.Visibility = Visibility.Visible;
-            //    btnStart.Visibility = Visibility.Collapsed;
-            //    if(tokenSource == null)
-            //    {
-            //        TaskBuilder.Build(ProcessStartAsync, out CancellationTokenSource cancellationTokenSource);
-            //        tokenSource = cancellationTokenSource;
-            //    }
-            //}
-            //else if(btn.Equals(btnStop))
-            //{
-            //    this.ProgressbarShow(()=> 
-            //    {
-            //        if(tokenSource !=null)
-            //        {
-            //            tokenSource.Cancel();
-            //            tokenSource = null;
-            //        }
-            //        _taskQueue.Clear();
-            //        return Task.CompletedTask;
-            //    }).ContinueWith(task =>
-            //    {
-            //        Dispatcher.Invoke(() =>
-            //        {
-            //            var buttons = this.FindChildren<Button>();
-            //            foreach (var button in buttons)
-            //            {
-            //                if (button.Equals(btnStart) || button.Equals(btnStop))
-            //                    continue;
-            //                button.IsEnabled = true;
-            //            }
-            //            btnStart.Visibility = Visibility.Visible;
-            //            btnStop.Visibility = Visibility.Collapsed;
-            //            configView.Clear();
-            //        });
-            //    });
-            //}
-            //else if(btn.Equals(btnSetting))
-            //{
-            //    settingFlyout.IsOpen = !settingFlyout.IsOpen;
-            //}
-            //else if(btn.Equals(btnGithub))
-            //{
-            //    Process.Start(ConstHelper.HelpUrl);
             //}
         }
     }
