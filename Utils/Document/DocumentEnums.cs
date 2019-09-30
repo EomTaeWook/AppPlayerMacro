@@ -55,6 +55,8 @@
         TriggerToNext,
 
         FailedPatch,
+        Common,
+        Game,
 
         Max
     }
@@ -73,6 +75,7 @@
         FailedPeriodValidate,
         FailedProcessDelayValidate,
         FailedSimilarityValidate,
+        FailedSaveFile,
 
         NewVersion,
         CancelPatch,

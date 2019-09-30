@@ -37,4 +37,8 @@ namespace Macro.Models
         public EventTriggerModel TriggerModel { get; set; }
     }
 
+    public class SaveEventTriggerModelArgs : INotifyEventArgs
+    {
+        public EventTriggerModel CurrentEventTriggerModel { get; set; }
+    }
 }

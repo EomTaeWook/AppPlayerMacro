@@ -137,5 +137,14 @@ namespace Macro.Models.ViewModel
         {
             get => "Y";
         }
+        public string Common
+        {
+            get => DocumentHelper.Get(Label.Common);
+        }
+        public string Game
+        {
+            get => DocumentHelper.Get(Label.Game);
+        }
+
     }
 }

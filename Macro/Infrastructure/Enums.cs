@@ -24,12 +24,15 @@
     {
         ConfigChanged,
         MousePointDataBind,
-        ScreenCapture,
+        ScreenCaptureDataBInd,
         TreeItemOrderChanged,
         SelctTreeViewItemChanged,
         EventTriggerOrderChanged,
         EventTriggerInserted,
         EventTriggerRemoved,
+
+        Save,
+        Delete,
 
         Max
     }

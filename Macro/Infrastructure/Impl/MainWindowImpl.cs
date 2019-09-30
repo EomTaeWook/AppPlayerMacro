@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
 using Utils.Extensions;
@@ -37,7 +36,7 @@ namespace Macro
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
         private IConfig _config;
-        private Bitmap _bitmap;
+        
         private readonly List<CaptureView> _captureViews;
         private CancellationTokenSource tokenSource = null;
         private string _savePath;
@@ -120,7 +119,7 @@ namespace Macro
                 BindingOperations.GetBindingExpressionBase(checkBox, ContentProperty).UpdateTarget();
             }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
-            configView.Clear();
+            //configView.Clear();
         }
 
         private bool TryModelValidate(EventTriggerModel model, out Message message)
@@ -150,81 +149,61 @@ namespace Macro
             }
             return true;
         }
-        private void Capture()
-        {
-            Clear();
-            WindowState = WindowState.Minimized;
-
-            foreach(var item in _captureViews)
-            {
-                item.ShowActivate();
-            }
-        }
         private void Clear()
         {
-            btnDelete.Visibility = Visibility.Collapsed;
-            btnAddSameContent.Visibility = Visibility.Collapsed;
-            _bitmap = null;
-            captureImage.Background = System.Windows.Media.Brushes.White;
-            configView.Clear();
+            //btnDelete.Visibility = Visibility.Collapsed;
+            //btnAddSameContent.Visibility = Visibility.Collapsed;
+            //_bitmap = null;
+            //captureImage.Background = System.Windows.Media.Brushes.White;
+            //configView.Clear();
         }
         private Task Delete(object state)
         {
             if (state is string path)
             {
-                configView.CurrentRemove();
+               // configView.CurrentRemove();
 
-                path += $@"{ConstHelper.DefaultSaveFile}";
+                path += $@"{ConstHelper.DefaultSaveFileName}";
 
                 if (File.Exists(path))
                 {
                     File.Delete(path);
                     using (var fs = new FileStream(path, FileMode.CreateNew))
                     {
-                        foreach (var data in this.configView.DataContext<Models.ViewModel.ConfigEventViewModel>().TriggerSaves)
-                        {
-                            var bytes = ObjectSerializer.SerializeObject(data);
-                            fs.Write(bytes, 0, bytes.Count());
-                        }
+                        //foreach (var data in this.configView.DataContext<Models.ViewModel.ConfigEventViewModel>().TriggerSaves)
+                        //{
+                        //    var bytes = ObjectSerializer.SerializeObject(data);
+                        //    fs.Write(bytes, 0, bytes.Count());
+                        //}
                         fs.Close();
                     }
                 }
             }
-                
-            
             return Task.CompletedTask;
         }
         private Task SaveFile(object state)
         {
             if (state is string path)
             {
-                path += $@"{ConstHelper.DefaultSaveFile}";
+                path += $@"{ConstHelper.DefaultSaveFileName}";
 
                 if (File.Exists(path))
                     File.Delete(path);
                 using (var fs = new FileStream(path, FileMode.OpenOrCreate))
                 {
-                    var saves = (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
-                    foreach (var data in saves)
-                    {
-                        var bytes = ObjectSerializer.SerializeObject(data);
-                        fs.Write(bytes, 0, bytes.Count());
-                    }
+                    //var saves = (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves;
+                    //foreach (var data in saves)
+                    //{
+                    //    var bytes = ObjectSerializer.SerializeObject(data);
+                    //    fs.Write(bytes, 0, bytes.Count());
+                    //}
                     fs.Close();
                 }
             }
             return Task.CompletedTask;
         }
-        private void Save()
+        private bool Validate(EventTriggerModel model)
         {
-            var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
-            model.Image = _bitmap;
-
-            if (model.EventType == EventType.RelativeToImage)
-            {
-                model.MouseTriggerInfo.StartPoint = new Point(configView.RelativePosition.X, configView.RelativePosition.Y);
-            }
-
             var process = comboProcess.SelectedValue as Process;
 
             model.ProcessInfo = new ProcessInfo()
@@ -253,39 +232,31 @@ namespace Macro
                         }
                     }
                 }
-                ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
-
-                configView.InsertCurrentItem();
-
-                _taskQueue.Enqueue(SaveFile, _savePath).ContinueWith(task =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        Clear();
-                    });
-                });
+                return true;
             }
             else
             {
                 this.MessageShow("Error", DocumentHelper.Get(error));
+                return false;
             }
+            
         }
         private Task SaveFileLoad(object state)
         {
             if(state is string path)
             {
-                path += $@"{ConstHelper.DefaultSaveFile}";
+                path += $@"{ConstHelper.DefaultSaveFileName}";
                 var task = new TaskCompletionSource<Task>();
                 Dispatcher.Invoke(() =>
                 {
                     try
                     {
                         var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(path));
-                        configView.BindingItems(models);
-                        if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves, state as string))
-                        {
-                            _taskQueue.Enqueue(SaveFile, _savePath);
-                        }
+                        //configView.BindingItems(models);
+                        //if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves, state as string))
+                        //{
+                        //    _taskQueue.Enqueue(SaveFile, _savePath);
+                        //}
                         task.SetResult(Task.CompletedTask);
                     }
                     catch (Exception ex)
@@ -542,7 +513,7 @@ namespace Macro
                         LogHelper.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         Dispatcher.Invoke(() =>
                         {
-                            captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                            //captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
                         });
 
                         if (!await TokenCheckDelayAsync(model.AfterDelay, token) || similarity > _config.Similarity)
@@ -565,7 +536,7 @@ namespace Macro
                         LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         Dispatcher.Invoke(() =>
                         {
-                            captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+                            //captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
                         });
                         if (similarity > _config.Similarity)
                         {
@@ -696,7 +667,7 @@ namespace Macro
                     return;
                 Dispatcher.Invoke(() =>
                 {
-                    saves = configView.TriggerSaves;
+                    //saves = configView.TriggerSaves;
                 });
                 if (saves != null)
                 {

@@ -5,7 +5,7 @@
         public static readonly double FontSize = 17.0;
         public static readonly double ItemFontSize = FontSize - 5.0;
         public static readonly string DefaultSavePath = @".\Save\";
-        public static readonly string DefaultSaveFile = "save.dll";
+        public static readonly string DefaultSaveFileName = "save.dll";
         public static readonly string DefaultConfigFile = "config.json";
         public static readonly string DefaultDatasFile = @".\Datas\";
         public static readonly string DefaultCacheFile = @"Cache.dll";

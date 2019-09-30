@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Utils.Infrastructure;
 
-namespace Macro.Infrastructure
+namespace Macro.Infrastructure.Interface
 {
     public interface IKeyboardInput
     {

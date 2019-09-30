@@ -68,6 +68,11 @@
     "Code": "FailedPatchUpdate",
     "Kor": "패치에 실패하였습니다. 재설치 부탁드립니다. 죄송합니다.",
     "Eng": "Patch failed. Please reinstall. Sorry."
+  },
+  {
+    "Code": "FailedSaveFile",
+    "Kor": "파일 저장에 실패하였습니다.",
+    "Eng": "File Save Failed."
   }
 ]
 

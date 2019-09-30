@@ -179,10 +179,12 @@
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />
     <Compile Include="Command\FolderBrowserDialogCommand.cs" />
-    <Compile Include="Infrastructure\IKeyboardInput.cs" />
+    <Compile Include="Infrastructure\Impl\BaseContentView.cs" />
+    <Compile Include="Infrastructure\Interface\IKeyboardInput.cs" />
     <Compile Include="Infrastructure\Converter\ImageConverter.cs" />
-    <Compile Include="Infrastructure\IMouseInput.cs" />
+    <Compile Include="Infrastructure\Interface\IMouseInput.cs" />
     <Compile Include="Infrastructure\Impl\AppImpl.cs" />
+    <Compile Include="Infrastructure\Impl\CommonContentImpl.cs" />
     <Compile Include="Infrastructure\Impl\ConfigEventImpl.cs" />
     <Compile Include="Infrastructure\Impl\SettingImpl.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
@@ -211,8 +213,14 @@
     <Compile Include="View\CaptureView.xaml.cs">
       <DependentUpon>CaptureView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CommonContentView.xaml.cs">
+      <DependentUpon>CommonContentView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ConfigEventView.xaml.cs">
       <DependentUpon>ConfigEventView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\GameContentVIew.xaml.cs">
+      <DependentUpon>GameContentVIew.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MousePositionView.xaml.cs">
       <DependentUpon>MousePositionView.xaml</DependentUpon>
@@ -246,7 +254,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\CommonContentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ConfigEventView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\GameContentVIew.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

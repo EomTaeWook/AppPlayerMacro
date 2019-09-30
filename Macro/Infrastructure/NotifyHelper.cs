@@ -14,7 +14,7 @@ namespace Macro.Infrastructure
         public static event Action<EventTriggerEventArgs> EventTriggerRemoved;
 
         public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
-        
+        public static event Action<SaveEventTriggerModelArgs> SaveEventTriggerModel;
 
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {
@@ -26,7 +26,7 @@ namespace Macro.Infrastructure
                 case NotifyEventType.MousePointDataBind:
                     MousePositionDataBind? .Invoke(args as MousePointEventArgs);
                     break;
-                case NotifyEventType.ScreenCapture:
+                case NotifyEventType.ScreenCaptureDataBInd:
                     ScreenCaptureDataBind? .Invoke(args as CaptureEventArgs);
                     break;
                 case NotifyEventType.TreeItemOrderChanged:
@@ -43,6 +43,9 @@ namespace Macro.Infrastructure
                     break;
                 case NotifyEventType.EventTriggerRemoved:
                     EventTriggerRemoved?.Invoke(args as EventTriggerEventArgs);
+                    break;
+                case NotifyEventType.Save:
+                    SaveEventTriggerModel?.Invoke(args as SaveEventTriggerModelArgs);
                     break;
             }
         }

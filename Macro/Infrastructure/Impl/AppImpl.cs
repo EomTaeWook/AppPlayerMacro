@@ -1,4 +1,5 @@
 ﻿using Macro.Infrastructure;
+using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;

@@ -1,4 +1,6 @@
-﻿namespace Macro.Infrastructure.Manager
+﻿using Macro.Infrastructure.Interface;
+
+namespace Macro.Infrastructure.Manager
 {
     public class InputManager
     {

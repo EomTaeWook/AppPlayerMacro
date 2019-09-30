@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Macro.Infrastructure.Interface;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Utils;
 using Utils.Infrastructure;

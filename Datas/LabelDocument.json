@@ -193,6 +193,16 @@
     "Code": "FailedPatch",
     "Kor": "패치 실패",
     "Eng": "FailedPatch"
+  },
+  {
+    "Code": "Common",
+    "Kor": "일반",
+    "Eng": "Common"
+  },
+  {
+    "Code": "Game",
+    "Kor": "게임",
+    "Eng": "Game"
   }
 ]
 

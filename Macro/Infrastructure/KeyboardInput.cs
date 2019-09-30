@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Macro.Infrastructure.Interface;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Utils;

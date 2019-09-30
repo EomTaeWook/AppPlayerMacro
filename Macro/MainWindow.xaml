@@ -51,52 +51,18 @@
                             <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
                         </Button>
                     </Grid>
-                    
                 </Grid>
             </DockPanel>
         </Border>
-        <Grid Width="auto">
-            <Grid.RowDefinitions>
-                <RowDefinition>
-                </RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Border BorderBrush="Black" BorderThickness="1">
-                <DockPanel LastChildFill="True" Grid.Column="0" Grid.Row="0">
-                    <StackPanel DockPanel.Dock="Top">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="2*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=LabelViewModel.CompareImage, Source={StaticResource Locator}}" ></Label>
-                            <DockPanel Grid.Row="0" Grid.Column="1">
-                                <Button Name="btnCapture" Content="{Binding Path=LabelViewModel.ScreenCapture, Source={StaticResource Locator}}"/>
-                            </DockPanel>
-                        </Grid>
-                    </StackPanel>
-                    <Canvas Name="captureImage" Background="White" Grid.Row="0">
-                    </Canvas>
-                </DockPanel>
-            </Border>
-            <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
-                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                    <Label DockPanel.Dock="Left" FontSize="25" Content="{Binding Path=LabelViewModel.Config, Source={StaticResource Locator}}"></Label>
-                    <Button Name="btnAddSameContent" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.AddSameContent, Source={StaticResource Locator}}"></Button>
-                    <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Delete, Source={StaticResource Locator}}"></Button>
-                    <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
-                </DockPanel>
-                <DockPanel DockPanel.Dock="Left">
-                    <view:ConfigEventView x:Name="configView"/>
-                </DockPanel>
-            </DockPanel>
-        </Grid>
+        <Controls:MetroAnimatedTabControl x:Name="tab_content" Controls:TabControlHelper.IsUnderlined="True" Controls:TabControlHelper.Underlined="SelectedTabItem">
+            <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
+                <view:CommonContentView x:Name="commonContentView"/>
+            </Controls:MetroTabItem>
+            <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Game, Source={StaticResource Locator}}">
+                <view:GameContentVIew x:Name="gameContentView"/>
+            </Controls:MetroTabItem>
+        </Controls:MetroAnimatedTabControl>
+        
     </DockPanel>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl x:Name="flyoutsControl">
