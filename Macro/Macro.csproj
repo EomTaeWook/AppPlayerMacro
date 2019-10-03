@@ -205,7 +205,8 @@
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\Version.cs" />
-    <Compile Include="Models\JobModel.cs" />
+    <Compile Include="Models\ProcessEventTriggerModel.cs" />
+    <Compile Include="Models\SaveFileLoadModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
     <Compile Include="Models\ViewModel\ConfigEventViewModel.cs" />

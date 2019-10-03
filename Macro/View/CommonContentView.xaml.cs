@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Utils.Infrastructure;
 using Point = System.Windows.Point;
 
 namespace Macro.View
@@ -99,7 +100,11 @@ namespace Macro.View
             }
             else if (btn.Equals(btnDelete))
             {
-
+                var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                NotifyHelper.InvokeNotify(NotifyEventType.Delete, new DeleteEventTriggerModelArgs()
+                {
+                    CurrentEventTriggerModel = model,
+                });
             }
             else if(btn.Equals(btnAddSameContent))
             {

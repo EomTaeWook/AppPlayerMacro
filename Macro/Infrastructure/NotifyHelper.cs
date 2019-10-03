@@ -15,6 +15,7 @@ namespace Macro.Infrastructure
 
         public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
         public static event Action<SaveEventTriggerModelArgs> SaveEventTriggerModel;
+        public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
 
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {
@@ -46,6 +47,9 @@ namespace Macro.Infrastructure
                     break;
                 case NotifyEventType.Save:
                     SaveEventTriggerModel?.Invoke(args as SaveEventTriggerModelArgs);
+                    break;
+                case NotifyEventType.Delete:
+                    DeleteEventTriggerModel?.Invoke(args as DeleteEventTriggerModelArgs);
                     break;
             }
         }

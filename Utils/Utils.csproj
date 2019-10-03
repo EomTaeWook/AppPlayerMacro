@@ -110,6 +110,7 @@
     <Compile Include="Infrastructure\MonitorInfo.cs" />
     <Compile Include="Infrastructure\Point.cs" />
     <Compile Include="Infrastructure\TaskBuilder.cs" />
+    <Compile Include="Infrastructure\TaskHelper.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Infrastructure\WindowPosFlags.cs" />
     <Compile Include="JsonHelper.cs" />

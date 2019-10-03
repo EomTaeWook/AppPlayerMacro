@@ -27,11 +27,10 @@ namespace Macro.Infrastructure.Manager
         public bool CheckAndMakeCacheFile(List<EventTriggerModel> saves, string path)
         {
             var isNewCreated = false;
-            var fullPath = $@"{path}{ConstHelper.DefaultCacheFile}";
-            var isExists = File.Exists(fullPath);
+            var isExists = File.Exists(path);
             if (isExists && saves.Count > 0)
             {
-                var bytes = File.ReadAllBytes(fullPath);
+                var bytes = File.ReadAllBytes(path);
                 _cacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
             }
             else
@@ -43,7 +42,7 @@ namespace Macro.Infrastructure.Manager
                 MakeIndexTriggerModel(save);
                 InsertIndexTriggerModel(save);
             }
-            UpdateCacheData(fullPath);
+            UpdateCacheData(path);
             return isNewCreated;
         }
         public void UpdateCacheData(string path)

@@ -1,12 +1,16 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Serialize;
+using Macro.Models;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Utils;
 
 namespace Macro.View
@@ -63,10 +67,10 @@ namespace Macro.View
         }
         public override Task Save(object state)
         {
-            configView.InsertCurrentItem();
-
             if (state is string path)
             {
+                configView.InsertCurrentItem();
+
                 if (File.Exists(path))
                 {
                     File.Delete(path);
@@ -83,6 +87,28 @@ namespace Macro.View
                 }
             }
             return Task.CompletedTask;
+        }
+        public override void SaveDataBind(List<EventTriggerModel> saves)
+        {
+            Dispatcher.Invoke(() => 
+            {
+                (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
+                foreach (var item in saves)
+                {
+                    (configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Add(item);
+                }
+            });
+        }
+        public override IEnumerable<EventTriggerModel> GetEnumerator()
+        {
+            return configView.TriggerSaves;
+        }
+        protected override void CaptureImage(Bitmap bmp)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+            });
         }
     }
 }

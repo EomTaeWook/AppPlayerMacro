@@ -46,6 +46,22 @@ namespace Macro
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
+            NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
+        }
+
+        private void NotifyHelper_DeleteEventTriggerModel(DeleteEventTriggerModelArgs obj)
+        {
+            if (tab_content.SelectedContent is BaseContentView view)
+            {
+                var path = _viewMap[view].SaveFilePath;
+                _taskQueue.Enqueue(() =>
+                {
+                    return view.Delete(path);
+                }).ContinueWith(task =>
+                {
+                    Clear();
+                });
+            }
         }
 
         private void NotifyHelper_SaveEventTriggerModel(SaveEventTriggerModelArgs obj)
@@ -54,10 +70,11 @@ namespace Macro
             {
                 if (tab_content.SelectedContent is BaseContentView view)
                 {
+                    var path = _viewMap[view].SaveFilePath;
                     _taskQueue.Enqueue(() => 
                     {
                         ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
-                        return view.Save(_savePath + $"{ConstHelper.DefaultSaveFileName}");
+                        return view.Save(path);
                     }).ContinueWith(task => 
                     {
                         if(task.IsFaulted == false)
@@ -79,9 +96,10 @@ namespace Macro
         {
             if (tab_content.SelectedContent is BaseContentView view)
             {
+                var path = _viewMap[view].SaveFilePath;
                 _taskQueue.Enqueue(() =>
                 {
-                    return view.Delete(_savePath + $"{ConstHelper.DefaultSaveFileName}");
+                    return view.Delete(path);
                 }).ContinueWith(task => 
                 {
                     Dispatcher.Invoke(() =>
@@ -96,9 +114,10 @@ namespace Macro
         {
             if(tab_content.SelectedContent is BaseContentView view)
             {
+                var path = _viewMap[view].SaveFilePath;
                 _taskQueue.Enqueue(() =>
                 {
-                    return view.Save(_savePath + $"{ConstHelper.DefaultSaveFileName}");
+                    return view.Save(path);
                 });
             }
         }
@@ -155,9 +174,12 @@ namespace Macro
             this.ProgressbarShow(() =>
             {
                 _config = e.Config;
-                //(configView.DataContext as Models.ViewModel.ConfigEventViewModel).TriggerSaves.Clear();
                 Refresh();
-                SaveFileLoad(_savePath);
+                foreach(var item in _viewMap)
+                {
+                    item.Value.View.Clear();
+                    _taskQueue.Enqueue(SaveFileLoad, item.Value);
+                }
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
                 return Task.CompletedTask;
             });
@@ -181,10 +203,14 @@ namespace Macro
                 }
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
+                tab_content.IsEnabled = false;
                 if (tokenSource == null)
                 {
-                    TaskBuilder.Build(ProcessStartAsync, out CancellationTokenSource cancellationTokenSource);
-                    tokenSource = cancellationTokenSource;
+                    tokenSource = new CancellationTokenSource();
+                    _taskQueue.Enqueue(ProcessStartAsync, tokenSource.Token);
+                    //TaskBuilder.Build(ProcessStartAsync, out CancellationTokenSource cancellationTokenSource);
+                    //tokenSource = cancellationTokenSource;
+                    Task.Run(() => { return ProcessStartAsync(null); });
                 }
             }
             else if (btn.Equals(btnStop))
@@ -197,6 +223,7 @@ namespace Macro
                         tokenSource = null;
                     }
                     _taskQueue.Clear();
+                    tab_content.IsEnabled = true;
                     return Task.CompletedTask;
                 }).ContinueWith(task =>
                 {

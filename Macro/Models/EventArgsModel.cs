@@ -41,4 +41,8 @@ namespace Macro.Models
     {
         public EventTriggerModel CurrentEventTriggerModel { get; set; }
     }
+    public class DeleteEventTriggerModelArgs : INotifyEventArgs
+    {
+        public EventTriggerModel CurrentEventTriggerModel { get; set; }
+    }
 }

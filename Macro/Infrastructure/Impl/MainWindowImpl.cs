@@ -4,7 +4,6 @@ using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
-using Macro.View;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,6 @@ using System.Windows.Threading;
 using Utils;
 using Utils.Extensions;
 using Utils.Infrastructure;
-using InputManager = Macro.Infrastructure.Manager.InputManager;
 using Message = Utils.Document.Message;
 using Point = System.Windows.Point;
 using Rect = Utils.Infrastructure.Rect;
@@ -32,7 +30,6 @@ namespace Macro
 {
     public partial class MainWindow : MetroWindow
     {
-        private readonly Random _random;
         private readonly TaskQueue _taskQueue;
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
@@ -40,12 +37,13 @@ namespace Macro
         
         private CancellationTokenSource tokenSource = null;
         private string _savePath;
+        private readonly Dictionary<object, SaveFileLoadModel> _viewMap;
 
         public MainWindow()
         {
-            _random = new Random();
             _taskQueue = new TaskQueue();
-
+            _viewMap = new Dictionary<object, SaveFileLoadModel>();
+            
             InitializeComponent();
             Loaded += MainWindow_Loaded;
         }
@@ -71,8 +69,24 @@ namespace Macro
             _config = ObjectExtensions.GetInstance<IConfig>();
 
             Refresh();
-            
-            _taskQueue.Enqueue(SaveFileLoad, _savePath);
+
+            var _saveFileNames = new Tuple<string, string>[]
+            {
+                Tuple.Create(ConstHelper.DefaultSaveFileName, ConstHelper.DefaultSaveCacheFile),
+                Tuple.Create(ConstHelper.DefaultGameSaveFileName, ConstHelper.DefaultGameCacheFile),
+            };
+            for (int i=0; i<tab_content.Items.Count; i++)
+            {
+                var view = (tab_content.Items[i] as MetroTabItem).Content;
+                var model = new SaveFileLoadModel()
+                {
+                    View = view as BaseContentView,
+                    CacheFilePath = Path.Combine(_savePath, _saveFileNames[i].Item2),
+                    SaveFilePath = Path.Combine(_savePath, _saveFileNames[i].Item1),
+                };
+                _viewMap.Add(view, model);
+                _taskQueue.Enqueue(SaveFileLoad, model);
+            }
         }
         
         private void Refresh()
@@ -194,31 +208,24 @@ namespace Macro
         }
         private Task SaveFileLoad(object state)
         {
-            if(state is string path)
+            if (state is SaveFileLoadModel model)
             {
-                path += $@"{ConstHelper.DefaultSaveFileName}";
-                var task = new TaskCompletionSource<Task>();
-                Dispatcher.Invoke(() =>
+                try
                 {
-                    try
-                    {
-                        var models = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(path));
-                        //configView.BindingItems(models);
-                        //if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(configView.TriggerSaves, state as string))
-                        //{
-                        //    _taskQueue.Enqueue(SaveFile, _savePath);
-                        //}
-                        task.SetResult(Task.CompletedTask);
-                    }
-                    catch (Exception ex)
-                    {
-                        File.Delete(path);
-                        LogHelper.Warning(ex);
-                        Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
-                    }
+                    var saveFiles = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(model.SaveFilePath));
 
-                }, DispatcherPriority.Send);
-                return task.Task;
+                    if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(saveFiles, model.CacheFilePath))
+                    {
+                        model.View.Save(saveFiles);
+                    }
+                    model.View.SaveDataBind(saveFiles);
+                }
+                catch (Exception ex)
+                {
+                    File.Delete(model.SaveFilePath);
+                    LogHelper.Warning(ex);
+                    Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
+                }
             }
             return Task.CompletedTask;
         }
@@ -265,129 +272,267 @@ namespace Macro
                 }
             }
         }
-
-        private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
+        private async Task InvokeNextEventTriggerAsync(BaseContentView view, EventTriggerModel model, CancellationToken token)
         {
-            var position = new Point()
+            if (token.IsCancellationRequested)
+                return;
+
+            var processConfigModel = new ProcessConfigModel()
             {
-                X = location.X + model.MouseTriggerInfo.StartPoint.X,
-                Y = location.Y + model.MouseTriggerInfo.StartPoint.Y
+                ItemDelay = _config.ItemDelay,
+                SearchImageResultDisplay = _config.SearchResultDisplay,
+                Processes = new List<Process>(),
+                Token = token,
+                Similarity = _config.Similarity,
             };
 
-            LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
-            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
-            Task.Delay(100).Wait();
-            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
-        }
-        private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model, Tuple<float, float> factor)
-        {
-            var mousePosition = new Point()
+            Dispatcher.Invoke(() =>
             {
-                X = Math.Abs(model.ProcessInfo.Position.Left + (model.MouseTriggerInfo.StartPoint.X + location.X) * -1) * factor.Item1,
-                Y = Math.Abs(model.ProcessInfo.Position.Top + (model.MouseTriggerInfo.StartPoint.Y + location.Y) * -1) * factor.Item2
-            };
-
-            if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
-            {
-                LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-                Task.Delay(100).Wait();
-                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-            }
-            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.RightClick)
-            {
-                LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
-                Task.Delay(100).Wait();
-                NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
-            }
-            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Drag)
-            {
-                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-                Task.Delay(100).Wait();
-                for (int i = 0; i < model.MouseTriggerInfo.MiddlePoint.Count; ++i)
+                if (_fixProcess.HasValue)
                 {
-                    mousePosition = new Point()
-                    {
-                        X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1) * factor.Item1,
-                        Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1) * factor.Item2
-                    };
-                    NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
-                    Task.Delay(100).Wait();
-                }
-                mousePosition = new Point()
-                {
-                    X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1) * factor.Item1,
-                    Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1) * factor.Item2
-                };
-                NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
-                Task.Delay(100).Wait();
-                NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-            }
-            else if(model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
-            {
-                LogHelper.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
-                //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-                //Task.Delay(100).Wait();
-                //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-                //NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam((uint)WindowMessage.MKControl, (uint)(model.MouseTriggerInfo.WheelData * -1)), 0);
-                //var hwnd = NativeHelper.FindWindowEx(NativeHelper.FindWindow(null, "Test.txt - 메모장"), IntPtr.Zero, "Edit", null);
-                //var p = new System.Drawing.Point(0, 0);
-                NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
-            }
-        }
-        private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
-        {
-            var hWndActive = NativeHelper.GetForegroundWindow();
-            Task.Delay(100).Wait();
-            NativeHelper.SetForegroundWindow(hWnd);
-            var inputs = model.KeyboardCmd.ToUpper().Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
-            var modifiedKey = inputs.Where(r =>
-            {
-                if(Enum.TryParse($"{r}", out KeyCode keyCode))
-                    return keyCode.IsExtendedKey();
-                return false;
-            }).Select(r =>
-            {
-                Enum.TryParse($"{r}", out KeyCode keyCode);
-                return keyCode;
-            }).ToArray();
-
-            var command = new List<char>();
-            foreach(var input in inputs)
-            {
-                if (Enum.TryParse(input, out KeyCode keyCode))
-                {
-                    if (!keyCode.IsExtendedKey())
-                    {
-                        for (int i = 0; i < input.Count(); i++)
-                            command.Add(input[i]);
-                    }
+                    processConfigModel.Processes.Add(_fixProcess.Value.Value);
                 }
                 else
                 {
-                    for (int i = 0; i < input.Count(); i++)
-                        command.Add(input[i]);
+                    processConfigModel.Processes.AddRange(_processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).Select(r => r.Value));
                 }
-            }
-            var keys = command.Where(r=>
-            {
-                if (Enum.TryParse($"KEY_{r}", out KeyCode keyCode))
-                    return !keyCode.IsExtendedKey();
-                return false;
-            }).Select(r =>
-            {
-                Enum.TryParse($"KEY_{r}", out KeyCode keyCode);
-                return keyCode;
-            }).ToArray();
+            });
 
-            ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
-            Task.Delay(100).Wait();
-            LogHelper.Debug($">>>>Keyboard Event");
-            NativeHelper.SetForegroundWindow(hWndActive);
+            var nextItem = await view.InvokeNextEventTriggerAsync(model, processConfigModel);
+            if(nextItem!= null)
+            {
+                await _taskQueue.Enqueue(async () => await InvokeNextEventTriggerAsync(view, nextItem, token));
+            }
         }
+        private async Task ProcessStartAsync(object state)
+        {
+            //if (state is CancellationToken token)
+            //{
+            //    if (token.IsCancellationRequested == true)
+            //        return;
+
+            //    List<EventTriggerModel> models = new List<EventTriggerModel>();
+            //    BaseContentView view = null;
+            //    var selectView = _viewMap[tab_content.SelectedContent];
+            //    if (selectView != null)
+            //    {
+            //        models = selectView.View.GetEnumerator().ToList();
+            //        view = selectView.View;
+            //    }
+            //    if (view == null)
+            //        return;
+
+            //    foreach (var iter in models)
+            //    {
+            //        await _taskQueue.Enqueue(() =>
+            //        {
+            //            return Task.CompletedTask;
+            //            //await InvokeNextEventTriggerAsync(view, iter, token);
+            //        });
+
+            //        if (token.IsCancellationRequested)
+            //        {
+            //            break;
+            //        }
+            //    }
+
+            //    await TaskHelper.TokenCheckDelayAsync(_config.Period, token);
+
+            //    await _taskQueue.Enqueue(ProcessStartAsync, token);
+            //}
+
+            //List<EventTriggerModel> saves = null;
+            //if(state is CancellationToken token)
+            //{
+            //    if (token.IsCancellationRequested)
+            //        return;
+            //    Dispatcher.Invoke(() =>
+            //    {
+            //        //saves = configView.TriggerSaves;
+            //    });
+
+            //    if (saves != null)
+            //    {
+            //        foreach (var save in saves)
+            //        {
+            //            await _taskQueue.Enqueue(async () =>
+            //            {
+            //                var job = new JobModel()
+            //                {
+            //                    Model = save,
+            //                    Token = token
+            //                };
+            //                await InvokeNextEventTriggerAsync(job);
+            //            });
+            //            if (token.IsCancellationRequested)
+            //                break;
+            //        }
+            //        await TokenCheckDelayAsync(_config.Period, token);
+            //    }
+            //    await _taskQueue.Enqueue(ProcessStartAsync, token);
+            //}
+        }
+        
+        
+        //private async Task<bool> TriggerProcess(EventTriggerModel model, CancellationToken token)
+        //{
+        //    var isExcute = false;
+        //    KeyValuePair<string, Process>[] processes = null;
+        //    Dispatcher.Invoke(() =>
+        //    {
+        //        if (_fixProcess.HasValue)
+        //            processes = new KeyValuePair<string, Process>[] { _fixProcess.Value };
+        //        else
+        //            processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
+        //    });
+        //    IntPtr hWnd = IntPtr.Zero;
+        //    var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
+        //    for (int i = 0; i < processes.Length; ++i)
+        //    {
+        //        var factor = CalculateFactor(processes[i].Value.MainWindowHandle, model, applciationData.IsDynamic);
+
+        //        if (string.IsNullOrEmpty(applciationData.HandleName))
+        //        {
+        //            hWnd = processes[i].Value.MainWindowHandle;
+        //        }
+        //        else
+        //        {
+        //            var item = NativeHelper.GetChildHandles(processes[i].Value.MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
+
+        //            if (item != null)
+        //                hWnd = item.Item2;
+        //            else
+        //                hWnd = processes[i].Value.MainWindowHandle;
+        //        }
+
+        //        if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
+        //        {
+        //            var count = model.RepeatInfo.Count;
+        //            while (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
+        //            {
+        //                var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item1));
+        //                var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
+        //                LogHelper.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+        //                Dispatcher.Invoke(() =>
+        //                {
+        //                    //captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+        //                });
+
+        //                if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, token) || similarity > _config.Similarity)
+        //                    break;
+        //                for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+        //                {
+        //                    await TriggerProcess(model.SubEventTriggers[ii], token);
+        //                    if (token.IsCancellationRequested)
+        //                        break;
+        //                }
+        //                factor = CalculateFactor(processes[i].Value.MainWindowHandle, model, applciationData.IsDynamic);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic))
+        //            {
+        //                var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item2));
+        //                var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
+        //                LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+        //                Dispatcher.Invoke(() =>
+        //                {
+        //                    //captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+        //                });
+        //                if (similarity > _config.Similarity)
+        //                {
+        //                    if (model.SubEventTriggers.Count > 0)
+        //                    {
+        //                        if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
+        //                        {
+        //                            for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
+        //                            {
+        //                                if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, token))
+        //                                    break;
+        //                                for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
+        //                                {
+        //                                    await TriggerProcess(model.SubEventTriggers[iii], token);
+        //                                    if (token.IsCancellationRequested)
+        //                                        break;
+        //                                }
+        //                            }
+        //                        }
+        //                        else if (model.RepeatInfo.RepeatType == RepeatType.NoSearch)
+        //                        {
+        //                            while (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, token))
+        //                            {
+        //                                isExcute = false;
+        //                                for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+        //                                {
+        //                                    var childExcute = await TriggerProcess(model.SubEventTriggers[ii], token);
+        //                                    if (token.IsCancellationRequested)
+        //                                        break;
+        //                                    if (!isExcute && childExcute)
+        //                                        isExcute = childExcute;
+        //                                }
+        //                                if (!isExcute)
+        //                                    break;
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        isExcute = true;
+        //                        if (model.EventType == EventType.Mouse)
+        //                        {
+        //                            location.X = applciationData.OffsetX;
+        //                            location.Y = applciationData.OffsetY;
+        //                            MouseTriggerProcess(hWnd, location, model, factor.Item2);
+        //                        }
+        //                        else if (model.EventType == EventType.Image)
+        //                        {
+        //                            var percentage = _random.NextDouble();
+
+        //                            location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
+        //                            location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item1 * percentage);
+        //                            ImageTriggerProcess(hWnd, location, model);
+        //                        }
+        //                        else if (model.EventType == EventType.RelativeToImage)
+        //                        {
+        //                            location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 / 2);
+        //                            location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item2 / 2);
+        //                            ImageTriggerProcess(hWnd, location, model);
+        //                        }
+        //                        else if (model.EventType == EventType.Keyboard)
+        //                        {
+        //                            KeyboardTriggerProcess(processes.ElementAt(i).Value.MainWindowHandle, model);
+        //                        }
+        //                        if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, token))
+        //                            break;
+
+        //                        if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
+        //                        {
+        //                            EventTriggerModel nextModel = null;
+        //                            Dispatcher.Invoke(() =>
+        //                            {
+        //                                nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(model.EventToNext);
+        //                            });
+
+        //                            if (nextModel != null)
+        //                            {
+        //                                LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {model.TriggerIndex} ] NextIndex [ {nextModel.TriggerIndex} ] ");
+        //                                var job = new JobModel()
+        //                                {
+        //                                    Model = nextModel,
+        //                                    Token = token
+        //                                };
+        //                                await _taskQueue.Enqueue(InvokeNextEventTriggerAsync, job);
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    await TaskHelper.TokenCheckDelayAsync(_config.ItemDelay, token);
+        //    return isExcute;
+        //}
         private Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, EventTriggerModel model, bool isDynamic)
         {
             var currentPosition = new Rect();
@@ -406,7 +551,7 @@ namespace Macro
                         factorX = factor.X * factorX / model.MonitorInfo.Dpi.X;
                         factorY = factor.Y * factorY / model.MonitorInfo.Dpi.Y;
 
-                        if(model.EventType == EventType.Mouse)
+                        if (model.EventType == EventType.Mouse)
                         {
                             positionFactorX = positionFactorX * monitor.Dpi.X / model.MonitorInfo.Dpi.X;
                             positionFactorY = positionFactorY * monitor.Dpi.Y / model.MonitorInfo.Dpi.Y;
@@ -422,223 +567,13 @@ namespace Macro
             }
             return Tuple.Create(Tuple.Create(factorX, factorY), Tuple.Create(positionFactorX, positionFactorY));
         }
-        private async Task<bool> TriggerProcess(EventTriggerModel model, CancellationToken token)
-        {
-            var isExcute = false;
-            KeyValuePair<string, Process>[] processes = null;
-            
-            Dispatcher.Invoke(() =>
-            {
-                if (_fixProcess.HasValue)
-                    processes = new KeyValuePair<string, Process>[] { _fixProcess.Value };
-                else
-                    processes = _processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).ToArray();
-            });
-            IntPtr hWnd = IntPtr.Zero;
-            var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
-            for (int i=0; i<processes.Length; ++i)
-            {
-                var factor = CalculateFactor(processes[i].Value.MainWindowHandle, model, applciationData.IsDynamic);
-
-                if (string.IsNullOrEmpty(applciationData.HandleName))
-                {
-                    hWnd = processes[i].Value.MainWindowHandle;
-                }
-                else
-                {
-                    var item = NativeHelper.GetChildHandles(processes[i].Value.MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
-
-                    if(item != null)
-                        hWnd = item.Item2;
-                    else
-                        hWnd = processes[i].Value.MainWindowHandle;
-                }
-                
-                if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
-                {
-                    var count = model.RepeatInfo.Count;
-                    while(DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
-                    {
-                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item1));
-                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
-                        LogHelper.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
-                        Dispatcher.Invoke(() =>
-                        {
-                            //captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
-                        });
-
-                        if (!await TokenCheckDelayAsync(model.AfterDelay, token) || similarity > _config.Similarity)
-                            break;
-                        for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
-                        {
-                            await TriggerProcess(model.SubEventTriggers[ii], token);
-                            if (token.IsCancellationRequested)
-                                break;
-                        }
-                        factor = CalculateFactor(processes[i].Value.MainWindowHandle, model, applciationData.IsDynamic);
-                    }
-                }
-                else
-                {
-                    if (DisplayHelper.ProcessCapture(processes.ElementAt(i).Value, out Bitmap bmp, applciationData.IsDynamic))
-                    {
-                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item2));
-                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, _config.SearchResultDisplay);
-                        LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
-                        Dispatcher.Invoke(() =>
-                        {
-                            //captureImage.Background = new ImageBrush(bmp.ToBitmapSource());
-                        });
-                        if (similarity > _config.Similarity)
-                        {
-                            if (model.SubEventTriggers.Count > 0)
-                            {
-                                if (model.RepeatInfo.RepeatType == RepeatType.Count || model.RepeatInfo.RepeatType == RepeatType.Once)
-                                {
-                                    for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
-                                    {
-                                        if (!await TokenCheckDelayAsync(model.AfterDelay, token))
-                                            break;
-                                        for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
-                                        {
-                                            await TriggerProcess(model.SubEventTriggers[iii], token);
-                                            if (token.IsCancellationRequested)
-                                                break;
-                                        }
-                                    }
-                                }
-                                else if (model.RepeatInfo.RepeatType == RepeatType.NoSearch)
-                                {
-                                    while (await TokenCheckDelayAsync(model.AfterDelay, token))
-                                    {
-                                        isExcute = false;
-                                        for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
-                                        {
-                                            var childExcute = await TriggerProcess(model.SubEventTriggers[ii], token);
-                                            if (token.IsCancellationRequested)
-                                                break;
-                                            if (!isExcute && childExcute)
-                                                isExcute = childExcute;
-                                        }
-                                        if (!isExcute)
-                                            break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                isExcute = true;
-                                if (model.EventType == EventType.Mouse)
-                                {
-                                    location.X = applciationData.OffsetX;
-                                    location.Y = applciationData.OffsetY;
-                                    MouseTriggerProcess(hWnd, location, model, factor.Item2);
-                                }
-                                else if (model.EventType == EventType.Image)
-                                {
-                                    var percentage = _random.NextDouble();
-
-                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
-                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item1 * percentage);
-                                    ImageTriggerProcess(hWnd, location, model);
-                                }
-                                else if(model.EventType == EventType.RelativeToImage)
-                                {
-                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 / 2);
-                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item2 / 2);
-                                    ImageTriggerProcess(hWnd, location, model);
-                                }
-                                else if (model.EventType == EventType.Keyboard)
-                                {
-                                    KeyboardTriggerProcess(processes.ElementAt(i).Value.MainWindowHandle, model);
-                                }
-                                if (!await TokenCheckDelayAsync(model.AfterDelay, token))
-                                    break;
-
-                                if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
-                                {
-                                    EventTriggerModel nextModel = null;
-                                    Dispatcher.Invoke(() =>
-                                    {
-                                        nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(model.EventToNext);
-                                    });
-
-                                    if (nextModel != null)
-                                    {
-                                        LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {model.TriggerIndex} ] NextIndex [ {nextModel.TriggerIndex} ] ");
-                                        var job = new JobModel()
-                                        {
-                                            Model = nextModel,
-                                            Token = token
-                                        };
-                                        await _taskQueue.Enqueue(InvokeNextEventTriggerAsync, job);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }                
-            }
-            await TokenCheckDelayAsync(_config.ItemDelay, token);
-            return isExcute;
-        }
-        private async Task<bool> TokenCheckDelayAsync(int millisecondsDelay, CancellationToken token)
-        {
-            try
-            {
-                if (millisecondsDelay > 0)
-                    await Task.Delay(millisecondsDelay, token);
-            }
-            catch (TaskCanceledException ex)
-            {
-                LogHelper.Debug(ex.Message);
-            }
-            catch (AggregateException ex)
-            {
-                LogHelper.Debug(ex.Message);
-            }
-            return !token.IsCancellationRequested;
-        }
-
         private async Task InvokeNextEventTriggerAsync(object state)
         {
             if (state is JobModel job)
             {
                 if (job.Token.IsCancellationRequested)
                     return;
-                await TriggerProcess(job.Model, job.Token);
-            }
-        }
-        private async Task ProcessStartAsync(object state)
-        {
-            List<EventTriggerModel> saves = null;
-            if(state is CancellationToken token)
-            {
-                if (token.IsCancellationRequested)
-                    return;
-                Dispatcher.Invoke(() =>
-                {
-                    //saves = configView.TriggerSaves;
-                });
-                if (saves != null)
-                {
-                    foreach (var save in saves)
-                    {
-                        await _taskQueue.Enqueue(async () =>
-                        {
-                            var job = new JobModel()
-                            {
-                                Model = save,
-                                Token = token
-                            };
-                            await InvokeNextEventTriggerAsync(job);
-                        });
-                        if (token.IsCancellationRequested)
-                            break;
-                    }
-                    await TokenCheckDelayAsync(_config.Period, token);
-                }
-                await _taskQueue.Enqueue(ProcessStartAsync, token);
+                //await TriggerProcess(job.Model, job.Token);
             }
         }
     }
