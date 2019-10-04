@@ -11,7 +11,7 @@ namespace Macro.Models
         int Period { get; }
         int ItemDelay { get; }
         int Similarity { get; }
-        bool SearchResultDisplay { get; }
+        bool SearchImageResultDisplay { get; }
         bool VersionCheck { get; }
     }
 
@@ -22,7 +22,7 @@ namespace Macro.Models
         private int _period = ConstHelper.MinPeriod;
         private int _ItemDelay = ConstHelper.MinItemDelay;
         private int _similarity = ConstHelper.DefaultSimilarity;
-        private bool _searchResultDisplay = true;
+        private bool _searchImageResultDisplay = true;
         private bool _versionCheck = true;
 
         public Language Language
@@ -71,13 +71,13 @@ namespace Macro.Models
                 OnPropertyChanged("Similarity");
             }
         }
-        public bool SearchResultDisplay
+        public bool SearchImageResultDisplay
         {
-            get => _searchResultDisplay;
+            get => _searchImageResultDisplay;
             set
             {
-                _searchResultDisplay = value;
-                OnPropertyChanged("SearchResultDisplay");
+                _searchImageResultDisplay = value;
+                OnPropertyChanged("SearchImageResultDisplay");
             }
         }
         public bool VersionCheck

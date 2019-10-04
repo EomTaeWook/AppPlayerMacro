@@ -61,6 +61,7 @@ namespace Utils
             {
                 if (string.IsNullOrEmpty(frame.FileName))
                     continue;
+                
                 _logger.Warn($"[ {frame.FileName} : {frame.LineNumber} ] [ {ex.Message} ]");
             }
         }

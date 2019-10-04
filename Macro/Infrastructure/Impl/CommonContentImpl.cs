@@ -2,12 +2,10 @@
 using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;

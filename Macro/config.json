@@ -4,6 +4,6 @@
   "Period": "100",
   "ItemDelay": "100",
   "Similarity": "75",
-  "SearchResultDisplay": true,
+  "SearchImageResultDisplay": true,
   "VersionCheck": true
 }

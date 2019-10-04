@@ -10,14 +10,6 @@ namespace Utils.Infrastructure
         {
             return Task.Run(action);
         }
-        public static Task Build(Func<object, Task> func)
-        {
-            var tokenSource = new CancellationTokenSource();
-            return Task.Run(() =>
-            {
-                func(null);
-            }, tokenSource.Token);
-        }
         public static Task Build(Func<object, Task> func, out CancellationTokenSource tokenSource)
         {
             tokenSource = new CancellationTokenSource();

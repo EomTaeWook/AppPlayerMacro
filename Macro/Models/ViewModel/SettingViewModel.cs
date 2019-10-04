@@ -18,7 +18,7 @@ namespace Macro.Models.ViewModel
                 ItemDelay = config.ItemDelay,
                 SavePath = config.SavePath,
                 Similarity = config.Similarity,
-                SearchResultDisplay = config.SearchResultDisplay,
+                SearchImageResultDisplay = config.SearchImageResultDisplay,
                 VersionCheck = config.VersionCheck
             };
         }

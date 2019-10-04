@@ -6,13 +6,11 @@ using Macro.Models;
 using MahApps.Metro.Controls;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
 using Utils.Infrastructure;
@@ -206,11 +204,8 @@ namespace Macro
                 tab_content.IsEnabled = false;
                 if (tokenSource == null)
                 {
-                    tokenSource = new CancellationTokenSource();
-                    _taskQueue.Enqueue(ProcessStartAsync, tokenSource.Token);
-                    //TaskBuilder.Build(ProcessStartAsync, out CancellationTokenSource cancellationTokenSource);
-                    //tokenSource = cancellationTokenSource;
-                    Task.Run(() => { return ProcessStartAsync(null); });
+                    TaskBuilder.Build(ProcessStartAsync, out CancellationTokenSource cancellationTokenSource);
+                    tokenSource = cancellationTokenSource;
                 }
             }
             else if (btn.Equals(btnStop))
@@ -249,28 +244,6 @@ namespace Macro
             {
                 Process.Start(ConstHelper.HelpUrl);
             }
-            //if (btn.Equals(btnCapture))
-            //{
-            //    Capture();
-            //}
-            //else if(btn.Equals(btnDelete))
-            //{
-            //    _taskQueue.Enqueue((o) =>
-            //    {
-            //        var task = new TaskCompletionSource<Task>();
-            //        Dispatcher.Invoke(() =>
-            //        {
-            //            task.SetResult(Delete(_savePath));
-            //            Clear();
-            //        });
-            //        return task.Task;
-            //    }, null);
-            //}
-            //else if(btn.Equals(btnAddSameContent))
-            //{
-            //    configView.CopyCurrentItem();
-            //    Save();
-            //}
         }
     }
 }

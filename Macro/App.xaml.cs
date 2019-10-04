@@ -30,6 +30,7 @@ namespace Macro
                 LogHelper.Warning(ex.Exception);
 #endif
             };
+
             var exeList = e.Args.Where(r => Path.GetExtension(r).Equals(".exe")).ToArray();
             if(exeList.Count() > 0)
             {
