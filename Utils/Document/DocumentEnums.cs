@@ -57,6 +57,8 @@
         FailedPatch,
         Common,
         Game,
+        HP,
+        MP,
 
         Max
     }

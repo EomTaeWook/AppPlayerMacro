@@ -203,6 +203,16 @@
     "Code": "Game",
     "Kor": "게임",
     "Eng": "Game"
+  },
+  {
+    "Code": "HP",
+    "Kor": "HP",
+    "Eng": "HP"
+  },
+  {
+    "Code": "MP",
+    "Kor": "MP",
+    "Eng": "MP"
   }
 ]
 

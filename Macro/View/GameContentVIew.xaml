@@ -6,8 +6,46 @@
                       xmlns:Base="clr-namespace:Macro.Infrastructure.Impl"
                       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
-
-    <Grid>
-        
+    <Grid Width="auto">
+        <Grid.RowDefinitions>
+            <RowDefinition>
+            </RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1">
+            <DockPanel LastChildFill="True" Grid.Column="0" Grid.Row="0">
+                <StackPanel DockPanel.Dock="Top">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=LabelViewModel.HP, Source={StaticResource Locator}}" ></Label>
+                                <Button Grid.Row="0" Grid.Column="1" Name="btnHpCapture" Content="{Binding Path=LabelViewModel.HP, Source={StaticResource Locator}}"/>
+                                <Label Grid.Row="0" Grid.Column="2" Content="{Binding Path=LabelViewModel.MP, Source={StaticResource Locator}}" ></Label>
+                                <Button Grid.Row="0" Grid.Column="3" Name="btnMpCapture" Content="{Binding Path=LabelViewModel.MP, Source={StaticResource Locator}}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+                <Canvas Name="captureImage" Background="White" Grid.Row="0">
+                </Canvas>
+            </DockPanel>
+        </Border>
     </Grid>
 </Base:BaseContentView>

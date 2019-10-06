@@ -145,6 +145,15 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Game);
         }
+        public string HP
+        {
+            get => DocumentHelper.Get(Label.HP);
+        }
+
+        public string MP
+        {
+            get => DocumentHelper.Get(Label.MP);
+        }
 
     }
 }

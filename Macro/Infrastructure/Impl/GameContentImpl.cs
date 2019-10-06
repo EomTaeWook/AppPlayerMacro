@@ -12,12 +12,12 @@ namespace Macro.View
     {
         public override void Clear()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override Task Delete(object state)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public override IEnumerable<EventTriggerModel> GetEnumerator()
@@ -27,12 +27,12 @@ namespace Macro.View
 
         public override Task Save(object state)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public override void SaveDataBind(List<EventTriggerModel> saves)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

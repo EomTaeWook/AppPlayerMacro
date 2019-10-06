@@ -20,7 +20,8 @@ namespace Macro
             };
             AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
             {
-                LogHelper.Warning(ex.ExceptionObject as Exception);
+                var exception = ex.ExceptionObject as Exception;
+                LogHelper.Warning(exception);
             };
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
