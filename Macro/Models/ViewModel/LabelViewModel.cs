@@ -147,12 +147,22 @@ namespace Macro.Models.ViewModel
         }
         public string HP
         {
-            get => DocumentHelper.Get(Label.HP);
+            get => "Hp";
         }
 
         public string MP
         {
-            get => DocumentHelper.Get(Label.MP);
+            get => "Mp";
+        }
+
+        public string HpCondition
+        {
+            get => DocumentHelper.Get(Label.HpCondition);
+        }
+
+        public string MpCondition
+        {
+            get => DocumentHelper.Get(Label.MpCondition);
         }
 
     }

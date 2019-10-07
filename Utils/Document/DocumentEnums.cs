@@ -57,8 +57,11 @@
         FailedPatch,
         Common,
         Game,
-        HP,
-        MP,
+        HpCondition,
+        MpCondition,
+
+        Above,
+        Below,
 
         Max
     }

@@ -15,14 +15,8 @@ namespace Macro.View
     /// <summary>
     /// ConfigEventView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ConfigEventView : UserControl
-    {
-        private void ConfigEventView_Loaded(object sender, RoutedEventArgs e)
-        {
-            InitEvent();
-            Init();
-        }
-        
+    public partial class CommonEventConfigView : UserControl
+    {        
         private void InitEvent()
         {
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
@@ -95,7 +89,7 @@ namespace Macro.View
             {
                 if (CurrentTreeViewItem == null)
                     return;
-                var itemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<ConfigEventViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+                var itemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
                 var currentIndex = itemContainer.IndexOf(CurrentTreeViewItem.DataContext<EventTriggerModel>());
 
                 if (currentIndex > 0 && sender.Equals(btnTreeItemUp))

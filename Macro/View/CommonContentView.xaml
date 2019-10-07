@@ -33,7 +33,7 @@
                         </DockPanel>
                     </Grid>
                 </StackPanel>
-                <Canvas Name="captureImage" Background="White" Grid.Row="0">
+                <Canvas Name="canvasCaptureImage" Background="White" Grid.Row="0">
                 </Canvas>
             </DockPanel>
         </Border>
@@ -45,7 +45,7 @@
                 <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
             </DockPanel>
             <DockPanel DockPanel.Dock="Left">
-                <view:ConfigEventView x:Name="configView"/>
+              <view:CommonEventConfigView x:Name="configView"/>
             </DockPanel>
         </DockPanel>
     </Grid>

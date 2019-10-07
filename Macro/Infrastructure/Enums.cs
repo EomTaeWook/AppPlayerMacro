@@ -46,4 +46,12 @@
 
         Max
     }
+
+    public enum ConditionType
+    {
+        Above,
+        Below,
+        
+        Max
+    }
 }

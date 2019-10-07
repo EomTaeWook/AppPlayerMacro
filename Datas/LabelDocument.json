@@ -205,14 +205,24 @@
     "Eng": "Game"
   },
   {
-    "Code": "HP",
-    "Kor": "HP",
-    "Eng": "HP"
+    "Code": "HpCondition",
+    "Kor": "HP 조건",
+    "Eng": "HP Condition"
   },
   {
-    "Code": "MP",
-    "Kor": "MP",
-    "Eng": "MP"
+    "Code": "MpCondition",
+    "Kor": "MP 조건",
+    "Eng": "MP Condition"
+  },
+  {
+    "Code": "Above",
+    "Kor": "이상",
+    "Eng": "Above"
+  },
+  {
+    "Code": "Below",
+    "Kor": "이하",
+    "Eng": "Below"
   }
 ]
 

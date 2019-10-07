@@ -26,7 +26,14 @@ namespace Macro.Extensions
             source.EventToNext = 0;
             source.TriggerIndex = 0;
         }
-
+        public static ValueConditionModel Clone(this ValueConditionModel source)
+        {
+            return new ValueConditionModel()
+            {
+                ConditionType = source.ConditionType,
+                Value = source.Value
+            };
+        }
         public static MouseTriggerInfo Clone(this MouseTriggerInfo source)
         {
             return new MouseTriggerInfo()

@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Utils.Infrastructure;
 using Point = System.Windows.Point;
 
 namespace Macro.View
@@ -56,7 +55,7 @@ namespace Macro.View
             if (e.CaptureImage != null)
             {
                 var capture = e.CaptureImage;
-                captureImage.Background = new ImageBrush(capture.ToBitmapSource());
+                canvasCaptureImage.Background = new ImageBrush(capture.ToBitmapSource());
                 _bitmap = new Bitmap(capture, capture.Width, capture.Height);
             }
             Application.Current.MainWindow.WindowState = WindowState.Normal;
@@ -74,7 +73,7 @@ namespace Macro.View
                 btnAddSameContent.Visibility = Visibility.Visible;
 
                 _bitmap = model.Image;
-                captureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
+                canvasCaptureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
             }
         }
         private void Button_Click(object sender, RoutedEventArgs e)

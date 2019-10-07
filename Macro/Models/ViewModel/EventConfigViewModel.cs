@@ -4,12 +4,12 @@ using System.ComponentModel;
 
 namespace Macro.Models.ViewModel
 {
-    public class ConfigEventViewModel : INotifyPropertyChanged
+    public class EventConfigViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<EventTriggerModel> _triggerSaves;
         private TreeGridViewItem _currentItem;
         private PointModel _pointModel;
-        public ConfigEventViewModel()
+        public EventConfigViewModel()
         {
             _triggerSaves = new ObservableCollection<EventTriggerModel>();
         }
