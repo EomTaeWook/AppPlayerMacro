@@ -18,7 +18,7 @@ namespace Macro.Infrastructure.Impl
     public abstract class BaseContentView : UserControl
     {
         private readonly Random _random;
-        public BaseContentView()
+        protected BaseContentView()
         {
             _random = new Random();
         }

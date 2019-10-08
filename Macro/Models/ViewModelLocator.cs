@@ -10,9 +10,13 @@ namespace Macro.Models
         {
             get => Singleton<UnityContainer>.Instance.Resolve<LabelViewModel>();
         }
-        public EventConfigViewModel ConfigEventViewModel
+        public CommonEventConfigViewModel CommonEventConfigViewModel
         {
-            get => Singleton<UnityContainer>.Instance.Resolve<EventConfigViewModel>();
+            get => Singleton<UnityContainer>.Instance.Resolve<CommonEventConfigViewModel>();
+        }
+        public GameEventConfigViewModel GameEventConfigViewModel
+        {
+            get => Singleton<UnityContainer>.Instance.Resolve<GameEventConfigViewModel>();
         }
         public SettingViewModel SettingViewModel
         {

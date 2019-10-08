@@ -219,10 +219,11 @@
     <Compile Include="Infrastructure\Version.cs" />
     <Compile Include="Models\SaveFileLoadModel.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
+    <Compile Include="Models\ViewModel\BaseEventConfigViewModel.cs" />
     <Compile Include="Models\ViewModel\GameEventConfigViewModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
-    <Compile Include="Models\ViewModel\EventConfigViewModel.cs" />
+    <Compile Include="Models\ViewModel\CommonEventConfigViewModel.cs" />
     <Compile Include="Models\ViewModel\SettingViewModel.cs" />
     <Compile Include="View\CaptureView.xaml.cs">
       <DependentUpon>CaptureView.xaml</DependentUpon>

@@ -10,7 +10,6 @@ namespace Macro.View
         public GameContentVIew()
         {
             InitializeComponent();
-            
         }
     }
 }

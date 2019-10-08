@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Impl;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
@@ -8,33 +9,29 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using Utils;
 
 namespace Macro.View
 {
-    public partial class CommonEventConfigView : UserControl
+    public partial class CommonEventConfigView : BaseEventConfigView<CommonEventConfigViewModel>
     {
         public TreeGridViewItem CurrentTreeViewItem
         {
-            get => this.DataContext<EventConfigViewModel>().CurrentTreeViewItem;
-            private set => this.DataContext<EventConfigViewModel>().CurrentTreeViewItem = value;
+            get => this.DataContext<CommonEventConfigViewModel>().CurrentTreeViewItem;
+            private set => this.DataContext<CommonEventConfigViewModel>().CurrentTreeViewItem = value;
         }
         public List<EventTriggerModel> TriggerSaves
         {
-            get => this.DataContext<EventConfigViewModel>().TriggerSaves.ToList();
+            get => this.DataContext<CommonEventConfigViewModel>().TriggerSaves.ToList();
         }
         public PointModel RelativePosition
         {
-            get => this.DataContext<EventConfigViewModel>().RelativePosition;
-            private set => this.DataContext<EventConfigViewModel>().RelativePosition = value;
+            get => this.DataContext<CommonEventConfigViewModel>().RelativePosition;
+            private set => this.DataContext<CommonEventConfigViewModel>().RelativePosition = value;
         }
 
-        private readonly List<MousePositionView> _mousePointViews;
         private readonly TreeGridViewItem _dummyTreeGridViewItem;
         private readonly PointModel _dummyRelativePosition;
-        private bool _isDrag;
-        private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems;
 
         public CommonEventConfigView()
         {
@@ -44,9 +41,8 @@ namespace Macro.View
                 DataContext = new EventTriggerModel()
             };
             _dummyRelativePosition = new PointModel();
-            _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
-            _mousePointViews = new List<MousePositionView>();
-            DataContext = new ViewModelLocator().ConfigEventViewModel;
+
+            DataContext = new ViewModelLocator().CommonEventConfigViewModel;
             CurrentTreeViewItem = _dummyTreeGridViewItem;
             RelativePosition = _dummyRelativePosition;
             
@@ -58,7 +54,7 @@ namespace Macro.View
 
         private void Init()
         {
-            treeSaves.ItemsSource = this.DataContext<EventConfigViewModel>().TriggerSaves;
+            treeSaves.ItemsSource = this.DataContext<CommonEventConfigViewModel>().TriggerSaves;
             foreach (var item in DisplayHelper.MonitorInfo())
             {
                 _mousePointViews.Add(new MousePositionView(item));
@@ -75,15 +71,10 @@ namespace Macro.View
             comboRepeatSubItem.SelectedValuePath = "Key";
         }
 
-        public void ShowMousePoisitionView()
-        {
-            foreach (var item in _mousePointViews)
-                item.ShowActivate();
-        }
         public void BindingItems(IEnumerable<EventTriggerModel> items)
         {
             foreach (var item in items)
-                this.DataContext<EventConfigViewModel>().TriggerSaves.Add(item);
+                this.DataContext<CommonEventConfigViewModel>().TriggerSaves.Add(item);
         }
         public TreeGridViewItem CopyCurrentItem()
         {
@@ -114,7 +105,7 @@ namespace Macro.View
                 if (treeVIewItem == null)
                 {
                     var model = CurrentTreeViewItem.DataContext<EventTriggerModel>();
-                    this.DataContext<EventConfigViewModel>().TriggerSaves.Add(model);
+                    this.DataContext<CommonEventConfigViewModel>().TriggerSaves.Add(model);
                     NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerInserted, new EventTriggerEventArgs()
                     {
                         Index = model.TriggerIndex,
@@ -134,7 +125,7 @@ namespace Macro.View
 
                 if (CurrentTreeViewItem.ParentItem == null)
                 {
-                    this.DataContext<EventConfigViewModel>().TriggerSaves.Remove(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                    this.DataContext<CommonEventConfigViewModel>().TriggerSaves.Remove(CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 }
                 else
                 {
@@ -168,7 +159,7 @@ namespace Macro.View
         
         private void ItemContainerPositionChange(TreeGridViewItem target)
         {
-            var parentItemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+            var parentItemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<CommonEventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
 
             if (target != null)
             {
@@ -203,7 +194,7 @@ namespace Macro.View
             {
                 var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 parentItemContainer.Remove(item);
-                this.DataContext<EventConfigViewModel>().TriggerSaves.Add(item);
+                this.DataContext<CommonEventConfigViewModel>().TriggerSaves.Add(item);
             }
         }
         private void RadioButtonRefresh()

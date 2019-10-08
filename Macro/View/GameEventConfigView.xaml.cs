@@ -1,10 +1,12 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Impl;
+using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Macro.View
@@ -12,40 +14,130 @@ namespace Macro.View
     /// <summary>
     /// GameEventConfigView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class GameEventConfigView : UserControl
+    public partial class GameEventConfigView : BaseEventConfigView<GameEventConfigViewModel>
     {
-        public TreeGridViewItem CurrentTreeViewItem
-        {
-            get => this.DataContext<EventConfigViewModel>().CurrentTreeViewItem;
-            private set => this.DataContext<EventConfigViewModel>().CurrentTreeViewItem = value;
-        }
-
-        private readonly ObservableCollection<KeyValuePair<ConditionType, string>> _conditionItems;
-        private readonly TreeGridViewItem _dummyTreeGridViewItem;
-
-        public GameEventConfigView()
-        {
-            _conditionItems = new ObservableCollection<KeyValuePair<ConditionType, string>>();
-            _dummyTreeGridViewItem = new TreeGridViewItem()
-            {
-                DataContext = new EventConfigViewModel()
-            };
-
-            InitializeComponent();
-
-            InitEvent();
-
-            Init();
-        }
         private void InitEvent()
         {
-            
+            var radioButtons = this.FindChildren<RadioButton>();
+            foreach (var button in radioButtons)
+            {
+                button.Click += RadioButton_Click;
+            }
+            var commonButtons = this.FindChildren<Button>();
+            foreach (var button in commonButtons)
+            {
+                button.Click += Button_Click;
+            }
+        }
+        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
+            {
+                CurrentTreeViewItem = new TreeGridViewItem()
+                {
+                    DataContext = new GameEventTriggerModel()
+                };
+            }
+            if (RelativePosition == _dummyRelativePosition)
+            {
+                RelativePosition = new PointModel();
+            }
+
+            if (sender.Equals(rbMouse))
+            {
+                CurrentTreeViewItem.DataContext<GameEventTriggerModel>().EventType = EventType.Mouse;
+            }
+            else if (sender.Equals(rbKeyboard))
+            {
+                CurrentTreeViewItem.DataContext<GameEventTriggerModel>().EventType = EventType.Keyboard;
+            }
+            else if (sender.Equals(rbImage))
+            {
+                CurrentTreeViewItem.DataContext<GameEventTriggerModel>().EventType = EventType.Image;
+                if (CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                {
+                    CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                }
+            }
+            else if (sender.Equals(rbRelativeToImage))
+            {
+                CurrentTreeViewItem.DataContext<GameEventTriggerModel>().EventType = EventType.RelativeToImage;
+                if (CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                {
+                    CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                }
+                RelativePosition.X = CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo.StartPoint.X;
+                RelativePosition.Y = CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo.StartPoint.Y;
+            }
+            RadioButtonRefresh();
+        }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender.Equals(btnMouseCoordinate))
+            {
+                //lblWheelData.Visibility = Visibility.Collapsed;
+                //gridWheelData.Visibility = Visibility.Collapsed;
+                if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                {
+                    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                }
+                ShowMousePoisitionView();
+            }
+            else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
+            {
+                if (CurrentTreeViewItem == null)
+                    return;
+                var itemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<CommonEventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+                var currentIndex = itemContainer.IndexOf(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+
+                if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
+                {
+                    itemContainer.Swap(currentIndex, currentIndex - 1);
+                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex - 1]) ?? _dummyTreeGridViewItem;
+
+                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    {
+                        TriggerModel1 = itemContainer[currentIndex],
+                        TriggerModel2 = itemContainer[currentIndex - 1]
+                    });
+                }
+                else if (currentIndex < itemContainer.Count - 1 && sender.Equals(btnTreeItemDown))
+                {
+                    itemContainer.Swap(currentIndex, currentIndex + 1);
+                    CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex + 1]) ?? _dummyTreeGridViewItem;
+
+                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    {
+                        TriggerModel1 = itemContainer[currentIndex],
+                        TriggerModel2 = itemContainer[currentIndex + 1]
+                    });
+                }
+            }
+            //else if(sender.Equals(btnMouseWheel))
+            //{
+            //    lblWheelData.Visibility = Visibility.Visible;
+            //    gridWheelData.Visibility = Visibility.Visible;
+            //    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType = MouseEventType.Wheel;
+            //}
+            //else if(sender.Equals(btnWheelCancel))
+            //{
+            //    lblWheelData.Visibility = Visibility.Collapsed;
+            //    gridWheelData.Visibility = Visibility.Collapsed;
+            //    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo()
+            //    {
+            //        WheelData = 0,
+            //        MouseInfoEventType = MouseEventType.LeftClick,
+            //        EndPoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.EndPoint,
+            //        MiddlePoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MiddlePoint,
+            //        StartPoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.StartPoint
+            //    };
+            //}
         }
         private void Init()
         {
             foreach (var type in Enum.GetValues(typeof(ConditionType)))
             {
-                if((ConditionType)type == ConditionType.Max)
+                if ((ConditionType)type == ConditionType.Max)
                 {
                     continue;
                 }

@@ -52,7 +52,7 @@ namespace Macro.View
                     File.Delete(path);
                     using (var fs = new FileStream(path, FileMode.CreateNew))
                     {
-                        foreach (var data in configView.DataContext<Models.ViewModel.EventConfigViewModel>().TriggerSaves)
+                        foreach (var data in configView.DataContext<Models.ViewModel.CommonEventConfigViewModel>().TriggerSaves)
                         {
                             var bytes = ObjectSerializer.SerializeObject(data);
                             fs.Write(bytes, 0, bytes.Count());
@@ -75,7 +75,7 @@ namespace Macro.View
                 }
                 using (var fs = new FileStream(path, FileMode.OpenOrCreate))
                 {
-                    var saves = (configView.DataContext as Models.ViewModel.EventConfigViewModel).TriggerSaves;
+                    var saves = (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves;
                     foreach (var data in saves)
                     {
                         var bytes = ObjectSerializer.SerializeObject(data);
@@ -90,10 +90,10 @@ namespace Macro.View
         {
             Dispatcher.Invoke(() => 
             {
-                (configView.DataContext as Models.ViewModel.EventConfigViewModel).TriggerSaves.Clear();
+                (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Clear();
                 foreach (var item in saves)
                 {
-                    (configView.DataContext as Models.ViewModel.EventConfigViewModel).TriggerSaves.Add(item);
+                    (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Add(item);
                 }
             });
         }

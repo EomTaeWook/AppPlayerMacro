@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Macro.Extensions;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using Macro.Infrastructure;
+﻿using Macro.Extensions;
 using Macro.Infrastructure.Serialize;
+using System;
+using System.Collections.ObjectModel;
+using System.Drawing;
 
 namespace Macro.Models
 {
