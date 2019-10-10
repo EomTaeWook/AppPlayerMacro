@@ -1,4 +1,5 @@
 ﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
@@ -10,20 +11,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Utils;
+using Utils.Document;
 
 namespace Macro.View
 {
     public partial class CommonContentView : BaseContentView
     {
         private Bitmap _bitmap;
-        private void Init()
-        {
-            foreach (var item in DisplayHelper.MonitorInfo())
-            {
-                _captureViews.Add(new CaptureView(item));
-            }
-            Clear();
-        }
+
         public override void Clear()
         {
             btnDelete.Visibility = Visibility.Collapsed;
@@ -38,6 +33,7 @@ namespace Macro.View
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
             foreach (var item in _captureViews)
             {
+                item.Setting(CaptureViewMode.Common);
                 item.ShowActivate();
             }
         }
@@ -86,20 +82,27 @@ namespace Macro.View
             }
             return Task.CompletedTask;
         }
-        public override void SaveDataBind(List<EventTriggerModel> saves)
+        public override void SaveDataBind(List<IBaseEventTriggerModel> saves)
         {
             Dispatcher.Invoke(() => 
             {
                 (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Clear();
                 foreach (var item in saves)
                 {
-                    (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Add(item);
+                    (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Add(item as EventTriggerModel);
                 }
             });
         }
-        public override IEnumerable<EventTriggerModel> GetEnumerator()
+        public override IEnumerable<IBaseEventTriggerModel> GetEnumerator()
         {
             return configView.TriggerSaves;
+        }
+        public override async Task<IBaseEventTriggerModel> InvokeNextEventTriggerAsync(IBaseEventTriggerModel saveModel, ProcessConfigModel processEventTriggerModel)
+        {
+            if (processEventTriggerModel.Token.IsCancellationRequested)
+                return null;
+            var nextModel = await TriggerProcess(saveModel as EventTriggerModel, processEventTriggerModel);
+            return nextModel.Item2;
         }
         protected override void CaptureImage(Bitmap bmp)
         {
@@ -107,6 +110,44 @@ namespace Macro.View
             {
                 canvasCaptureImage.Background = new ImageBrush(bmp.ToBitmapSource());
             });
+        }
+        public override bool Validate(IBaseEventTriggerModel model, out Message error)
+        {
+            error = Message.Success;
+            
+            model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
+
+            if (model.Image == null)
+            {
+                error = Message.FailedImageValidate;
+                return false;
+            }
+            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
+            {
+                error = Message.FailedMouseCoordinatesValidate;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
+            {
+                error = Message.FailedKeyboardCommandValidate;
+                return false;
+            }
+            if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
+            {
+                error = Message.FailedProcessValidate;
+                return false;
+            }
+            
+            return true;
+        }
+        private void Init()
+        {
+            foreach (var item in DisplayHelper.MonitorInfo())
+            {
+                _captureViews.Add(new CaptureView(item));
+            }
+            Clear();
         }
     }
 }

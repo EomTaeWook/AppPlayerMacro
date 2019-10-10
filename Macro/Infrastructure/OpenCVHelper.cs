@@ -38,5 +38,11 @@ namespace Macro.Infrastructure
             }
             return Convert.ToInt32(max * 100);
         }
+        public static Bitmap MakeRoiImage(Bitmap source, Rect rect)
+        {
+            var sourceMat = BitmapConverter.ToMat(source);
+            var roiMat = sourceMat.AdjustROI(rect.Top, rect.Bottom, rect.Left, rect.Top);
+            return BitmapConverter.ToBitmap(roiMat);
+        }
     }
 }

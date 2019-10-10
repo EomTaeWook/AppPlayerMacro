@@ -11,16 +11,22 @@ namespace Macro.Infrastructure.Manager
 {
     public class CacheDataManager
     {
-        private CacheModel _cacheData;
+        private CacheModel _commonCacheData;
+        private CacheModel _gameCacheData;
         private int _atomic = 0;
         private readonly Dictionary<ulong, EventTriggerModel> _indexTriggerModels;
+        private readonly Dictionary<ulong, GameEventTriggerModel> _indexGameTriggerModels;
         public CacheDataManager()
         {
             _indexTriggerModels = new Dictionary<ulong, EventTriggerModel>();
+            _indexGameTriggerModels = new Dictionary<ulong, GameEventTriggerModel>();
 
-            _cacheData = new CacheModel(0);
+            _commonCacheData = new CacheModel(0);
+
+            _gameCacheData = new CacheModel(0);
 
             NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
+
             NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
         }
 
@@ -31,7 +37,7 @@ namespace Macro.Infrastructure.Manager
             if (isExists && saves.Count > 0)
             {
                 var bytes = File.ReadAllBytes(path);
-                _cacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
+                _commonCacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
             }
             else
             {
@@ -42,32 +48,53 @@ namespace Macro.Infrastructure.Manager
                 MakeIndexTriggerModel(save);
                 InsertIndexTriggerModel(save);
             }
-            UpdateCacheData(path);
+            UpdateCacheData(path, _commonCacheData);
             return isNewCreated;
         }
-        public void UpdateCacheData(string path)
+        public bool CheckAndMakeCacheFile(List<GameEventTriggerModel> saves, string path)
         {
-            _cacheData.LatestCheckDateTime = DateTime.Now.Ticks;
+            var isNewCreated = false;
+            var isExists = File.Exists(path);
+            if (isExists && saves.Count > 0)
+            {
+                var bytes = File.ReadAllBytes(path);
+                _commonCacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
+            }
+            else
+            {
+                isNewCreated = true;
+            }
+            foreach (var save in saves)
+            {
+                MakeIndexTriggerModel(save);
+                InsertIndexTriggerModel(save);
+            }
 
-            var bytes = ObjectSerializer.SerializeObject(_cacheData);
+            UpdateCacheData(path, _gameCacheData);
+            return isNewCreated;
+        }
+        public void UpdateCacheData(string path, CacheModel cacheModel)
+        {
+            cacheModel.LatestCheckDateTime = DateTime.Now.Ticks;
+            var bytes = ObjectSerializer.SerializeObject(cacheModel);
             File.WriteAllBytes(path, bytes);
         }
         public bool IsUpdated()
         {
-            return TimeSpan.FromTicks(DateTime.Now.Ticks - _cacheData.LatestCheckDateTime).TotalDays > 1;
+            return TimeSpan.FromTicks(DateTime.Now.Ticks - _commonCacheData.LatestCheckDateTime).TotalDays > 1;
         }
         public ulong GetMaxIndex()
         {
-            return _cacheData.MaxIndex;
+            return _commonCacheData.MaxIndex;
         }
-        public ulong IncreaseIndex()
+        public ulong IncreaseIndex(CacheModel cacheModel)
         {
             if(Interlocked.Exchange(ref _atomic, 1) == 0)
             {
-                _cacheData.MaxIndex++;
+                cacheModel.MaxIndex++;
                 Interlocked.Exchange(ref _atomic, 0);
             }
-            return _cacheData.MaxIndex;
+            return cacheModel.MaxIndex;
         }
 
         public EventTriggerModel GetEventTriggerModel(ulong index)
@@ -81,30 +108,79 @@ namespace Macro.Infrastructure.Manager
                 return null;
             }
         }
+        public GameEventTriggerModel GetGameEventTriggerModel(ulong index)
+        {
+            if (_indexGameTriggerModels.ContainsKey(index))
+            {
+                return _indexGameTriggerModels[index];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private void NotifyHelper_EventTriggerRemoved(EventTriggerEventArgs obj)
         {
-            RemoveIndexTriggerModel(obj.TriggerModel);
+            if(obj.TriggerModel is GameEventTriggerModel)
+            {
+                RemoveIndexTriggerModel(obj.TriggerModel as GameEventTriggerModel);
+            }
+            else if(obj.TriggerModel is EventTriggerModel)
+            {
+                RemoveIndexTriggerModel(obj.TriggerModel as EventTriggerModel );
+            }
         }
 
         private void NotifyHelper_EventTriggerInserted(EventTriggerEventArgs obj)
         {
-            InsertIndexTriggerModel(obj.TriggerModel);
+            if (obj.TriggerModel is GameEventTriggerModel)
+            {
+                InsertIndexTriggerModel(obj.TriggerModel as GameEventTriggerModel);
+            }
+            else if (obj.TriggerModel is EventTriggerModel)
+            {
+                InsertIndexTriggerModel(obj.TriggerModel as EventTriggerModel);
+            }
         }
-        public void MakeIndexTriggerModel(EventTriggerModel model)
+        public void MakeIndexTriggerModel<T>(T model) where T : BaseEventTriggerModel<T>
         {
+            CacheModel cacheModel = null;
+            if(model is GameEventTriggerModel)
+            {
+                cacheModel = _gameCacheData;
+            }
+            else if(model is EventTriggerModel)
+            {
+                cacheModel = _commonCacheData;
+            }
+
             if (model.TriggerIndex == 0)
             {
-                model.TriggerIndex = IncreaseIndex();
+                model.TriggerIndex = IncreaseIndex(cacheModel);
             }
-            else if (model.TriggerIndex > _cacheData.MaxIndex)
+            else if (model.TriggerIndex > cacheModel.MaxIndex)
             {
-                _cacheData.MaxIndex = model.TriggerIndex;
+                cacheModel.MaxIndex = model.TriggerIndex;
             }
             foreach (var child in model.SubEventTriggers)
             {
                 MakeIndexTriggerModel(child);
             }
         }
+
+        private void InsertIndexTriggerModel(GameEventTriggerModel model)
+        {
+            if (_indexTriggerModels.ContainsKey(model.TriggerIndex) == false)
+            {
+                _indexGameTriggerModels.Add(model.TriggerIndex, model);
+            }
+            foreach (var child in model.SubEventTriggers)
+            {
+                InsertIndexTriggerModel(child);
+            }
+        }
+
         private void InsertIndexTriggerModel(EventTriggerModel model)
         {
             if (_indexTriggerModels.ContainsKey(model.TriggerIndex) == false)
@@ -122,6 +198,17 @@ namespace Macro.Infrastructure.Manager
             if (_indexTriggerModels.ContainsKey(model.TriggerIndex))
             {
                 _indexTriggerModels.Remove(model.TriggerIndex);
+            }
+            foreach (var child in model.SubEventTriggers)
+            {
+                RemoveIndexTriggerModel(child);
+            }
+        }
+        private void RemoveIndexTriggerModel(GameEventTriggerModel model)
+        {
+            if (_indexGameTriggerModels.ContainsKey(model.TriggerIndex))
+            {
+                _indexGameTriggerModels.Remove(model.TriggerIndex);
             }
             foreach (var child in model.SubEventTriggers)
             {

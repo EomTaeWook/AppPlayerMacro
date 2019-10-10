@@ -70,6 +70,7 @@
     {
         Success,
 
+        FailedInvalidateData,
         FailedImageValidate,
         FailedMouseCoordinatesValidate,
         FailedKeyboardCommandValidate,

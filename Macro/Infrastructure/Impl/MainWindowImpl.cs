@@ -135,7 +135,28 @@ namespace Macro
 
             Clear();
         }
+        private bool TryModelValidate(GameEventTriggerModel model, out Message message)
+        {
+            message = Message.Success;
+            model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
+            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
+            {
+                message = Message.FailedMouseCoordinatesValidate;
+                return false;
+            }
 
+            if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
+            {
+                message = Message.FailedKeyboardCommandValidate;
+                return false;
+            }
+            if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
+            {
+                message = Message.FailedProcessValidate;
+                return false;
+            }
+            return true;
+        }
         private bool TryModelValidate(EventTriggerModel model, out Message message)
         {
             message = Message.Success;
@@ -177,7 +198,7 @@ namespace Macro
             });
             
         }
-        private bool Validate(EventTriggerModel model)
+        private bool Validate(GameEventTriggerModel model)
         {
             var process = comboProcess.SelectedValue as Process;
 
@@ -189,24 +210,6 @@ namespace Macro
 
             if (TryModelValidate(model, out Message error))
             {
-                var rect = new Rect();
-
-                NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
-                model.ProcessInfo.Position = rect;
-                if (model.EventType != EventType.Mouse)
-                {
-                    foreach (var monitor in DisplayHelper.MonitorInfo())
-                    {
-                        if (monitor.Rect.IsContain(rect))
-                        {
-                            if (model.MonitorInfo != null)
-                                model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
-
-                            model.MonitorInfo = monitor;
-                            break;
-                        }
-                    }
-                }
                 return true;
             }
             else
@@ -214,31 +217,55 @@ namespace Macro
                 this.MessageShow("Error", DocumentHelper.Get(error));
                 return false;
             }
-        }
-        private Task SaveFileLoad(object state)
-        {
-            if (state is SaveFileLoadModel model)
-            {
-                try
-                {
-                    var saveFiles = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(model.SaveFilePath));
 
-                    if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(saveFiles, model.CacheFilePath))
-                    {
-                        model.View.Save(saveFiles);
-                    }
-                    model.View.SaveDataBind(saveFiles);
-                }
-                catch (Exception ex)
-                {
-                    File.Delete(model.SaveFilePath);
-                    LogHelper.Warning(ex);
-                    Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
-                }
-            }
-            return Task.CompletedTask;
+
         }
         
+        private Task SaveFileLoad(object state)
+        {
+            //if (state is SaveFileLoadModel model)
+            //{
+            //    try
+            //    {
+            //        var saveFiles = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(model.SaveFilePath));
+
+            //        if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(saveFiles, model.CacheFilePath))
+            //        {
+            //            model.View.Save(saveFiles);
+            //        }
+            //        model.View.SaveDataBind(saveFiles);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        File.Delete(model.SaveFilePath);
+            //        LogHelper.Warning(ex);
+            //        Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
+            //    }
+            //}
+            return Task.CompletedTask;
+        }
+        private void SettingProcessMonitorInfo(IBaseEventTriggerModel model, Process process)
+        {
+            var rect = new Rect();
+            NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
+            model.ProcessInfo.Position = rect;
+
+            if (model.EventType != EventType.Mouse)
+            {
+                foreach (var monitor in DisplayHelper.MonitorInfo())
+                {
+                    if (monitor.Rect.IsContain(rect))
+                    {
+                        if (model.MonitorInfo != null)
+                            model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
+
+                        model.MonitorInfo = monitor;
+                        break;
+                    }
+                }
+            }
+        }
+ 
         private void VersionCheck()
         {
             if (!_config.VersionCheck)
@@ -281,7 +308,7 @@ namespace Macro
                 }
             }
         }
-        private async Task InvokeNextEventTriggerAsync(BaseContentView view, EventTriggerModel model, CancellationToken token)
+        private async Task InvokeNextEventTriggerAsync(BaseContentView view, IBaseEventTriggerModel model, CancellationToken token)
         {
             if (token.IsCancellationRequested)
                 return;
@@ -320,7 +347,7 @@ namespace Macro
                 if (token.IsCancellationRequested == true)
                     return;
 
-                List<EventTriggerModel> models = new List<EventTriggerModel>();
+                List<IBaseEventTriggerModel> models = new List<IBaseEventTriggerModel>();
                 BaseContentView view = null;
                 Dispatcher.Invoke(() => {
                     var selectView = _viewMap[tab_content.SelectedContent];

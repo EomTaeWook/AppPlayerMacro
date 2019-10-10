@@ -13,7 +13,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Utils;
+using Utils.Document;
+using Utils.Extensions;
 using Utils.Infrastructure;
+using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
 {
@@ -45,8 +48,8 @@ namespace Macro
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
             NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
+            
         }
-
         private void NotifyHelper_DeleteEventTriggerModel(DeleteEventTriggerModelArgs obj)
         {
             if (tab_content.SelectedContent is BaseContentView view)
@@ -64,18 +67,36 @@ namespace Macro
 
         private void NotifyHelper_SaveEventTriggerModel(SaveEventTriggerModelArgs obj)
         {
-            if(Validate(obj.CurrentEventTriggerModel))
+            if (tab_content.SelectedContent is BaseContentView baseView)
             {
-                if (tab_content.SelectedContent is BaseContentView view)
+                var view = _viewMap[baseView].View;
+
+                var process = comboProcess.SelectedValue as Process;
+
+                obj.CurrentEventTriggerModel.ProcessInfo.ProcessName = process?.ProcessName;
+
+                if (view.Validate(obj.CurrentEventTriggerModel, out Message error))
                 {
                     var path = _viewMap[view].SaveFilePath;
-                    _taskQueue.Enqueue(() => 
+
+                    _taskQueue.Enqueue(() =>
                     {
-                        ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
+
+                        if (obj.CurrentEventTriggerModel is GameEventTriggerModel)
+                        {
+                            var model = obj.CurrentEventTriggerModel as GameEventTriggerModel;
+                            ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
+                        }
+                        else if (obj.CurrentEventTriggerModel is EventTriggerModel)
+                        {
+                            var model  = obj.CurrentEventTriggerModel as EventTriggerModel;
+                            ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
+                            SettingProcessMonitorInfo(model, process);
+                        }
                         return view.Save(path);
-                    }).ContinueWith(task => 
+                    }).ContinueWith(task =>
                     {
-                        if(task.IsFaulted == false)
+                        if (task.IsFaulted == false)
                         {
                             Dispatcher.Invoke(() =>
                             {
@@ -84,9 +105,13 @@ namespace Macro
                         }
                         else
                         {
-                            this.MessageShow("Error", DocumentHelper.Get(Utils.Document.Message.FailedSaveFile));
+                            this.MessageShow("Error", DocumentHelper.Get(Message.FailedSaveFile));
                         }
                     });
+                }
+                else
+                {
+                    this.MessageShow("Error", DocumentHelper.Get(error));
                 }
             }
         }

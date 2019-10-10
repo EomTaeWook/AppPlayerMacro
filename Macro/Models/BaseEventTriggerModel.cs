@@ -8,8 +8,22 @@ using Utils.Infrastructure;
 
 namespace Macro.Models
 {
+    public interface IBaseEventTriggerModel
+    {
+        Bitmap Image { get; set; }
+        EventType EventType { get; set; }
+        MouseTriggerInfo MouseTriggerInfo { get; set; }
+        MonitorInfo MonitorInfo { get; set; }
+        string KeyboardCmd { get; set; }
+        ProcessInfo ProcessInfo { get; set; }
+        int AfterDelay { get; set; }
+        RepeatInfoModel RepeatInfo { get; set; }
+        ulong TriggerIndex { get; set; }
+        ulong EventToNext { get; set; }
+    }
+
     [Serializable]
-    public abstract class BaseEventTriggerModel<T> : INotifyPropertyChanged
+    public abstract class BaseEventTriggerModel<T> : IBaseEventTriggerModel, INotifyPropertyChanged
     {
         protected EventType _eventType = EventType.Image;
         protected MouseTriggerInfo _mouseTriggerInfo;
@@ -66,7 +80,7 @@ namespace Macro.Models
         [Order(6)]
         public ProcessInfo ProcessInfo
         {
-            get => _processInfo;
+            get => _processInfo ?? (_processInfo = new ProcessInfo() { Position = new Rect(), });
             set
             {
                 _processInfo = value;

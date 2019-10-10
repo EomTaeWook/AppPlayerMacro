@@ -31,7 +31,7 @@ namespace Macro.View
         {
             _dummyTreeGridViewItem = new TreeGridViewItem()
             {
-                DataContext = new GameEventConfigViewModel()
+                DataContext = new GameEventTriggerModel()
             };
             _dummyRelativePosition = new PointModel();
 
@@ -45,9 +45,44 @@ namespace Macro.View
 
             InitializeComponent();
 
-            //InitEvent();
+            InitEvent();
 
-            //Init();
+            Init();
+        }
+        public void Clear()
+        {
+            CurrentTreeViewItem.IsSelected = false;
+            _dummyTreeGridViewItem.DataContext<GameEventTriggerModel>().Clear();
+
+            if (CurrentTreeViewItem != _dummyTreeGridViewItem)
+            {
+                CurrentTreeViewItem = _dummyTreeGridViewItem;
+            }
+            if (RelativePosition != _dummyRelativePosition)
+            {
+                RelativePosition = _dummyRelativePosition;
+            }
+            RadioButtonRefresh();
+            btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
+            lblRepeatSubItems.Visibility = Visibility.Collapsed;
+            gridRepeat.Visibility = Visibility.Collapsed;
+        }
+        public TreeGridViewItem CopyCurrentItem()
+        {
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
+                return null;
+            Dispatcher.Invoke(() =>
+            {
+                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                if (treeVIewItem != null)
+                {
+                    CurrentTreeViewItem = new TreeGridViewItem()
+                    {
+                        DataContext = new EventTriggerModel(treeVIewItem.DataContext<EventTriggerModel>())
+                    };
+                }
+            });
+            return CurrentTreeViewItem;
         }
 
         private void RadioButtonRefresh()

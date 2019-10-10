@@ -23,10 +23,13 @@ namespace Macro.View
         private readonly Border _dummyBorder;
         private Border _dragBorder;
         private Point _factor;
+        private CaptureViewMode _captureViewMode;
 
         public CaptureView(MonitorInfo monitorInfo)
         {
             _monitorInfo = monitorInfo;
+            _captureViewMode = CaptureViewMode.Common;
+
             _dummyBorder = new Border
             {
                 BorderBrush = Brushes.Blue,
@@ -49,7 +52,10 @@ namespace Macro.View
             Show();
             Activate();
         }
-
+        public void Setting(CaptureViewMode captureViewMode)
+        {
+            _captureViewMode = captureViewMode;
+        }
         private void CaptureView_Loaded(object sender, RoutedEventArgs e)
         {
             EventInit();
@@ -146,16 +152,19 @@ namespace Macro.View
                 int top = (int)(Canvas.GetTop(_dragBorder) * _factor.Y);
                 int width = (int)(_dragBorder.Width * _factor.X);
                 int height = (int)(_dragBorder.Height * _factor.Y);
+                var rect = new Rect
+                {
+                    Left = left,
+                    Right = width + left,
+                    Bottom = top + height,
+                    Top = top
+                };
                 NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBInd, new CaptureEventArgs()
                 {
+                    CaptureViewMode = _captureViewMode,
                     MonitorInfo = _monitorInfo,
-                    CaptureImage = DisplayHelper.Capture(_monitorInfo, new Rect
-                    {
-                        Left = left,
-                        Right = width + left,
-                        Bottom = top + height,
-                        Top = top
-                    })
+                    CaptureImage = DisplayHelper.Capture(_monitorInfo, rect),
+                    Position = rect
                 });
                 e.Handled = true;
                 WindowState = WindowState.Maximized;

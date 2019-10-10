@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Macro.Infrastructure;
+using System.Drawing;
 using System.Windows.Controls;
 using Utils.Infrastructure;
 
@@ -14,8 +15,10 @@ namespace Macro.Models
     }
     public class CaptureEventArgs : INotifyEventArgs
     {
+        public CaptureViewMode CaptureViewMode { get; set; }
         public MonitorInfo MonitorInfo { get; set; }
         public Bitmap CaptureImage { get; set; }
+        public Rect Position { get; set; }
 
     }
     public class ConfigEventArgs : INotifyEventArgs
@@ -24,8 +27,8 @@ namespace Macro.Models
     }
     public class EventTriggerOrderChangedEventArgs : INotifyEventArgs
     {
-        public EventTriggerModel TriggerModel1 { get; set; }
-        public EventTriggerModel TriggerModel2 { get; set; }
+        public IBaseEventTriggerModel TriggerModel1 { get; set; }
+        public IBaseEventTriggerModel TriggerModel2 { get; set; }
     }
     public class SelctTreeViewItemChangedEventArgs : INotifyEventArgs
     {
@@ -34,15 +37,17 @@ namespace Macro.Models
     public class EventTriggerEventArgs : INotifyEventArgs
     {
         public ulong Index { get; set; }
-        public EventTriggerModel TriggerModel { get; set; }
+        public IBaseEventTriggerModel TriggerModel { get; set; }
     }
 
-    public class SaveEventTriggerModelArgs : INotifyEventArgs
+    public class SaveEventTriggerModelArgs : INotifyEventArgs 
     {
-        public EventTriggerModel CurrentEventTriggerModel { get; set; }
+        public IBaseEventTriggerModel CurrentEventTriggerModel { get; set; }
     }
+
     public class DeleteEventTriggerModelArgs : INotifyEventArgs
     {
-        public EventTriggerModel CurrentEventTriggerModel { get; set; }
+        public IBaseEventTriggerModel CurrentEventTriggerModel { get; set; }
     }
+
 }

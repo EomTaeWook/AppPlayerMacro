@@ -48,6 +48,11 @@ namespace Macro.View
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
         {
+            if (e.CaptureViewMode != CaptureViewMode.Common || e.CaptureViewMode == CaptureViewMode.Max)
+            {
+                return;
+            }
+
             foreach (var item in _captureViews)
             {
                 item.Hide();

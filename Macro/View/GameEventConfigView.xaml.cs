@@ -71,6 +71,7 @@ namespace Macro.View
             }
             RadioButtonRefresh();
         }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (sender.Equals(btnMouseCoordinate))

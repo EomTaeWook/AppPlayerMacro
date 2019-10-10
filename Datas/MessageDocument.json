@@ -73,6 +73,11 @@
     "Code": "FailedSaveFile",
     "Kor": "파일 저장에 실패하였습니다.",
     "Eng": "File Save Failed."
+  },
+  {
+    "Code": "FailedInvalidateData",
+    "Kor": "잘못된 정보가 입력되었습니다.",
+    "Eng": "Failed Invalidate Data"
   }
 ]
 

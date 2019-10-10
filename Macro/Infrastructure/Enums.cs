@@ -32,7 +32,9 @@
         EventTriggerRemoved,
 
         Save,
+        GameSave,
         Delete,
+        GameDelete,
 
         Max
     }
@@ -54,4 +56,15 @@
         
         Max
     }
+
+    public enum CaptureViewMode
+    {
+        Common,
+        Game,
+        HP,
+        Mp,
+
+        Max
+    }
+
 }

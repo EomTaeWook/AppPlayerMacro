@@ -12,6 +12,22 @@ namespace Macro.Extensions
         {
             return new EventTriggerModel(source);
         }
+        public static void Clear(this GameEventTriggerModel source)
+        {
+            source.Image = null;
+            source.EventType = EventType.Image;
+            source.MouseTriggerInfo = new MouseTriggerInfo();
+            source.MonitorInfo = new MonitorInfo();
+            source.KeyboardCmd = "";
+            source.ProcessInfo = new ProcessInfo();
+            source.SubEventTriggers = new ObservableCollection<GameEventTriggerModel>();
+            source.AfterDelay = 0;
+            source.RepeatInfo = new RepeatInfoModel();
+            source.EventToNext = 0;
+            source.TriggerIndex = 0;
+            source.HpCondition = new ValueConditionModel() { ConditionType = ConditionType.Below };
+            source.MpCondition = new ValueConditionModel() { ConditionType = ConditionType.Below };
+        }
         public static void Clear(this EventTriggerModel source)
         {
             source.Image = null;

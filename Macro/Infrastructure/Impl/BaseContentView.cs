@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using Utils;
+using Utils.Document;
 using Utils.Extensions;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
@@ -26,23 +27,27 @@ namespace Macro.Infrastructure.Impl
 
         public abstract Task Delete(object state);
 
+        public abstract bool Validate(IBaseEventTriggerModel model, out Message error);
+
         public abstract void Clear();
 
-        public abstract void SaveDataBind(List<EventTriggerModel> saves);
+        public abstract void SaveDataBind(List<IBaseEventTriggerModel> saves);
 
-        public abstract IEnumerable<EventTriggerModel> GetEnumerator();
+        public abstract IEnumerable<IBaseEventTriggerModel> GetEnumerator();
 
-        public async Task<EventTriggerModel> InvokeNextEventTriggerAsync(EventTriggerModel saveModel, ProcessConfigModel processEventTriggerModel)
-        {
-            if (processEventTriggerModel.Token.IsCancellationRequested)
-                return null;
-            var nextModel = await TriggerProcess(saveModel, processEventTriggerModel);
-            return nextModel.Item2;
-        }
+        public abstract Task<IBaseEventTriggerModel> InvokeNextEventTriggerAsync(IBaseEventTriggerModel saveModel, ProcessConfigModel processEventTriggerModel);
+
+        //public async Task<IBaseEventTriggerModel> InvokeNextEventTriggerAsync(IBaseEventTriggerModel saveModel, ProcessConfigModel processEventTriggerModel)
+        //{
+        //    if (processEventTriggerModel.Token.IsCancellationRequested)
+        //        return null;
+        //    var nextModel = await TriggerProcess(saveModel, processEventTriggerModel);
+        //    return nextModel.Item2;
+        //}
         protected virtual void CaptureImage(Bitmap bmp)
         {
         }
-        private async Task<Tuple<bool, EventTriggerModel>> TriggerProcess(EventTriggerModel model, ProcessConfigModel processEventTriggerModel)
+        protected async Task<Tuple<bool, IBaseEventTriggerModel>> TriggerProcess<T>(T model, ProcessConfigModel processEventTriggerModel) where T : BaseEventTriggerModel<T>
         {
             var isExcute = false;
 
@@ -166,8 +171,15 @@ namespace Macro.Infrastructure.Impl
 
                                 if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
                                 {
-                                    EventTriggerModel nextModel = null;
-                                    nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(model.EventToNext);
+                                    IBaseEventTriggerModel nextModel = null;
+                                    if(model is GameEventTriggerModel)
+                                    {
+                                        nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetGameEventTriggerModel(model.EventToNext);
+                                    }
+                                    else if(model is EventTriggerModel)
+                                    {
+                                        nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(model.EventToNext);
+                                    }
 
                                     if (nextModel != null)
                                     {
@@ -181,10 +193,10 @@ namespace Macro.Infrastructure.Impl
                 }
             }
             await TaskHelper.TokenCheckDelayAsync(processEventTriggerModel.ItemDelay, processEventTriggerModel.Token);
-            return Tuple.Create<bool, EventTriggerModel>(isExcute, null);
+            return Tuple.Create<bool, IBaseEventTriggerModel>(isExcute, null);
         }
 
-        private Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, EventTriggerModel model, bool isDynamic)
+        private Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, IBaseEventTriggerModel model, bool isDynamic)
         {
             var currentPosition = new Rect();
             NativeHelper.GetWindowRect(hWnd, ref currentPosition);
@@ -218,7 +230,7 @@ namespace Macro.Infrastructure.Impl
             }
             return Tuple.Create(Tuple.Create(factorX, factorY), Tuple.Create(positionFactorX, positionFactorY));
         }
-        private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
+        private void KeyboardTriggerProcess(IntPtr hWnd, IBaseEventTriggerModel model)
         {
             var hWndActive = NativeHelper.GetForegroundWindow();
             Task.Delay(100).Wait();
@@ -268,7 +280,7 @@ namespace Macro.Infrastructure.Impl
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }
-        private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model, Tuple<float, float> factor)
+        private void MouseTriggerProcess(IntPtr hWnd, Point location, IBaseEventTriggerModel model, Tuple<float, float> factor)
         {
             var mousePosition = new Point()
             {
@@ -327,7 +339,7 @@ namespace Macro.Infrastructure.Impl
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
             }
         }
-        private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
+        private void ImageTriggerProcess(IntPtr hWnd, Point location, IBaseEventTriggerModel model)
         {
             var position = new Point()
             {

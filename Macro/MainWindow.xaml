@@ -59,7 +59,7 @@
                 <view:CommonContentView x:Name="commonContentView"/>
             </Controls:MetroTabItem>
             <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Game, Source={StaticResource Locator}}">
-                <view:GameContentVIew x:Name="gameContentView"/>
+                <view:GameContentView x:Name="gameContentView"/>
             </Controls:MetroTabItem>
         </Controls:MetroAnimatedTabControl>
         
