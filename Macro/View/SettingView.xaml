@@ -41,7 +41,7 @@
                 <Controls:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></Controls:NumericUpDown>
 
                 <Label Grid.Row="5" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.SearchResultDisplay, Source={StaticResource Locator}}"></Label>
-                <ComboBox Name="comboSearchResultDisplay" Grid.Row="5" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.SearchResultDisplay, Mode=TwoWay}">
+                <ComboBox Name="comboSearchResultDisplay" Grid.Row="5" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.SearchImageResultDisplay, Mode=TwoWay}">
                     <ComboBox.Items>
                         <system:Boolean>True</system:Boolean>
                         <system:Boolean>False</system:Boolean>

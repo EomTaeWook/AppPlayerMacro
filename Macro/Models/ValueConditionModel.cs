@@ -1,16 +1,41 @@
 ﻿using Macro.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Macro.Models
 {
-    public class ValueConditionModel
+    public class ValueConditionModel : INotifyPropertyChanged
     {
-        public int Value { get; set; }
+        private int _value = 0;
+        private ConditionType _conditionType;
+        public int Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                OnPropertyChanged("Value");
+            }
+        }
+        public ConditionType ConditionType
+        {
+            get => _conditionType;
+            set
+            {
+                _conditionType = value;
+                OnPropertyChanged("ConditionType");
+            }
+        }
 
-        public ConditionType ConditionType { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

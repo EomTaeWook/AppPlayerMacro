@@ -66,5 +66,11 @@
 
         Max
     }
+    public enum MousePointViewMode
+    {
+        Common,
+        Game,
 
+        Max
+    }
 }

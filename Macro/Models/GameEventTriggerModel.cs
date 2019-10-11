@@ -55,6 +55,5 @@ namespace Macro.Models
             }
             get => _mpCondition;
         }
-
     }
 }

@@ -10,6 +10,7 @@ namespace Macro.Models
 
     public class MousePointEventArgs : INotifyEventArgs
     {
+        public MousePointViewMode MousePointViewMode { get; set; }
         public MonitorInfo MonitorInfo { get; set; }
         public MouseTriggerInfo MouseTriggerInfo { get; set; }
     }

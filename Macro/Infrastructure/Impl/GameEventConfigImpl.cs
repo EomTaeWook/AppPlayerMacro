@@ -4,6 +4,7 @@ using Macro.Infrastructure.Impl;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -14,40 +15,85 @@ namespace Macro.View
     {
         public TreeGridViewItem CurrentTreeViewItem
         {
-            get => this.DataContext<GameEventConfigViewModel>().CurrentTreeViewItem;
-            protected set => this.DataContext<GameEventConfigViewModel>().CurrentTreeViewItem = value;
+            get => _contextViewModel.CurrentTreeViewItem;
+            protected set => _contextViewModel.CurrentTreeViewItem = value;
         }
         public PointModel RelativePosition
         {
-            get => this.DataContext<GameEventConfigViewModel>().RelativePosition;
-            protected set => this.DataContext<GameEventConfigViewModel>().RelativePosition = value;
+            get => _contextViewModel.RelativePosition;
+            protected set => _contextViewModel.RelativePosition = value;
         }
 
         private readonly TreeGridViewItem _dummyTreeGridViewItem;
         private readonly PointModel _dummyRelativePosition;
+        private readonly ValueConditionModel _dummyHpCondition;
+        private readonly ValueConditionModel _dummyMpCondition;
         private readonly ObservableCollection<KeyValuePair<ConditionType, string>> _conditionItems;
-
+        private readonly GameEventConfigViewModel _contextViewModel;
         public GameEventConfigView()
         {
+            _contextViewModel = new ViewModelLocator().GameEventConfigViewModel;
+
             _dummyTreeGridViewItem = new TreeGridViewItem()
             {
                 DataContext = new GameEventTriggerModel()
             };
             _dummyRelativePosition = new PointModel();
 
+            _dummyHpCondition = new ValueConditionModel();
+
+            _dummyMpCondition = new ValueConditionModel();
+
             _conditionItems = new ObservableCollection<KeyValuePair<ConditionType, string>>();
 
-            DataContext = new ViewModelLocator().GameEventConfigViewModel;
+            _contextViewModel.HpCondition = _dummyHpCondition;
 
-            CurrentTreeViewItem = _dummyTreeGridViewItem;
+            _contextViewModel.MpCondition = _dummyMpCondition;
 
-            RelativePosition = _dummyRelativePosition;
+            _contextViewModel.CurrentTreeViewItem = _dummyTreeGridViewItem;
+
+            _contextViewModel.RelativePosition = _dummyRelativePosition;
 
             InitializeComponent();
 
             InitEvent();
 
             Init();
+        }
+        private void Init()
+        {
+            DataContext = _contextViewModel;
+
+            treeSaves.ItemsSource = this.DataContext<GameEventConfigViewModel>().TriggerSaves;
+
+            foreach (var type in Enum.GetValues(typeof(ConditionType)))
+            {
+                if ((ConditionType)type == ConditionType.Max)
+                {
+                    continue;
+                }
+                if (Enum.TryParse(type.ToString(), out Utils.Document.Label label))
+                {
+                    _conditionItems.Add(new KeyValuePair<ConditionType, string>((ConditionType)type, DocumentHelper.Get(label)));
+                }
+            }
+
+            foreach (var item in _mousePointViews)
+            {
+                item.SettingViewMode(MousePointViewMode.Game);
+            }
+
+            comboHpCondition.ItemsSource = _conditionItems;
+            comboHpCondition.DisplayMemberPath = "Value";
+            comboHpCondition.SelectedValuePath = "Key";
+
+            comboMpCondition.ItemsSource = _conditionItems;
+            comboMpCondition.DisplayMemberPath = "Value";
+            comboMpCondition.SelectedValuePath = "Key";
+
+            _dummyHpCondition.ConditionType = ConditionType.Below;
+
+            _dummyMpCondition.ConditionType = ConditionType.Below;
         }
         public void Clear()
         {
@@ -73,12 +119,12 @@ namespace Macro.View
                 return null;
             Dispatcher.Invoke(() =>
             {
-                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<GameEventTriggerModel>());
                 if (treeVIewItem != null)
                 {
                     CurrentTreeViewItem = new TreeGridViewItem()
                     {
-                        DataContext = new EventTriggerModel(treeVIewItem.DataContext<EventTriggerModel>())
+                        DataContext = new GameEventTriggerModel(treeVIewItem.DataContext<GameEventTriggerModel>())
                     };
                 }
             });

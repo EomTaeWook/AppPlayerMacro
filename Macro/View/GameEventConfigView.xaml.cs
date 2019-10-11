@@ -4,6 +4,7 @@ using Macro.Infrastructure.Impl;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -28,7 +29,32 @@ namespace Macro.View
             {
                 button.Click += Button_Click;
             }
+
+            NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
         }
+
+        private void NotifyHelper_MousePositionDataBind(MousePointEventArgs e)
+        {
+            if (e.MousePointViewMode != MousePointViewMode.Game)
+            {
+                return;
+            }
+
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
+            {
+                CurrentTreeViewItem = new TreeGridViewItem()
+                {
+                    DataContext = new GameEventTriggerModel()
+                };
+            }
+            CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MonitorInfo = e.MonitorInfo;
+            CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo = e.MouseTriggerInfo;
+            foreach (var item in _mousePointViews)
+            {
+                item.Hide();
+            }
+        }
+
         private void RadioButton_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
@@ -78,9 +104,9 @@ namespace Macro.View
             {
                 //lblWheelData.Visibility = Visibility.Collapsed;
                 //gridWheelData.Visibility = Visibility.Collapsed;
-                if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                if (CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
                 {
-                    CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                    CurrentTreeViewItem.DataContext<GameEventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
                 }
                 ShowMousePoisitionView();
             }
@@ -88,8 +114,8 @@ namespace Macro.View
             {
                 if (CurrentTreeViewItem == null)
                     return;
-                var itemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<CommonEventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
-                var currentIndex = itemContainer.IndexOf(CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                var itemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<GameEventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<GameEventTriggerModel>().SubEventTriggers;
+                var currentIndex = itemContainer.IndexOf(CurrentTreeViewItem.DataContext<GameEventTriggerModel>());
 
                 if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
                 {
@@ -133,28 +159,6 @@ namespace Macro.View
             //        StartPoint = CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.StartPoint
             //    };
             //}
-        }
-        private void Init()
-        {
-            foreach (var type in Enum.GetValues(typeof(ConditionType)))
-            {
-                if ((ConditionType)type == ConditionType.Max)
-                {
-                    continue;
-                }
-                if (Enum.TryParse(type.ToString(), out Utils.Document.Label label))
-                {
-                    _conditionItems.Add(new KeyValuePair<ConditionType, string>((ConditionType)type, DocumentHelper.Get(label)));
-                }
-            }
-
-            comboHpCondition.ItemsSource = _conditionItems;
-            comboHpCondition.DisplayMemberPath = "Value";
-            comboHpCondition.SelectedValuePath = "Key";
-
-            comboMpCondition.ItemsSource = _conditionItems;
-            comboMpCondition.DisplayMemberPath = "Value";
-            comboMpCondition.SelectedValuePath = "Key";
         }
     }
 }

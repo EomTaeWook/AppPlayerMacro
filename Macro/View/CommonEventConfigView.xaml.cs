@@ -43,8 +43,6 @@ namespace Macro.View
             treeSaves.Drop += TreeSaves_Drop;
 
             comboRepeatSubItem.SelectionChanged += ComboRepeatSubItem_SelectionChanged;
-
-            Unloaded += ConfigEventView_Unloaded;
         }
 
         private void NotifyHelper_ConfigChanged(ConfigEventArgs config)
@@ -234,8 +232,11 @@ namespace Macro.View
             base.OnPreviewKeyDown(e);
         }
 
-        private void NotifyHelper_MousePositionDataBind(MousePointEventArgs args)
+        private void NotifyHelper_MousePositionDataBind(MousePointEventArgs e)
         {
+            if (e.MousePointViewMode != MousePointViewMode.Common)
+                return;
+
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
             {
                 CurrentTreeViewItem = new TreeGridViewItem()
@@ -243,8 +244,8 @@ namespace Macro.View
                     DataContext = new EventTriggerModel()
                 };
             }
-            CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = args.MonitorInfo;
-            CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = args.MouseTriggerInfo;
+            CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = e.MonitorInfo;
+            CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = e.MouseTriggerInfo;
             foreach (var item in _mousePointViews)
             {
                 item.Hide();
@@ -269,16 +270,6 @@ namespace Macro.View
             }
             RadioButtonRefresh();
         }
-
-        private void ConfigEventView_Unloaded(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in _mousePointViews)
-            {
-                item.Close();
-            }
-            _mousePointViews.Clear();
-        }
-
         private void RadioButton_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)

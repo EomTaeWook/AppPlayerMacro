@@ -7,6 +7,8 @@ namespace Macro.Models.ViewModel
 {
     public interface IBaseNotifyEventConfigViewModel : INotifyPropertyChanged
     {
+        TreeGridViewItem CurrentTreeViewItem { get; set; }
+        PointModel RelativePosition { get; set; }
     }
 
     public abstract class BaseEventConfigViewModel<T> : IBaseNotifyEventConfigViewModel where T: BaseEventTriggerModel<T>
