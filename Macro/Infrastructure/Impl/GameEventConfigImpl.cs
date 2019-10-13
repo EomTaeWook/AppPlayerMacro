@@ -7,6 +7,7 @@ using Macro.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Windows;
 
 namespace Macro.View
@@ -26,6 +27,7 @@ namespace Macro.View
 
         private readonly TreeGridViewItem _dummyTreeGridViewItem;
         private readonly PointModel _dummyRelativePosition;
+        private readonly Bitmap _dummyImage;
         private readonly ValueConditionModel _dummyHpCondition;
         private readonly ValueConditionModel _dummyMpCondition;
         private readonly ObservableCollection<KeyValuePair<ConditionType, string>> _conditionItems;
@@ -45,6 +47,8 @@ namespace Macro.View
             _dummyMpCondition = new ValueConditionModel();
 
             _conditionItems = new ObservableCollection<KeyValuePair<ConditionType, string>>();
+
+            _dummyImage = new Bitmap(0,0);
 
             _contextViewModel.HpCondition = _dummyHpCondition;
 
@@ -108,10 +112,17 @@ namespace Macro.View
             {
                 RelativePosition = _dummyRelativePosition;
             }
+            if(CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image != _dummyImage)
+            {
+                CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image = _dummyImage;
+            }
+
             RadioButtonRefresh();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
             lblRepeatSubItems.Visibility = Visibility.Collapsed;
             gridRepeat.Visibility = Visibility.Collapsed;
+            checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
+            checkImageSearchRequired.IsChecked = true;
         }
         public TreeGridViewItem CopyCurrentItem()
         {
@@ -130,7 +141,30 @@ namespace Macro.View
             });
             return CurrentTreeViewItem;
         }
+        public void InsertCurrentItem()
+        {
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
+            {
+                return;
+            }
 
+            Dispatcher.Invoke(() =>
+            {
+                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<GameEventTriggerModel>());
+
+                if (treeVIewItem == null)
+                {
+                    var model = CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
+                    _contextViewModel.TriggerSaves.Add(model);
+                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerInserted, new EventTriggerEventArgs()
+                    {
+                        Index = model.TriggerIndex,
+                        TriggerModel = model
+                    });
+                }
+                Clear();
+            });
+        }
         private void RadioButtonRefresh()
         {
             if (CurrentTreeViewItem.DataContext<GameEventTriggerModel>().EventType == EventType.Mouse)
@@ -140,6 +174,8 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = true;
+
+                checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Visible;
 
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
@@ -151,6 +187,9 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
+
+                checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Visible;
+
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -164,6 +203,10 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
+
+                checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
+                checkImageSearchRequired.IsChecked = true;
+
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -177,6 +220,10 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = false;
+
+                checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
+                checkImageSearchRequired.IsChecked = true;
+
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
 

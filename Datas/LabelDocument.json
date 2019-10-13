@@ -223,6 +223,11 @@
     "Code": "Below",
     "Kor": "이하",
     "Eng": "Below"
+  },
+  {
+    "Code": "ImageSearchRequired",
+    "Kor": "이미지 검색 필수",
+    "Eng": "Image Search Required"
   }
 ]
 

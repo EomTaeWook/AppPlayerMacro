@@ -8,10 +8,16 @@ using System.Threading.Tasks;
 
 namespace Macro.Models
 {
+    [Serializable]
     public class ValueConditionModel : INotifyPropertyChanged
     {
-        private int _value = 0;
+        private int _value;
         private ConditionType _conditionType;
+        public ValueConditionModel()
+        {
+            _value = 0;
+            _conditionType = ConditionType.Below;
+        }
         public int Value
         {
             get => _value;
@@ -30,7 +36,7 @@ namespace Macro.Models
                 OnPropertyChanged("ConditionType");
             }
         }
-
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)

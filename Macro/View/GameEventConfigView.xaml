@@ -24,8 +24,9 @@
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
-                    
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -38,7 +39,7 @@
                     <ColumnDefinition Width="7*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.HpCondition, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Row="0" Grid.Column="1">
+                <Grid Grid.Column="1" Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -47,7 +48,7 @@
                     <ComboBox Name="comboHpCondition" Grid.Column="1" SelectedValue="{Binding Path=HpCondition.ConditionType, Mode=TwoWay}"></ComboBox>
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.MpCondition, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Row="1" Grid.Column="1">
+                <Grid Grid.Column="1" Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -69,8 +70,10 @@
                     <RadioButton GroupName="EventType" Grid.Column="2" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Keyboard}" Content="Keyboard" Name="rbKeyboard"/>
                     <RadioButton GroupName="EventType" Grid.Column="3" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=RelativeToImage}" Content="RelativeToImage" Name="rbRelativeToImage"/>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Column="1" Grid.Row="3">
+                <Label x:Name="lblImageSearchRequired" Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.ImageSearchRequired, Source={StaticResource Locator}}"></Label>
+                <CheckBox x:Name="checkImageSearchRequired" Grid.Column="1" Grid.Row="3" IsChecked="True"></CheckBox>
+                <Label Grid.Column="0" Grid.Row="4" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="6.5*"></ColumnDefinition>
                         <ColumnDefinition Width="3.5*"></ColumnDefinition>
@@ -97,24 +100,24 @@
                         <Controls:NumericUpDown FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Name="numRelativeY" Grid.Column="3" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
                     </Grid>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="4" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Column="1" Grid.Row="4">
+                <Label Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></Controls:NumericUpDown>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.TriggerToNext, Source={StaticResource Locator}}"></Label>
-                <Grid Grid.Column="1" Grid.Row="5">
+                <Label Grid.Column="0" Grid.Row="6" Content="{Binding Path=LabelViewModel.TriggerToNext, Source={StaticResource Locator}}"></Label>
+                <Grid Grid.Column="1" Grid.Row="6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numEventToNext" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.EventToNext, Mode=TwoWay}" HideUpDownButtons="True" Minimum="0" NumericInputMode="Numbers" ></Controls:NumericUpDown>
                 </Grid>
-                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
-                <Grid Grid.Column="1" Grid.Row="6" Visibility="Collapsed" Name="gridRepeat">
+                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="7" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
+                <Grid Grid.Column="1" Grid.Row="7" Visibility="Collapsed" Name="gridRepeat">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>

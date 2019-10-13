@@ -149,21 +149,21 @@ namespace Macro.Models.ViewModel
         {
             get => "Hp";
         }
-
         public string MP
         {
             get => "Mp";
         }
-
         public string HpCondition
         {
             get => DocumentHelper.Get(Label.HpCondition);
         }
-
         public string MpCondition
         {
             get => DocumentHelper.Get(Label.MpCondition);
         }
-
+        public string ImageSearchRequired
+        {
+            get => DocumentHelper.Get(Label.ImageSearchRequired);
+        }
     }
 }

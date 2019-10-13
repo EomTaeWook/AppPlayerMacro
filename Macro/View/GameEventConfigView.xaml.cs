@@ -29,8 +29,26 @@ namespace Macro.View
             {
                 button.Click += Button_Click;
             }
+            checkImageSearchRequired.Checked += CheckImageSearchRequired_Checked;
+            checkImageSearchRequired.Unchecked += CheckImageSearchRequired_Checked;
 
             NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
+        }
+
+        private void CheckImageSearchRequired_Checked(object sender, RoutedEventArgs e)
+        {
+            if(checkImageSearchRequired.IsChecked.HasValue)
+            {
+                _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().IsImageSearchRequired = checkImageSearchRequired.IsChecked.Value;
+            }
+            else
+            {
+                _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().IsImageSearchRequired = false;
+                if(_contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image != _dummyImage)
+                {
+                    _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image = _dummyImage;
+                }
+            }
         }
 
         private void NotifyHelper_MousePositionDataBind(MousePointEventArgs e)

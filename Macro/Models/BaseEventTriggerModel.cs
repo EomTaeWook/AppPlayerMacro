@@ -20,6 +20,7 @@ namespace Macro.Models
         RepeatInfoModel RepeatInfo { get; set; }
         ulong TriggerIndex { get; set; }
         ulong EventToNext { get; set; }
+        bool IsImageSearchRequired { get; set; }
     }
 
     [Serializable]
@@ -186,13 +187,18 @@ namespace Macro.Models
             }
         }
 
+        public virtual bool IsImageSearchRequired
+        {
+            get;
+            set;
+        }
+
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
         }
     }
 }

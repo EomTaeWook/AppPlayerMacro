@@ -63,6 +63,8 @@
         Above,
         Below,
 
+        ImageSearchRequired,
+
         Max
     }
 

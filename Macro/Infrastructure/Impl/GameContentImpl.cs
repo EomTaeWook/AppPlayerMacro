@@ -1,9 +1,12 @@
 ﻿using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
+using Macro.Infrastructure.Serialize;
 using Macro.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Utils;
@@ -48,12 +51,38 @@ namespace Macro.View
 
         public override Task Save(object state)
         {
+            if (state is string path)
+            {
+                gameConfigView.InsertCurrentItem();
+
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                using (var fs = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    var saves = (gameConfigView.DataContext as Models.ViewModel.GameEventConfigViewModel).TriggerSaves;
+                    foreach (var data in saves)
+                    {
+                        var bytes = ObjectSerializer.SerializeObject(data);
+                        fs.Write(bytes, 0, bytes.Count());
+                    }
+                    fs.Close();
+                }
+            }
             return Task.CompletedTask;
         }
 
         public override void SaveDataBind(List<IBaseEventTriggerModel> saves)
         {
-            
+            Dispatcher.Invoke(() =>
+            {
+                (gameConfigView.DataContext as Models.ViewModel.GameEventConfigViewModel).TriggerSaves.Clear();
+                foreach (var item in saves)
+                {
+                    (gameConfigView.DataContext as Models.ViewModel.GameEventConfigViewModel).TriggerSaves.Add(item as GameEventTriggerModel);
+                }
+            });
         }
         public override async Task<IBaseEventTriggerModel> InvokeNextEventTriggerAsync(IBaseEventTriggerModel saveModel, ProcessConfigModel processEventTriggerModel)
         {
@@ -68,12 +97,7 @@ namespace Macro.View
 
             model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
 
-            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
-            {
-                error = Message.FailedMouseCoordinatesValidate;
-                return false;
-            }
-            if(model.EventType == EventType.Image)
+            if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage || model.IsImageSearchRequired == true)
             {
                 if (model.Image == null)
                 {
@@ -82,11 +106,18 @@ namespace Macro.View
                 }
             }
 
+            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
+            {
+                error = Message.FailedMouseCoordinatesValidate;
+                return false;
+            }
+
             if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
             {
                 error = Message.FailedKeyboardCommandValidate;
                 return false;
             }
+
             if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
             {
                 error = Message.FailedProcessValidate;
