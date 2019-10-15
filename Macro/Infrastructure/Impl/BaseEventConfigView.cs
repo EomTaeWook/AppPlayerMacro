@@ -28,6 +28,7 @@ namespace Macro.Infrastructure.Impl
             {
                 _mousePointViews.Add(new MousePositionView(item));
             }
+
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
         }
 

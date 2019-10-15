@@ -2,7 +2,6 @@
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;

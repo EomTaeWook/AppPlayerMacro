@@ -62,7 +62,7 @@ namespace Macro.View
 
             treeSaves.ItemsSource = _contextViewModel.TriggerSaves;
 
-            foreach(var type in Enum.GetValues(typeof(RepeatType)))
+            foreach (var type in Enum.GetValues(typeof(RepeatType)))
             {
                 if(Enum.TryParse($"Repeat{type.ToString()}", out Utils.Document.Label label))
                 {

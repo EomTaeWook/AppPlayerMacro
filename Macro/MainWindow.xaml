@@ -62,7 +62,6 @@
                 <view:GameContentView x:Name="gameContentView"/>
             </Controls:MetroTabItem>
         </Controls:MetroAnimatedTabControl>
-        
     </DockPanel>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl x:Name="flyoutsControl">

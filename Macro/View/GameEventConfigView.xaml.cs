@@ -5,8 +5,6 @@ using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
 using MahApps.Metro.Controls;
-using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -44,10 +42,6 @@ namespace Macro.View
             else
             {
                 _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().IsImageSearchRequired = false;
-                if(_contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image != _dummyImage)
-                {
-                    _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image = _dummyImage;
-                }
             }
         }
 

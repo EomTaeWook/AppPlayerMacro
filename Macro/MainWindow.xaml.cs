@@ -81,18 +81,20 @@ namespace Macro
 
                     _taskQueue.Enqueue(() =>
                     {
-
-                        if (obj.CurrentEventTriggerModel is GameEventTriggerModel)
+                        Dispatcher.Invoke(() => 
                         {
-                            var model = obj.CurrentEventTriggerModel as GameEventTriggerModel;
-                            ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
-                        }
-                        else if (obj.CurrentEventTriggerModel is EventTriggerModel)
-                        {
-                            var model  = obj.CurrentEventTriggerModel as EventTriggerModel;
-                            ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
-                            SettingProcessMonitorInfo(model, process);
-                        }
+                            if (obj.CurrentEventTriggerModel is GameEventTriggerModel)
+                            {
+                                var model = obj.CurrentEventTriggerModel as GameEventTriggerModel;
+                                ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
+                            }
+                            else if (obj.CurrentEventTriggerModel is EventTriggerModel)
+                            {
+                                var model = obj.CurrentEventTriggerModel as EventTriggerModel;
+                                ObjectExtensions.GetInstance<CacheDataManager>().MakeIndexTriggerModel(model);
+                                SettingProcessMonitorInfo(model, process);
+                            }
+                        });
                         return view.Save(path);
                     }).ContinueWith(task =>
                     {

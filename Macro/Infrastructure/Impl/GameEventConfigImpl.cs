@@ -7,7 +7,6 @@ using Macro.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Windows;
 
 namespace Macro.View
@@ -27,7 +26,6 @@ namespace Macro.View
 
         private readonly TreeGridViewItem _dummyTreeGridViewItem;
         private readonly PointModel _dummyRelativePosition;
-        private readonly Bitmap _dummyImage;
         private readonly ValueConditionModel _dummyHpCondition;
         private readonly ValueConditionModel _dummyMpCondition;
         private readonly ObservableCollection<KeyValuePair<ConditionType, string>> _conditionItems;
@@ -48,8 +46,6 @@ namespace Macro.View
 
             _conditionItems = new ObservableCollection<KeyValuePair<ConditionType, string>>();
 
-            _dummyImage = new Bitmap(0,0);
-
             _contextViewModel.HpCondition = _dummyHpCondition;
 
             _contextViewModel.MpCondition = _dummyMpCondition;
@@ -68,7 +64,7 @@ namespace Macro.View
         {
             DataContext = _contextViewModel;
 
-            treeSaves.ItemsSource = this.DataContext<GameEventConfigViewModel>().TriggerSaves;
+            treeSaves.ItemsSource = _contextViewModel.TriggerSaves;
 
             foreach (var type in Enum.GetValues(typeof(ConditionType)))
             {
@@ -112,11 +108,6 @@ namespace Macro.View
             {
                 RelativePosition = _dummyRelativePosition;
             }
-            if(CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image != _dummyImage)
-            {
-                CurrentTreeViewItem.DataContext<GameEventTriggerModel>().Image = _dummyImage;
-            }
-
             RadioButtonRefresh();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
             lblRepeatSubItems.Visibility = Visibility.Collapsed;

@@ -24,6 +24,7 @@ namespace Macro.View
             InitializeComponent();
 
             InitEvent();
+
             Init();
         }
         private void InitEvent()
@@ -115,7 +116,15 @@ namespace Macro.View
             else if (btn.Equals(btnSave))
             {
                 var model = gameConfigView.CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
-                model.Image = _bitmap;
+                if(model.IsImageSearchRequired)
+                {
+                    model.Image = _bitmap;
+                }
+                else
+                {
+                    model.Image = new Bitmap(1, 1);
+                }
+                
                 if (model.EventType == EventType.RelativeToImage)
                 {
                     model.MouseTriggerInfo.StartPoint = new Point(gameConfigView.RelativePosition.X, gameConfigView.RelativePosition.Y);
