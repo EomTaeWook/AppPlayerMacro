@@ -49,6 +49,8 @@ namespace Macro.View
 
             _contextViewModel.RelativePosition = _dummyRelativePosition;
 
+            DataContext = _contextViewModel;
+
             InitializeComponent();
 
             InitEvent();
@@ -58,8 +60,6 @@ namespace Macro.View
 
         private void Init()
         {
-            DataContext = _contextViewModel;
-
             treeSaves.ItemsSource = _contextViewModel.TriggerSaves;
 
             foreach (var type in Enum.GetValues(typeof(RepeatType)))

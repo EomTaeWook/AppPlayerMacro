@@ -12,7 +12,13 @@
                           xmlns:ViewModel="clr-namespace:Macro.Models.ViewModel"
                           mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid x:Name="root">
+    <UserControl.Resources>
+        <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:WidthConverter x:Key="WidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:DependencyObjectWidthConverter x:Key="DependencyObjectWidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:BooleanToValueConverter x:Key="BooleanConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+    </UserControl.Resources>
+    <Grid>
         <DockPanel LastChildFill="True">
             <Grid DockPanel.Dock="Top">
                 <Grid.RowDefinitions>
@@ -146,7 +152,7 @@
                         <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />
                     </UI:TreeGridView.ItemTemplate>
                     <UI:TreeGridView.Columns>
-                        <GridViewColumn Header="Image" Width="{Binding Converter={StaticResource ResourceKey=DependencyObjectWidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="Image" Width="{Binding Path = CurrentWindowWidth, Converter={StaticResource WidthConverter}, ConverterParameter=0.2*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">

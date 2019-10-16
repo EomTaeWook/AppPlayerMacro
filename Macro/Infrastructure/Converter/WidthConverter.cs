@@ -19,7 +19,7 @@ namespace Macro.Infrastructure.Converter
 
             if (Regex.IsMatch(parameter.ToString(), _regex))
             {
-                var objectWidth = (double)@object.GetValue(FrameworkElement.ActualWidthProperty);
+                var objectWidth = (double)@object.GetValue(FrameworkElement.WidthProperty);
                 var param = parameter.ToString();
                 if (double.TryParse(param.Substring(0, param.Length - 1), out double width))
                     return (int)Math.Truncate(objectWidth * width);

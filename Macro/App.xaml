@@ -47,10 +47,6 @@
                 <Setter Property="Height" Value="80" />
             </Style>
             <model:ViewModelLocator x:Key="Locator" xmlns:model="clr-namespace:Macro.Models"/>
-            <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
-            <infra:WidthConverter x:Key="WidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
-            <infra:DependencyObjectWidthConverter x:Key="DependencyObjectWidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
-            <infra:BooleanToValueConverter x:Key="BooleanConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

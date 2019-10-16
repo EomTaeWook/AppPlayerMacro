@@ -12,6 +12,12 @@
                           xmlns:ViewModel="clr-namespace:Macro.Models.ViewModel"
                           mc:Ignorable="d"
                           d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:WidthConverter x:Key="WidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:DependencyObjectWidthConverter x:Key="DependencyObjectWidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:BooleanToValueConverter x:Key="BooleanConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+    </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
             <Grid DockPanel.Dock="Top">

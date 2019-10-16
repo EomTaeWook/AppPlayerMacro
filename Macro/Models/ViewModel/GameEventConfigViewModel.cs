@@ -4,6 +4,7 @@
     {
         private ValueConditionModel _hpCondition;
         private ValueConditionModel _mpCondition;
+        private double _currentWindowWidth = 0;
 
         public ValueConditionModel HpCondition
         {
@@ -22,6 +23,14 @@
                 OnPropertyChanged("MpCondition");
             }
             get => _mpCondition;
+        }
+        public double CurrentWindowWidth {
+            set
+            {
+                _currentWindowWidth = value;
+                OnPropertyChanged("CurrentWindowWidth");
+            }
+            get => _currentWindowWidth;
         }
     }
 }
