@@ -20,6 +20,10 @@ namespace Macro.Infrastructure.Converter
             if (Regex.IsMatch(parameter.ToString(), _regex))
             {
                 var objectWidth = (double)@object.GetValue(FrameworkElement.WidthProperty);
+                if(double.IsNaN(objectWidth) == true)
+                {
+                    objectWidth = 0;
+                }
                 var param = parameter.ToString();
                 if (double.TryParse(param.Substring(0, param.Length - 1), out double width))
                     return (int)Math.Truncate(objectWidth * width);
@@ -33,7 +37,7 @@ namespace Macro.Infrastructure.Converter
         }
         public object ConvertBack(object o, Type type, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            return this.Convert(o, type, parameter, culture);
         }
     }
 
@@ -48,6 +52,10 @@ namespace Macro.Infrastructure.Converter
             if (Regex.IsMatch(parameter.ToString(), _regex))
             {
                 var objectWidth = System.Convert.ToDouble(value);
+                if (double.IsNaN(objectWidth) == true)
+                {
+                    objectWidth = 0;
+                }
                 var param = parameter.ToString();
                 if (double.TryParse(param.Substring(0, param.Length - 1), out double width))
                     return (int)Math.Truncate(objectWidth * width);
@@ -61,7 +69,7 @@ namespace Macro.Infrastructure.Converter
         }
         public object ConvertBack(object o, Type type, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            return this.Convert(o, type, parameter, culture);
         }
     }
 }

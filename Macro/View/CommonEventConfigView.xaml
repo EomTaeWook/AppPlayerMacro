@@ -10,6 +10,9 @@
                           xmlns:util="clr-namespace:Utils;assembly=Utils"
                           xmlns:Base="clr-namespace:Macro.Infrastructure.Impl"
                           xmlns:ViewModel="clr-namespace:Macro.Models.ViewModel"
+                          xmlns:Extensions="clr-namespace:Macro.Extensions"
+                          Extensions:SizeObserver.Observe="True"
+                          Extensions:SizeObserver.ObservedWidth="{Binding Width, Mode=TwoWay}"
                           mc:Ignorable="d"
                           d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -136,12 +139,12 @@
                         </Button>
                     </Grid>
                 </Grid>
-                <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{Binding Path=CommonEventConfigViewModel.TriggerSaves, Source={StaticResource Locator}}" x:Name="treeSaves" AllowDrop="True" Margin="0,-1,0,1">
+                <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{ Binding Path=TriggerSaves }" x:Name="treeSaves" AllowDrop="True" Margin="0,-1,0,1">
                     <UI:TreeGridView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />
                     </UI:TreeGridView.ItemTemplate>
                     <UI:TreeGridView.Columns>
-                        <GridViewColumn Header="Image" Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActualWidth, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="Image" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -151,28 +154,28 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Index" Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActualWidth, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.08*}">
+                        <GridViewColumn Header="Index" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.08*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding TriggerIndex}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="EventType" Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActualWidth, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="EventType" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding EventType}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Desc" Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActualWidth, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.32*}">
+                        <GridViewColumn Header="Desc" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.32*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Desc}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn  Header="ProcessName" Width="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=ActualWidth, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.18*}">
+                        <GridViewColumn  Header="ProcessName" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.18*}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding ProcessInfo.ProcessName}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />

@@ -55,9 +55,9 @@
             </DockPanel>
         </Border>
         <Controls:MetroAnimatedTabControl x:Name="tab_content" Controls:TabControlHelper.IsUnderlined="True" Controls:TabControlHelper.Underlined="SelectedTabItem">
-            <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
+            <!--<Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
                 <view:CommonContentView x:Name="commonContentView"/>
-            </Controls:MetroTabItem>
+            </Controls:MetroTabItem>-->
             <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Game, Source={StaticResource Locator}}">
                 <view:GameContentView x:Name="gameContentView"/>
             </Controls:MetroTabItem>

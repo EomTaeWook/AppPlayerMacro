@@ -23,6 +23,8 @@ namespace Macro.Models.ViewModel
         private ObservableCollection<T> _triggerSaves;
         private TreeGridViewItem _currentItem;
         private PointModel _pointModel;
+        private double _width;
+        private double _height;
 
         public BaseEventConfigViewModel()
         {
@@ -54,6 +56,24 @@ namespace Macro.Models.ViewModel
                 _pointModel = value;
                 OnPropertyChanged("RelativePosition");
             }
+        }
+        public double Width
+        {
+            set
+            {
+                _width = value;
+                OnPropertyChanged("Width");
+            }
+            get => _width;
+        }
+        public double Height
+        {
+            set
+            {
+                _height = value;
+                OnPropertyChanged("Height");
+            }
+            get => _height;
         }
     }
 }

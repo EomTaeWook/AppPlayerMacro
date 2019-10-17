@@ -27,16 +27,17 @@ namespace Macro.View
             {
                 button.Click += Button_Click;
             }
-            this.Loaded += GameEventConfigView_Loaded;
             checkImageSearchRequired.Checked += CheckImageSearchRequired_Checked;
             checkImageSearchRequired.Unchecked += CheckImageSearchRequired_Checked;
 
             NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
+
+            this.Loaded += GameEventConfigView_Loaded;
         }
 
         private void GameEventConfigView_Loaded(object sender, RoutedEventArgs e)
         {
-            _contextViewModel.CurrentWindowWidth = this.ActualWidth;
+            _contextViewModel.Width = 1000;
         }
 
         private void CheckImageSearchRequired_Checked(object sender, RoutedEventArgs e)

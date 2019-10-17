@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Macro.View
 {
@@ -64,10 +65,6 @@ namespace Macro.View
         }
         private void Init()
         {
-            treeSaves.ItemsSource = _contextViewModel.TriggerSaves;
-
-            
-
             foreach (var type in Enum.GetValues(typeof(ConditionType)))
             {
                 if ((ConditionType)type == ConditionType.Max)

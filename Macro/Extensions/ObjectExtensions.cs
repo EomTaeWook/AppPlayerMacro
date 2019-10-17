@@ -203,5 +203,22 @@ namespace Macro.Extensions
             else
                 return null;
         }
+
+        public static T FindVisualParent<T>(DependencyObject @object) where T : DependencyObject
+        {
+            if (@object == null)
+            {
+                return null;
+            }
+            else if(VisualTreeHelper.GetParent(@object) is T)
+            {
+                return VisualTreeHelper.GetParent(@object) as T;
+            }
+            else
+            {
+                var parent = VisualTreeHelper.GetParent(@object);
+                return FindVisualParent<T>(parent);
+            }
+        }
     }
 }
