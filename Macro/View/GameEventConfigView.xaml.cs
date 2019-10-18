@@ -31,13 +31,6 @@ namespace Macro.View
             checkImageSearchRequired.Unchecked += CheckImageSearchRequired_Checked;
 
             NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
-
-            this.Loaded += GameEventConfigView_Loaded;
-        }
-
-        private void GameEventConfigView_Loaded(object sender, RoutedEventArgs e)
-        {
-            _contextViewModel.Width = 1000;
         }
 
         private void CheckImageSearchRequired_Checked(object sender, RoutedEventArgs e)

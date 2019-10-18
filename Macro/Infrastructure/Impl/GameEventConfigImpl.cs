@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
+using Utils;
 
 namespace Macro.View
 {
@@ -25,16 +25,14 @@ namespace Macro.View
             protected set => _contextViewModel.RelativePosition = value;
         }
 
-        private readonly TreeGridViewItem _dummyTreeGridViewItem;
-        private readonly PointModel _dummyRelativePosition;
-        private readonly ValueConditionModel _dummyHpCondition;
-        private readonly ValueConditionModel _dummyMpCondition;
-        private readonly ObservableCollection<KeyValuePair<ConditionType, string>> _conditionItems;
-        private readonly GameEventConfigViewModel _contextViewModel;
+        private TreeGridViewItem _dummyTreeGridViewItem;
+        private PointModel _dummyRelativePosition;
+        private ValueConditionModel _dummyHpCondition;
+        private ValueConditionModel _dummyMpCondition;
+        private ObservableCollection<KeyValuePair<ConditionType, string>> _conditionItems;
+        private GameEventConfigViewModel _contextViewModel;
         public GameEventConfigView()
         {
-            _contextViewModel = new ViewModelLocator().GameEventConfigViewModel;
-
             _dummyTreeGridViewItem = new TreeGridViewItem()
             {
                 DataContext = new GameEventTriggerModel()
@@ -47,6 +45,27 @@ namespace Macro.View
 
             _conditionItems = new ObservableCollection<KeyValuePair<ConditionType, string>>();
 
+            InitializeComponent();
+
+            InitEvent();
+
+            Init();
+
+            if (InitDataContext() == false)
+            {
+                LogHelper.Error(new Exception("Failed Init DataContext"));
+            }
+        }
+        private bool InitDataContext()
+        {
+            var resource = this.TryFindResource("Locator");
+            if (resource == null)
+            {
+                return false;
+            }
+
+            _contextViewModel = (resource as ViewModelLocator).GameEventConfigViewModel;
+
             _contextViewModel.HpCondition = _dummyHpCondition;
 
             _contextViewModel.MpCondition = _dummyMpCondition;
@@ -57,11 +76,7 @@ namespace Macro.View
 
             DataContext = _contextViewModel;
 
-            InitializeComponent();
-
-            InitEvent();
-
-            Init();
+            return true;
         }
         private void Init()
         {

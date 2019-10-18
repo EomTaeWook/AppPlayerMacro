@@ -29,15 +29,14 @@ namespace Macro.View
             private set => _contextViewModel.RelativePosition = value;
         }
 
-        private readonly TreeGridViewItem _dummyTreeGridViewItem;
+        private TreeGridViewItem _dummyTreeGridViewItem;
 
-        private readonly PointModel _dummyRelativePosition;
+        private PointModel _dummyRelativePosition;
 
-        private readonly CommonEventConfigViewModel _contextViewModel;
+        private CommonEventConfigViewModel _contextViewModel;
 
         public CommonEventConfigView()
         {
-            _contextViewModel = new ViewModelLocator().CommonEventConfigViewModel;
             _isDrag = false;
             _dummyTreeGridViewItem = new TreeGridViewItem()
             {
@@ -45,19 +44,34 @@ namespace Macro.View
             };
             _dummyRelativePosition = new PointModel();
 
+            InitializeComponent();
+
+            InitEvent();
+
+            Init();
+
+            if (InitDataContext() == false)
+            {
+                LogHelper.Error(new Exception("Failed Init DataContext"));
+            }
+        }
+        private bool InitDataContext()
+        {
+            var resource = this.TryFindResource("Locator");
+            if (resource == null)
+            {
+                return false;
+            }
+            _contextViewModel = (resource as ViewModelLocator).CommonEventConfigViewModel;
+            
             _contextViewModel.CurrentTreeViewItem = _dummyTreeGridViewItem;
 
             _contextViewModel.RelativePosition = _dummyRelativePosition;
 
             DataContext = _contextViewModel;
 
-            InitializeComponent();
-
-            InitEvent();
-
-            Init();
+            return true;
         }
-
         private void Init()
         {
             foreach (var type in Enum.GetValues(typeof(RepeatType)))

@@ -2,6 +2,7 @@
 using Macro.UI;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Macro.Models.ViewModel
 {
@@ -11,7 +12,7 @@ namespace Macro.Models.ViewModel
         PointModel RelativePosition { get; set; }
     }
 
-    public abstract class BaseEventConfigViewModel<T> : IBaseNotifyEventConfigViewModel where T: BaseEventTriggerModel<T>
+    public abstract class BaseEventConfigViewModel<T> : IBaseNotifyEventConfigViewModel where T : BaseEventTriggerModel<T>
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -28,7 +29,7 @@ namespace Macro.Models.ViewModel
 
         public BaseEventConfigViewModel()
         {
-           _triggerSaves = new ObservableCollection<T>();
+            _triggerSaves = new ObservableCollection<T>();
         }
         public ObservableCollection<T> TriggerSaves
         {
@@ -39,7 +40,7 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged("TriggerSaves");
             }
         }
-        public TreeGridViewItem CurrentTreeViewItem 
+        public TreeGridViewItem CurrentTreeViewItem
         {
             get => _currentItem;
             set

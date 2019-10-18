@@ -2,6 +2,7 @@
 using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
+using Macro.Models.ViewModel;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -59,6 +60,10 @@ namespace Macro
             container.RegisterType<IMouseInput, MouseInput>();
             container.RegisterType<IKeyboardInput, KeyboardInput>();
             container.RegisterType<InputManager>();
+
+            //ViewModel
+            container.RegisterSingleton<GameEventConfigViewModel>();
+            container.RegisterSingleton<CommonEventConfigViewModel>();
 
             container.RegisterInstance<IConfig>(config);
             container.RegisterInstance(new DocumentHelper());

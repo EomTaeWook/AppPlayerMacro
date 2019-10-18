@@ -17,7 +17,7 @@ namespace Macro.View
     /// ConfigEventView.xaml에 대한 상호 작용 논리
     /// </summary>
     public partial class CommonEventConfigView : BaseEventConfigView<CommonEventConfigViewModel>
-    {        
+    {
         private void InitEvent()
         {
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
@@ -44,7 +44,6 @@ namespace Macro.View
 
             comboRepeatSubItem.SelectionChanged += ComboRepeatSubItem_SelectionChanged;
         }
-
         private void NotifyHelper_ConfigChanged(ConfigEventArgs config)
         {
             _repeatItems.Clear();

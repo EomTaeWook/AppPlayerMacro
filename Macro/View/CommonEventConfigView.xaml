@@ -12,7 +12,7 @@
                           xmlns:ViewModel="clr-namespace:Macro.Models.ViewModel"
                           xmlns:Extensions="clr-namespace:Macro.Extensions"
                           Extensions:SizeObserver.Observe="True"
-                          Extensions:SizeObserver.ObservedWidth="{Binding Width, Mode=TwoWay}"
+                          Extensions:SizeObserver.ObservedWidth="{Binding CommonEventConfigViewModel.Width, Source={StaticResource Locator}, Mode=TwoWay}"
                           mc:Ignorable="d"
                           d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -104,6 +104,8 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
+                        
+                        
                     </Grid.ColumnDefinitions>
                     <Controls:NumericUpDown Name="numEventToNext" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.EventToNext, Mode=TwoWay}" HideUpDownButtons="True" Minimum="0" NumericInputMode="Numbers" ></Controls:NumericUpDown>
                 </Grid>
@@ -140,11 +142,14 @@
                     </Grid>
                 </Grid>
                 <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{ Binding Path=TriggerSaves }" x:Name="treeSaves" AllowDrop="True" Margin="0,-1,0,1">
+                    <UI:TreeGridView.Resources>
+                        <FrameworkElement x:Key="ProxyElement" DataContext="{Binding Source={StaticResource Locator}, Path=CommonEventConfigViewModel}"></FrameworkElement>
+                    </UI:TreeGridView.Resources>
                     <UI:TreeGridView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding SubEventTriggers }" />
                     </UI:TreeGridView.ItemTemplate>
                     <UI:TreeGridView.Columns>
-                        <GridViewColumn Header="Image" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="Image" Width="{Binding Path=DataContext.Width, Source={StaticResource ProxyElement}, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
@@ -154,28 +159,28 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Index" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.08*}">
+                        <GridViewColumn Header="Index" Width="{Binding Path=DataContext.Width, Source={StaticResource ProxyElement}, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.08*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding TriggerIndex}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="EventType" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*}">
+                        <GridViewColumn Header="EventType" Width="{Binding Path=DataContext.Width, Source={StaticResource ProxyElement}, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding EventType}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Desc" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.32*}">
+                        <GridViewColumn Header="Desc" Width="{Binding Path=DataContext.Width, Source={StaticResource ProxyElement}, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.32*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Desc}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn  Header="ProcessName" Width="{Binding Path=Width, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.18*}">
+                        <GridViewColumn  Header="ProcessName" Width="{Binding Path=DataContext.Width, Source={StaticResource ProxyElement}, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.18*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding ProcessInfo.ProcessName}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />
