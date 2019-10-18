@@ -1,5 +1,7 @@
-﻿using Macro.Infrastructure;
+﻿using Macro.Extensions;
+using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
+using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
 using System;
@@ -72,17 +74,29 @@ namespace Macro.View
             }
             return Task.CompletedTask;
         }
-
-        public override void SaveDataBind(List<IBaseEventTriggerModel> saves)
+        public override Task Load(object state)
         {
-            Dispatcher.Invoke(() =>
+            if(state is SaveFileLoadModel model)
             {
-                (gameConfigView.DataContext as Models.ViewModel.GameEventConfigViewModel).TriggerSaves.Clear();
-                foreach (var item in saves)
+                try
                 {
-                    (gameConfigView.DataContext as Models.ViewModel.GameEventConfigViewModel).TriggerSaves.Add(item as GameEventTriggerModel);
+                    var saveFiles = ObjectSerializer.DeserializeObject<GameEventTriggerModel>(File.ReadAllBytes(model.SaveFilePath));
+
+                    if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(saveFiles, model.CacheFilePath))
+                    {
+                        Save(saveFiles);
+                    }
+                    SaveDataBind(saveFiles);
                 }
-            });
+                catch (Exception ex)
+                {
+                    File.Delete(model.SaveFilePath);
+                    LogHelper.Warning(ex);
+                    Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
+                }
+            }
+            
+            return Task.CompletedTask;
         }
         public override async Task<IBaseEventTriggerModel> InvokeNextEventTriggerAsync(IBaseEventTriggerModel saveModel, ProcessConfigModel processEventTriggerModel)
         {
@@ -95,6 +109,12 @@ namespace Macro.View
         {
             error = Message.Success;
 
+            if (model is GameEventTriggerModel == false)
+            {
+                error = Message.FailedInvalidateData;
+                return false;
+            }
+
             model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
 
             if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage || model.IsImageSearchRequired == true)
@@ -105,7 +125,6 @@ namespace Macro.View
                     return false;
                 }
             }
-
             if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
             {
                 error = Message.FailedMouseCoordinatesValidate;
@@ -123,8 +142,31 @@ namespace Macro.View
                 error = Message.FailedProcessValidate;
                 return false;
             }
-
+#if !DEBUG
+            var gameModel = model as GameEventTriggerModel;
+            if (gameModel.HpCondition == null)
+            {
+                error = Message.FailedHpConditionValidate;
+                return false;
+            }
+            else if (gameModel.MpCondition == null)
+            {
+                error = Message.FailedMpConditionValidate;
+                return false;
+            }
+#endif
             return true;
+        }
+        private void SaveDataBind(List<GameEventTriggerModel> saves)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                (gameConfigView.DataContext as Models.ViewModel.GameEventConfigViewModel).TriggerSaves.Clear();
+                foreach (var item in saves)
+                {
+                    (gameConfigView.DataContext as Models.ViewModel.GameEventConfigViewModel).TriggerSaves.Add(item as GameEventTriggerModel);
+                }
+            });
         }
         private void Init()
         {

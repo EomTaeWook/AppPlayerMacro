@@ -78,6 +78,16 @@
     "Code": "FailedInvalidateData",
     "Kor": "잘못된 정보가 입력되었습니다.",
     "Eng": "Failed Invalidate Data"
+  },
+  {
+    "Code": "FailedHpConditionValidate",
+    "Kor": "HP의 위치를 잡아주세요.",
+    "Eng": "Please position the Hp to check"
+  },
+  {
+    "Code": "FailedMpConditionValidate",
+    "Kor": "Mp의 위치를 잡아주세요.",
+    "Eng": "Please position the Mp to check"
   }
 ]
 

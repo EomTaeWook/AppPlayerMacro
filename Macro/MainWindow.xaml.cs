@@ -203,7 +203,7 @@ namespace Macro
                 foreach(var item in _viewMap)
                 {
                     item.Value.View.Clear();
-                    _taskQueue.Enqueue(SaveFileLoad, item.Value);
+                    _taskQueue.Enqueue(item.Value.View.Load, item.Value);
                 }
                 settingFlyout.IsOpen = !settingFlyout.IsOpen;
                 return Task.CompletedTask;

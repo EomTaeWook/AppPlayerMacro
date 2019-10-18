@@ -1,8 +1,10 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
+using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -82,16 +84,30 @@ namespace Macro.View
             }
             return Task.CompletedTask;
         }
-        public override void SaveDataBind(List<IBaseEventTriggerModel> saves)
+        public override Task Load(object state)
         {
-            Dispatcher.Invoke(() => 
+            if(state is SaveFileLoadModel model)
             {
-                (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Clear();
-                foreach (var item in saves)
+                try
                 {
-                    (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Add(item as EventTriggerModel);
+                    var saveFiles = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(model.SaveFilePath));
+
+                    if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(saveFiles, model.CacheFilePath))
+                    {
+                        Save(saveFiles);
+                    }
+                    SaveDataBind(saveFiles);
                 }
-            });
+                catch (Exception ex)
+                {
+                    File.Delete(model.SaveFilePath);
+                    LogHelper.Warning(ex);
+                    Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
+                }
+            }
+            
+            return Task.CompletedTask;
+            
         }
         public override IEnumerable<IBaseEventTriggerModel> GetEnumerator()
         {
@@ -140,6 +156,17 @@ namespace Macro.View
             }
             
             return true;
+        }
+        private void SaveDataBind(List<EventTriggerModel> saves)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Clear();
+                foreach (var item in saves)
+                {
+                    (configView.DataContext as Models.ViewModel.CommonEventConfigViewModel).TriggerSaves.Add(item as EventTriggerModel);
+                }
+            });
         }
         private void Init()
         {

@@ -84,6 +84,8 @@
         FailedProcessDelayValidate,
         FailedSimilarityValidate,
         FailedSaveFile,
+        FailedHpConditionValidate,
+        FailedMpConditionValidate,
 
         NewVersion,
         CancelPatch,

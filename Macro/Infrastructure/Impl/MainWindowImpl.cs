@@ -83,7 +83,7 @@ namespace Macro
                     SaveFilePath = Path.Combine(_savePath, _saveFileNames[i].Item1),
                 };
                 _viewMap.Add(view, model);
-                _taskQueue.Enqueue(SaveFileLoad, model);
+                _taskQueue.Enqueue(model.View.Load, model);
             }
         }
         
@@ -197,52 +197,6 @@ namespace Macro
                 }
             });
             
-        }
-        private bool Validate(GameEventTriggerModel model)
-        {
-            var process = comboProcess.SelectedValue as Process;
-
-            model.ProcessInfo = new ProcessInfo()
-            {
-                ProcessName = process?.ProcessName,
-                Position = new Rect()
-            };
-
-            if (TryModelValidate(model, out Message error))
-            {
-                return true;
-            }
-            else
-            {
-                this.MessageShow("Error", DocumentHelper.Get(error));
-                return false;
-            }
-
-
-        }
-        
-        private Task SaveFileLoad(object state)
-        {
-            //if (state is SaveFileLoadModel model)
-            //{
-            //    try
-            //    {
-            //        var saveFiles = ObjectSerializer.DeserializeObject<EventTriggerModel>(File.ReadAllBytes(model.SaveFilePath));
-
-            //        if (ObjectExtensions.GetInstance<CacheDataManager>().CheckAndMakeCacheFile(saveFiles, model.CacheFilePath))
-            //        {
-            //            model.View.Save(saveFiles);
-            //        }
-            //        model.View.SaveDataBind(saveFiles);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        File.Delete(model.SaveFilePath);
-            //        LogHelper.Warning(ex);
-            //        Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
-            //    }
-            //}
-            return Task.CompletedTask;
         }
         private void SettingProcessMonitorInfo(IBaseEventTriggerModel model, Process process)
         {
