@@ -56,17 +56,17 @@
         </Border>
         <Controls:MetroAnimatedTabControl x:Name="tab_content" Controls:TabControlHelper.IsUnderlined="True" Controls:TabControlHelper.Underlined="SelectedTabItem">
             <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
-                <view:CommonContentView x:Name="commonContentView"/>
+                <view:CommonContentView x:Name="commonContentView" Tag="Common"/>
             </Controls:MetroTabItem>
-            <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Game, Source={StaticResource Locator}}">
-                <view:GameContentView x:Name="gameContentView"/>
+            <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Game, Source={StaticResource Locator}}" >
+                <view:GameContentView x:Name="gameContentView" Tag="Game"/>
             </Controls:MetroTabItem>
         </Controls:MetroAnimatedTabControl>
     </DockPanel>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl x:Name="flyoutsControl">
             <Controls:Flyout x:Name="settingFlyout" Position="Right" Width="350">
-                <view:SettingView x:Name="settingView"></view:SettingView>
+                <view:SettingView x:Name="settingView" Tag="Game"></view:SettingView>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>

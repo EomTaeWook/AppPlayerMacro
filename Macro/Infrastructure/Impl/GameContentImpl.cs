@@ -6,6 +6,7 @@ using Macro.Infrastructure.Serialize;
 using Macro.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -43,12 +44,29 @@ namespace Macro.View
 
         public override Task Delete(object state)
         {
+            if (state is string path)
+            {
+                gameConfigView.RemoveCurrentItem();
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                    using (var fs = new FileStream(path, FileMode.CreateNew))
+                    {
+                        foreach (var data in gameConfigView.DataContext<Models.ViewModel.GameEventConfigViewModel>().TriggerSaves)
+                        {
+                            var bytes = ObjectSerializer.SerializeObject(data);
+                            fs.Write(bytes, 0, bytes.Count());
+                        }
+                        fs.Close();
+                    }
+                }
+            }
             return Task.CompletedTask;
         }
 
         public override IEnumerable<IBaseEventTriggerModel> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return gameConfigView.TriggerSaves;
         }
 
         public override Task Save(object state)
@@ -102,9 +120,13 @@ namespace Macro.View
         {
             if (processEventTriggerModel.Token.IsCancellationRequested)
                 return null;
+            
+            
+
             var nextModel = await TriggerProcess(saveModel as GameEventTriggerModel, processEventTriggerModel);
             return nextModel.Item2;
         }
+
         public override bool Validate(IBaseEventTriggerModel model, out Message error)
         {
             error = Message.Success;
@@ -155,6 +177,24 @@ namespace Macro.View
                 return false;
             }
 #endif
+            return true;
+        }
+
+        private bool CheckPercentageImage(Rect roiPosition, Process process, Tuple<int, int, int> lower, Tuple<int, int, int> upper, out Tuple<int, int, int> outputColor)
+        {
+            var dummy = Tuple.Create(0, 0, 0);
+            var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(process.ProcessName) ?? new ApplicationDataModel();
+            if (DisplayHelper.ProcessCapture(process, out Bitmap bitmap, applciationData.IsDynamic))
+            {
+                var processPosition = new Rect();
+                NativeHelper.GetWindowRect(process.Handle, ref processPosition);
+
+                var roiBitmap = OpenCVHelper.MakeRoiImage(bitmap, roiPosition);
+
+                var percent = OpenCVHelper.SearchImagePercentage(roiBitmap, lower, upper);
+
+            }
+            outputColor = dummy;
             return true;
         }
         private void SaveDataBind(List<GameEventTriggerModel> saves)

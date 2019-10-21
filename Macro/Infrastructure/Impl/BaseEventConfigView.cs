@@ -48,6 +48,5 @@ namespace Macro.Infrastructure.Impl
                 item.ShowActivate();
             }
         }
-
     }
 }

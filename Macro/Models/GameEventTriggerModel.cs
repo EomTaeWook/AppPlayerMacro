@@ -15,6 +15,8 @@ namespace Macro.Models
         public GameEventTriggerModel()
         {
             _isImageSearchRequired = true;
+            _hpCondition = new ValueConditionModel();
+            _mpCondition = new ValueConditionModel();
         }
         public GameEventTriggerModel(GameEventTriggerModel model)
         {

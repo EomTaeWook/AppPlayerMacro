@@ -48,7 +48,7 @@ namespace Macro.View
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
         {
-            if (e.CaptureViewMode != CaptureViewMode.Common || e.CaptureViewMode == CaptureViewMode.Max)
+            if (e.CaptureViewMode != CaptureViewMode.Common)
             {
                 return;
             }
@@ -66,10 +66,15 @@ namespace Macro.View
             Application.Current.MainWindow.WindowState = WindowState.Normal;
         }
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
-        {
+        {            
             if (e.TreeViewItem == null)
             {
                 Clear();
+                return;
+            }
+            else if (e.TreeViewItem.DataContext<EventTriggerModel>() == null)
+            {
+                return;
             }
             else
             {
@@ -115,10 +120,9 @@ namespace Macro.View
                 var item = configView.CopyCurrentItem();
                 if (item == null)
                     return;
-                var model = item.DataContext<EventTriggerModel>();
                 NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
                 {
-                    CurrentEventTriggerModel = model,
+                    CurrentEventTriggerModel = item,
                 });
             }
         }

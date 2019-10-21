@@ -35,12 +35,12 @@ namespace Macro
         
         private CancellationTokenSource tokenSource = null;
         private string _savePath;
-        private readonly Dictionary<object, SaveFileLoadModel> _viewMap;
+        private readonly Dictionary<string, SaveFileLoadModel> _viewMap;
 
         public MainWindow()
         {
             _taskQueue = new TaskQueue();
-            _viewMap = new Dictionary<object, SaveFileLoadModel>();
+            _viewMap = new Dictionary<string, SaveFileLoadModel>();
             
             InitializeComponent();
             Loaded += MainWindow_Loaded;
@@ -66,25 +66,31 @@ namespace Macro
             }
             _config = ObjectExtensions.GetInstance<IConfig>();
 
-            Refresh();
-
             var _saveFileNames = new Tuple<string, string>[]
             {
                 Tuple.Create(ConstHelper.DefaultSaveFileName, ConstHelper.DefaultSaveCacheFile),
                 Tuple.Create(ConstHelper.DefaultGameSaveFileName, ConstHelper.DefaultGameCacheFile),
             };
-            for (int i=0; i<tab_content.Items.Count; i++)
+
+            _savePath = _config.SavePath;
+
+            for (int i = 0; i < tab_content.Items.Count; i++)
             {
-                var view = (tab_content.Items[i] as MetroTabItem).Content;
+
+                var content = (tab_content.Items[i] as MetroTabItem).Content;
+                var view = content as BaseContentView;
+                var key = view.Tag.ToString();
                 var model = new SaveFileLoadModel()
                 {
-                    View = view as BaseContentView,
+                    View = view,
                     CacheFilePath = Path.Combine(_savePath, _saveFileNames[i].Item2),
                     SaveFilePath = Path.Combine(_savePath, _saveFileNames[i].Item1),
                 };
-                _viewMap.Add(view, model);
+                _viewMap.Add(key, model);
                 _taskQueue.Enqueue(model.View.Load, model);
             }
+
+            Refresh();
         }
         
         private void Refresh()
@@ -131,58 +137,26 @@ namespace Macro
 
                 BindingOperations.GetBindingExpressionBase(checkBox, ContentProperty).UpdateTarget();
             }
+            foreach(var tab in tab_content.Items)
+            {
+                var tablItem = tab as TabItem;
+                
+                BindingOperations.GetBindingExpressionBase(tablItem, HeaderedContentControl.HeaderProperty).UpdateTarget();
+            }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
 
             Clear();
-        }
-        private bool TryModelValidate(GameEventTriggerModel model, out Message message)
-        {
-            message = Message.Success;
-            model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
-            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
-            {
-                message = Message.FailedMouseCoordinatesValidate;
-                return false;
-            }
 
-            if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
+            foreach(var tab in tab_content.Items)
             {
-                message = Message.FailedKeyboardCommandValidate;
-                return false;
+                var tabItem = tab as TabItem;
+                var key = (tabItem.Content as BaseContentView).Tag.ToString();
+                if (key.Equals(_config.InitialTab.ToString()))
+                {
+                    tabItem.IsSelected = true;
+                    break;
+                }
             }
-            if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
-            {
-                message = Message.FailedProcessValidate;
-                return false;
-            }
-            return true;
-        }
-        private bool TryModelValidate(EventTriggerModel model, out Message message)
-        {
-            message = Message.Success;
-            model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
-            if (model.Image == null)
-            {
-                message = Message.FailedImageValidate;
-                return false;
-            }
-            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
-            {
-                message = Message.FailedMouseCoordinatesValidate;
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
-            {
-                message = Message.FailedKeyboardCommandValidate;
-                return false;
-            }
-            if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
-            {
-                message = Message.FailedProcessValidate;
-                return false;
-            }
-            return true;
         }
         private void Clear()
         {
@@ -304,7 +278,7 @@ namespace Macro
                 List<IBaseEventTriggerModel> models = new List<IBaseEventTriggerModel>();
                 BaseContentView view = null;
                 Dispatcher.Invoke(() => {
-                    var selectView = _viewMap[tab_content.SelectedContent];
+                    var selectView = _viewMap[(tab_content.SelectedContent as BaseContentView).Tag.ToString()];
                     if (selectView != null)
                     {
                         models = selectView.View.GetEnumerator().ToList();

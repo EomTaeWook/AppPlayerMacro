@@ -73,4 +73,12 @@
 
         Max
     }
+    public enum InitialTab
+    {
+        Common,
+        Game,
+
+        Max
+    }
+
 }

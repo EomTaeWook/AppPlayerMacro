@@ -43,7 +43,7 @@ namespace Macro.View
         {
             if (state is string path)
             {
-                configView.CurrentRemove();
+                configView.RemoveCurrentItem();
 
                 if (File.Exists(path))
                 {

@@ -54,7 +54,7 @@ namespace Macro
         {
             if (tab_content.SelectedContent is BaseContentView view)
             {
-                var path = _viewMap[view].SaveFilePath;
+                var path = _viewMap[view.Tag.ToString()].SaveFilePath;
                 _taskQueue.Enqueue(() =>
                 {
                     return view.Delete(path);
@@ -69,15 +69,15 @@ namespace Macro
         {
             if (tab_content.SelectedContent is BaseContentView baseView)
             {
-                var view = _viewMap[baseView].View;
+                var viewObj = _viewMap[baseView.Tag.ToString()];
 
                 var process = comboProcess.SelectedValue as Process;
 
                 obj.CurrentEventTriggerModel.ProcessInfo.ProcessName = process?.ProcessName;
 
-                if (view.Validate(obj.CurrentEventTriggerModel, out Message error))
+                if (viewObj.View.Validate(obj.CurrentEventTriggerModel, out Message error))
                 {
-                    var path = _viewMap[view].SaveFilePath;
+                    var path = viewObj.SaveFilePath;
 
                     _taskQueue.Enqueue(() =>
                     {
@@ -95,7 +95,7 @@ namespace Macro
                                 SettingProcessMonitorInfo(model, process);
                             }
                         });
-                        return view.Save(path);
+                        return viewObj.View.Save(path);
                     }).ContinueWith(task =>
                     {
                         if (task.IsFaulted == false)
@@ -121,7 +121,7 @@ namespace Macro
         {
             if (tab_content.SelectedContent is BaseContentView view)
             {
-                var path = _viewMap[view].SaveFilePath;
+                var path = _viewMap[view.Tag.ToString()].SaveFilePath;
                 _taskQueue.Enqueue(() =>
                 {
                     return view.Delete(path);
@@ -139,7 +139,7 @@ namespace Macro
         {
             if(tab_content.SelectedContent is BaseContentView view)
             {
-                var path = _viewMap[view].SaveFilePath;
+                var path = _viewMap[view.Tag.ToString()].SaveFilePath;
                 _taskQueue.Enqueue(() =>
                 {
                     return view.Save(path);
@@ -178,21 +178,26 @@ namespace Macro
 
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
-            if (e.TreeViewItem == null)
+            if(e.TreeViewItem == null)
+            {
+                return;
+            }
+
+            var model = e.TreeViewItem.DataContext<IBaseEventTriggerModel>();
+
+            if (model == null)
             {
                 Clear();
+                return;
+            }
+
+            if (_fixProcess == null)
+            {
+                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
+                comboProcess.SelectedValue = pair.Value;
             }
             else
-            {
-                var model = e.TreeViewItem.DataContext<EventTriggerModel>();
-                if (_fixProcess == null)
-                {
-                    var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
-                    comboProcess.SelectedValue = pair.Value;
-                }
-                else
-                    comboProcess.SelectedValue = _fixProcess.Value.Value;
-            }
+                comboProcess.SelectedValue = _fixProcess.Value.Value;
         }
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
         {

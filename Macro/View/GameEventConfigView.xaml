@@ -47,8 +47,8 @@
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Controls:NumericUpDown Name="numHpCondition" Minimum="0" Grid.Column="0" Maximum="100" Value="{Binding Path=HpCondition.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
-                    <ComboBox Name="comboHpCondition" Grid.Column="1" SelectedValue="{Binding Path=HpCondition.ConditionType, Mode=TwoWay}"></ComboBox>
+                    <Controls:NumericUpDown Name="numHpCondition" Minimum="0" Grid.Column="0" Maximum="100" Value="{Binding Path=CurrentTreeViewItem.DataContext.HpCondition.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
+                    <ComboBox Name="comboHpCondition" Grid.Column="1" SelectedValue="{Binding Path=CurrentTreeViewItem.DataContext.HpCondition.ConditionType, Mode=TwoWay}"></ComboBox>
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.MpCondition, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="1">
@@ -56,8 +56,8 @@
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Controls:NumericUpDown Name="numMpCondition" Minimum="0" Grid.Column="0" Maximum="100" Value="{Binding Path=MpCondition.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
-                    <ComboBox Name="comboMpCondition" Grid.Column="1" SelectedValue="{Binding Path=MpCondition.ConditionType , Mode=TwoWay}"></ComboBox>
+                    <Controls:NumericUpDown Name="numMpCondition" Minimum="0" Grid.Column="0" Maximum="100" Value="{Binding Path=CurrentTreeViewItem.DataContext.MpCondition.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Controls:NumericUpDown>
+                    <ComboBox Name="comboMpCondition" Grid.Column="1" SelectedValue="{Binding Path=CurrentTreeViewItem.DataContext.MpCondition.ConditionType , Mode=TwoWay}"></ComboBox>
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="2" Content="{Binding Path=LabelViewModel.EventType, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="2">

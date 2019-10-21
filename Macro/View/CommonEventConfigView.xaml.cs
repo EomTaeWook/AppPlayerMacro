@@ -254,8 +254,12 @@ namespace Macro.View
             //btnMouseWheel.IsEnabled = true;
         }
 
-        private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs args)
+        private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
         {
+            if(e.CaptureViewMode != CaptureViewMode.Common)
+            {
+                return;
+            }
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
             {
                 CurrentTreeViewItem = new TreeGridViewItem()

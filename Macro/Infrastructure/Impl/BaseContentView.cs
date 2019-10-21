@@ -47,6 +47,7 @@ namespace Macro.Infrastructure.Impl
         protected virtual void CaptureImage(Bitmap bmp)
         {
         }
+
         protected async Task<Tuple<bool, IBaseEventTriggerModel>> TriggerProcess<T>(T model, ProcessConfigModel processEventTriggerModel) where T : BaseEventTriggerModel<T>
         {
             var isExcute = false;

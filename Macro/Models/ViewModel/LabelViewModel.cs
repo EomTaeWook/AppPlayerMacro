@@ -165,5 +165,10 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.ImageSearchRequired);
         }
+
+        public string InitialTab
+        {
+            get => DocumentHelper.Get(Label.InitialTab);
+        }
     }
 }

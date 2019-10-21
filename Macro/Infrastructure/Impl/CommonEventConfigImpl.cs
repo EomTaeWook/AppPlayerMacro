@@ -99,22 +99,20 @@ namespace Macro.View
                 _contextViewModel.TriggerSaves.Add(item);
             }
         }
-        public TreeGridViewItem CopyCurrentItem()
+        public EventTriggerModel CopyCurrentItem()
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
                 return null;
+
             Dispatcher.Invoke(() =>
             {
-                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<EventTriggerModel>());
-                if (treeVIewItem != null)
+                var selectModel = CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                CurrentTreeViewItem = new TreeGridViewItem()
                 {
-                    CurrentTreeViewItem = new TreeGridViewItem()
-                    {
-                        DataContext = new EventTriggerModel(treeVIewItem.DataContext<EventTriggerModel>())
-                    };
-                }
+                    DataContext = new EventTriggerModel(selectModel)
+                };
             });
-            return CurrentTreeViewItem;
+            return CurrentTreeViewItem.DataContext<EventTriggerModel>();
         }
         public void InsertCurrentItem()
         {
@@ -140,7 +138,7 @@ namespace Macro.View
                 Clear();
             });
         }
-        public void CurrentRemove()
+        public void RemoveCurrentItem()
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
             {
@@ -184,7 +182,6 @@ namespace Macro.View
             lblRepeatSubItems.Visibility = Visibility.Collapsed;
             gridRepeat.Visibility = Visibility.Collapsed;
         }
-        
         private void ItemContainerPositionChange(TreeGridViewItem target)
         {
             var parentItemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<CommonEventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;

@@ -18,6 +18,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="5.5*"></ColumnDefinition>
@@ -54,6 +55,9 @@
                         <system:Boolean>True</system:Boolean>
                         <system:Boolean>False</system:Boolean>
                     </ComboBox.Items>
+                </ComboBox>
+                <Label Grid.Row="7" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.InitialTab, Source={StaticResource Locator}}"></Label>
+                <ComboBox Name="comboInitialTab" Grid.Row="7" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.InitialTab, Mode=TwoWay}">
                 </ComboBox>
             </Grid>
             <Button Name="btnSave" DockPanel.Dock="Bottom" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}" Style="{DynamicResource SquareButtonStyle}"></Button>

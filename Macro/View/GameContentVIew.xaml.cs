@@ -43,13 +43,19 @@ namespace Macro.View
         }
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
+            
             if (e.TreeViewItem == null)
             {
                 Clear();
+                return;
+            }
+            else if (e.TreeViewItem.DataContext<GameEventTriggerModel>() == null)
+            {
+                return;
             }
             else
             {
-                var model = e.TreeViewItem.DataContext<EventTriggerModel>();
+                var model = e.TreeViewItem.DataContext<GameEventTriggerModel>();
                 btnDelete.Visibility = Visibility.Visible;
                 btnAddSameContent.Visibility = Visibility.Visible;
 
@@ -59,10 +65,13 @@ namespace Macro.View
         }
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
         {
-            if (e.CaptureViewMode == CaptureViewMode.Common || e.CaptureViewMode == CaptureViewMode.Max)
+            if (e.CaptureViewMode != CaptureViewMode.Game &&
+                e.CaptureViewMode != CaptureViewMode.HP &&
+                e.CaptureViewMode != CaptureViewMode.Mp)
             {
                 return;
             }
+
             foreach (var item in _captureViews)
             {
                 item.Hide();
@@ -148,10 +157,9 @@ namespace Macro.View
                 var item = gameConfigView.CopyCurrentItem();
                 if (item == null)
                     return;
-                var model = item.DataContext<GameEventTriggerModel>();
                 NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
                 {
-                    CurrentEventTriggerModel = model,
+                    CurrentEventTriggerModel = item,
                 });
             }
         }

@@ -228,6 +228,11 @@
     "Code": "ImageSearchRequired",
     "Kor": "이미지 검색 필수",
     "Eng": "Image Search Required"
+  },
+  {
+    "Code": "InitialTab",
+    "Kor": "초기 탭",
+    "Eng": "Initial Tab"
   }
 ]
 

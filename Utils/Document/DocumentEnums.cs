@@ -64,6 +64,7 @@
         Below,
 
         ImageSearchRequired,
+        InitialTab,
 
         Max
     }

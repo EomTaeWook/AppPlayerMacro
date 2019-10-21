@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Macro.Infrastructure;
+using System.ComponentModel;
 using Utils;
 using Utils.Document;
 
@@ -13,6 +14,7 @@ namespace Macro.Models
         int Similarity { get; }
         bool SearchImageResultDisplay { get; }
         bool VersionCheck { get; }
+        InitialTab InitialTab { get; set; }
     }
 
     public class Config : IConfig, INotifyPropertyChanged
@@ -24,6 +26,7 @@ namespace Macro.Models
         private int _similarity = ConstHelper.DefaultSimilarity;
         private bool _searchImageResultDisplay = true;
         private bool _versionCheck = true;
+        private InitialTab _initialTab = Infrastructure.InitialTab.Common;
 
         public Language Language
         {
@@ -87,6 +90,16 @@ namespace Macro.Models
             {
                 _versionCheck = value;
                 OnPropertyChanged("VersionCheck");
+            }
+        }
+
+        public InitialTab InitialTab
+        {
+            get => _initialTab;
+            set
+            {
+                _initialTab = value;
+                OnPropertyChanged("InitialTab");
             }
         }
 

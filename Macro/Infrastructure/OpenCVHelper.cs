@@ -3,6 +3,7 @@ using OpenCvSharp.Extensions;
 using System;
 using System.Drawing;
 using Point = OpenCvSharp.Point;
+using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro.Infrastructure
 {
@@ -43,6 +44,26 @@ namespace Macro.Infrastructure
             var sourceMat = BitmapConverter.ToMat(source);
             var roiMat = sourceMat.AdjustROI(rect.Top, rect.Bottom, rect.Left, rect.Top);
             return BitmapConverter.ToBitmap(roiMat);
+        }
+
+        public static int SearchImagePercentage(Bitmap source, Tuple<int, int ,int> lower, Tuple<int,int,int> upper)
+        {
+            var sourceMat = BitmapConverter.ToMat(source);
+            var colorMat = sourceMat.CvtColor(ColorConversionCodes.RGB2HSV);
+            var thresholded = new Mat();
+            Cv2.InRange(colorMat, new Scalar()
+            {
+                Val0 = lower.Item1,
+                Val1 = lower.Item2,
+                Val3 = lower.Item3
+            }, new Scalar()
+            {
+                Val0 = upper.Item1,
+                Val1 = upper.Item2,
+                Val2 = upper.Item3
+            }, thresholded);
+            
+            return 0;
         }
     }
 }

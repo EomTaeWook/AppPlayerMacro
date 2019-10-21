@@ -7,6 +7,7 @@ using Macro.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using Utils;
 
@@ -23,6 +24,10 @@ namespace Macro.View
         {
             get => _contextViewModel.RelativePosition;
             protected set => _contextViewModel.RelativePosition = value;
+        }
+        public List<GameEventTriggerModel> TriggerSaves
+        {
+            get => _contextViewModel.TriggerSaves.ToList();
         }
 
         private TreeGridViewItem _dummyTreeGridViewItem;
@@ -129,22 +134,20 @@ namespace Macro.View
             checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
             checkImageSearchRequired.IsChecked = true;
         }
-        public TreeGridViewItem CopyCurrentItem()
+        public GameEventTriggerModel CopyCurrentItem()
         {
             if (CurrentTreeViewItem == _dummyTreeGridViewItem)
                 return null;
+
             Dispatcher.Invoke(() =>
             {
-                var treeVIewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(CurrentTreeViewItem.DataContext<GameEventTriggerModel>());
-                if (treeVIewItem != null)
+                var selectModel = CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
+                CurrentTreeViewItem = new TreeGridViewItem()
                 {
-                    CurrentTreeViewItem = new TreeGridViewItem()
-                    {
-                        DataContext = new GameEventTriggerModel(treeVIewItem.DataContext<GameEventTriggerModel>())
-                    };
-                }
+                    DataContext = new GameEventTriggerModel(selectModel)
+                };
             });
-            return CurrentTreeViewItem;
+            return CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
         }
         public void InsertCurrentItem()
         {
@@ -169,6 +172,72 @@ namespace Macro.View
                 }
                 Clear();
             });
+        }
+        public void RemoveCurrentItem()
+        {
+            if (CurrentTreeViewItem == _dummyTreeGridViewItem)
+            {
+                return;
+            }
+
+            Dispatcher.Invoke(() =>
+            {
+                var model = CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
+
+                if (CurrentTreeViewItem.ParentItem == null)
+                {
+                    this.DataContext<GameEventConfigViewModel>().TriggerSaves.Remove(CurrentTreeViewItem.DataContext<GameEventTriggerModel>());
+                }
+                else
+                {
+                    CurrentTreeViewItem.ParentItem.DataContext<GameEventTriggerModel>().SubEventTriggers.Remove(CurrentTreeViewItem.DataContext<GameEventTriggerModel>());
+                }
+                NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerRemoved, new EventTriggerEventArgs()
+                {
+                    Index = model.TriggerIndex,
+                    TriggerModel = model
+                });
+            });
+        }
+        private void ItemContainerPositionChange(TreeGridViewItem target)
+        {
+            var parentItemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<GameEventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<GameEventTriggerModel>().SubEventTriggers;
+
+            if (target != null)
+            {
+                if (target == CurrentTreeViewItem)
+                    return;
+                var item = CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
+                var targetItem = target.DataContext<GameEventTriggerModel>();
+
+                if (target.ParentItem == null && CurrentTreeViewItem.ParentItem == null)
+                {
+                    parentItemContainer.Remove(item);
+                    targetItem.SubEventTriggers.Add(item);
+                }
+                else if (target.ParentItem != CurrentTreeViewItem)
+                {
+                    parentItemContainer.Remove(item);
+                    targetItem.SubEventTriggers.Add(item);
+                }
+                else if (target.ParentItem == CurrentTreeViewItem)
+                {
+                    parentItemContainer.Remove(item);
+                    item.SubEventTriggers.Remove(targetItem);
+                    var targetSubItem = targetItem.SubEventTriggers;
+                    targetItem.SubEventTriggers = item.SubEventTriggers;
+                    item.SubEventTriggers = targetSubItem;
+                    targetItem.SubEventTriggers.Add(item);
+                    parentItemContainer.Add(targetItem);
+                    CurrentTreeViewItem = _dummyTreeGridViewItem;
+                }
+            }
+            else
+            {
+                var item = CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
+                parentItemContainer.Remove(item);
+                this.DataContext<GameEventConfigViewModel>().TriggerSaves.Add(item);
+            }
         }
         private void RadioButtonRefresh()
         {

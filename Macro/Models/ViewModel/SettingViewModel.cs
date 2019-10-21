@@ -19,7 +19,8 @@ namespace Macro.Models.ViewModel
                 SavePath = config.SavePath,
                 Similarity = config.Similarity,
                 SearchImageResultDisplay = config.SearchImageResultDisplay,
-                VersionCheck = config.VersionCheck
+                VersionCheck = config.VersionCheck,
+                InitialTab = config.InitialTab
             };
         }
         public Config Config

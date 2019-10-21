@@ -98,6 +98,7 @@ namespace Macro.View
                 e.Handled = true;
                 NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBInd, new CaptureEventArgs()
                 {
+                    CaptureViewMode = _captureViewMode,
                     MonitorInfo = _monitorInfo,
                     CaptureImage = null
                 });
