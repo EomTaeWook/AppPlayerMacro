@@ -42,28 +42,28 @@ namespace Macro.Infrastructure
         public static Bitmap MakeRoiImage(Bitmap source, Rect rect)
         {
             var sourceMat = BitmapConverter.ToMat(source);
-            var roiMat = sourceMat.AdjustROI(rect.Top, rect.Bottom, rect.Left, rect.Top);
+            var roiMat = new Mat(sourceMat, new OpenCvSharp.Rect()
+            {
+                Left = rect.Left,
+                Top = rect.Top,
+                Height = rect.Height,
+                Width = rect.Width
+            });
             return BitmapConverter.ToBitmap(roiMat);
         }
 
-        public static int SearchImagePercentage(Bitmap source, Tuple<int, int ,int> lower, Tuple<int,int,int> upper)
+        public static int SearchImagePercentage(Bitmap source, Tuple<double, double ,double> lower, Tuple<double, double, double> upper)
         {
             var sourceMat = BitmapConverter.ToMat(source);
             var colorMat = sourceMat.CvtColor(ColorConversionCodes.RGB2HSV);
             var thresholded = new Mat();
-            Cv2.InRange(colorMat, new Scalar()
-            {
-                Val0 = lower.Item1,
-                Val1 = lower.Item2,
-                Val3 = lower.Item3
-            }, new Scalar()
-            {
-                Val0 = upper.Item1,
-                Val1 = upper.Item2,
-                Val2 = upper.Item3
-            }, thresholded);
             
-            return 0;
+            Cv2.InRange(colorMat,
+                        new Scalar(lower.Item3, lower.Item1, lower.Item2),
+                        new Scalar(upper.Item3, upper.Item1, upper.Item2),
+                        thresholded);
+
+            return Cv2.CountNonZero(thresholded) / (source.Width * source.Height);
         }
     }
 }

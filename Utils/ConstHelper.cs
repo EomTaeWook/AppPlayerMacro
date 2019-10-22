@@ -8,7 +8,7 @@
         public static readonly string DefaultSaveFileName = "save.dll";
         public static readonly string DefaultGameSaveFileName = "saveGame.dll";
         public static readonly string DefaultConfigFile = "config.json";
-        public static readonly string DefaultDatasFile = @".\Datas\";
+        public static readonly string DefaultDatasFilePath = @".\Datas\";
         public static readonly string DefaultSaveCacheFile = @"Cache.dll";
         public static readonly string DefaultGameCacheFile = @"CacheGame.dll";
         public static readonly string DefaultPatcherName = @"Patcher.exe";

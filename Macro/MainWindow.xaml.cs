@@ -14,7 +14,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Utils;
 using Utils.Document;
-using Utils.Extensions;
 using Utils.Infrastructure;
 using Rect = Utils.Infrastructure.Rect;
 
@@ -73,10 +72,18 @@ namespace Macro
 
                 var process = comboProcess.SelectedValue as Process;
 
-                obj.CurrentEventTriggerModel.ProcessInfo.ProcessName = process?.ProcessName;
+                var rect = new Rect();
+
+                obj.CurrentEventTriggerModel.ProcessInfo = new ProcessInfo()
+                {
+                    ProcessName = process?.ProcessName,
+                    Position = rect
+                };
 
                 if (viewObj.View.Validate(obj.CurrentEventTriggerModel, out Message error))
                 {
+                    NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
+
                     var path = viewObj.SaveFilePath;
 
                     _taskQueue.Enqueue(() =>

@@ -180,8 +180,8 @@ namespace Patcher
         }
         private void InitTemplate()
         {
-            Singleton<DocumentTemplate<Label>>.Instance.Init(Utils.ConstHelper.DefaultDatasFile);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(Utils.ConstHelper.DefaultDatasFile);
+            Singleton<DocumentTemplate<Label>>.Instance.Init(Utils.ConstHelper.DefaultDatasFilePath);
+            Singleton<DocumentTemplate<Message>>.Instance.Init(Utils.ConstHelper.DefaultDatasFilePath);
 
             ObjectCache.SetValue("PatchUrl", Utils.ConstHelper.PatchV2Url.ToString());
             

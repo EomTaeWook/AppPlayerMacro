@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Utils;
 using Utils.Document;
 using Rect = Utils.Infrastructure.Rect;
@@ -21,8 +22,9 @@ namespace Macro.View
     public partial class GameContentView : BaseContentView
     {
         private Bitmap _bitmap;
-        private Rect _hpRoiPosition;
-        private Rect _mpRoiPosition;
+
+        private RoiPositionModel _hpRoiPosition;
+        private RoiPositionModel _mpRoiPosition;
         public void Capture(CaptureViewMode captureViewMode)
         {
             Clear();
@@ -120,8 +122,27 @@ namespace Macro.View
         {
             if (processEventTriggerModel.Token.IsCancellationRequested)
                 return null;
-            
-            
+            int hpPercent = 100;
+            int mpPercent = 100;
+            Dispatcher.Invoke(() =>
+            {
+                if(_hpRoiPosition != null)
+                {
+                    var lower = Tuple.Create(_colorDatas["HP"].Lower.R, _colorDatas["HP"].Lower.G, _colorDatas["HP"].Lower.B);
+
+                    var upper = Tuple.Create(_colorDatas["HP"].Upper.R, _colorDatas["HP"].Upper.G, _colorDatas["HP"].Upper.B);
+
+                    foreach(var process in processEventTriggerModel.Processes)
+                    {
+                        CheckPercentageImage(_hpRoiPosition, process, lower, upper);
+                    }
+                }
+                
+            });
+
+
+
+
 
             var nextModel = await TriggerProcess(saveModel as GameEventTriggerModel, processEventTriggerModel);
             return nextModel.Item2;
@@ -180,22 +201,31 @@ namespace Macro.View
             return true;
         }
 
-        private bool CheckPercentageImage(Rect roiPosition, Process process, Tuple<int, int, int> lower, Tuple<int, int, int> upper, out Tuple<int, int, int> outputColor)
+        private int CheckPercentageImage(RoiPositionModel roiPositionModel, Process process, Tuple<double, double, double> lower, Tuple<double, double, double> upper)
         {
-            var dummy = Tuple.Create(0, 0, 0);
             var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(process.ProcessName) ?? new ApplicationDataModel();
             if (DisplayHelper.ProcessCapture(process, out Bitmap bitmap, applciationData.IsDynamic))
             {
                 var processPosition = new Rect();
-                NativeHelper.GetWindowRect(process.Handle, ref processPosition);
+                NativeHelper.GetWindowRect(process.MainWindowHandle, ref processPosition);
 
-                var roiBitmap = OpenCVHelper.MakeRoiImage(bitmap, roiPosition);
+                var baseLeft = processPosition.Left - roiPositionModel.MonitorInfo.Rect.Left;
+                var baseTop = processPosition.Top - roiPositionModel.MonitorInfo.Rect.Top;
+                var roi = new Rect()
+                {
+                    Left = roiPositionModel.RoiPosition.Left - baseLeft,
+                    Right = roiPositionModel.RoiPosition.Left - baseLeft + roiPositionModel.RoiPosition.Width,
+                    Top = roiPositionModel.RoiPosition.Top - baseTop,
+                    Bottom = roiPositionModel.RoiPosition.Top - baseTop + roiPositionModel.RoiPosition.Height,
+                };
+                var roiBitmap = OpenCVHelper.MakeRoiImage(bitmap, roi);
+
+                canvasCaptureImage.Background = new ImageBrush(roiBitmap.ToBitmapSource());
 
                 var percent = OpenCVHelper.SearchImagePercentage(roiBitmap, lower, upper);
 
             }
-            outputColor = dummy;
-            return true;
+            return 0;
         }
         private void SaveDataBind(List<GameEventTriggerModel> saves)
         {
@@ -214,6 +244,10 @@ namespace Macro.View
             {
                 _captureViews.Add(new CaptureView(item));
             }
+
+            var colorDatas = JsonHelper.Load<List<ColorModel>>($@"{ConstHelper.DefaultDatasFilePath}\ColorData.json");
+
+            _colorDatas = colorDatas.ToDictionary(k => k.Code, r => r);
             Clear();
         }
     }

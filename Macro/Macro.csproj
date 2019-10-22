@@ -211,6 +211,7 @@
     </Compile>
     <Compile Include="Models\BaseEventTriggerModel.cs" />
     <Compile Include="Models\CacheModel.cs" />
+    <Compile Include="Models\ColorModel.cs" />
     <Compile Include="Models\GameEventTriggerModel.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessConfigModel.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\Version.cs" />
+    <Compile Include="Models\RoiPositionModel.cs" />
     <Compile Include="Models\SaveFileLoadModel.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
     <Compile Include="Models\ViewModel\BaseEventConfigViewModel.cs" />

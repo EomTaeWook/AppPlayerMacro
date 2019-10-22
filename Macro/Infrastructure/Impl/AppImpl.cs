@@ -43,8 +43,8 @@ namespace Macro
         }
         private void InitTemplate()
         {
-            Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFile);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFile);
+            Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFilePath);
+            Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFilePath);
 
             Singleton<ApplicationDataManager>.Instance.Init("ApplicationData");
         }

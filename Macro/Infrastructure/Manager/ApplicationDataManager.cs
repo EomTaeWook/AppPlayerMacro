@@ -14,7 +14,7 @@ namespace Macro.Infrastructure.Manager
         }
         public void Init(string filename)
         {
-            _applications = JsonHelper.Load<IList<ApplicationDataModel>>($"{ConstHelper.DefaultDatasFile}{filename}.json");
+            _applications = JsonHelper.Load<IList<ApplicationDataModel>>($"{ConstHelper.DefaultDatasFilePath}{filename}.json");
         }
         public ApplicationDataModel Find(string name)
         {

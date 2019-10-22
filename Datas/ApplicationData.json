@@ -22,9 +22,16 @@
   },
   {
     "Code": "Bluestacks",
-	"IsDynamic": true,
-	"HandleName": "BlueStacks Android PluginAndroid",
-	"OffsetX": 0,
-	"OffsetY": 0
+    "IsDynamic": true,
+    "HandleName": "BlueStacks Android PluginAndroid",
+    "OffsetX": 0,
+    "OffsetY": 0
+  },
+  {
+    "Code": "mspaint",
+    "IsDynamic": true,
+    "HandleName": "",
+    "OffsetX": 0,
+    "OffsetY": 0
   }
 ]

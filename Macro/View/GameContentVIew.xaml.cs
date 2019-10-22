@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Linq;
+using Utils;
 using Point = System.Windows.Point;
 
 namespace Macro.View
@@ -17,6 +19,8 @@ namespace Macro.View
     public partial class GameContentView : BaseContentView
     {
         private readonly List<CaptureView> _captureViews;
+        private Dictionary<string, ColorModel> _colorDatas;
+
         public GameContentView()
         {
             _captureViews = new List<CaptureView>();
@@ -88,12 +92,20 @@ namespace Macro.View
             }
             else if(e.CaptureViewMode == CaptureViewMode.HP)
             {
-                _hpRoiPosition = e.Position;
+                _hpRoiPosition = new RoiPositionModel()
+                {
+                    MonitorInfo = e.MonitorInfo,
+                    RoiPosition = e.Position,
+                };
                 canvasCaptureHp.Background = new ImageBrush(capture.ToBitmapSource());
             }
            else if(e.CaptureViewMode == CaptureViewMode.Mp)
             {
-                _mpRoiPosition = e.Position;
+                _mpRoiPosition = new RoiPositionModel()
+                {
+                    MonitorInfo = e.MonitorInfo,
+                    RoiPosition = e.Position,
+                };
                 canvasCaptureMp.Background = new ImageBrush(capture.ToBitmapSource());
             }
             
