@@ -209,16 +209,31 @@ namespace Macro.View
                 var processPosition = new Rect();
                 NativeHelper.GetWindowRect(process.MainWindowHandle, ref processPosition);
 
-                var baseLeft = processPosition.Left - roiPositionModel.MonitorInfo.Rect.Left;
-                var baseTop = processPosition.Top - roiPositionModel.MonitorInfo.Rect.Top;
+                var factor = NativeHelper.GetSystemDPI();
+                var factorX = 1.0F * factor.X / ConstHelper.DefaultDPI;
+                var factorY = 1.0F * factor.Y / ConstHelper.DefaultDPI;
+
+                var realLeft = roiPositionModel.RoiPosition.Left - ((processPosition.Left - roiPositionModel.MonitorInfo.Rect.Left));
+                var realTop = roiPositionModel.RoiPosition.Top - (processPosition.Top - roiPositionModel.MonitorInfo.Rect.Top);
+
+                var realWidth = (int)Math.Truncate(roiPositionModel.RoiPosition.Width * factorX);
+                var realHeight = (int)Math.Truncate(roiPositionModel.RoiPosition.Height * factorY);
+
+                //var realWidth = realLeft + roiPositionModel.RoiPosition.Width;
+                //var realHeight = realTop + roiPositionModel.RoiPosition.Height;
+
+
                 var roi = new Rect()
                 {
-                    Left = roiPositionModel.RoiPosition.Left - baseLeft,
-                    Right = roiPositionModel.RoiPosition.Left - baseLeft + roiPositionModel.RoiPosition.Width,
-                    Top = roiPositionModel.RoiPosition.Top - baseTop,
-                    Bottom = roiPositionModel.RoiPosition.Top - baseTop + roiPositionModel.RoiPosition.Height,
+                    Left = 327,
+                    Right = 1563,
+                    Top = 548,
+                    Bottom = 773,
                 };
+                
                 var roiBitmap = OpenCVHelper.MakeRoiImage(bitmap, roi);
+
+                roiBitmap.Save("crop.jpg");
 
                 canvasCaptureImage.Background = new ImageBrush(roiBitmap.ToBitmapSource());
 

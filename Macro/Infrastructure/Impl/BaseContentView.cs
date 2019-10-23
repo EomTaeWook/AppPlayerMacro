@@ -197,7 +197,7 @@ namespace Macro.Infrastructure.Impl
             return Tuple.Create<bool, IBaseEventTriggerModel>(isExcute, null);
         }
 
-        private Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, IBaseEventTriggerModel model, bool isDynamic)
+        protected Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, IBaseEventTriggerModel model, bool isDynamic)
         {
             var currentPosition = new Rect();
             NativeHelper.GetWindowRect(hWnd, ref currentPosition);

@@ -160,11 +160,12 @@ namespace Macro.View
                     Bottom = top + height,
                     Top = top
                 };
+                var image = DisplayHelper.Capture(_monitorInfo, rect);
                 NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBInd, new CaptureEventArgs()
                 {
                     CaptureViewMode = _captureViewMode,
                     MonitorInfo = _monitorInfo,
-                    CaptureImage = DisplayHelper.Capture(_monitorInfo, rect),
+                    CaptureImage = image,
                     Position = rect
                 });
                 e.Handled = true;

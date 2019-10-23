@@ -2,6 +2,7 @@
 using OpenCvSharp.Extensions;
 using System;
 using System.Drawing;
+using Utils;
 using Point = OpenCvSharp.Point;
 using Rect = Utils.Infrastructure.Rect;
 
@@ -42,14 +43,15 @@ namespace Macro.Infrastructure
         public static Bitmap MakeRoiImage(Bitmap source, Rect rect)
         {
             var sourceMat = BitmapConverter.ToMat(source);
-            var roiMat = new Mat(sourceMat, new OpenCvSharp.Rect()
+            var roiMat = sourceMat.SubMat(new OpenCvSharp.Rect()
             {
                 Left = rect.Left,
                 Top = rect.Top,
                 Height = rect.Height,
                 Width = rect.Width
             });
-            return BitmapConverter.ToBitmap(roiMat);
+            var destBitmap = BitmapConverter.ToBitmap(roiMat);
+            return destBitmap;
         }
 
         public static int SearchImagePercentage(Bitmap source, Tuple<double, double ,double> lower, Tuple<double, double, double> upper)
