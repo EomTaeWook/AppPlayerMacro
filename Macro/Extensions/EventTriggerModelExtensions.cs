@@ -44,7 +44,7 @@ namespace Macro.Extensions
                 StartPoint = new System.Windows.Point()
                 {
                     X = source.StartPoint.X,
-                    Y = source.EndPoint.Y
+                    Y = source.StartPoint.Y
                 },
                 WheelData = source.WheelData
             };

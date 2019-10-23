@@ -50,5 +50,17 @@
             "Datas\\ApplicationData.json https://drive.google.com/uc?id=14V7VU-RcCCrOrMqoz-ssxbG2i3bWimb-&export=download",
             "Patcher.exe https://drive.google.com/uc?id=1293kMsoQK51rHeoCKPMvUI1fwSQ0RW5i&export=download"
         ]
+    },
+    "2.4.3" :
+    {
+        "method" : 1,
+        "list":[
+            "Macro.exe https://drive.google.com/uc?id=1AzjZQlfJcHhr-3g9z5e4VOprXBou8sV8&export=download",
+            "Utils.dll https://drive.google.com/uc?id=1HhaZggzd8op2ewIHmXxMQud_sP3v7ezi&export=download",
+            "Datas\\ApplicationData.json https://drive.google.com/uc?id=1JjaqRplIIhIRA5LazY6XDme1aiLQXNTQ&export=download",
+            "Datas\\LabelDocument.json https://drive.google.com/uc?id=1XGYGOcPToGitasxsKjfX2IlwJ3Vl6v7j&export=download",
+            "Datas\\MessageDocument.json https://drive.google.com/uc?id=1WpZxiUAvdo83YASJVpvbOQS0ZWvidaw4&export=download",
+            "Patcher.exe https://drive.google.com/uc?id=1293kMsoQK51rHeoCKPMvUI1fwSQ0RW5i&export=download"
+        ]
     }
 }

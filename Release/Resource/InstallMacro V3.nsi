@@ -2,15 +2,15 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Macro"
-!define PRODUCT_VERSION "2.4.2"
+!define PRODUCT_VERSION "2.4.3"
 !define PRODUCT_PUBLISHER "Eomtaewook"
 !define PRODUCT_WEB_SITE "https://github.com/EomTaeWook/EmulatorMacro"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Macro.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-!define BASEPATH "D:\privateSource\EmulatorMacro"
-!define PATH "D:\privateSource\EmulatorMacro\Release\exe"
+!define BASEPATH "E:\Project\Macro"
+!define PATH "E:\Project\Macro\Release\exe"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"

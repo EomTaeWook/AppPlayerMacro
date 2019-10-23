@@ -19,5 +19,12 @@
     "HandleName": "kaopu001_tiantianplayer_opengl_wndWindow",
     "OffsetX": 0,
     "OffsetY": -35
+  },
+  {
+    "Code": "Bluestacks",
+    "IsDynamic": true,
+    "HandleName": "BlueStacks Android PluginAndroid",
+    "OffsetX": 0,
+    "OffsetY": 0
   }
 ]
