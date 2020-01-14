@@ -47,7 +47,6 @@ namespace Macro
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
             NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
-            
         }
         private void NotifyHelper_DeleteEventTriggerModel(DeleteEventTriggerModelArgs obj)
         {
@@ -157,6 +156,10 @@ namespace Macro
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CheckFix_Checked(checkFix, null);
+            NotifyHelper.InvokeNotify(NotifyEventType.ComboProcessChanged, new ComboProcessChangedEventArgs() 
+            {
+                Process = comboProcess.SelectedItem as Process
+            });
         }
         private void CheckFix_Checked(object sender, RoutedEventArgs e)
         {

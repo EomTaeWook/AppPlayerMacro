@@ -88,6 +88,11 @@
     "Code": "FailedMpConditionValidate",
     "Kor": "Mp의 위치를 잡아주세요.",
     "Eng": "Please position the Mp to check"
+  },
+  {
+    "Code": "FailedPreconditionSelectProcess",
+    "Kor": "프로세스를 먼저 선택하세요",
+    "Eng": "Please select a process first"
   }
 ]
 

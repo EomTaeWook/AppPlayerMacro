@@ -10,6 +10,8 @@ using System.Windows.Media;
 using System.Linq;
 using Utils;
 using Point = System.Windows.Point;
+using MahApps.Metro.Controls;
+using Utils.Document;
 
 namespace Macro.View
 {
@@ -42,9 +44,16 @@ namespace Macro.View
 
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
+            NotifyHelper.ComboProcessChanged += NotifyHelper_ComboProcessChanged;
 
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
         }
+
+        private void NotifyHelper_ComboProcessChanged(ComboProcessChangedEventArgs obj)
+        {
+            _currentProcess = obj.Process;
+        }
+
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
             
@@ -126,12 +135,22 @@ namespace Macro.View
             {
                 Capture(CaptureViewMode.Game);
             }
-            if(btn.Equals(btnHpCapture))
+            else if(btn.Equals(btnHpCapture))
             {
+                if(_currentProcess == null)
+                {
+                    (Application.Current.MainWindow as MetroWindow).MessageShow("Error", DocumentHelper.Get(Message.FailedPreconditionSelectProcess));
+                    return;
+                }
                 Capture(CaptureViewMode.HP);
             }
-            if(btn.Equals(btnMpCapture))
+            else if(btn.Equals(btnMpCapture))
             {
+                if (_currentProcess == null)
+                {
+                    (Application.Current.MainWindow as MetroWindow).MessageShow("Error", DocumentHelper.Get(Message.FailedPreconditionSelectProcess));
+                    return;
+                }
                 Capture(CaptureViewMode.Mp);
             }
             else if (btn.Equals(btnSave))

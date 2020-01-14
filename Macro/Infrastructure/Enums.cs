@@ -22,6 +22,8 @@
 
     public enum NotifyEventType
     {
+        ComboProcessChanged,
+
         ConfigChanged,
         MousePointDataBind,
         ScreenCaptureDataBInd,

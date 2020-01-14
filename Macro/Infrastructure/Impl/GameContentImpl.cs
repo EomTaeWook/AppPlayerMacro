@@ -25,6 +25,7 @@ namespace Macro.View
 
         private RoiPositionModel _hpRoiPosition;
         private RoiPositionModel _mpRoiPosition;
+        private Process _currentProcess;
         public void Capture(CaptureViewMode captureViewMode)
         {
             Clear();
@@ -139,10 +140,6 @@ namespace Macro.View
                 }
                 
             });
-
-
-
-
 
             var nextModel = await TriggerProcess(saveModel as GameEventTriggerModel, processEventTriggerModel);
             return nextModel.Item2;

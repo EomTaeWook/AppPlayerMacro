@@ -76,7 +76,6 @@ namespace Macro
 
             for (int i = 0; i < tab_content.Items.Count; i++)
             {
-
                 var content = (tab_content.Items[i] as MetroTabItem).Content;
                 var view = content as BaseContentView;
                 var key = view.Tag.ToString();
@@ -306,7 +305,6 @@ namespace Macro
 
                 await _taskQueue.Enqueue(ProcessStartAsync, token);
             }
-
-        }        
+        }
     }
 }

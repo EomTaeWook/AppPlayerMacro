@@ -87,6 +87,7 @@
         FailedSaveFile,
         FailedHpConditionValidate,
         FailedMpConditionValidate,
+        FailedPreconditionSelectProcess,
 
         NewVersion,
         CancelPatch,

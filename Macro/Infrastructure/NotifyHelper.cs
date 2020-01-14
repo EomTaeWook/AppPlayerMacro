@@ -12,6 +12,8 @@ namespace Macro.Infrastructure
         public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
         public static event Action<EventTriggerEventArgs> EventTriggerInserted;
         public static event Action<EventTriggerEventArgs> EventTriggerRemoved;
+        public static event Action<ComboProcessChangedEventArgs> ComboProcessChanged;
+
 
         public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
         public static event Action<SaveEventTriggerModelArgs> SaveEventTriggerModel;
@@ -34,10 +36,10 @@ namespace Macro.Infrastructure
                     TreeItemOrderChanged? .Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
                 case NotifyEventType.SelctTreeViewItemChanged:
-                    SelectTreeViewChanged?.Invoke(args as SelctTreeViewItemChangedEventArgs);
+                    SelectTreeViewChanged? .Invoke(args as SelctTreeViewItemChangedEventArgs);
                     break;
                 case NotifyEventType.EventTriggerOrderChanged:
-                    EventTriggerOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
+                    EventTriggerOrderChanged? .Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
                 case NotifyEventType.EventTriggerInserted:
                     EventTriggerInserted?.Invoke(args as EventTriggerEventArgs);
@@ -50,6 +52,9 @@ namespace Macro.Infrastructure
                     break;
                 case NotifyEventType.Delete:
                     DeleteEventTriggerModel?.Invoke(args as DeleteEventTriggerModelArgs);
+                    break;
+                case NotifyEventType.ComboProcessChanged:
+                    ComboProcessChanged?.Invoke(args as ComboProcessChangedEventArgs);
                     break;
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Macro.Infrastructure;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Controls;
 using Utils.Infrastructure;
@@ -49,6 +50,11 @@ namespace Macro.Models
     public class DeleteEventTriggerModelArgs : INotifyEventArgs
     {
         public IBaseEventTriggerModel CurrentEventTriggerModel { get; set; }
+    }
+
+    public class ComboProcessChangedEventArgs : INotifyEventArgs
+    {
+        public Process Process { get; set; }
     }
 
 }
