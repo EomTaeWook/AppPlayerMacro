@@ -26,5 +26,26 @@ namespace Utils.Infrastructure
         public int Bottom { get; set; }
         public int Width { get => Right - Left; }
         public int Height { get => Bottom - Top; }
+
+        public static Rect operator -(Rect r1, Rect r2)
+        {
+            return new Rect()
+            {
+                Left = r1.Left - r2.Left,
+                Right = r1.Right - r2.Right,
+                Bottom = r1.Bottom - r2.Bottom,
+                Top = r1.Top - r2.Top
+            };
+        }
+        public static Rect operator +(Rect r1, Rect r2)
+        {
+            return new Rect()
+            {
+                Left = r1.Left + r2.Left,
+                Right = r1.Right + r2.Right,
+                Bottom = r1.Bottom + r2.Bottom,
+                Top = r1.Top + r2.Top
+            };
+        }
     }
 }

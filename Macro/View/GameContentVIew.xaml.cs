@@ -12,6 +12,7 @@ using Utils;
 using Point = System.Windows.Point;
 using MahApps.Metro.Controls;
 using Utils.Document;
+using System.Diagnostics;
 
 namespace Macro.View
 {
@@ -22,6 +23,7 @@ namespace Macro.View
     {
         private readonly List<CaptureView> _captureViews;
         private Dictionary<string, ColorModel> _colorDatas;
+
 
         public GameContentView()
         {
@@ -56,7 +58,6 @@ namespace Macro.View
 
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
-            
             if (e.TreeViewItem == null)
             {
                 Clear();
@@ -101,19 +102,31 @@ namespace Macro.View
             }
             else if(e.CaptureViewMode == CaptureViewMode.HP)
             {
+                var processPosition = new Utils.Infrastructure.Rect();
+
+                NativeHelper.GetWindowRect(_currentProcess.MainWindowHandle, ref processPosition);
+
+                var roiPosition = CalculatorRoiPosition(processPosition, e.Position);
+
                 _hpRoiPosition = new RoiPositionModel()
                 {
                     MonitorInfo = e.MonitorInfo,
-                    RoiPosition = e.Position,
+                    RoiPosition = roiPosition,
                 };
                 canvasCaptureHp.Background = new ImageBrush(capture.ToBitmapSource());
             }
            else if(e.CaptureViewMode == CaptureViewMode.Mp)
             {
+                var processPosition = new Utils.Infrastructure.Rect();
+
+                NativeHelper.GetWindowRect(_currentProcess.MainWindowHandle, ref processPosition);
+
+                var roiPosition = CalculatorRoiPosition(processPosition, e.Position);
+
                 _mpRoiPosition = new RoiPositionModel()
                 {
                     MonitorInfo = e.MonitorInfo,
-                    RoiPosition = e.Position,
+                    RoiPosition = roiPosition,
                 };
                 canvasCaptureMp.Background = new ImageBrush(capture.ToBitmapSource());
             }

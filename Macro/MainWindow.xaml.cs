@@ -156,10 +156,14 @@ namespace Macro
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CheckFix_Checked(checkFix, null);
-            NotifyHelper.InvokeNotify(NotifyEventType.ComboProcessChanged, new ComboProcessChangedEventArgs() 
+
+            if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
             {
-                Process = comboProcess.SelectedItem as Process
-            });
+                NotifyHelper.InvokeNotify(NotifyEventType.ComboProcessChanged, new ComboProcessChangedEventArgs()
+                {
+                    Process = item.Value,
+                });
+            }
         }
         private void CheckFix_Checked(object sender, RoutedEventArgs e)
         {

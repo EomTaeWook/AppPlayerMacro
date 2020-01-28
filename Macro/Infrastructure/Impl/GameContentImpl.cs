@@ -4,6 +4,7 @@ using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -261,6 +262,17 @@ namespace Macro.View
 
             _colorDatas = colorDatas.ToDictionary(k => k.Code, r => r);
             Clear();
+        }
+
+        private Rect CalculatorRoiPosition(Rect processPosition, Rect capturePosition)
+        {
+            if(capturePosition.Width > processPosition.Width && capturePosition.Height > processPosition.Height)
+            {
+                (Application.Current.MainWindow as MetroWindow).MessageShow("Error", DocumentHelper.Get(Message.FailedInvalidateRoiCapturePosition));
+            }
+            var distance = processPosition - capturePosition;
+
+            return capturePosition - distance;
         }
     }
 }

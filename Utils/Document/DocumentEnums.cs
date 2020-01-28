@@ -88,6 +88,7 @@
         FailedHpConditionValidate,
         FailedMpConditionValidate,
         FailedPreconditionSelectProcess,
+        FailedInvalidateRoiCapturePosition,
 
         NewVersion,
         CancelPatch,

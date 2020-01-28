@@ -93,6 +93,11 @@
     "Code": "FailedPreconditionSelectProcess",
     "Kor": "프로세스를 먼저 선택하세요",
     "Eng": "Please select a process first"
+  },
+  {
+    "Code": "FailedInvalidateRoiCapturePosition",
+    "Kor": "관심 영역의 사이즈가 프로세스 윈도우 크기보다 큽니다.",
+    "Eng": "The size of the region of interest is larger than the process window size."
   }
 ]
 
