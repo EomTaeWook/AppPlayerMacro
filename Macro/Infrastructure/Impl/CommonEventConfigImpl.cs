@@ -232,34 +232,50 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = true;
 
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
             }
-            else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Keyboard)
+            else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Keyboard)
             {
                 txtKeyboardCmd.Visibility = Visibility.Visible;
                 gridRelative.Visibility = Visibility.Collapsed;
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
+
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
                 //lblWheelData.Visibility = Visibility.Collapsed;
                 //gridWheelData.Visibility = Visibility.Collapsed;
             }
-            else if(CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.RelativeToImage)
+            else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.RelativeToImage)
             {
                 gridRelative.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
+
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
                 //lblWheelData.Visibility = Visibility.Collapsed;
                 //gridWheelData.Visibility = Visibility.Collapsed;
+            }
+            else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
+            {
+                //상위 이미지로 드래그
+                checkChildImageDragToParent.Visibility = Visibility.Visible;
+
+                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                btnMouseCoordinate.IsEnabled = false;
+
+                txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                gridRelative.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -268,6 +284,8 @@ namespace Macro.View
 
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = false;
+
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
 

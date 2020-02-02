@@ -28,6 +28,7 @@ namespace Macro.View
         public GameContentView()
         {
             _captureViews = new List<CaptureView>();
+            _dummyRect = new Utils.Infrastructure.Rect();
 
             InitializeComponent();
 
@@ -106,7 +107,11 @@ namespace Macro.View
 
                 NativeHelper.GetWindowRect(_currentProcess.MainWindowHandle, ref processPosition);
 
-                var roiPosition = CalculatorRoiPosition(processPosition, e.Position);
+                var roiPosition = CalculatorRoiPosition(processPosition, e.Position, e.MonitorInfo);
+                if (roiPosition.Equals(_dummyRect))
+                {
+                    return;
+                }
 
                 _hpRoiPosition = new RoiPositionModel()
                 {
@@ -121,8 +126,11 @@ namespace Macro.View
 
                 NativeHelper.GetWindowRect(_currentProcess.MainWindowHandle, ref processPosition);
 
-                var roiPosition = CalculatorRoiPosition(processPosition, e.Position);
-
+                var roiPosition = CalculatorRoiPosition(processPosition, e.Position, e.MonitorInfo);
+                if (roiPosition.Equals(_dummyRect))
+                {
+                    return;
+                }
                 _mpRoiPosition = new RoiPositionModel()
                 {
                     MonitorInfo = e.MonitorInfo,

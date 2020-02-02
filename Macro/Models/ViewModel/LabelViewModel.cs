@@ -170,5 +170,9 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.InitialTab);
         }
+        public string ChildImageDragToParent
+        {
+            get => DocumentHelper.Get(Label.ChildImageDragToParent);
+        }
     }
 }

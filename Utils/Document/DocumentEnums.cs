@@ -40,6 +40,7 @@
         Refresh,
         Fix,
         RepeatSubItems,
+        ChildImageDragToParent,
 
         RepeatOnce,
         RepeatCount,
@@ -65,6 +66,7 @@
 
         ImageSearchRequired,
         InitialTab,
+
 
         Max
     }

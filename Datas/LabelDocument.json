@@ -233,6 +233,11 @@
     "Code": "InitialTab",
     "Kor": "초기 탭",
     "Eng": "Initial Tab"
+  },
+  {
+    "Code": "ChildImageDragToParent",
+    "Kor": "상위 이미지로 드래그",
+    "Eng": "Child Image Drag To Parent"
   }
 ]
 

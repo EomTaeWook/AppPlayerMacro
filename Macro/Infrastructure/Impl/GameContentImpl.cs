@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Media;
 using Utils;
 using Utils.Document;
+using Utils.Infrastructure;
 using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro.View
@@ -23,7 +24,7 @@ namespace Macro.View
     public partial class GameContentView : BaseContentView
     {
         private Bitmap _bitmap;
-
+        private Rect _dummyRect;
         private RoiPositionModel _hpRoiPosition;
         private RoiPositionModel _mpRoiPosition;
         private Process _currentProcess;
@@ -264,13 +265,15 @@ namespace Macro.View
             Clear();
         }
 
-        private Rect CalculatorRoiPosition(Rect processPosition, Rect capturePosition)
+        private Rect CalculatorRoiPosition(Rect processPosition, Rect capturePosition, MonitorInfo monitorInfo)
         {
             if(capturePosition.Width > processPosition.Width && capturePosition.Height > processPosition.Height)
             {
                 (Application.Current.MainWindow as MetroWindow).MessageShow("Error", DocumentHelper.Get(Message.FailedInvalidateRoiCapturePosition));
+                return _dummyRect;
             }
-            var distance = processPosition - capturePosition;
+            var correctCapturePosition = monitorInfo.Rect + capturePosition;
+            var distance = processPosition - correctCapturePosition;
 
             return capturePosition - distance;
         }

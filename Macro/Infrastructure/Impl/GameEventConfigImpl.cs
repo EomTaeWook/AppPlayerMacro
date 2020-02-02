@@ -251,6 +251,8 @@ namespace Macro.View
 
                 checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Visible;
 
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
             }
@@ -263,6 +265,8 @@ namespace Macro.View
                 btnMouseCoordinate.IsEnabled = false;
 
                 checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Visible;
+
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
 
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
@@ -281,11 +285,23 @@ namespace Macro.View
                 checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
                 checkImageSearchRequired.IsChecked = true;
 
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
                 //lblWheelData.Visibility = Visibility.Collapsed;
                 //gridWheelData.Visibility = Visibility.Collapsed;
+            }
+            else if (CurrentTreeViewItem.DataContext<GameEventTriggerModel>().EventType == EventType.Image)
+            {
+                //상위 이미지로 드래그
+                checkChildImageDragToParent.Visibility = Visibility.Visible;
+
+                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                btnMouseCoordinate.IsEnabled = false;
+
+                txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                gridRelative.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -297,6 +313,8 @@ namespace Macro.View
 
                 checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
                 checkImageSearchRequired.IsChecked = true;
+
+                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
 
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
