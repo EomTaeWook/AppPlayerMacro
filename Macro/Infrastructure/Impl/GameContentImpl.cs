@@ -159,7 +159,7 @@ namespace Macro.View
 
             model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
 
-            if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage || model.IsImageSearchRequired == true)
+            if (model.EventType == EventType.Image || model.EventType == EventType.RelativeToImage || model.ImageSearchRequired == true)
             {
                 if (model.Image == null)
                 {

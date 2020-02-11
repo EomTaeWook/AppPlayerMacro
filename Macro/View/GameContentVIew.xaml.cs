@@ -177,7 +177,7 @@ namespace Macro.View
             else if (btn.Equals(btnSave))
             {
                 var model = gameConfigView.CurrentTreeViewItem.DataContext<GameEventTriggerModel>();
-                if(model.IsImageSearchRequired)
+                if(model.ImageSearchRequired)
                 {
                     model.Image = _bitmap;
                 }

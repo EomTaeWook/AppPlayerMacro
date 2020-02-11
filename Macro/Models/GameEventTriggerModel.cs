@@ -9,6 +9,8 @@ namespace Macro.Models
     [Serializable]
     public class GameEventTriggerModel : BaseEventTriggerModel<GameEventTriggerModel>
     {
+        public static GameEventTriggerModel DummyParentEventModel;
+
         private ValueConditionModel _hpCondition;
         private ValueConditionModel _mpCondition;
         private bool _isImageSearchRequired;
@@ -37,9 +39,9 @@ namespace Macro.Models
             HpCondition = model.HpCondition.Clone();
             MpCondition = model.MpCondition.Clone();
             _triggerIndex = 0;
-            _isImageSearchRequired = model.IsImageSearchRequired;
+            _isImageSearchRequired = model._isImageSearchRequired;
         }
-        [Order(12)]
+        [Order(15)]
         public ValueConditionModel HpCondition
         {
             set
@@ -49,7 +51,7 @@ namespace Macro.Models
             }
             get => _hpCondition;
         }
-        [Order(13)]
+        [Order(16)]
         public ValueConditionModel MpCondition
         {
             set
@@ -59,15 +61,15 @@ namespace Macro.Models
             }
             get => _mpCondition;
         }
-        [Order(14)]
-        public override bool IsImageSearchRequired
+
+        public override IBaseEventTriggerModel ParentEventTriggerModel
         {
             set
             {
-                _isImageSearchRequired = value;
-                OnPropertyChanged("IsImageSearchRequired");
+                _parentEventTriggerModel = value;
+                OnPropertyChanged("ParentEventTriggerModel");
             }
-            get => _isImageSearchRequired;
+            get => _parentEventTriggerModel ?? DummyParentEventModel;
         }
     }
 }

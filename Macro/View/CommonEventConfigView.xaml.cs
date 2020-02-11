@@ -170,7 +170,7 @@ namespace Macro.View
                     RadioButton_Click(rbRelativeToImage, null);
                 }
                 btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Visible;
-                if(item.SubEventTriggers.Count != 0)
+                if (item.SubEventTriggers.Count != 0)
                 {
                     lblRepeatSubItems.Visibility = Visibility.Visible;
                     gridRepeat.Visibility = Visibility.Visible;
@@ -179,6 +179,14 @@ namespace Macro.View
                 {
                     lblRepeatSubItems.Visibility = Visibility.Collapsed;
                     gridRepeat.Visibility = Visibility.Collapsed;
+                }
+                if (item.ParentEventTriggerModel != EventTriggerModel.DummyParentEventModel)
+                {
+                    checkChildImageDragToParent.IsEnabled = true;
+                }
+                else
+                {
+                    checkChildImageDragToParent.IsEnabled = false;
                 }
             }
         }

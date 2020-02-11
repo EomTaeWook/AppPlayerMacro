@@ -27,6 +27,9 @@ namespace Macro.Extensions
             source.TriggerIndex = 0;
             source.HpCondition = new ValueConditionModel() { ConditionType = ConditionType.Below };
             source.MpCondition = new ValueConditionModel() { ConditionType = ConditionType.Below };
+            source.ImageDragToParent = false;
+            source.ImageSearchRequired = false;
+            source.ParentEventTriggerModel = null;
         }
         public static void Clear(this EventTriggerModel source)
         {
@@ -41,6 +44,9 @@ namespace Macro.Extensions
             source.RepeatInfo = new RepeatInfoModel();
             source.EventToNext = 0;
             source.TriggerIndex = 0;
+            source.ImageDragToParent = false;
+            source.ImageSearchRequired = false;
+            source.ParentEventTriggerModel = null;
         }
         public static ValueConditionModel Clone(this ValueConditionModel source)
         {

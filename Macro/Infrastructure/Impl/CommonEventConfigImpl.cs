@@ -197,11 +197,13 @@ namespace Macro.View
                 {
                     parentItemContainer.Remove(item);
                     targetItem.SubEventTriggers.Add(item);
+                    item.ParentEventTriggerModel = targetItem;
                 }
                 else if (target.ParentItem != CurrentTreeViewItem)
                 {
                     parentItemContainer.Remove(item);
                     targetItem.SubEventTriggers.Add(item);
+                    item.ParentEventTriggerModel = targetItem;
                 }
                 else if(target.ParentItem == CurrentTreeViewItem)
                 {
@@ -212,6 +214,7 @@ namespace Macro.View
                     item.SubEventTriggers = targetSubItem;
                     targetItem.SubEventTriggers.Add(item);
                     parentItemContainer.Add(targetItem);
+                    item.ParentEventTriggerModel = targetItem;
                     CurrentTreeViewItem = _dummyTreeGridViewItem;
                 }
             }
@@ -220,6 +223,7 @@ namespace Macro.View
                 var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 parentItemContainer.Remove(item);
                 this.DataContext<CommonEventConfigViewModel>().TriggerSaves.Add(item);
+                item.ParentEventTriggerModel = null;
             }
         }
         private void RadioButtonRefresh()

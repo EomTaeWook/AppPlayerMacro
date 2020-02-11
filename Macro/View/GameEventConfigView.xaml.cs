@@ -126,6 +126,14 @@ namespace Macro.View
                     lblRepeatSubItems.Visibility = Visibility.Collapsed;
                     gridRepeat.Visibility = Visibility.Collapsed;
                 }
+                if(item.ParentEventTriggerModel != GameEventTriggerModel.DummyParentEventModel)
+                {
+                    checkChildImageDragToParent.IsEnabled = true;
+                }
+                else
+                {
+                    checkChildImageDragToParent.IsEnabled = false;
+                }
             }
         }
         private void GameEventConfigView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -176,11 +184,11 @@ namespace Macro.View
         {
             if(checkImageSearchRequired.IsChecked.HasValue)
             {
-                _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().IsImageSearchRequired = checkImageSearchRequired.IsChecked.Value;
+                _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().ImageSearchRequired = checkImageSearchRequired.IsChecked.Value;
             }
             else
             {
-                _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().IsImageSearchRequired = false;
+                _contextViewModel.CurrentTreeViewItem.DataContext<GameEventTriggerModel>().ImageSearchRequired = false;
             }
         }
 

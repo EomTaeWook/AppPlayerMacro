@@ -8,6 +8,7 @@ namespace Macro.Models
     [Serializable]
     public class EventTriggerModel : BaseEventTriggerModel<EventTriggerModel>
     {
+        public static EventTriggerModel DummyParentEventModel;
         public EventTriggerModel()
         {
         }
@@ -29,6 +30,16 @@ namespace Macro.Models
             RepeatInfo = model.RepeatInfo.Clone();
             EventToNext = model.EventToNext;
             _triggerIndex = 0;
-        }       
+        }
+
+        public override IBaseEventTriggerModel ParentEventTriggerModel 
+        {
+            set
+            {
+                _parentEventTriggerModel = value;
+                OnPropertyChanged("ParentEventTriggerModel");
+            }
+            get => _parentEventTriggerModel?? DummyParentEventModel;
+        }
     }
 }

@@ -20,7 +20,9 @@ namespace Macro.Models
         RepeatInfoModel RepeatInfo { get; set; }
         ulong TriggerIndex { get; set; }
         ulong EventToNext { get; set; }
-        bool IsImageSearchRequired { get; set; }
+        bool ImageSearchRequired { get; set; }
+        bool ImageDragToParent { get; set; }
+        IBaseEventTriggerModel ParentEventTriggerModel { get; set; }
     }
 
     [Serializable]
@@ -35,7 +37,9 @@ namespace Macro.Models
         protected RepeatInfoModel _repeatInfo;
         protected ulong _eventToNext = 0;
         protected ulong _triggerIndex = 0;
-
+        protected bool _imageSearchRequired = false;
+        protected bool _imageDragToParent = false;
+        protected IBaseEventTriggerModel _parentEventTriggerModel;
         [Order(1)]
         public Bitmap Image { get; set; }
 
@@ -141,6 +145,29 @@ namespace Macro.Models
             }
             get => _eventToNext;
         }
+        [Order(12)]
+        public bool ImageSearchRequired
+        {
+            set
+            {
+                _imageSearchRequired = value;
+                OnPropertyChanged("ImageSearchRequired");
+            }
+            get => _imageDragToParent;
+        }
+        [Order(13)]
+        public bool ImageDragToParent
+        {
+            set
+            {
+                _imageDragToParent = value;
+                OnPropertyChanged("ImageDragToParent");
+            }
+            get => _imageDragToParent;
+        }
+        [Order(14)]
+        public abstract IBaseEventTriggerModel ParentEventTriggerModel { get; set; }
+
         public string Desc
         {
             get
@@ -186,13 +213,6 @@ namespace Macro.Models
                 }
             }
         }
-
-        public virtual bool IsImageSearchRequired
-        {
-            get;
-            set;
-        }
-
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
