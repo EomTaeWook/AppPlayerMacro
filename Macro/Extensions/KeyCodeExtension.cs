@@ -21,7 +21,9 @@ namespace Macro.Extensions
                 keyCode == KeyCode.NUMLOCK ||
                 keyCode == KeyCode.CANCEL ||
                 keyCode == KeyCode.SNAPSHOT ||
-                keyCode == KeyCode.DIVIDE)
+                keyCode == KeyCode.DIVIDE ||
+                keyCode == KeyCode.ESC
+                )
             {
                 return true;
             }
