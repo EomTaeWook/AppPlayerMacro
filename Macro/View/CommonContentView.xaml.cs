@@ -107,14 +107,6 @@ namespace Macro.View
                     CurrentEventTriggerModel = model,
                 });
             }
-            else if (btn.Equals(btnDelete))
-            {
-                var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
-                NotifyHelper.InvokeNotify(NotifyEventType.Delete, new DeleteEventTriggerModelArgs()
-                {
-                    CurrentEventTriggerModel = model,
-                });
-            }
             else if(btn.Equals(btnAddSameContent))
             {
                 var item = configView.CopyCurrentItem();
@@ -123,6 +115,14 @@ namespace Macro.View
                 NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = item,
+                });
+            }
+            else if(btn.Equals(btnDelete))
+            {
+                var model = configView.CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                NotifyHelper.InvokeNotify(NotifyEventType.Delete, new DeleteEventTriggerModelArgs()
+                {
+                    CurrentEventTriggerModel = model,
                 });
             }
         }
