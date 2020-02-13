@@ -235,9 +235,15 @@
     "Eng": "Initial Tab"
   },
   {
-    "Code": "ChildImageDragToParent",
-    "Kor": "상위 이미지로 드래그",
-    "Eng": "Child Image Drag To Parent"
+    "Code": "SameImageDrag",
+    "Kor": "같은 이미지 드래그",
+    "Eng": "Drag the same image"
+  },
+  {
+    "Code": "MaxSameImageCount",
+    "Kor": "같은 이미지 찾기 반복",
+    "Eng": "Repeat finding the same image"
   }
 ]
+
 

@@ -43,7 +43,23 @@ namespace Macro.View
             treeSaves.PreviewMouseLeftButtonDown += TreeSaves_PreviewMouseLeftButtonDown;
             treeSaves.MouseMove += TreeSaves_MouseMove;
             treeSaves.Drop += TreeSaves_Drop;
+
+            checkSameImageDrag.Checked += CheckSameImageDrag_Checked;
+            checkSameImageDrag.Unchecked += CheckSameImageDrag_Checked;
         }
+
+        private void CheckSameImageDrag_Checked(object sender, RoutedEventArgs e)
+        {
+            if (checkSameImageDrag.IsChecked == true)
+            {
+                numMaxSameImageCount.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private void TreeSaves_Drop(object sender, DragEventArgs e)
         {
             if (_isDrag)
@@ -126,14 +142,7 @@ namespace Macro.View
                     lblRepeatSubItems.Visibility = Visibility.Collapsed;
                     gridRepeat.Visibility = Visibility.Collapsed;
                 }
-                if(item.ParentEventTriggerModel != GameEventTriggerModel.DummyParentEventModel)
-                {
-                    checkChildImageDragToParent.IsEnabled = true;
-                }
-                else
-                {
-                    checkChildImageDragToParent.IsEnabled = false;
-                }
+                
             }
         }
         private void GameEventConfigView_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

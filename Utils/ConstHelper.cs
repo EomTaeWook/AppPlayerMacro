@@ -21,6 +21,7 @@
         public static readonly int DefaultSimilarity = 70;
         public static readonly float DefaultDPI = 96.0F;
         public static readonly short WheelDelta = 120;
+        public static readonly int DefaultMaxSameImageCount = 5;
 
         public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=188XWJsrFW39ty-VltB-7OjdYZf9FV3Q1";
         public static readonly string ReleaseUrl = @"https://github.com/EomTaeWook/EmulatorMacro/releases";

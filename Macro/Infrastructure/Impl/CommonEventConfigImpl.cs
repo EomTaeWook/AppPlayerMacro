@@ -197,13 +197,11 @@ namespace Macro.View
                 {
                     parentItemContainer.Remove(item);
                     targetItem.SubEventTriggers.Add(item);
-                    item.ParentEventTriggerModel = targetItem;
                 }
                 else if (target.ParentItem != CurrentTreeViewItem)
                 {
                     parentItemContainer.Remove(item);
                     targetItem.SubEventTriggers.Add(item);
-                    item.ParentEventTriggerModel = targetItem;
                 }
                 else if(target.ParentItem == CurrentTreeViewItem)
                 {
@@ -214,7 +212,6 @@ namespace Macro.View
                     item.SubEventTriggers = targetSubItem;
                     targetItem.SubEventTriggers.Add(item);
                     parentItemContainer.Add(targetItem);
-                    item.ParentEventTriggerModel = targetItem;
                     CurrentTreeViewItem = _dummyTreeGridViewItem;
                 }
             }
@@ -223,7 +220,6 @@ namespace Macro.View
                 var item = CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 parentItemContainer.Remove(item);
                 this.DataContext<CommonEventConfigViewModel>().TriggerSaves.Add(item);
-                item.ParentEventTriggerModel = null;
             }
         }
         private void RadioButtonRefresh()
@@ -236,7 +232,9 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = true;
 
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
             }
@@ -248,7 +246,9 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
 
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -263,7 +263,9 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
 
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -272,8 +274,9 @@ namespace Macro.View
             }
             else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
             {
-                //상위 이미지로 드래그
-                checkChildImageDragToParent.Visibility = Visibility.Visible;
+                checkSameImageDrag.Visibility = Visibility.Visible;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
@@ -289,7 +292,9 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Visible;
                 btnMouseCoordinate.IsEnabled = false;
 
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
 

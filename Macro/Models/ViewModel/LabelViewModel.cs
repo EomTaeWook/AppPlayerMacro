@@ -170,9 +170,13 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.InitialTab);
         }
-        public string ChildImageDragToParent
+        public string SameImageDrag
         {
-            get => DocumentHelper.Get(Label.ChildImageDragToParent);
+            get => DocumentHelper.Get(Label.SameImageDrag);
+        }
+        public string MaxSameImageCount
+        {
+            get => DocumentHelper.Get(Label.MaxSameImageCount);
         }
     }
 }

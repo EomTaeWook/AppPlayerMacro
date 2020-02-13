@@ -21,8 +21,8 @@ namespace Macro.Models
         ulong TriggerIndex { get; set; }
         ulong EventToNext { get; set; }
         bool ImageSearchRequired { get; set; }
-        bool ImageDragToParent { get; set; }
-        IBaseEventTriggerModel ParentEventTriggerModel { get; set; }
+        bool SameImageDrag { get; set; }
+        int MaxSameImageCount { get; set; }
     }
 
     [Serializable]
@@ -38,8 +38,9 @@ namespace Macro.Models
         protected ulong _eventToNext = 0;
         protected ulong _triggerIndex = 0;
         protected bool _imageSearchRequired = false;
-        protected bool _imageDragToParent = false;
-        protected IBaseEventTriggerModel _parentEventTriggerModel;
+        protected bool _sameImageDrag = false;
+        protected int _maxSameImageCount = 0;
+
         [Order(1)]
         public Bitmap Image { get; set; }
 
@@ -153,21 +154,28 @@ namespace Macro.Models
                 _imageSearchRequired = value;
                 OnPropertyChanged("ImageSearchRequired");
             }
-            get => _imageDragToParent;
+            get => _imageSearchRequired;
         }
         [Order(13)]
-        public bool ImageDragToParent
+        public bool SameImageDrag
         {
             set
             {
-                _imageDragToParent = value;
-                OnPropertyChanged("ImageDragToParent");
+                _sameImageDrag = value;
+                OnPropertyChanged("SameImageDrag");
             }
-            get => _imageDragToParent;
+            get => _sameImageDrag;
         }
         [Order(14)]
-        public abstract IBaseEventTriggerModel ParentEventTriggerModel { get; set; }
-
+        public int MaxSameImageCount
+        {
+            set
+            {
+                _maxSameImageCount = value;
+                OnPropertyChanged("MaxSameImageCount");
+            }
+            get => _maxSameImageCount;
+        }
         public string Desc
         {
             get

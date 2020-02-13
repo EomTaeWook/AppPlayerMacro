@@ -251,7 +251,9 @@ namespace Macro.View
 
                 checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Visible;
 
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
 
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
@@ -266,7 +268,9 @@ namespace Macro.View
 
                 checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Visible;
 
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
 
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
@@ -282,10 +286,9 @@ namespace Macro.View
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
 
-                checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
-                checkImageSearchRequired.IsChecked = true;
-
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -294,8 +297,9 @@ namespace Macro.View
             }
             else if (CurrentTreeViewItem.DataContext<GameEventTriggerModel>().EventType == EventType.Image)
             {
-                //상위 이미지로 드래그
-                checkChildImageDragToParent.Visibility = Visibility.Visible;
+                checkSameImageDrag.Visibility = Visibility.Visible;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;
@@ -314,7 +318,9 @@ namespace Macro.View
                 checkImageSearchRequired.Visibility = lblImageSearchRequired.Visibility = Visibility.Collapsed;
                 checkImageSearchRequired.IsChecked = true;
 
-                checkChildImageDragToParent.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
 
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;

@@ -30,16 +30,7 @@ namespace Macro.Models
             RepeatInfo = model.RepeatInfo.Clone();
             EventToNext = model.EventToNext;
             _triggerIndex = 0;
-        }
-
-        public override IBaseEventTriggerModel ParentEventTriggerModel 
-        {
-            set
-            {
-                _parentEventTriggerModel = value;
-                OnPropertyChanged("ParentEventTriggerModel");
-            }
-            get => _parentEventTriggerModel?? DummyParentEventModel;
+            SameImageDrag = model.SameImageDrag;
         }
     }
 }

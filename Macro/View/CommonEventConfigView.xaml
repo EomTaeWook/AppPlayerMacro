@@ -57,13 +57,14 @@
                         <ColumnDefinition Width="6.5*"></ColumnDefinition>
                         <ColumnDefinition Width="3.5*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Grid Name="gridMouse" Grid.Column="0">
+                    <Grid Name="gridMouse" Grid.Column="0" Visibility="Visible">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5.5*"></ColumnDefinition>
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Button Name="btnMouseCoordinate" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0"></Button>
-                        <CheckBox x:Name="checkChildImageDragToParent" IsEnabled="False" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.ImageDragToParent, Mode=Default}" Content="{Binding Path=LabelViewModel.ChildImageDragToParent, Source={StaticResource Locator}}" Grid.Column="0"></CheckBox>
+                        <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.SameImageDrag, Mode=Default}" Content="{Binding Path=LabelViewModel.SameImageDrag, Source={StaticResource Locator}}" Grid.Column="0"></CheckBox>
+                        <Controls:NumericUpDown Name="numMaxSameImageCount" Minimum="1" Grid.Column="1" Visibility="Hidden" Value="{Binding Path=CurrentTreeViewItem.DataContext.MaxSameImageCount, Mode=TwoWay}"></Controls:NumericUpDown>
                         <!--<Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
                     </Grid>
                     <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>

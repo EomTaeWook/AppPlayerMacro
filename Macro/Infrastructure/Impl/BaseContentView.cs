@@ -149,6 +149,12 @@ namespace Macro.Infrastructure.Impl
                                     location.Y = applciationData.OffsetY;
                                     MouseTriggerProcess(hWnd, location, model, factor.Item2);
                                 }
+                                else if (model.EventType == EventType.Image && model.SameImageDrag == true)
+                                {
+                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 / 2);
+                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item2 / 2);
+
+                                }
                                 else if (model.EventType == EventType.Image)
                                 {
                                     var percentage = _random.NextDouble();
@@ -163,6 +169,7 @@ namespace Macro.Infrastructure.Impl
                                     location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item2 / 2);
                                     ImageTriggerProcess(hWnd, location, model);
                                 }
+                                
                                 else if (model.EventType == EventType.Keyboard)
                                 {
                                     KeyboardTriggerProcess(processEventTriggerModel.Processes[i].MainWindowHandle, model);
@@ -352,6 +359,10 @@ namespace Macro.Infrastructure.Impl
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
             Task.Delay(100).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
+        }
+        private void ImageDragToParent(IntPtr hWnd, Point parentLocation, Point currentLocation)
+        {
+
         }
     }
 }

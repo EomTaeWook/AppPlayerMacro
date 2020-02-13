@@ -13,10 +13,8 @@ namespace Macro.Models
 
         private ValueConditionModel _hpCondition;
         private ValueConditionModel _mpCondition;
-        private bool _isImageSearchRequired;
         public GameEventTriggerModel()
         {
-            _isImageSearchRequired = true;
             _hpCondition = new ValueConditionModel();
             _mpCondition = new ValueConditionModel();
         }
@@ -39,7 +37,8 @@ namespace Macro.Models
             HpCondition = model.HpCondition.Clone();
             MpCondition = model.MpCondition.Clone();
             _triggerIndex = 0;
-            _isImageSearchRequired = model._isImageSearchRequired;
+            ImageSearchRequired = model.ImageSearchRequired;
+            SameImageDrag = model.SameImageDrag;
         }
         [Order(15)]
         public ValueConditionModel HpCondition
@@ -60,16 +59,6 @@ namespace Macro.Models
                 OnPropertyChanged("MpCondition");
             }
             get => _mpCondition;
-        }
-
-        public override IBaseEventTriggerModel ParentEventTriggerModel
-        {
-            set
-            {
-                _parentEventTriggerModel = value;
-                OnPropertyChanged("ParentEventTriggerModel");
-            }
-            get => _parentEventTriggerModel ?? DummyParentEventModel;
         }
     }
 }

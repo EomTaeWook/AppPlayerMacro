@@ -43,7 +43,22 @@ namespace Macro.View
             treeSaves.Drop += TreeSaves_Drop;
 
             comboRepeatSubItem.SelectionChanged += ComboRepeatSubItem_SelectionChanged;
+            checkSameImageDrag.Checked += CheckSameImageDrag_Checked;
+            checkSameImageDrag.Unchecked += CheckSameImageDrag_Checked;
         }
+
+        private void CheckSameImageDrag_Checked(object sender, RoutedEventArgs e)
+        {
+            if(checkSameImageDrag.IsChecked == true)
+            {
+                numMaxSameImageCount.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                numMaxSameImageCount.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private void NotifyHelper_ConfigChanged(ConfigEventArgs config)
         {
             _repeatItems.Clear();
@@ -179,14 +194,6 @@ namespace Macro.View
                 {
                     lblRepeatSubItems.Visibility = Visibility.Collapsed;
                     gridRepeat.Visibility = Visibility.Collapsed;
-                }
-                if (item.ParentEventTriggerModel != EventTriggerModel.DummyParentEventModel)
-                {
-                    checkChildImageDragToParent.IsEnabled = true;
-                }
-                else
-                {
-                    checkChildImageDragToParent.IsEnabled = false;
                 }
             }
         }
