@@ -140,7 +140,9 @@ namespace Utils.Infrastructure
                 keyCode == KeyCode.CANCEL ||
                 keyCode == KeyCode.SNAPSHOT ||
                 keyCode == KeyCode.DIVIDE ||
-                keyCode == KeyCode.ESC)
+                keyCode == KeyCode.ESC ||
+                keyCode == KeyCode.PAGEDOWN ||
+                keyCode == KeyCode.PAGEUP)
             {
                 return true;
             }

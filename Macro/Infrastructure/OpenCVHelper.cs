@@ -79,8 +79,7 @@ namespace Macro.Infrastructure
                             g.DrawRectangle(pen, new Rectangle() { X = (int)maxLoc.X, Y = (int)maxLoc.Y, Width = target.Width, Height = target.Height });
                         }
                     }
-                    
-                }                
+                }
             }
             return Tuple.Create(Convert.ToInt32(max * 100), locations);
         }

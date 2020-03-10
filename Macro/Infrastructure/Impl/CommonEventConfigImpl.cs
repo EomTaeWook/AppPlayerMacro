@@ -272,6 +272,8 @@ namespace Macro.View
             else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
             {
                 checkSameImageDrag.Visibility = Visibility.Visible;
+                checkSameImageDrag.IsChecked = false;
+                numMaxSameImageCount.Value = 0;
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;

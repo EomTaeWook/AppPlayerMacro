@@ -141,7 +141,7 @@
         PAGEDOWN = 0x22,
         NUMLOCK = 0x90,
 
-        PAGE_UP = 0x21,
+        PAGEUP = 0x21,
         RCONTROL = 0xA3,
         ENTER = 13,
         RIGHT = 0x27,
