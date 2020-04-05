@@ -48,59 +48,62 @@ namespace Macro.Infrastructure.Impl
         {
         }
 
-        protected async Task<Tuple<bool, IBaseEventTriggerModel>> TriggerProcess<T>(T model, ProcessConfigModel processEventTriggerModel) where T : BaseEventTriggerModel<T>
+        protected async Task<Tuple<bool, IBaseEventTriggerModel>> TriggerProcess<T>(T model, ProcessConfigModel processConfigModel) where T : BaseEventTriggerModel<T>
         {
             var isExcute = false;
 
             var hWnd = IntPtr.Zero;
             var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
-            for (int i = 0; i < processEventTriggerModel.Processes.Count; ++i)
+            for (int i = 0; i < processConfigModel.Processes.Count; ++i)
             {
-                var factor = CalculateFactor(processEventTriggerModel.Processes[i].MainWindowHandle, model, applciationData.IsDynamic);
+                var factor = CalculateFactor(processConfigModel.Processes[i].MainWindowHandle, model, applciationData.IsDynamic);
 
                 if (string.IsNullOrEmpty(applciationData.HandleName))
                 {
-                    hWnd = processEventTriggerModel.Processes[i].MainWindowHandle;
+                    hWnd = processConfigModel.Processes[i].MainWindowHandle;
                 }
                 else
                 {
-                    var item = NativeHelper.GetChildHandles(processEventTriggerModel.Processes[i].MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
+                    var item = NativeHelper.GetChildHandles(processConfigModel.Processes[i].MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
 
                     if (item != null)
                         hWnd = item.Item2;
                     else
-                        hWnd = processEventTriggerModel.Processes[i].MainWindowHandle;
+                        hWnd = processConfigModel.Processes[i].MainWindowHandle;
                 }
 
                 if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
                 {
                     var count = model.RepeatInfo.Count;
-                    while (DisplayHelper.ProcessCapture(processEventTriggerModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
+                    while (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
                     {
                         var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item1));
-                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processEventTriggerModel.SearchImageResultDisplay);
+                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
                         LogHelper.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         CaptureImage(bmp);
-                        if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processEventTriggerModel.Token) || similarity > processEventTriggerModel.Similarity)
+                        if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processConfigModel.Token) || similarity > processConfigModel.Similarity)
                             break;
                         for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
                         {
-                            await TriggerProcess(model.SubEventTriggers[ii], processEventTriggerModel);
-                            if (processEventTriggerModel.Token.IsCancellationRequested)
+                            await TriggerProcess(model.SubEventTriggers[ii], processConfigModel);
+                            if (processConfigModel.Token.IsCancellationRequested)
                                 break;
                         }
-                        factor = CalculateFactor(processEventTriggerModel.Processes[i].MainWindowHandle, model, applciationData.IsDynamic);
+                        factor = CalculateFactor(processConfigModel.Processes[i].MainWindowHandle, model, applciationData.IsDynamic);
                     }
                 }
                 else
                 {
-                    if (DisplayHelper.ProcessCapture(processEventTriggerModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
+                    if (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
                     {
                         var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item2));
-                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processEventTriggerModel.SearchImageResultDisplay);
+                        var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
                         LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
-                        CaptureImage(bmp);
-                        if (similarity > processEventTriggerModel.Similarity)
+                        if(model.SameImageDrag == false)
+                        {
+                            CaptureImage(bmp);
+                        }
+                        if (similarity > processConfigModel.Similarity)
                         {
                             if (model.SubEventTriggers.Count > 0)
                             {
@@ -108,25 +111,25 @@ namespace Macro.Infrastructure.Impl
                                 {
                                     for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                                     {
-                                        if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processEventTriggerModel.Token))
+                                        if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processConfigModel.Token))
                                             break;
                                         for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
                                         {
-                                            await TriggerProcess(model.SubEventTriggers[iii], processEventTriggerModel);
-                                            if (processEventTriggerModel.Token.IsCancellationRequested)
+                                            await TriggerProcess(model.SubEventTriggers[iii], processConfigModel);
+                                            if (processConfigModel.Token.IsCancellationRequested)
                                                 break;
                                         }
                                     }
                                 }
                                 else if (model.RepeatInfo.RepeatType == RepeatType.NoSearch)
                                 {
-                                    while (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processEventTriggerModel.Token))
+                                    while (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processConfigModel.Token))
                                     {
                                         isExcute = false;
                                         for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
                                         {
-                                            var childResult = await TriggerProcess(model.SubEventTriggers[ii], processEventTriggerModel);
-                                            if (processEventTriggerModel.Token.IsCancellationRequested)
+                                            var childResult = await TriggerProcess(model.SubEventTriggers[ii], processConfigModel);
+                                            if (processConfigModel.Token.IsCancellationRequested)
                                             {
                                                 break;
                                             }
@@ -149,19 +152,32 @@ namespace Macro.Infrastructure.Impl
                                     location.Y = applciationData.OffsetY;
                                     MouseTriggerProcess(hWnd, location, model, factor.Item2);
                                 }
-                                else if (model.EventType == EventType.Image && model.SameImageDrag == true)
-                                {
-                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 / 2);
-                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item2 / 2);
-
-                                }
                                 else if (model.EventType == EventType.Image)
                                 {
-                                    var percentage = _random.NextDouble();
+                                    if(model.SameImageDrag == true)
+                                    {
+                                        //Todo
+                                        for (int ii=0; ii<model.MaxSameImageCount; ++ii)
+                                        {
+                                            var locations = OpenCVHelper.MultipleSearch(bmp, targetBmp, processConfigModel.Similarity, 2, processConfigModel.SearchImageResultDisplay);
+                                            if (locations.Count > 1)
+                                            {
+                                                CaptureImage(bmp);
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var percentage = _random.NextDouble();
 
-                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
-                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item1 * percentage);
-                                    ImageTriggerProcess(hWnd, location, model);
+                                        location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
+                                        location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item1 * percentage);
+                                        ImageTriggerProcess(hWnd, location, model);
+                                    }
                                 }
                                 else if (model.EventType == EventType.RelativeToImage)
                                 {
@@ -172,9 +188,9 @@ namespace Macro.Infrastructure.Impl
                                 
                                 else if (model.EventType == EventType.Keyboard)
                                 {
-                                    KeyboardTriggerProcess(processEventTriggerModel.Processes[i].MainWindowHandle, model);
+                                    KeyboardTriggerProcess(processConfigModel.Processes[i].MainWindowHandle, model);
                                 }
-                                if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processEventTriggerModel.Token))
+                                if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processConfigModel.Token))
                                     break;
 
                                 if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
@@ -200,7 +216,7 @@ namespace Macro.Infrastructure.Impl
                     }
                 }
             }
-            await TaskHelper.TokenCheckDelayAsync(processEventTriggerModel.ItemDelay, processEventTriggerModel.Token);
+            await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, processConfigModel.Token);
             return Tuple.Create<bool, IBaseEventTriggerModel>(isExcute, null);
         }
 
@@ -359,10 +375,6 @@ namespace Macro.Infrastructure.Impl
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
             Task.Delay(100).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
-        }
-        private void ImageDragToParent(IntPtr hWnd, Point parentLocation, Point currentLocation)
-        {
-
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Macro.Infrastructure
 {
     public class OpenCVHelper
     {
-        public static int Search(Bitmap source, Bitmap target, out System.Windows.Point location, bool isResultDisplay = false)
+        public static int Search(Bitmap source, Bitmap target, out System.Windows.Point location,  bool isResultDisplay = false)
         {
             var sourceMat = BitmapConverter.ToMat(source);
             var targetMat = BitmapConverter.ToMat(target);
@@ -41,47 +41,56 @@ namespace Macro.Infrastructure
             }
             return Convert.ToInt32(max * 100);
         }
-        public static Tuple<int, List<System.Windows.Point>> MultiSearch(Bitmap source, Bitmap target, int maxSameRepeatCount, bool isResultDisplay = false)
+        public static List<System.Windows.Point> MultipleSearch(Bitmap source, Bitmap target, int similarity, int maxSameRepeatCount, bool isResultDisplay = false)
         {
-            var sourceMat = BitmapConverter.ToMat(source);
+            var searchAndCopyImage = source.Clone() as Bitmap;
+
+            var sourceMat = BitmapConverter.ToMat(searchAndCopyImage);
             var targetMat = BitmapConverter.ToMat(target);
+
             if (sourceMat.Cols <= targetMat.Cols || sourceMat.Rows <= targetMat.Rows)
             {
-                return Tuple.Create(0, new List<System.Windows.Point>());
+                return new List<System.Windows.Point>();
             }
-            double max = 0;
             List<System.Windows.Point> locations = new List<System.Windows.Point>();
             while(maxSameRepeatCount-- > 0)
             {
+                sourceMat = BitmapConverter.ToMat(searchAndCopyImage);
                 var match = sourceMat.MatchTemplate(targetMat, TemplateMatchModes.CCoeffNormed);
-                Cv2.MinMaxLoc(match, out _, out double tempMax, out _, out Point maxLoc);
-                if(tempMax > max)
+                Cv2.MinMaxLoc(match, out _, out double max, out _, out Point maxLoc);
+                max *= 100;
+                if (similarity < max)
                 {
-                    max = tempMax;
-                }
-                locations.Add(new System.Windows.Point() 
-                {
-                    X = maxLoc.X,
-                    Y = maxLoc.Y
-                });
-
-                using(var g = Graphics.FromImage(source))
-                {
-                    using (var brush = new SolidBrush(Color.FromArgb(120, 0, 0, 0)))
+                    locations.Add(new System.Windows.Point()
                     {
-                        var rect = new Rectangle() { X = (int)maxLoc.X, Y = (int)maxLoc.Y, Width = target.Width, Height = target.Height };
-                        g.FillRectangle(brush, rect);
-                    }
-                    if(isResultDisplay)
+                        X = maxLoc.X,
+                        Y = maxLoc.Y
+                    });
+                    using (var g = Graphics.FromImage(searchAndCopyImage))
                     {
-                        using (var pen = new Pen(Color.Red, 2))
+                        using (var brush = new SolidBrush(Color.Black))
                         {
-                            g.DrawRectangle(pen, new Rectangle() { X = (int)maxLoc.X, Y = (int)maxLoc.Y, Width = target.Width, Height = target.Height });
+                            var rect = new Rectangle() { X = (int)maxLoc.X, Y = (int)maxLoc.Y, Width = target.Width, Height = target.Height };
+                            g.FillRectangle(brush, rect);
+                        }
+                    }
+                    using (var g = Graphics.FromImage(source))
+                    {
+                        if (isResultDisplay)
+                        {
+                            using (var pen = new Pen(Color.Red, 2))
+                            {
+                                g.DrawRectangle(pen, new Rectangle() { X = (int)maxLoc.X, Y = (int)maxLoc.Y, Width = target.Width, Height = target.Height });
+                            }
                         }
                     }
                 }
+                else
+                {
+                    break;
+                }
             }
-            return Tuple.Create(Convert.ToInt32(max * 100), locations);
+            return locations;
         }
         public static Bitmap MakeRoiImage(Bitmap source, Rect rect)
         {

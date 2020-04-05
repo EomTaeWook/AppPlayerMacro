@@ -76,7 +76,7 @@ namespace Macro.View
         {
             foreach (var type in Enum.GetValues(typeof(RepeatType)))
             {
-                if(Enum.TryParse($"Repeat{type.ToString()}", out Utils.Document.Label label))
+                if(Enum.TryParse($"Repeat{type}", out Utils.Document.Label label))
                 {
                     _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, DocumentHelper.Get(label)));
                 }
@@ -272,8 +272,6 @@ namespace Macro.View
             else if (CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
             {
                 checkSameImageDrag.Visibility = Visibility.Visible;
-                checkSameImageDrag.IsChecked = false;
-                numMaxSameImageCount.Value = 0;
 
                 btnMouseCoordinate.Visibility = Visibility.Collapsed;
                 btnMouseCoordinate.IsEnabled = false;

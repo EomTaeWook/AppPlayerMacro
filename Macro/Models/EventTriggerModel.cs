@@ -32,7 +32,6 @@ namespace Macro.Models
             _triggerIndex = 0;
             SameImageDrag = model.SameImageDrag;
             MaxSameImageCount = model.MaxSameImageCount;
-            
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
-  <assemblyIdentity version="1.0.0.0" name="MyApplication.app"/>
+  <assemblyIdentity version="1.0.0.0" name="MyApplication.app" />
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
     <security>
       <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
@@ -18,33 +18,29 @@
         -->
         <requestedExecutionLevel level="asInvoker" uiAccess="false" />
       </requestedPrivileges>
+      <applicationRequestMinimum>
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+      </applicationRequestMinimum>
     </security>
   </trustInfo>
-
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
     <application>
       <!-- 이 애플리케이션이 테스트되고 함께 작동하도록 설계된 Windows 버전
            목록입니다. 해당 요소의 주석 처리를 제거하면 Windows에서
            호환 가능성이 가장 큰 환경을 자동으로 선택합니다. -->
-
       <!-- Windows Vista -->
       <!--<supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}" />-->
-
       <!-- Windows 7 -->
       <!--<supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}" />-->
-
       <!-- Windows 8 -->
       <supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}" />
-
       <!-- Windows 8.1 -->
       <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />
-
       <!-- Windows 10 -->
       <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
-
     </application>
   </compatibility>
-
   <!-- 애플리케이션에서 DPI를 인식하며 높은 DPI에서는 Windows가 자동으로 크기를 조정하지
        않습니다. WPF(Windows Presentation Foundation) 애플리케이션은 자동으로 DPI를 인식하며 
        옵트인할 필요가 없습니다. 이 설정으로 옵트인하며 .NET Framework 4.6을 대상으로 하는 
@@ -70,5 +66,4 @@
     </dependentAssembly>
   </dependency>
   -->
-
 </assembly>
