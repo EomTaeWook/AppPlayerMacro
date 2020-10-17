@@ -94,9 +94,30 @@ namespace Macro.Infrastructure.Impl
                 }
                 else
                 {
-                    if (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
+                    var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item2));
+
+                    if (model.SameImageDrag == true)
                     {
-                        var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item2));
+                        if (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
+                        {
+                            //Todo
+                            for (int ii = 0; ii < model.MaxSameImageCount; ++ii)
+                            {
+                                var locations = OpenCVHelper.MultipleSearch(bmp, targetBmp, processConfigModel.Similarity, 2, processConfigModel.SearchImageResultDisplay);
+                                if (locations.Count > 1)
+                                {
+                                    CaptureImage(bmp);
+                                    SameImageMouseDragTriggerProcess(hWnd, locations[0], locations[1], model, factor.Item2);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else if (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
+                    {
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
                         LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         if(model.SameImageDrag == false)
@@ -154,30 +175,11 @@ namespace Macro.Infrastructure.Impl
                                 }
                                 else if (model.EventType == EventType.Image)
                                 {
-                                    if(model.SameImageDrag == true)
-                                    {
-                                        //Todo
-                                        for (int ii=0; ii<model.MaxSameImageCount; ++ii)
-                                        {
-                                            var locations = OpenCVHelper.MultipleSearch(bmp, targetBmp, processConfigModel.Similarity, 2, processConfigModel.SearchImageResultDisplay);
-                                            if (locations.Count > 1)
-                                            {
-                                                CaptureImage(bmp);
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var percentage = _random.NextDouble();
+                                    var percentage = _random.NextDouble();
 
-                                        location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
-                                        location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item1 * percentage);
-                                        ImageTriggerProcess(hWnd, location, model);
-                                    }
+                                    location.X = ((location.X + applciationData.OffsetX) / factor.Item2.Item1) + (targetBmp.Width / factor.Item2.Item1 * percentage);
+                                    location.Y = ((location.Y + applciationData.OffsetY) / factor.Item2.Item2) + (targetBmp.Height / factor.Item2.Item1 * percentage);
+                                    ImageTriggerProcess(hWnd, location, model);
                                 }
                                 else if (model.EventType == EventType.RelativeToImage)
                                 {
@@ -253,6 +255,72 @@ namespace Macro.Infrastructure.Impl
                 }
             }
             return Tuple.Create(Tuple.Create(factorX, factorY), Tuple.Create(positionFactorX, positionFactorY));
+        }
+        private List<Point> GetIntevalDragMiddlePoint(Point start, Point arrive, int interval)
+        {
+            var middleX = 0D;
+            var middleY = 0D;
+
+            List<Point> middlePosition = new List<Point>();
+
+            Point recent = new Point(start.X, start.Y);
+            middlePosition.Add(recent);
+
+            while (Point.Subtract(recent, arrive).Length > interval)
+            {
+                LogHelper.Debug($">>> Get Middle Interval Drag Mouse : {Point.Subtract(recent, arrive).Length}");
+                if (recent.X > arrive.X)
+                {
+                    middleX = recent.X - interval;
+                }
+                else if (recent.X < arrive.X)
+                {
+                    middleX = recent.X + interval;
+                }
+
+                if (recent.Y > arrive.Y)
+                {
+                    middleY = recent.Y - interval;
+                }
+                else if (recent.Y < arrive.Y)
+                {
+                    middleY = recent.Y + interval;
+                }
+
+                recent = new Point(middleX, middleY);
+                middlePosition.Add(recent);
+            }
+            
+            return middlePosition;
+        }
+        private void SameImageMouseDragTriggerProcess(IntPtr hWnd, Point start, Point arrive, IBaseEventTriggerModel model, Tuple<float, float> factor)
+        {
+            LogHelper.Debug($">>>>Drag Mouse Save Position X : {start.X} Save Position Y : {start.Y} Target X : { arrive.X } Target Y : { arrive.Y }");
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, start.ToLParam());
+            var interval = 3;
+            var middlePoints = this.GetIntevalDragMiddlePoint(start, arrive, interval);
+            Task.Delay(100).Wait();
+
+            Point mousePosition;
+            for (int i = 0; i < middlePoints.Count; ++i)
+            {
+                mousePosition = new Point()
+                {
+                    X = Math.Abs(model.ProcessInfo.Position.Left + middlePoints[i].X * -1) * factor.Item1,
+                    Y = Math.Abs(model.ProcessInfo.Position.Top + middlePoints[i].Y * -1) * factor.Item2
+                };
+                NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
+                Task.Delay(100).Wait();
+            }
+            mousePosition = new Point()
+            {
+                X = Math.Abs(model.ProcessInfo.Position.Left + arrive.X * -1) * factor.Item1,
+                Y = Math.Abs(model.ProcessInfo.Position.Top + arrive.Y * -1) * factor.Item2
+            };
+            NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
+            Task.Delay(100).Wait();
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
+            LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
         }
         private void KeyboardTriggerProcess(IntPtr hWnd, IBaseEventTriggerModel model)
         {

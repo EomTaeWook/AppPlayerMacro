@@ -39,7 +39,7 @@ namespace Macro.Models
         protected ulong _triggerIndex = 0;
         protected bool _imageSearchRequired = false;
         protected bool _sameImageDrag = false;
-        protected int _maxSameImageCount = 0;
+        protected int _maxSameImageCount = 1;
 
         [Order(1)]
         public Bitmap Image { get; set; }

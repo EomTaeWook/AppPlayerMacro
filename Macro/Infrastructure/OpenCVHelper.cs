@@ -65,7 +65,7 @@ namespace Macro.Infrastructure
                     {
                         X = maxLoc.X,
                         Y = maxLoc.Y
-                    });
+                    }); 
                     using (var g = Graphics.FromImage(searchAndCopyImage))
                     {
                         using (var brush = new SolidBrush(Color.Black))
