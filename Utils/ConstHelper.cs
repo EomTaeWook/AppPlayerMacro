@@ -17,6 +17,7 @@
         public static readonly int MinPeriod = 100;
         public static readonly int MinItemDelay = 100;
         public static readonly int MinSimilarity = 0;
+        public static readonly int MinDragDelay = 1;
 
         public static readonly int DefaultSimilarity = 70;
         public static readonly float DefaultDPI = 96.0F;

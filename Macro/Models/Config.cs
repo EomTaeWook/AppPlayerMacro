@@ -26,7 +26,7 @@ namespace Macro.Models
         private int _ItemDelay = ConstHelper.MinItemDelay;
         private int _similarity = ConstHelper.DefaultSimilarity;
         private bool _searchImageResultDisplay = true;
-        private int _dragDelay = ConstHelper.MinItemDelay;
+        private int _dragDelay = ConstHelper.MinDragDelay;
         private bool _versionCheck = true;
         private InitialTab _initialTab = Infrastructure.InitialTab.Common;
 
