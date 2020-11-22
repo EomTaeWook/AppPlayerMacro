@@ -1,6 +1,8 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Impl;
+using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
@@ -28,6 +30,7 @@ namespace Macro.View
         private RoiPositionModel _hpRoiPosition;
         private RoiPositionModel _mpRoiPosition;
         private Process _currentProcess;
+        private IContentController contentController = new GameContentController();
         public void Capture(CaptureViewMode captureViewMode)
         {
             Clear();
@@ -143,7 +146,7 @@ namespace Macro.View
                 
             });
 
-            var nextModel = await TriggerProcess(saveModel as GameEventTriggerModel, processEventTriggerModel);
+            var nextModel = await contentController.TriggerProcess(saveModel as GameEventTriggerModel, processEventTriggerModel);
             return nextModel.Item2;
         }
 

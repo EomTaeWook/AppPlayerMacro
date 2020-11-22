@@ -13,6 +13,7 @@ namespace Macro.Models
         int ItemDelay { get; }
         int Similarity { get; }
         bool SearchImageResultDisplay { get; }
+        int DragDelay { get; set; }
         bool VersionCheck { get; }
         InitialTab InitialTab { get; set; }
     }
@@ -25,6 +26,7 @@ namespace Macro.Models
         private int _ItemDelay = ConstHelper.MinItemDelay;
         private int _similarity = ConstHelper.DefaultSimilarity;
         private bool _searchImageResultDisplay = true;
+        private int _dragDelay = ConstHelper.MinItemDelay;
         private bool _versionCheck = true;
         private InitialTab _initialTab = Infrastructure.InitialTab.Common;
 
@@ -92,7 +94,15 @@ namespace Macro.Models
                 OnPropertyChanged("VersionCheck");
             }
         }
-
+        public int DragDelay
+        {
+            get => _dragDelay;
+            set
+            {
+                _dragDelay = value;
+                OnPropertyChanged("DragDelay");
+            }
+        }
         public InitialTab InitialTab
         {
             get => _initialTab;

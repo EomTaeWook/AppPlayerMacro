@@ -243,7 +243,11 @@
     "Code": "MaxSameImageCount",
     "Kor": "같은 이미지 찾기 반복",
     "Eng": "Repeat finding the same image"
+  },
+  {
+    "Code": "DragDelay",
+    "Kor": "드래그 딜레이",
+    "Eng": "Drag Delay"
   }
 ]
-
 

@@ -1,6 +1,8 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Impl;
+using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
@@ -20,7 +22,7 @@ namespace Macro.View
     public partial class CommonContentView : BaseContentView
     {
         private Bitmap _bitmap;
-
+        private IContentController contentController = new BaseContentController();
         public override void Clear()
         {
             btnDelete.Visibility = Visibility.Collapsed;
@@ -117,10 +119,10 @@ namespace Macro.View
         {
             if (processEventTriggerModel.Token.IsCancellationRequested)
                 return null;
-            var nextModel = await TriggerProcess(saveModel as EventTriggerModel, processEventTriggerModel);
+            var nextModel = await contentController.TriggerProcess(saveModel as EventTriggerModel, processEventTriggerModel);
             return nextModel.Item2;
         }
-        protected override void CaptureImage(Bitmap bmp)
+        public override void CaptureImage(Bitmap bmp)
         {
             Dispatcher.Invoke(() =>
             {

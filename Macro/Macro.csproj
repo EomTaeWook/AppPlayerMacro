@@ -179,10 +179,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Infrastructure\Controller\BaseContentController.cs" />
+    <Compile Include="Infrastructure\Controller\CommonContentController.cs" />
     <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
+    <Compile Include="Infrastructure\Controller\GameContentController.cs" />
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />
     <Compile Include="Command\FolderBrowserDialogCommand.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="Infrastructure\Impl\BaseEventConfigView.cs" />
     <Compile Include="Infrastructure\Impl\GameContentImpl.cs" />
     <Compile Include="Infrastructure\Impl\GameEventConfigImpl.cs" />
+    <Compile Include="Infrastructure\Interface\IContentController.cs" />
     <Compile Include="Infrastructure\Interface\IKeyboardInput.cs" />
     <Compile Include="Infrastructure\Converter\ImageConverter.cs" />
     <Compile Include="Infrastructure\Interface\IMouseInput.cs" />

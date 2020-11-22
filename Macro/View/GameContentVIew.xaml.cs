@@ -215,5 +215,10 @@ namespace Macro.View
                 });
             }
         }
+
+        public override void CaptureImage(Bitmap bmp)
+        {
+            
+        }
     }
 }

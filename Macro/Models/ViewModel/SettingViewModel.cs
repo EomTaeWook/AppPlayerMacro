@@ -18,9 +18,9 @@ namespace Macro.Models.ViewModel
                 ItemDelay = config.ItemDelay,
                 SavePath = config.SavePath,
                 Similarity = config.Similarity,
+                DragDelay = config.DragDelay,
                 SearchImageResultDisplay = config.SearchImageResultDisplay,
-                VersionCheck = config.VersionCheck,
-                InitialTab = config.InitialTab
+                VersionCheck = config.VersionCheck
             };
         }
         public Config Config

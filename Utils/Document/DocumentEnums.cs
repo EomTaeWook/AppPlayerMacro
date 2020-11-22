@@ -67,6 +67,7 @@
         ImageSearchRequired,
         InitialTab,
         MaxSameImageCount,
+        DragDelay,
 
         Max
     }

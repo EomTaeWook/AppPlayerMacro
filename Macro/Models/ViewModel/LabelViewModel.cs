@@ -129,6 +129,10 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.TriggerToNext);
         }
+        public string DragDelay
+        {
+            get => DocumentHelper.Get(Label.DragDelay);
+        }
         public string X
         {
             get => "X";

@@ -3,6 +3,7 @@
   "SavePath": "",
   "Period": "100",
   "ItemDelay": "100",
+  "DragDelay": "100",
   "Similarity": "75",
   "SearchImageResultDisplay": true,
   "VersionCheck": true,

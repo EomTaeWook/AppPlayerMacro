@@ -247,6 +247,7 @@ namespace Macro
                 Processes = new List<Process>(),
                 Token = token,
                 Similarity = _config.Similarity,
+                DragDelay = _config.DragDelay
             };
 
             Dispatcher.Invoke(() =>
