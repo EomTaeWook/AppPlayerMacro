@@ -22,7 +22,7 @@ namespace Macro.View
     public partial class CommonContentView : BaseContentView
     {
         private Bitmap _bitmap;
-        private IContentController contentController = new BaseContentController();
+        private IContentController contentController;
         public override void Clear()
         {
             btnDelete.Visibility = Visibility.Collapsed;
@@ -176,6 +176,9 @@ namespace Macro.View
             {
                 _captureViews.Add(new CaptureView(item));
             }
+            var controller = new BaseContentController();
+            controller.SetContentView(this);
+            this.contentController = controller;
             Clear();
         }
     }
