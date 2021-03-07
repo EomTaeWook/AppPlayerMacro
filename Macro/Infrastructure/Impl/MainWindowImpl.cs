@@ -238,7 +238,10 @@ namespace Macro
         private async Task InvokeNextEventTriggerAsync(BaseContentView view, IBaseEventTriggerModel model, CancellationToken token)
         {
             if (token.IsCancellationRequested)
+            {
+                LogHelper.Debug($"token.IsCancellationRequested!");
                 return;
+            }
 
             var processConfigModel = new ProcessConfigModel()
             {

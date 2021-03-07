@@ -18,16 +18,17 @@ namespace Macro.Infrastructure.Controller
 {
     public class BaseContentController : IContentController
     {
-        private readonly Random _random;
+        private readonly SeedRandom _random;
         private BaseContentView baseContentView;
         public BaseContentController()
         {
-            _random = new Random();
+            _random = new SeedRandom();
         }
         public void SetContentView(BaseContentView baseContentView)
         {
             this.baseContentView = baseContentView;
         }
+
         public async Task<Tuple<bool, IBaseEventTriggerModel>> TriggerProcess<T>(T model, ProcessConfigModel processConfigModel) where T : BaseEventTriggerModel<T>
         {
             var isExcute = false;
@@ -87,7 +88,16 @@ namespace Macro.Infrastructure.Controller
                                 if (locations.Count > 1)
                                 {
                                     this.baseContentView.CaptureImage(bmp);
-                                    SameImageMouseDragTriggerProcess(hWnd, locations[0], locations[1], model, factor.Item2);
+                                    var startPoint = new Point(locations[0].X + targetBmp.Width / 2, locations[0].Y + targetBmp.Height / 2);
+
+                                    startPoint.X += this.GetRandomValue(0, targetBmp.Width / 2);
+                                    startPoint.Y += this.GetRandomValue(0, targetBmp.Height / 2);
+
+                                    var endPoint = new Point(locations[1].X + targetBmp.Width / 2, locations[1].Y + targetBmp.Width / 2);
+                                    endPoint.X += this.GetRandomValue(0, targetBmp.Width / 2);
+                                    endPoint.Y += this.GetRandomValue(0, targetBmp.Height / 2);
+
+                                    SameImageMouseDragTriggerProcess(hWnd, startPoint, endPoint, model, factor.Item2, processConfigModel);
                                 }
                                 else
                                 {
@@ -253,6 +263,20 @@ namespace Macro.Infrastructure.Controller
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }
+
+        private int GetRandomValue(int minValue, int maxValue)
+        {
+            var random = new SeedRandom();
+            var choice = random.Next(0, 2);
+            if(choice == 0)
+            {
+                return -random.Next(minValue, maxValue);
+            }
+            else
+            {
+                return random.Next(minValue, maxValue);
+            }
+        }
         private void MouseTriggerProcess(IntPtr hWnd, Point location, IBaseEventTriggerModel model, Tuple<float, float> factor, ProcessConfigModel config)
         {
             var mousePosition = new Point()
@@ -312,13 +336,14 @@ namespace Macro.Infrastructure.Controller
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
             }
         }
-        private void SameImageMouseDragTriggerProcess(IntPtr hWnd, Point start, Point arrive, IBaseEventTriggerModel model, Tuple<float, float> factor)
+        private void SameImageMouseDragTriggerProcess(IntPtr hWnd, Point start, Point arrive, IBaseEventTriggerModel model, Tuple<float, float> factor, ProcessConfigModel config)
         {
-            LogHelper.Debug($">>>>Drag Mouse Save Position X : {start.X} Save Position Y : {start.Y} Target X : { arrive.X } Target Y : { arrive.Y }");
-            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, start.ToLParam());
+            LogHelper.Debug($">>>>Same Drag Mouse Start Target X : { arrive.X } Target Y : { arrive.Y }");
             var interval = 3;
             var middlePoints = this.GetIntevalDragMiddlePoint(start, arrive, interval);
-            Task.Delay(100).Wait();
+
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, start.ToLParam());
+            Task.Delay(10).Wait();
 
             Point mousePosition;
             for (int i = 0; i < middlePoints.Count; ++i)
@@ -328,8 +353,9 @@ namespace Macro.Infrastructure.Controller
                     X = Math.Abs(model.ProcessInfo.Position.Left + middlePoints[i].X * -1) * factor.Item1,
                     Y = Math.Abs(model.ProcessInfo.Position.Top + middlePoints[i].Y * -1) * factor.Item2
                 };
+                LogHelper.Debug($">>>>Same Drag Move Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
-                Task.Delay(100).Wait();
+                Task.Delay(config.DragDelay).Wait();
             }
             mousePosition = new Point()
             {
@@ -337,9 +363,9 @@ namespace Macro.Infrastructure.Controller
                 Y = Math.Abs(model.ProcessInfo.Position.Top + arrive.Y * -1) * factor.Item2
             };
             NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
-            Task.Delay(100).Wait();
+            Task.Delay(10).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-            LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+            LogHelper.Debug($">>>>Same Drag End Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
         }
         private void ImageTriggerProcess(IntPtr hWnd, Point location, IBaseEventTriggerModel model)
         {
@@ -390,9 +416,6 @@ namespace Macro.Infrastructure.Controller
         }
         private List<Point> GetIntevalDragMiddlePoint(Point start, Point arrive, int interval)
         {
-            var middleX = 0D;
-            var middleY = 0D;
-
             List<Point> middlePosition = new List<Point>();
 
             Point recent = new Point(start.X, start.Y);
@@ -401,6 +424,7 @@ namespace Macro.Infrastructure.Controller
             while (Point.Subtract(recent, arrive).Length > interval)
             {
                 LogHelper.Debug($">>> Get Middle Interval Drag Mouse : {Point.Subtract(recent, arrive).Length}");
+                double middleX;
                 if (recent.X > arrive.X)
                 {
                     middleX = recent.X - interval;
@@ -409,7 +433,12 @@ namespace Macro.Infrastructure.Controller
                 {
                     middleX = recent.X + interval;
                 }
+                else
+                {
+                    middleX = recent.X;
+                }
 
+                double middleY;
                 if (recent.Y > arrive.Y)
                 {
                     middleY = recent.Y - interval;
@@ -417,6 +446,10 @@ namespace Macro.Infrastructure.Controller
                 else if (recent.Y < arrive.Y)
                 {
                     middleY = recent.Y + interval;
+                }
+                else
+                {
+                    middleY = recent.Y;
                 }
 
                 recent = new Point(middleX, middleY);
