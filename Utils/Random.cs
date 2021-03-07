@@ -8,7 +8,7 @@ namespace Utils
 {
     public class SeedRandom
     {
-        private Random _random;
+        private readonly Random _random;
         public SeedRandom() : this(DateTime.Now.Ticks)
         {
 

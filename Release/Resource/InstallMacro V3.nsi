@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Macro"
-!define PRODUCT_VERSION "2.4.2"
+!define PRODUCT_VERSION "2.5.0"
 !define PRODUCT_PUBLISHER "Eomtaewook"
 !define PRODUCT_WEB_SITE "https://github.com/EomTaeWook/EmulatorMacro"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Macro.exe"
@@ -77,8 +77,6 @@ Section "MainSection" SEC01
   File "${PATH}\OpenCvSharp.UserInterface.dll"
   File "${PATH}\Patcher.exe"
   File "${PATH}\System.Runtime.CompilerServices.Unsafe.dll"
-  File "${PATH}\System.Security.AccessControl.dll"
-  File "${PATH}\System.Security.Principal.Windows.dll"
   File "${PATH}\System.Windows.Interactivity.dll"
   File "${PATH}\Unity.Abstractions.dll"
   File "${PATH}\Unity.Container.dll"
@@ -117,8 +115,6 @@ Section Uninstall
   Delete "$INSTDIR\Unity.Container.dll"
   Delete "$INSTDIR\Unity.Abstractions.dll"
   Delete "$INSTDIR\System.Windows.Interactivity.dll"
-  Delete "$INSTDIR\System.Security.Principal.Windows.dll"
-  Delete "$INSTDIR\System.Security.AccessControl.dll"
   Delete "$INSTDIR\System.Runtime.CompilerServices.Unsafe.dll"
   Delete "$INSTDIR\Patcher.exe"
   Delete "$INSTDIR\OpenCvSharp.UserInterface.dll"
