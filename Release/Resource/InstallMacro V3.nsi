@@ -9,8 +9,8 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-!define BASEPATH "D:\privateSource\EmulatorMacro"
-!define PATH "D:\privateSource\EmulatorMacro\Release\exe"
+!define BASEPATH "C:\Users\trim0\Documents\source\Macro"
+!define PATH "C:\Users\trim0\Documents\source\Macro\Release\exe"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
