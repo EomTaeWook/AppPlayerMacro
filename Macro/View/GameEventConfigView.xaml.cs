@@ -62,10 +62,10 @@ namespace Macro.View
         }
         private void NotifyHelper_TreeGridViewFocus(TreeGridViewFocusEventArgs obj)
         {
-            if (obj.Mode == InitialTab.Game)
-            {
-                this.treeSaves.Focus();
-            }
+            //if (obj.Mode == InitialTab.Game)
+            //{
+            //    this.treeSaves.Focus();
+            //}
         }
         private void TreeSaves_Drop(object sender, DragEventArgs e)
         {

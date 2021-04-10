@@ -80,7 +80,7 @@
     public enum InitialTab
     {
         Common,
-        Game,
+        //Game,
 
         Max
     }
