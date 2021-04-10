@@ -4,6 +4,7 @@ using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -146,9 +147,14 @@ namespace Macro
             if(tab_content.SelectedContent is BaseContentView view)
             {
                 var path = _viewMap[view.Tag.ToString()].SaveFilePath;
-                _taskQueue.Enqueue(() =>
+                _taskQueue.Enqueue(async () =>
                 {
-                    return view.Save(path);
+                    await view.Save(path);
+                    obj.SelectedTreeViewItem.IsSelected = true;
+                    NotifyHelper.InvokeNotify(NotifyEventType.TreeGridViewFocus, new TreeGridViewFocusEventArgs()
+                    {
+                        Mode = (InitialTab)Enum.Parse(typeof(InitialTab), view.Tag.ToString())
+                    });
                 });
             }
         }

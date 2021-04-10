@@ -19,6 +19,7 @@ namespace Macro.Infrastructure
         public static event Action<SaveEventTriggerModelArgs> SaveEventTriggerModel;
         public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
 
+        public static event Action<TreeGridViewFocusEventArgs> TreeGridViewFocus;
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {
             switch(eventType)
@@ -55,6 +56,10 @@ namespace Macro.Infrastructure
                     break;
                 case NotifyEventType.ComboProcessChanged:
                     ComboProcessChanged?.Invoke(args as ComboProcessChangedEventArgs);
+                    break;
+
+                case NotifyEventType.TreeGridViewFocus:
+                    TreeGridViewFocus?.Invoke(args as TreeGridViewFocusEventArgs);
                     break;
             }
         }
