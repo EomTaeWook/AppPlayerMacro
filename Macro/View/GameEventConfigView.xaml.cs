@@ -23,6 +23,7 @@ namespace Macro.View
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
+            NotifyHelper.TreeGridViewFocus += NotifyHelper_TreeGridViewFocus;
 
             var radioButtons = this.FindChildren<RadioButton>();
             foreach (var button in radioButtons)
@@ -59,7 +60,13 @@ namespace Macro.View
                 numMaxSameImageCount.Visibility = Visibility.Collapsed;
             }
         }
-
+        private void NotifyHelper_TreeGridViewFocus(TreeGridViewFocusEventArgs obj)
+        {
+            if (obj.Mode == InitialTab.Game)
+            {
+                this.treeSaves.Focus();
+            }
+        }
         private void TreeSaves_Drop(object sender, DragEventArgs e)
         {
             if (_isDrag)

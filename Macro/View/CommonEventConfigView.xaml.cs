@@ -23,6 +23,7 @@ namespace Macro.View
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
+            NotifyHelper.TreeGridViewFocus += NotifyHelper_TreeGridViewFocus;
 
             var radioButtons = this.FindChildren<RadioButton>();
             foreach (var button in radioButtons)
@@ -45,6 +46,14 @@ namespace Macro.View
             comboRepeatSubItem.SelectionChanged += ComboRepeatSubItem_SelectionChanged;
             checkSameImageDrag.Checked += CheckSameImageDrag_Checked;
             checkSameImageDrag.Unchecked += CheckSameImageDrag_Checked;
+        }
+
+        private void NotifyHelper_TreeGridViewFocus(TreeGridViewFocusEventArgs obj)
+        {
+            if(obj.Mode == InitialTab.Common)
+            {
+                this.treeSaves.Focus();
+            }
         }
 
         private void CheckSameImageDrag_Checked(object sender, RoutedEventArgs e)
@@ -104,7 +113,6 @@ namespace Macro.View
                     return;
                 var itemContainer = CurrentTreeViewItem.ParentItem == null ? this.DataContext<CommonEventConfigViewModel>().TriggerSaves : CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
                 var currentIndex = itemContainer.IndexOf(CurrentTreeViewItem.DataContext<EventTriggerModel>());
-
                 if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
                 {
                     itemContainer.Swap(currentIndex, currentIndex - 1);
@@ -113,7 +121,8 @@ namespace Macro.View
                     NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
                         TriggerModel1 = itemContainer[currentIndex],
-                        TriggerModel2 = itemContainer[currentIndex - 1]
+                        TriggerModel2 = itemContainer[currentIndex - 1],
+                        SelectedTreeViewItem = CurrentTreeViewItem
                     });
                 }
                 else if (currentIndex < itemContainer.Count - 1 && sender.Equals(btnTreeItemDown))
@@ -124,7 +133,8 @@ namespace Macro.View
                     NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
                         TriggerModel1 = itemContainer[currentIndex],
-                        TriggerModel2 = itemContainer[currentIndex + 1]
+                        TriggerModel2 = itemContainer[currentIndex + 1],
+                        SelectedTreeViewItem = CurrentTreeViewItem
                     });
                 }
             }

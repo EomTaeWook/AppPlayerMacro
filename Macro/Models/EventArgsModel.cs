@@ -31,6 +31,8 @@ namespace Macro.Models
     {
         public IBaseEventTriggerModel TriggerModel1 { get; set; }
         public IBaseEventTriggerModel TriggerModel2 { get; set; }
+
+        public TreeViewItem SelectedTreeViewItem { get; set; }
     }
     public class SelctTreeViewItemChangedEventArgs : INotifyEventArgs
     {
@@ -55,6 +57,11 @@ namespace Macro.Models
     public class ComboProcessChangedEventArgs : INotifyEventArgs
     {
         public Process Process { get; set; }
+    }
+
+    public class TreeGridViewFocusEventArgs : INotifyEventArgs
+    {
+        public InitialTab Mode { get; set; }
     }
 
 }
