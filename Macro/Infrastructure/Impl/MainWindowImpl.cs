@@ -1,4 +1,5 @@
-﻿using Macro.Extensions;
+﻿using KosherUtils.Log;
+using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
 using Macro.Infrastructure.Manager;
@@ -64,7 +65,7 @@ namespace Macro
                 this.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
                 Process.GetCurrentProcess().Kill();
             }
-            _config = ObjectExtensions.GetInstance<IConfig>();
+            _config = ObjectExtensions.GetInstance<Config>();
 
             var _saveFileNames = new Tuple<string, string>[]
             {
@@ -109,7 +110,7 @@ namespace Macro
             }  
 
             _processes = Process.GetProcesses().Where(r=>r.MainWindowHandle != IntPtr.Zero)
-                                                .Select(r => new KeyValuePair<string, Process>(r.ProcessName, r))
+                                                .Select(r => new KeyValuePair<string, Process>($"{r.ProcessName}/{r.MainWindowTitle}", r))
                                                 .OrderBy(r=>r.Key).ToArray();
             comboProcess.ItemsSource = _processes;
             comboProcess.DisplayMemberPath = "Key";
@@ -211,7 +212,7 @@ namespace Macro
             }
             catch(Exception ex)
             {
-                LogHelper.Warning(ex);
+                Log.Warning(ex);
             }
             
             if(version != null)
@@ -239,7 +240,7 @@ namespace Macro
         {
             if (token.IsCancellationRequested)
             {
-                LogHelper.Debug($"token.IsCancellationRequested!");
+                Log.Debug($"token.IsCancellationRequested!");
                 return;
             }
 

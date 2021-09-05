@@ -1,4 +1,5 @@
-﻿using Macro.View;
+﻿using KosherUtils.Framework;
+using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
@@ -10,7 +11,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Unity;
-using Utils;
 using Point = System.Windows.Point;
 
 namespace Macro.Extensions
@@ -81,7 +81,7 @@ namespace Macro.Extensions
             return item;
         }
 
-        public static T GetInstance<T>()
+        public static T GetInstance<T>() where T :new()
         {
             if(Singleton<UnityContainer>.Instance.IsRegistered<T>())
             {

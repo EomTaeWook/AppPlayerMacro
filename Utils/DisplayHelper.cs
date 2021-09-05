@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KosherUtils.Log;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -49,7 +50,7 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                LogHelper.Warning(ex);
+                Log.Warning(ex);
                 return null;
             }
         }
@@ -99,7 +100,7 @@ namespace Utils
             }
             catch(Exception ex)
             {
-                LogHelper.Warning(ex);
+                Log.Warning(ex);
                 bmp = null;
                 return false;
             }

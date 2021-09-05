@@ -1,4 +1,5 @@
-﻿using Macro.Extensions;
+﻿using KosherUtils.Log;
+using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Impl;
@@ -103,7 +104,7 @@ namespace Macro.View
                 catch (Exception ex)
                 {
                     File.Delete(model.SaveFilePath);
-                    LogHelper.Warning(ex);
+                    Log.Warning(ex);
                     Task.FromException(new FileLoadException(DocumentHelper.Get(Message.FailedLoadSaveFile)));
                 }
             }

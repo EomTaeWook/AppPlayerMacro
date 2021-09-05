@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using KosherUtils.Log;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
 using Patcher.Infrastructure;
@@ -67,7 +68,6 @@ namespace Patcher
         }
         private void Init()
         {
-            LogHelper.Init();
             btnCancel.Content = ObjectCache.GetValue("Cancel");
         }
         private void InitEvent()
@@ -154,7 +154,7 @@ namespace Patcher
             }
             catch(Exception ex)
             {
-                LogHelper.Warning(ex);
+                Log.Warning(ex);
             }
         }
         private Task DownloadFiles(CancellationToken token)
@@ -210,7 +210,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Warning(ex);
+                    Log.Warning(ex);
                     i--;
                 }
             }
@@ -238,7 +238,7 @@ namespace Patcher
                 }
                 catch(Exception ex)
                 {
-                    LogHelper.Warning(ex);
+                    Log.Warning(ex);
                 }
             }
             return Task.CompletedTask;
@@ -277,7 +277,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Warning(ex);
+                    Log.Warning(ex);
                     MessageBox.Show(ObjectCache.GetValue("FailedPatchUpdate").ToString(), ObjectCache.GetValue("FailedPatch").ToString());
                     return Task.FromException(ex);
                 }
@@ -309,7 +309,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Warning(ex);
+                    Log.Warning(ex);
                 }
             }
             return Task.CompletedTask;

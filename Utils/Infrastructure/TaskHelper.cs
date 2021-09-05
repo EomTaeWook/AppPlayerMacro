@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KosherUtils.Log;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,11 +16,11 @@ namespace Utils.Infrastructure
             }
             catch (TaskCanceledException ex)
             {
-                LogHelper.Debug(ex.Message);
+                Log.Debug(ex.Message);
             }
             catch (AggregateException ex)
             {
-                LogHelper.Debug(ex.Message);
+                Log.Debug(ex.Message);
             }
             return !token.IsCancellationRequested;
         }

@@ -10,7 +10,7 @@ namespace Macro.Infrastructure
         private static Language _language;
         public DocumentHelper()
         {
-            _language= ObjectExtensions.GetInstance<IConfig>().Language;
+            _language= ObjectExtensions.GetInstance<Config>().Language;
             NotifyHelper.ConfigChanged += (e) =>
             {
                 _language = e.Config.Language;

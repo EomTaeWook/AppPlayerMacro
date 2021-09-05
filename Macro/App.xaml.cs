@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KosherUtils.Log;
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -16,19 +17,19 @@ namespace Macro
             DispatcherUnhandledException += (s, ex) =>
             {
                 ex.Handled = true;
-                LogHelper.Warning(ex.Exception);
+                Log.Warning(ex.Exception);
             };
             AppDomain.CurrentDomain.UnhandledException += (s, ex) =>
             {
                 var exception = ex.ExceptionObject as Exception;
-                LogHelper.Warning(exception);
+                Log.Warning(exception);
             };
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
 #if DEBUG
-                LogHelper.Debug(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
+                Log.Debug(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #else
-                LogHelper.Warning(ex.Exception);
+                Log.Warning(ex.Exception);
 #endif
             };
 

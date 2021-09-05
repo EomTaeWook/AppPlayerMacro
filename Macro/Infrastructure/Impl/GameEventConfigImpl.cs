@@ -1,4 +1,5 @@
-﻿using Macro.Extensions;
+﻿using KosherUtils.Log;
+using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
 using Macro.Models;
@@ -58,7 +59,7 @@ namespace Macro.View
 
             if (InitDataContext() == false)
             {
-                LogHelper.Error(new Exception("Failed Init DataContext"));
+                Log.Error(new Exception("Failed Init DataContext"));
             }
         }
         private bool InitDataContext()

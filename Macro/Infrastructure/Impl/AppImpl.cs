@@ -1,4 +1,5 @@
-﻿using Macro.Infrastructure;
+﻿using KosherUtils.Framework;
+using Macro.Infrastructure;
 using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
@@ -18,7 +19,6 @@ namespace Macro
     {
         private void Init()
         {
-            LogHelper.Init();
             DependenciesResolved();
             InitTemplate();
             
@@ -59,14 +59,18 @@ namespace Macro
             var container = Singleton<UnityContainer>.Instance;
             container.RegisterType<IMouseInput, MouseInput>();
             container.RegisterType<IKeyboardInput, KeyboardInput>();
-            container.RegisterType<InputManager>();
 
             //ViewModel
             container.RegisterSingleton<GameEventConfigViewModel>();
             container.RegisterSingleton<CommonEventConfigViewModel>();
 
-            container.RegisterInstance<IConfig>(config);
+            container.RegisterInstance<Config>(config);
             container.RegisterInstance(new DocumentHelper());
+
+            var inputManager = new InputManager();
+            inputManager.SetKeyboardInput((KeyboardInput)container.Resolve(typeof(IKeyboardInput)));
+            inputManager.SetMouseInput((MouseInput)container.Resolve(typeof(IMouseInput)));
+            container.RegisterInstance<InputManager>(inputManager);
 
             container.RegisterSingleton<CacheDataManager>();
         }

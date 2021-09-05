@@ -76,7 +76,7 @@ namespace Macro
 
                 obj.CurrentEventTriggerModel.ProcessInfo = new ProcessInfo()
                 {
-                    ProcessName = process?.ProcessName,
+                    ProcessName = process != null ? $"{process.ProcessName}/{process.MainWindowTitle}" : "",
                     Position = rect
                 };
 

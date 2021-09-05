@@ -1,11 +1,11 @@
-﻿using Patcher.Infrastructure;
+﻿using KosherUtils.Framework;
+using Patcher.Infrastructure;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 using Utils;
 using Utils.Document;
