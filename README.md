@@ -9,7 +9,7 @@
 
 개발환경
 
-    WPF, C#, .net 4.7.1
+    WPF, C#, .net 4.7.2
 
     UI toolkit : MahApps.metro
     
@@ -125,6 +125,11 @@ OS 버전
     enter0917@naver.com
 
 릴리즈
+
+2.5.2
+    1.블루 스택5 지원
+
+    2.서드 파티 Dll 최신화
 
 2.5.1
 
