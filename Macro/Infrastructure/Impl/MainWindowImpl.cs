@@ -2,8 +2,6 @@
 using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Impl;
-using Macro.Infrastructure.Manager;
-using Macro.Infrastructure.Serialize;
 using Macro.Models;
 using MahApps.Metro.Controls;
 using System;

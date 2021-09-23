@@ -1,7 +1,6 @@
 ﻿using KosherUtils.Framework;
 using Macro.Models.ViewModel;
 using Unity;
-using Utils;
 
 namespace Macro.Models
 {
@@ -21,7 +20,7 @@ namespace Macro.Models
         }
         public SettingViewModel SettingViewModel
         {
-            get => Singleton<UnityContainer>.Instance.Resolve<SettingViewModel>(); 
+            get=> Singleton<UnityContainer>.Instance.Resolve<SettingViewModel>();
         }
     }
 }

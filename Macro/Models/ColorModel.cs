@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Macro.Models
+﻿namespace Macro.Models
 {
     public class ColorModel
     {

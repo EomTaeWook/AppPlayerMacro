@@ -52,7 +52,9 @@ namespace Macro
         {
             var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
             if (!File.Exists(path))
+            {
                 File.WriteAllText(path, JsonHelper.SerializeObject(new Config(), true));
+            }
 
             var config = JsonHelper.Load<Config>(path);
 
@@ -61,17 +63,16 @@ namespace Macro
             container.RegisterType<IKeyboardInput, KeyboardInput>();
 
             //ViewModel
-            container.RegisterSingleton<GameEventConfigViewModel>();
+            //container.RegisterSingleton<GameEventConfigViewModel>();
             container.RegisterSingleton<CommonEventConfigViewModel>();
 
-            container.RegisterInstance<Config>(config);
+            container.RegisterInstance(typeof(IConfig), config);
             container.RegisterInstance(new DocumentHelper());
 
             var inputManager = new InputManager();
             inputManager.SetKeyboardInput((KeyboardInput)container.Resolve(typeof(IKeyboardInput)));
             inputManager.SetMouseInput((MouseInput)container.Resolve(typeof(IMouseInput)));
             container.RegisterInstance<InputManager>(inputManager);
-
             container.RegisterSingleton<CacheDataManager>();
         }
     }

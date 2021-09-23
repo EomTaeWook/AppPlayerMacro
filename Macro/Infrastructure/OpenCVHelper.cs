@@ -3,7 +3,6 @@ using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Utils;
 using Point = OpenCvSharp.Point;
 using Rect = Utils.Infrastructure.Rect;
 

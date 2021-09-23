@@ -1,19 +1,9 @@
-﻿using Macro.Extensions;
-using Macro.Infrastructure.Manager;
-using Macro.Infrastructure.Serialize;
-using Macro.Models;
-using System;
+﻿using Macro.Models;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using Utils;
 using Utils.Document;
-using Utils.Extensions;
-using Utils.Infrastructure;
-using Point = System.Windows.Point;
 
 namespace Macro.Infrastructure.Impl
 {
