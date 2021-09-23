@@ -2,15 +2,15 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Macro"
-!define PRODUCT_VERSION "2.5.1"
+!define PRODUCT_VERSION "2.5.2"
 !define PRODUCT_PUBLISHER "Eomtaewook"
 !define PRODUCT_WEB_SITE "https://github.com/EomTaeWook/EmulatorMacro"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Macro.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-!define BASEPATH "C:\Users\trim0\Documents\source\Macro"
-!define PATH "C:\Users\trim0\Documents\source\Macro\Release\exe"
+!define BASEPATH "D:\Macro"
+!define PATH "D:\Macro\Release\exe"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -52,16 +52,17 @@ Section "MainSection" SEC01
   SetOverwrite try
   File "${PATH}\config.json"
   File "${PATH}\ControlzEx.dll"
+  File "${PATH}\KosherUtils.dll"
   SetOutPath "$INSTDIR\Datas"
   File "${PATH}\Datas\ApplicationData.json"
   File "${PATH}\Datas\LabelDocument.json"
   File "${PATH}\Datas\MessageDocument.json"
   SetOutPath "$INSTDIR\dll\x64"
   File "${PATH}\dll\x64\OpenCvSharpExtern.dll"
-  File "${PATH}\dll\x64\opencv_ffmpeg400_64.dll"
+  File "${PATH}\dll\x64\opencv_videoio_ffmpeg453_64.dll"
   SetOutPath "$INSTDIR\dll\x86"
   File "${PATH}\dll\x86\OpenCvSharpExtern.dll"
-  File "${PATH}\dll\x86\opencv_ffmpeg400.dll"
+  File "${PATH}\dll\x86\opencv_videoio_ffmpeg453.dll"
   SetOutPath "$INSTDIR"
   File "${PATH}\Macro.exe"
   CreateDirectory "$SMPROGRAMS\Macro"
@@ -71,12 +72,18 @@ Section "MainSection" SEC01
   File "${PATH}\MahApps.Metro.IconPacks.Material.dll"
   File "${PATH}\Newtonsoft.Json.dll"
   File "${PATH}\NLog.dll"
-  File "${PATH}\OpenCvSharp.Blob.dll"
   File "${PATH}\OpenCvSharp.dll"
   File "${PATH}\OpenCvSharp.Extensions.dll"
-  File "${PATH}\OpenCvSharp.UserInterface.dll"
+  File "${PATH}\OpenCvSharp.WpfExtensions.dll"
   File "${PATH}\Patcher.exe"
+  File "${PATH}\System.Buffers.dll"
+  File "${PATH}\System.Drawing.Common.dll"
+  File "${PATH}\System.Memory.dll"
+  File "${PATH}\System.Numerics.Vectors.dll"
   File "${PATH}\System.Runtime.CompilerServices.Unsafe.dll"
+  File "${PATH}\System.Security.Principal.Windows.dll"
+  File "${PATH}\System.Threading.Tasks.Extensions.dll"
+  File "${PATH}\System.ValueTuple.dll"
   File "${PATH}\System.Windows.Interactivity.dll"
   File "${PATH}\Unity.Abstractions.dll"
   File "${PATH}\Unity.Container.dll"
@@ -115,28 +122,64 @@ Section Uninstall
   Delete "$INSTDIR\Unity.Container.dll"
   Delete "$INSTDIR\Unity.Abstractions.dll"
   Delete "$INSTDIR\System.Windows.Interactivity.dll"
+  Delete "$INSTDIR\System.ValueTuple.dll"
+  Delete "$INSTDIR\System.Threading.Tasks.Extensions.dll"
+  Delete "$INSTDIR\System.Security.Principal.Windows.dll"
   Delete "$INSTDIR\System.Runtime.CompilerServices.Unsafe.dll"
+  Delete "$INSTDIR\System.Numerics.Vectors.dll"
+  Delete "$INSTDIR\System.Memory.dll"
+  Delete "$INSTDIR\System.Drawing.Common.dll"
+  Delete "$INSTDIR\System.Buffers.dll"
   Delete "$INSTDIR\Patcher.exe"
-  Delete "$INSTDIR\OpenCvSharp.UserInterface.dll"
+  Delete "$INSTDIR\OpenCvSharp.WpfExtensions.dll"
   Delete "$INSTDIR\OpenCvSharp.Extensions.dll"
   Delete "$INSTDIR\OpenCvSharp.dll"
-  Delete "$INSTDIR\OpenCvSharp.Blob.dll"
   Delete "$INSTDIR\NLog.dll"
   Delete "$INSTDIR\Newtonsoft.Json.dll"
   Delete "$INSTDIR\MahApps.Metro.IconPacks.Material.dll"
   Delete "$INSTDIR\MahApps.Metro.dll"
   Delete "$INSTDIR\Macro.exe"
-  Delete "$INSTDIR\dll\x86\opencv_ffmpeg400.dll"
+  Delete "$INSTDIR\dll\x86\opencv_videoio_ffmpeg453.dll"
   Delete "$INSTDIR\dll\x86\OpenCvSharpExtern.dll"
-  Delete "$INSTDIR\dll\x64\opencv_ffmpeg400_64.dll"
+  Delete "$INSTDIR\dll\x64\opencv_videoio_ffmpeg453_64.dll"
   Delete "$INSTDIR\dll\x64\OpenCvSharpExtern.dll"
   Delete "$INSTDIR\Datas\MessageDocument.json"
   Delete "$INSTDIR\Datas\LabelDocument.json"
   Delete "$INSTDIR\Datas\ApplicationData.json"
+  Delete "$INSTDIR\KosherUtils.dll"
   Delete "$INSTDIR\ControlzEx.dll"
   Delete "$INSTDIR\config.json"
   Delete "$INSTDIR\Error.log"
   Delete "$INSTDIR\Cache.dll"
+  Delete "$INSTDIR\save.dll"
+  
+  IfFileExists "$INSTDIR\OpenCvSharp.Blob.dll" YES1 NO1
+  YES1:
+  Delete "$INSTDIR\OpenCvSharp.Blob.dll"
+  GOTO END1
+  NO1:
+  END1:
+  
+  IfFileExists "$INSTDIR\OpenCvSharp.UserInterface.dll" YES2 NO2
+  YES2:
+  Delete "$INSTDIR\OpenCvSharp.UserInterface.dll"
+  GOTO END2
+  NO2:
+  END2:
+  
+  IfFileExists "$INSTDIR\dll\x64\opencv_ffmpeg400_64.dll" YES3 NO3
+  YES3:
+  Delete "$INSTDIR\dll\x64\opencv_ffmpeg400_64.dll"
+  GOTO END3
+  NO3:
+  END3:
+  
+  IfFileExists "$INSTDIR\dll\x64\opencv_ffmpeg400.dll" YES4 NO4
+  YES4:
+  Delete "$INSTDIR\dll\x64\opencv_ffmpeg400.dll"
+  GOTO END4
+  NO4:
+  END4:
 
   Delete "$SMPROGRAMS\Macro\Uninstall.lnk"
   Delete "$DESKTOP\Macro.lnk"
