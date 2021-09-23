@@ -28,6 +28,13 @@
     "OffsetY": 0
   },
   {
+    "Code": "HD-Player",
+    "IsDynamic": true,
+    "HandleName": "plrNativeInputWindow",
+    "OffsetX": 0,
+    "OffsetY": 0
+  },
+  {
     "Code": "mspaint",
     "IsDynamic": true,
     "HandleName": "",
