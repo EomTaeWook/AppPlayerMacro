@@ -69,5 +69,11 @@
       "Datas\\LabelDocument.json https://drive.google.com/uc?id=1XGYGOcPToGitasxsKjfX2IlwJ3Vl6v7j&export=download",
       "Datas\\ApplicationData.json https://drive.google.com/uc?id=1JjaqRplIIhIRA5LazY6XDme1aiLQXNTQ&export=download"
     ]
+  },
+  "2.5.2": {
+    "method": 1,
+    "list": [
+      "Datas\\ApplicationData.json https://drive.google.com/uc?id=1JjaqRplIIhIRA5LazY6XDme1aiLQXNTQ&export=download"
+    ]
   }
 }
