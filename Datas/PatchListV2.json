@@ -105,5 +105,41 @@
       "dll\\x64\\OpenCvSharpExtern.dll https://drive.google.com/uc?id=1KRP5xK00YT5TQDhjz3EDatBPFSqDTnUq&export=download",
       "dll\\x64\\opencv_videoio_ffmpeg453_64.dll https://drive.google.com/uc?id=1BVugivRi8EQDB16CoGL5kPVP3AiZJMzT&export=download"
     ]
+  },
+  "2.5.3": {
+    "method": 1,
+    "list": [
+      "Macro.exe https://drive.google.com/uc?id=1wScjPjXfFTch-pOZXSn4pLbjp1e_UoHN&export=download",
+      "Utils.dll https://drive.google.com/uc?id=1G1eeehvHoxR-WUFP5sFmM-xsuPmfx1fc&export=download",
+      "config.json https://drive.google.com/uc?id=1q5FU4kbHNmHc6kqq0FcK0stYIbi8EuXw&export=download",
+      "NLog.dll https://drive.google.com/uc?id=1kQimlm3u6JBCauB5StOV76uUK5n2ZPFj&export=download",
+      "KosherUtils.dll https://drive.google.com/uc?id=1sq0p19ZNLrgnq9Uf_xFEQorJE2s0afmv&export=download",
+      "OpenCvSharp.WpfExtensions.dll https://drive.google.com/uc?id=1MMuCYpEVIQgUm7k-50pMOMt_WeFiVWgV&export=download",
+      "OpenCvSharp.Extensions.dll https://drive.google.com/uc?id=1Jftlti5zl8stQZHIE2kYNfu5PtMopLEQ&export=download",
+      "OpenCvSharp.dll https://drive.google.com/uc?id=1_P6VZkx_wTRJ_afnYhxP5h_RnJeR_N3o&export=download",
+      "System.Threading.Tasks.Extensions.dll https://drive.google.com/uc?id=11C7G2dgYqZvM0pGUIl-cARY8i5hXTJNy&export=download",
+      "Unity.Container.dll https://drive.google.com/uc?id=1p8Yg5kEynz-dxRxgKLZzfyXcTE2jaZdh&export=download",
+      "Unity.Abstractions.dll https://drive.google.com/uc?id=1mFjpPBAYbLR6SDLkV-VxfPCab05asBRs&export=download",
+      "System.Drawing.Common.dll https://drive.google.com/uc?id=1uFkGDAh3vJNOF2Uhg4qhBxWS4vS2Azbf&export=download",
+      "System.Runtime.CompilerServices.Unsafe.dll https://drive.google.com/uc?id=1ybMnOH51Wq5DDI_0waZ1BxFIsNEsvCuL&export=download",
+      "System.Security.Principal.Windows.dll https://drive.google.com/uc?id=1oa_Yk3cWCLFMmjc9KrYobbFWTHD_SAbR&export=download",
+      "System.Memory.dll https://drive.google.com/uc?id=1F1D5yuIxAWvarsvC0nCfF1FaSganaDfE&export=download",
+      "System.Buffers.dll https://drive.google.com/uc?id=1yFSLRs1DteYbz-M5ULzt6lkufCRVUc8B&export=download",
+      "Newtonsoft.Json.dll https://drive.google.com/uc?id=1ABxNzn-mWFMCjTUZDAvqXODJu7h7yLQ3&export=download",
+      "MahApps.Metro.IconPacks.Material.dll https://drive.google.com/uc?id=1SI_cVoujnYl7RqyGpn5pqysvXT-dVdWx&export=download",
+      "MahApps.Metro.dll https://drive.google.com/uc?id=16265yM-jFf_-y3r_PHPB0eMTNv5Q46Gu&export=download",
+      "System.ValueTuple.dll https://drive.google.com/uc?id=1q1lBpG_qf252xF7ITvuUHNkIxGh7ZW4a&export=download",
+      "System.Numerics.Vectors.dll https://drive.google.com/uc?id=18RBqql7xQRPMuSjjZdc3_F8gT-AaFE86&export=download",
+      "System.Windows.Interactivity.dll https://drive.google.com/uc?id=1gi_lzWmA_my9k2-cPVJoL-Uss1sv8zBe&export=download",
+      "ControlzEx.dll https://drive.google.com/uc?id=1_Oy1-s_3qIVIO5jcnh2KAUPOvEuEaVPL&export=download",
+      "Datas\\ApplicationData.json https://drive.google.com/uc?id=1Va4bEPurDm2vrx8IOPCwZVDplgAZhGCa&export=download",
+      "Datas\\LabelDocument.json https://drive.google.com/uc?id=1JaxoScQ-oCsySnLvOIEdkr7jhXYJOMvB&export=download",
+      "Datas\\ColorData.json https://drive.google.com/uc?id=1mLaGCJ1zGfrebN5drBGgIMub0G-EJToT&export=download",
+      "Datas\\MessageDocument.json https://drive.google.com/uc?id=1KTWFiaU80aAWepMGIoR4SB5VNGotUnKS&export=download",
+      "dll\\x86\\OpenCvSharpExtern.dll https://drive.google.com/uc?id=1VadxgPp4TkOfBg3Tsxk8hDTOxHGAcuYO&export=download",
+      "dll\\x86\\opencv_videoio_ffmpeg453.dll https://drive.google.com/uc?id=1MnXOUQYWwzwpnF02Z7HKtQR9_UwgowgX&export=download",
+      "dll\\x64\\OpenCvSharpExtern.dll https://drive.google.com/uc?id=1KRP5xK00YT5TQDhjz3EDatBPFSqDTnUq&export=download",
+      "dll\\x64\\opencv_videoio_ffmpeg453_64.dll https://drive.google.com/uc?id=1BVugivRi8EQDB16CoGL5kPVP3AiZJMzT&export=download"
+    ]
   }
 }
