@@ -120,8 +120,9 @@
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="KosherUtils">
-      <HintPath>..\Dll\Debug\KosherUtils.dll</HintPath>
+    <Reference Include="KosherUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dll\Release\KosherUtils.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
@@ -129,8 +130,9 @@
     <Reference Include="MahApps.Metro.IconPacks.Material, Version=2.3.0.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.IconPacks.Material.2.3.0\lib\net46\MahApps.Metro.IconPacks.Material.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\Dll\Debug\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dll\Release\NLog.dll</HintPath>
     </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp4.4.5.3.20210817\lib\net461\OpenCvSharp.dll</HintPath>
@@ -339,7 +341,7 @@
     </Compile>
     <None Include="app.manifest" />
     <None Include="config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -379,9 +381,7 @@ copy "$(TargetDir)patcher.exe" "$(SolutionDir)Release\exe\"
 rd /S/Q $(SolutionDir)Release\exe\Save
 del /S/Q $(SolutionDir)Release\exe\Datas\Version.json
 del /S/Q $(SolutionDir)Release\exe\Datas\PatchList.json
-del /S/Q $(SolutionDir)Release\exe\Datas\PatchListV2.json
-del /S/Q $(SolutionDir)Release\exe\patcher.exe.config
-del /S/Q $(SolutionDir)Release\exe\macro.exe.config)</PostBuildEvent>
+del /S/Q $(SolutionDir)Release\exe\Datas\PatchListV2.json)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>IF $(ConfigurationName) == Release (
