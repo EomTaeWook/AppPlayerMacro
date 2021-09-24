@@ -171,6 +171,7 @@
     <PostBuildEvent>IF $(ConfigurationName) == Release (
 IF NOT EXIST $(SolutionDir)\Release\exe\ mkdir "$(SolutionDir)\Release\exe"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
+copy "$(TargetPath).config" "$(SolutionDir)Release\exe\"
 del /S/Q $(SolutionDir)\Release\exe\Datas\PatchList.json)
 del /S/Q $(SolutionDir)\Release\exe\Datas\PatchListV2.json)</PostBuildEvent>
   </PropertyGroup>
