@@ -12,7 +12,8 @@ namespace Patcher.Infrastructure
             "ControlzEx.dll",
             "MahApps.Metro.dll",
             "System.Windows.Interactivity.dll",
-            "WindowsBase.dll"
+            "WindowsBase.dll",
+            "KosherUtils.dll"
         };
     }
 }

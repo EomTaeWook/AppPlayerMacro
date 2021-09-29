@@ -44,16 +44,17 @@ namespace Patcher
             Init();
             Topmost = true;
             if (ObjectCache.GetValue("Version").ToString().Equals("1"))
-                CheckPatchList();
-
-            Task.Run(async () =>
             {
-                await RunPatch(_cts.Token);
-                Dispatcher.Invoke(() =>
+                Task.Run(async ()=> 
                 {
-                    Application.Current.Shutdown();
+                    await CheckPatchList();
+                    await RunPatch();
                 });
-            });
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
         }
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -91,55 +92,45 @@ namespace Patcher
                 {
                     btnCancel.IsEnabled = false;
                     _cts.Cancel();
-                    Rollback().Wait();
+                    Rollback();
                     Application.Current.Shutdown();
                 }
             }
         }
         
-        private Task RunPatch(CancellationToken token)
+        private async Task RunPatch()
         {
-            var tcs = new TaskCompletionSource<Task>();
-
-            Dispatcher.InvokeAsync(async () => 
+            Backup();
+            await DownloadFiles(_cts.Token);
+            await Patching(_cts.Token);
+            await Dispatcher.InvokeAsync(() =>
             {
-                await Backup();
-                await DownloadFiles(token);
+                if (this.MessageShow("", ObjectCache.GetValue("CompletePatch").ToString(), MessageDialogStyle.Affirmative,
+                    new MetroDialogSettings()
+                    {
+                        DialogTitleFontSize = 0.1F,
+                        MaximumBodyHeight = 500,
+                    }) == MessageDialogResult.Affirmative)
+                {
+                    Application.Current.Shutdown();
+                }
             });
-
-
-
-
-            //Dispatcher.InvokeAsync(async () =>
-            //{
-            //    await Backup();
-
-            //    await DownloadFiles(token);
-
-            //    await Patching(token);
-
-
-            //    }).ContinueWith(async task =>
-            //    {
-            //        if (task.Result.Status != TaskStatus.RanToCompletion)
-            //            await Rollback();
-            //        tcs.SetResult(task.Result);
-            //    });
-            //}, System.Windows.Threading.DispatcherPriority.Input);
-
-            return tcs.Task;
         }
-        private void CheckPatchList()
+        private async Task CheckPatchList()
         {
             try
             {
-                lblState.Content = ObjectCache.GetValue("SearchPatchList");
-                var request = (HttpWebRequest)WebRequest.Create(ObjectCache.GetValue("PatchUrl").ToString());
-                using (var response = request.GetResponse())
+                Dispatcher.Invoke(() =>
                 {
-                    using (var stream = new StreamReader(response.GetResponseStream()))
+                    lblState.Content = ObjectCache.GetValue("SearchPatchList");
+                });
+                
+                var response = await httpClient.GetAsync(ObjectCache.GetValue("PatchUrl").ToString());
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                {
+                    using (var reader = new StreamReader(stream))
                     {
-                        var json = stream.ReadToEnd();
+                        var json = reader.ReadToEnd();
                         var patchModels = JsonHelper.DeserializeObject<Dictionary<string, PatchInfoModel>>(json);
                         var version = ObjectCache.GetValue("PathchVersion") as Infrastructure.Version;
                         if (patchModels.ContainsKey(version.ToVersionString()))
@@ -163,14 +154,19 @@ namespace Patcher
                         }
                     }
                 }
-                lblCount.Content = $"(0/{_patchList.Count})";
+                await Task.Delay(1);
+                Dispatcher.Invoke(() =>
+                {
+                    lblCount.Content = $"(0/{_patchList.Count})";
+                });
             }
             catch(Exception ex)
             {
                 Log.Warning(ex);
             }
+            return;
         }
-        private async Task<bool> DownloadFiles(CancellationToken token)
+        private async Task DownloadFiles(CancellationToken token)
         {
             for (int i = 0; i < _patchList.Count; ++i)
             {
@@ -178,7 +174,8 @@ namespace Patcher
                 {
                     if (token.IsCancellationRequested)
                     {
-                        return false;
+                        Rollback();
+                        return;
                     }
 
                     Dispatcher.Invoke(() =>
@@ -188,12 +185,35 @@ namespace Patcher
                         progress.Value = 0;
                     });
 
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _patchList[i].Item2);
-                    request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+                    var response = await httpClient.GetAsync(_patchList[i].Item2);
 
-                    var response = await httpClient.SendAsync(request);
+                    var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
 
-                    response.Dispose();
+                    using (var stream = await response.Content.ReadAsStreamAsync())
+                    {
+                        if (_patchList[i].Item1.Contains(@"\"))
+                        {
+                            var index = _patchList[i].Item1.LastIndexOf(@"\");
+                            Directory.CreateDirectory($@"{ConstHelper.TempPath}\{_patchList[i].Item1.Substring(0, index)}");
+                        }
+                        using (var fs = new FileStream($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
+                        {
+                            var buffer = new byte[4096];
+                            var read = 0;
+                            var current = 0L;
+                            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fs.Write(buffer, 0, read);
+                                current += read;
+                                await Task.Delay(10);
+                                await Dispatcher.InvokeAsync(() =>
+                                {
+                                    progress.Value = 100 / (totalSize / current);
+                                }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }
+                            fs.Flush();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -202,70 +222,8 @@ namespace Patcher
                     i--;
                 }
             }
-
-            return true;
-
-            //for (int i = 0; i < _patchList.Count; ++i)
-            //{
-            //    try
-            //    {
-            //        if (token.IsCancellationRequested)
-            //        {
-            //            return Task.FromCanceled(token);
-            //        }
-
-            //        Dispatcher.Invoke(() =>
-            //        {
-            //            lblState.Content = $"{ObjectCache.GetValue("Download")} : {_patchList[i].Item1}" ;
-            //            lblCount.Content = $"({i + 1}/{_patchList.Count})";
-            //            progress.Value = 0;
-            //        });
-
-            //        var request = (HttpWebRequest)WebRequest.Create(_patchList[i].Item2);
-            //        request.ContentType = "application/octet-stream";
-            //        request.ContentLength = 0;
-            //        using (var response = (HttpWebResponse)request.GetResponse())
-            //        {
-            //            var total = response.ContentLength;
-            //            using (var stream = response.GetResponseStream())
-            //            {
-            //                if (_patchList[i].Item1.Contains(@"\"))
-            //                {
-            //                    var index = _patchList[i].Item1.LastIndexOf(@"\");
-            //                    Directory.CreateDirectory($@"{ConstHelper.TempPath}\{_patchList[i].Item1.Substring(0, index)}");
-            //                }
-            //                using (var fs = new FileStream($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
-            //                {
-            //                    var buffer = new byte[4096];
-            //                    var read = 0;
-            //                    var current = 0L;
-            //                    while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-            //                    {
-            //                        Dispatcher.Invoke(() =>
-            //                        {
-            //                            fs.Write(buffer, 0, read);
-            //                            current += read;
-            //                            progress.Value = 100 - total * 1.0 / current;
-            //                        });
-            //                    }
-            //                    fs.Flush();
-            //                    Dispatcher.Invoke(() =>
-            //                    {
-            //                        progress.Value = 100D;
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Log.Warning(ex);
-            //        i--;
-            //    }
-            //}
-            //return Task.CompletedTask;
         }
-        private Task Backup()
+        private void Backup()
         {
             for(int i=0; i<_patchList.Count; ++i)
             {
@@ -290,50 +248,80 @@ namespace Patcher
                     Log.Warning(ex);
                 }
             }
-            return Task.CompletedTask;
         }
-        private Task Patching(CancellationToken token)
+        private async Task Patching(CancellationToken token)
         {
+            var copy = new List<Tuple<string, string>>();
+
             for(int i=0; i< _patchList.Count; ++i)
+            {
+                if (_patchList[i].Item1.Equals(AppDomain.CurrentDomain.FriendlyName))
+                {
+                    ObjectCache.SetValue("Patcher", _patchList[i].Item1);
+                    continue;
+                }
+                copy.Add(_patchList[i]);
+            }
+
+            for (int i=0; i< copy.Count; ++i)
             {
                 try
                 {
                     if (token.IsCancellationRequested)
-                        return Task.FromCanceled(token);
-
-                    if (_patchList[i].Item1.Equals(AppDomain.CurrentDomain.FriendlyName))
                     {
-                        ObjectCache.SetValue("Patcher", _patchList[i].Item1);
-                        continue;
+                        Rollback();
+                        return;
                     }
-                    Dispatcher.Invoke(() =>
+                    await Dispatcher.InvokeAsync(() =>
                     {
-                        lblState.Content = $"{ObjectCache.GetValue("Patching")} : {_patchList[i].Item1}";
-                        lblCount.Content = $"({i + 1}/{_patchList.Count})";
+                        lblState.Content = $"{ObjectCache.GetValue("Patching")} : {copy[i].Item1}";
+                        lblCount.Content = $"({i + 1}/{copy.Count})";
                         progress.Value = 0;
                     });
 
                     if (_patchList[i].Item1.Contains(@"\"))
                     {
-                        var index = _patchList[i].Item1.LastIndexOf(@"\");
-                        Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
+                        var index = copy[i].Item1.LastIndexOf(@"\");
+                        Directory.CreateDirectory($"{copy[i].Item1.Substring(0, index)}");
                     }
-                    if (File.Exists(_patchList[i].Item1))
-                        File.Delete(_patchList[i].Item1);
+                    if (File.Exists(copy[i].Item1))
+                    {
+                        File.Delete(copy[i].Item1);
+                    }
+                    if (File.Exists($@"{ConstHelper.TempPath}\{copy[i].Item1}"))
+                    {
+                        var totalSize = new FileInfo($@"{ConstHelper.TempPath}\{copy[i].Item1}").Length;
+                        byte[] buffer = new byte[4096];
+                        using (var inStream = new FileStream($@"{ConstHelper.TempPath}\{copy[i].Item1}", FileMode.Open))
+                        {
+                            using (var outStream = new FileStream(copy[i].Item1, FileMode.OpenOrCreate))
+                            {
+                                var read = 0;
+                                var current = 0;
+                                while((read = inStream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    outStream.Write(buffer, 0, read);
 
-                    if (File.Exists($@"{ConstHelper.TempPath}\{_patchList[i].Item1}"))
-                        File.Move($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", _patchList[i].Item1);
+                                    current += read;
+                                    await Task.Delay(10);
+                                    await Dispatcher.InvokeAsync(() =>
+                                    {
+                                        progress.Value = 100 / (totalSize / current);
+                                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }
+                                outStream.Flush();
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
                     Log.Warning(ex);
                     MessageBox.Show(ObjectCache.GetValue("FailedPatchUpdate").ToString(), ObjectCache.GetValue("FailedPatch").ToString());
-                    return Task.FromException(ex);
                 }
             }
-            return Task.CompletedTask;
         }
-        private Task Rollback()
+        private void Rollback()
         {
             for (int i = 0; i < _patchList.Count; ++i)
             {
@@ -351,17 +339,21 @@ namespace Patcher
                         Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
                     }
                     if (File.Exists(_patchList[i].Item1))
+                    {
                         File.Delete(_patchList[i].Item1);
+                    }
+                        
 
                     if (File.Exists($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
+                    {
                         File.Move($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}", _patchList[i].Item1);
+                    }
                 }
                 catch (Exception ex)
                 {
                     Log.Warning(ex);
                 }
             }
-            return Task.CompletedTask;
         } 
     }
 }

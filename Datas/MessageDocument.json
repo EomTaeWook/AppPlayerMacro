@@ -98,6 +98,11 @@
     "Code": "FailedInvalidateRoiCapturePosition",
     "Kor": "관심 영역의 사이즈가 프로세스 윈도우 크기보다 큽니다.",
     "Eng": "The size of the region of interest is larger than the process window size."
+  },
+  {
+    "Code": "CompletePatch",
+    "Kor": "패치가 적용되었습니다.",
+    "Eng": "Complete Patch!"
   }
 ]
 

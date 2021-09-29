@@ -120,8 +120,9 @@ namespace Patcher
                 if (File.Exists(item))
                 {
                     if (File.Exists($"{ConstHelper.TempBackupPath}{item}"))
+                    {
                         File.Delete($"{ConstHelper.TempBackupPath}{item}");
-
+                    }
                     File.Move(item, $"{ConstHelper.TempBackupPath}{item}");
                 }
             }
@@ -180,8 +181,12 @@ namespace Patcher
         }
         private void InitTemplate()
         {
-            Singleton<DocumentTemplate<Label>>.Instance.Init(Utils.ConstHelper.DefaultDatasFilePath);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(Utils.ConstHelper.DefaultDatasFilePath);
+            var path = Utils.ConstHelper.DefaultDatasFilePath;
+#if DEBUG
+            path = $@"..\..\..\Datas\";
+#endif
+            Singleton<DocumentTemplate<Label>>.Instance.Init(path);
+            Singleton<DocumentTemplate<Message>>.Instance.Init(path);
 
             ObjectCache.SetValue("PatchUrl", Utils.ConstHelper.PatchV2Url.ToString());
             
@@ -195,6 +200,7 @@ namespace Patcher
                 ObjectCache.SetValue("FailedPatch", DocumentExtensions.Get(Label.FailedPatch, language));
 
                 ObjectCache.SetValue("CancelPatch", DocumentExtensions.Get(Message.CancelPatch, language));
+                ObjectCache.SetValue("CompletePatch", DocumentExtensions.Get(Message.CompletePatch, language));
                 ObjectCache.SetValue("FailedPatchUpdate", DocumentExtensions.Get(Message.FailedPatchUpdate, language));
             }
         }

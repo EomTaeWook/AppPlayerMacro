@@ -179,8 +179,8 @@ del /S/Q $(SolutionDir)\Release\exe\Datas\PatchList.json)
 del /S/Q $(SolutionDir)\Release\exe\Datas\PatchListV2.json)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy $(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll $(ProjectDir)Resources
-copy $(SolutionDir)Utils\$(OutDir)NLog.dl $(ProjectDir)Resources
-copy $(SolutionDir)Utils\$(OutDir)Utils.dll $(ProjectDir)Resources</PreBuildEvent>
+    <PreBuildEvent>copy $(SolutionDir)Utils\$(OutDir)$(ConfigurationName)\Newtonsoft.Json.dll $(ProjectDir)Resources
+copy $(SolutionDir)Utils\$(OutDir)$(ConfigurationName)\NLog.dl $(ProjectDir)Resources
+copy $(SolutionDir)Utils\$(OutDir)$(ConfigurationName)\Utils.dll $(ProjectDir)Resources</PreBuildEvent>
   </PropertyGroup>
 </Project>

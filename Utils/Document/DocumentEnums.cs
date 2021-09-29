@@ -96,6 +96,7 @@
         NewVersion,
         CancelPatch,
         FailedPatchUpdate,
+        CompletePatch,
 
         Max
     }
