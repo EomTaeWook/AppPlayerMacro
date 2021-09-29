@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,9 @@ namespace Patcher
     {
         private readonly List<Tuple<string, string>> _patchList;
         private readonly CancellationTokenSource _cts;
+
+        private static HttpClient httpClient = new HttpClient();
+
         public MainWindow()
         {
             _patchList = new List<Tuple<string, string>>();
@@ -96,23 +100,32 @@ namespace Patcher
         private Task RunPatch(CancellationToken token)
         {
             var tcs = new TaskCompletionSource<Task>();
-            Dispatcher.InvokeAsync(() =>
+
+            Dispatcher.InvokeAsync(async () => 
             {
-                Backup().ContinueWith(task =>
-                {
-                    return DownloadFiles(token);
-                }).ContinueWith(task =>
-                {
-                    if (task.IsCompleted)
-                        return Patching(token);
-                    return task;
-                }).ContinueWith(async task =>
-                {
-                    if (task.Result.Status != TaskStatus.RanToCompletion)
-                        await Rollback();
-                    tcs.SetResult(task.Result);
-                });
-            }, System.Windows.Threading.DispatcherPriority.Input);
+                await Backup();
+                await DownloadFiles(token);
+            });
+
+
+
+
+            //Dispatcher.InvokeAsync(async () =>
+            //{
+            //    await Backup();
+
+            //    await DownloadFiles(token);
+
+            //    await Patching(token);
+
+
+            //    }).ContinueWith(async task =>
+            //    {
+            //        if (task.Result.Status != TaskStatus.RanToCompletion)
+            //            await Rollback();
+            //        tcs.SetResult(task.Result);
+            //    });
+            //}, System.Windows.Threading.DispatcherPriority.Input);
 
             return tcs.Task;
         }
@@ -157,64 +170,100 @@ namespace Patcher
                 Log.Warning(ex);
             }
         }
-        private Task DownloadFiles(CancellationToken token)
+        private async Task<bool> DownloadFiles(CancellationToken token)
         {
             for (int i = 0; i < _patchList.Count; ++i)
             {
                 try
                 {
                     if (token.IsCancellationRequested)
-                        return Task.FromCanceled(token);
+                    {
+                        return false;
+                    }
+
                     Dispatcher.Invoke(() =>
                     {
-                        lblState.Content = $"{ObjectCache.GetValue("Download")} : {_patchList[i].Item1}" ;
+                        lblState.Content = $"{ObjectCache.GetValue("Download")} : {_patchList[i].Item1}";
                         lblCount.Content = $"({i + 1}/{_patchList.Count})";
                         progress.Value = 0;
                     });
 
-                    var request = (HttpWebRequest)WebRequest.Create(_patchList[i].Item2);
-                    request.ContentType = "application/octet-stream";
-                    request.ContentLength = 0;
-                    using (var response = (HttpWebResponse)request.GetResponse())
-                    {
-                        var total = response.ContentLength;
-                        using (var stream = response.GetResponseStream())
-                        {
-                            if (_patchList[i].Item1.Contains(@"\"))
-                            {
-                                var index = _patchList[i].Item1.LastIndexOf(@"\");
-                                Directory.CreateDirectory($@"{ConstHelper.TempPath}\{_patchList[i].Item1.Substring(0, index)}");
-                            }
-                            using (var fs = new FileStream($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
-                            {
-                                var buffer = new byte[4096];
-                                var read = 0;
-                                var current = 0L;
-                                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    Dispatcher.Invoke(() =>
-                                    {
-                                        fs.Write(buffer, 0, read);
-                                        current += read;
-                                        progress.Value = 100 - total * 1.0 / current;
-                                    });
-                                }
-                                fs.Flush();
-                                Dispatcher.Invoke(() =>
-                                {
-                                    progress.Value = 100D;
-                                });
-                            }
-                        }
-                    }
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _patchList[i].Item2);
+                    request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+
+                    var response = await httpClient.SendAsync(request);
+
+                    response.Dispose();
                 }
                 catch (Exception ex)
                 {
+                    //재시도
                     Log.Warning(ex);
                     i--;
                 }
             }
-            return Task.CompletedTask;
+
+            return true;
+
+            //for (int i = 0; i < _patchList.Count; ++i)
+            //{
+            //    try
+            //    {
+            //        if (token.IsCancellationRequested)
+            //        {
+            //            return Task.FromCanceled(token);
+            //        }
+
+            //        Dispatcher.Invoke(() =>
+            //        {
+            //            lblState.Content = $"{ObjectCache.GetValue("Download")} : {_patchList[i].Item1}" ;
+            //            lblCount.Content = $"({i + 1}/{_patchList.Count})";
+            //            progress.Value = 0;
+            //        });
+
+            //        var request = (HttpWebRequest)WebRequest.Create(_patchList[i].Item2);
+            //        request.ContentType = "application/octet-stream";
+            //        request.ContentLength = 0;
+            //        using (var response = (HttpWebResponse)request.GetResponse())
+            //        {
+            //            var total = response.ContentLength;
+            //            using (var stream = response.GetResponseStream())
+            //            {
+            //                if (_patchList[i].Item1.Contains(@"\"))
+            //                {
+            //                    var index = _patchList[i].Item1.LastIndexOf(@"\");
+            //                    Directory.CreateDirectory($@"{ConstHelper.TempPath}\{_patchList[i].Item1.Substring(0, index)}");
+            //                }
+            //                using (var fs = new FileStream($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
+            //                {
+            //                    var buffer = new byte[4096];
+            //                    var read = 0;
+            //                    var current = 0L;
+            //                    while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+            //                    {
+            //                        Dispatcher.Invoke(() =>
+            //                        {
+            //                            fs.Write(buffer, 0, read);
+            //                            current += read;
+            //                            progress.Value = 100 - total * 1.0 / current;
+            //                        });
+            //                    }
+            //                    fs.Flush();
+            //                    Dispatcher.Invoke(() =>
+            //                    {
+            //                        progress.Value = 100D;
+            //                    });
+            //                }
+            //            }
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Log.Warning(ex);
+            //        i--;
+            //    }
+            //}
+            //return Task.CompletedTask;
         }
         private Task Backup()
         {
