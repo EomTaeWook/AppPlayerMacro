@@ -5,20 +5,7 @@ using Utils.Document;
 
 namespace Macro.Models
 {
-    public interface IConfig
-    {
-        Language Language { get; }
-        string SavePath { get; }
-        int Period { get; }
-        int ItemDelay { get; }
-        int Similarity { get; }
-        bool SearchImageResultDisplay { get; }
-        int DragDelay { get; set; }
-        bool VersionCheck { get; }
-        InitialTab InitialTab { get; set; }
-    }
-
-    public class Config : IConfig, INotifyPropertyChanged
+    public class Config : INotifyPropertyChanged
     {
         private Language _language = Language.Kor;
         private string _savePath = "";

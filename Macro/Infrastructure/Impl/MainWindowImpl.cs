@@ -30,7 +30,7 @@ namespace Macro
         private readonly TaskQueue _taskQueue;
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
-        private IConfig _config;
+        private Config _config;
         
         private CancellationTokenSource tokenSource = null;
         private string _savePath;

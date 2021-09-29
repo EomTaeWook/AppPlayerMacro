@@ -66,7 +66,7 @@ namespace Macro
             //container.RegisterSingleton<GameEventConfigViewModel>();
             container.RegisterSingleton<CommonEventConfigViewModel>();
 
-            container.RegisterInstance(typeof(IConfig), config);
+            container.RegisterInstance<Config>(config);
             container.RegisterInstance(new DocumentHelper());
 
             var inputManager = new InputManager();

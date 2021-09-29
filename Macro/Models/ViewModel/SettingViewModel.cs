@@ -9,7 +9,7 @@ namespace Macro.Models.ViewModel
         private Config _config;
         private ICommand _savePathButtonCmd;
 
-        public SettingViewModel(IConfig config)
+        public SettingViewModel(Config config)
         {
             _config = new Config()
             {

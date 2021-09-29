@@ -13,7 +13,7 @@ namespace Macro.View
 {
     public partial class SettingView : UserControl
     {
-        public IConfig Config { get; private set; }
+        public Config Config { get; private set; }
 
         private readonly TaskQueue _taskQueue;
         public SettingView()
