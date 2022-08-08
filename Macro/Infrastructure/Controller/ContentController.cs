@@ -24,17 +24,14 @@ namespace Macro.Infrastructure.Controller
         private ContentView _contentView;
         private ApplicationDataHelper _applicationDataHelper;
         private InputManager _inputManager;
-        private CacheDataManager _cacheDataManager;
         public ContentController()
         {
             _random = new SeedRandom();
             _applicationDataHelper = ServiceProviderManager.Instance.GetService<ApplicationDataHelper>();
             _inputManager = ServiceProviderManager.Instance.GetService<InputManager>();
-            _cacheDataManager = ServiceProviderManager.Instance.GetService<CacheDataManager>();
 
             NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
         }
-        
 
         private void NotifyHelper_UpdatedTime(UpdatedTimeArgs arg)
         {
@@ -236,7 +233,7 @@ namespace Macro.Infrastructure.Controller
                                 {
                                     EventTriggerModel nextModel = null;
 
-                                    nextModel = _cacheDataManager.GetEventTriggerModel(model.EventToNext);
+                                    nextModel = CacheDataManager.Instance.GetEventTriggerModel(model.EventToNext);
 
                                     if (nextModel != null)
                                     {
@@ -278,13 +275,18 @@ namespace Macro.Infrastructure.Controller
                     if (!keyCode.IsExtendedKey())
                     {
                         for (int i = 0; i < input.Count(); i++)
+                        {
                             command.Add(input[i]);
+                        }
                     }
                 }
                 else
                 {
                     for (int i = 0; i < input.Count(); i++)
+                    {
                         command.Add(input[i]);
+                    }
+                        
                 }
             }
             var keys = command.Where(r =>

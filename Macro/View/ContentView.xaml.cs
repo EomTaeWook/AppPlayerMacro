@@ -3,17 +3,14 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Serialize;
 using Macro.Models;
-using Macro.Models.ViewModel;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Utils;
-using Utils.Document;
 using Point = System.Windows.Point;
 
 namespace Macro.View
@@ -48,20 +45,7 @@ namespace Macro.View
                 item.ShowActivate();
             }
         }
-        public async void LoadDatas(string path)
-        {
-            var loadDatas = await FileManager.Instance.Load<EventTriggerModel>(path);
-            if (loadDatas == null)
-            {
-                loadDatas = new List<EventTriggerModel>();
-                Save(path);
-            }
-            //if (_cacheDataManager.CheckAndMakeCacheFile(loadDatas, model.CacheFilePath))
-            //{
-            //    Save(loadDatas);
-            //}
-            SaveDataBind(loadDatas);
-        }
+        
        
         public void SaveDataBind(List<EventTriggerModel> saves)
         {

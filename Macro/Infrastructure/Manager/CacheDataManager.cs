@@ -1,14 +1,11 @@
-﻿using Macro.Infrastructure.Serialize;
+﻿using KosherUtils.Framework;
 using Macro.Models;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading;
 
 namespace Macro.Infrastructure.Manager
 {
-    public class CacheDataManager
+    public class CacheDataManager : Singleton<CacheDataManager>
     {
         private ulong _maxIndex;
         private int _atomic = 0;
@@ -20,6 +17,17 @@ namespace Macro.Infrastructure.Manager
             NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
 
             NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
+        }
+
+        public void InitMaxIndex(List<EventTriggerModel> eventTriggerDatas)
+        {
+            foreach(var item in eventTriggerDatas)
+            {
+                if(item.TriggerIndex > _maxIndex)
+                {
+                    _maxIndex = item.TriggerIndex;
+                }
+            }
         }
 
         //public bool CheckAndMakeCacheFile(List<EventTriggerModel> saves, string path)
@@ -43,12 +51,7 @@ namespace Macro.Infrastructure.Manager
         //    UpdateCacheData(path, commonCacheData);
         //    return isNewCreated;
         //}
-        public void UpdateCacheData(string path, CacheModel cacheModel)
-        {
-            cacheModel.LatestCheckDateTime = DateTime.Now.Ticks;
-            var bytes = ObjectSerializer.SerializeObject(cacheModel);
-            File.WriteAllBytes(path, bytes);
-        }
+        
         //public bool IsUpdated()
         //{
         //    return TimeSpan.FromTicks(DateTime.Now.Ticks - commonCacheData.LatestCheckDateTime).TotalDays > 1;
@@ -90,14 +93,8 @@ namespace Macro.Infrastructure.Manager
         }
         public void MakeIndexTriggerModel(EventTriggerModel model)
         {
-            if (model.TriggerIndex == 0)
-            {
-                model.TriggerIndex = IncreaseIndex();
-            }
-            else if (model.TriggerIndex > _maxIndex)
-            {
-                _maxIndex = model.TriggerIndex;
-            }
+            model.TriggerIndex = IncreaseIndex();
+
             foreach (var child in model.SubEventTriggers)
             {
                 MakeIndexTriggerModel(child);

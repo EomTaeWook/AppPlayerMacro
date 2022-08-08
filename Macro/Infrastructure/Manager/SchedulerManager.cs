@@ -1,5 +1,6 @@
 ﻿using KosherUtils.Coroutine;
 using KosherUtils.Framework;
+using KosherUtils.Log;
 using Macro.Models;
 using System;
 using System.Collections.Generic;
@@ -15,47 +16,43 @@ namespace Macro.Infrastructure.Manager
     public class SchedulerManager : Singleton<SchedulerManager>
     {
         private CancellationTokenSource cts;
+        private CancellationToken cancellationToken = CancellationToken.None;
         private int period = ConstHelper.MinPeriod;
         public SchedulerManager()
         {
-
+            
         }
         public bool IsRunning()
         {
-            if(cts == null)
-            {
-                return false;
-            }
-            return cts.IsCancellationRequested == false;
+            return cancellationToken != CancellationToken.None;
         }
-        public void Start()
+        public Task Start()
         {
-            if(cts != null)
+            if(IsRunning() == true)
             {
-                Stop();
+                LogHelper.Error($"scheduler is already running!");
             }
-            TaskBuilder.Build(Update, out CancellationTokenSource token);
-            cts = token;
+            cts = new CancellationTokenSource();
+            cancellationToken = cts.Token;
+            return TaskBuilder.Build(async ()=> { await UpdateAsync(); });
         }
         public void Stop()
         {
-            if(cts != null)
-            {
-                cts.Cancel();
-                cts = null;
-            }
+            cts.Cancel();
+            cts.Dispose();
+            cancellationToken = CancellationToken.None;
         }
-        public void Update()
+        public async Task UpdateAsync()
         {
             long previousTick = DateTime.Now.Ticks;
             var args = new UpdatedTimeArgs();
-            while (cts.IsCancellationRequested == false)
+            while (IsRunning() == true)
             {
                 var currentTime = DateTime.Now.Ticks;
                 args.DeltaTime = (float)TimeSpan.FromTicks(currentTime - previousTick).TotalSeconds;
                 previousTick = currentTime;
                 NotifyHelper.InvokeNotify(NotifyEventType.UpdatedTime, args);
-                Task.Delay(period);
+                await Task.Delay(period);
             }
         }
     }

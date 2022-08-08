@@ -34,9 +34,7 @@
         EventTriggerRemoved,
 
         Save,
-        GameSave,
         Delete,
-        GameDelete,
 
         TreeGridViewFocus,
 
@@ -63,13 +61,6 @@
         Max
     }
 
-    public enum MousePointViewMode
-    {
-        Common,
-        Game,
-
-        Max
-    }
     public enum InitialTab
     {
         Common,

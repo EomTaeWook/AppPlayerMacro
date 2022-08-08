@@ -16,7 +16,6 @@ namespace Macro.View
         private readonly MonitorInfo _monitorInfo;
         private bool _isDrag;
         private readonly PathFigure _pathFigure;
-        private MousePointViewMode _mousePointViewMode;
         public MousePositionView(MonitorInfo monitorInfo)
         {
             _pathFigure = new PathFigure
@@ -26,10 +25,6 @@ namespace Macro.View
             _monitorInfo = monitorInfo;
             InitializeComponent();
             Loaded += MousePositionView_Loaded;
-        }
-        public void SettingViewMode(MousePointViewMode mousePointViewMode)
-        {
-            _mousePointViewMode = mousePointViewMode;
         }
         public void ShowActivate()
         {
@@ -78,7 +73,6 @@ namespace Macro.View
             {
                 NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MousePointViewMode = _mousePointViewMode,
                     MouseTriggerInfo = new MouseTriggerInfo()
                     {
                         MouseInfoEventType = MouseEventType.RightClick,
@@ -97,7 +91,6 @@ namespace Macro.View
             {
                 NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MousePointViewMode = _mousePointViewMode,
                     MouseTriggerInfo = new MouseTriggerInfo()
                     {
                         MouseInfoEventType = MouseEventType.LeftClick,
@@ -110,7 +103,6 @@ namespace Macro.View
             {
                 NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MousePointViewMode = _mousePointViewMode,
                     MouseTriggerInfo = new MouseTriggerInfo()
                     {
                         MouseInfoEventType = MouseEventType.Drag,
@@ -138,7 +130,6 @@ namespace Macro.View
             {
                 NotifyHelper.InvokeNotify(NotifyEventType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MousePointViewMode = _mousePointViewMode,
                     MouseTriggerInfo = new MouseTriggerInfo()
                     {
                         MouseInfoEventType = MouseEventType.None,

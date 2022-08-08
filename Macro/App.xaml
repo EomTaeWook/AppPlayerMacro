@@ -34,7 +34,7 @@
                 <Setter Property="MaxHeight"  Value="40"/>
             </Style>
             <Style TargetType="TextBox">
-                <Setter Property="FontSize" Value="12"></Setter>
+                <Setter Property="FontSize" Value="15"></Setter>
             </Style>
             <Style x:Key="Sumnail" TargetType="Image">
                 <Setter Property="MaxWidth" Value="80" />

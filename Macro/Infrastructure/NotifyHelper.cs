@@ -26,25 +26,25 @@ namespace Macro.Infrastructure
 
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {
-            switch(eventType)
+            switch (eventType)
             {
                 case NotifyEventType.ConfigChanged:
-                    ConfigChanged? .Invoke(args as ConfigEventArgs);
+                    ConfigChanged?.Invoke(args as ConfigEventArgs);
                     break;
                 case NotifyEventType.MousePointDataBind:
-                    MousePositionDataBind? .Invoke(args as MousePointEventArgs);
+                    MousePositionDataBind?.Invoke(args as MousePointEventArgs);
                     break;
                 case NotifyEventType.ScreenCaptureDataBInd:
-                    ScreenCaptureDataBind? .Invoke(args as CaptureEventArgs);
+                    ScreenCaptureDataBind?.Invoke(args as CaptureEventArgs);
                     break;
                 case NotifyEventType.TreeItemOrderChanged:
-                    TreeItemOrderChanged? .Invoke(args as EventTriggerOrderChangedEventArgs);
+                    TreeItemOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
                 case NotifyEventType.SelctTreeViewItemChanged:
-                    SelectTreeViewChanged? .Invoke(args as SelctTreeViewItemChangedEventArgs);
+                    SelectTreeViewChanged?.Invoke(args as SelctTreeViewItemChangedEventArgs);
                     break;
                 case NotifyEventType.EventTriggerOrderChanged:
-                    EventTriggerOrderChanged? .Invoke(args as EventTriggerOrderChangedEventArgs);
+                    EventTriggerOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
                     break;
                 case NotifyEventType.EventTriggerInserted:
                     EventTriggerInserted?.Invoke(args as EventTriggerEventArgs);
@@ -67,6 +67,9 @@ namespace Macro.Infrastructure
                     break;
                 case NotifyEventType.UpdatedTime:
                     UpdatedTime?.Invoke(args as UpdatedTimeArgs);
+                    break;
+                case NotifyEventType.Max:
+                default:
                     break;
             }
         }

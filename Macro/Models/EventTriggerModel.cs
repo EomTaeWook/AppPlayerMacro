@@ -26,12 +26,14 @@ namespace Macro.Models
         private bool _imageSearchRequired = false;
         private bool _sameImageDrag = false;
         private int _maxSameImageCount = 1;
+        private Bitmap _image;
 
         public EventTriggerModel()
         {
         }
         public EventTriggerModel(EventTriggerModel other)
         {
+            _image = other.Image;
             _eventType = other.EventType;
             _mouseTriggerInfo = other.MouseTriggerInfo;
             _keyboardCmd = other.KeyboardCmd;
@@ -47,7 +49,11 @@ namespace Macro.Models
         }
 
         [Order(1)]
-        public Bitmap Image { get; set; }
+        public Bitmap Image 
+        { 
+            get => _image;
+            set => _image = value; 
+        }
 
         [Order(2)]
         public EventType EventType
@@ -189,7 +195,7 @@ namespace Macro.Models
                 {
                     if (MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None && MouseTriggerInfo.MouseInfoEventType != MouseEventType.Wheel)
                     {
-                        return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() }";
+                        return $"X : { MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}";
                     }
                     else if (MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
                     {
@@ -208,8 +214,8 @@ namespace Macro.Models
                     }
                     else
                     {
-                        return $"X : { MouseTriggerInfo.StartPoint.X.ToString("0")} Y : {MouseTriggerInfo.StartPoint.Y.ToString("0") }\r\n" +
-                            $"X : { MouseTriggerInfo.EndPoint.X.ToString("0")} Y : {MouseTriggerInfo.EndPoint.Y.ToString("0") }";
+                        return $"X : { MouseTriggerInfo.StartPoint.X:0} Y : {MouseTriggerInfo.StartPoint.Y:0}\r\n" +
+                            $"X : { MouseTriggerInfo.EndPoint.X:0} Y : {MouseTriggerInfo.EndPoint.Y:0}";
                     }
                 }
                 else if (EventType == EventType.Keyboard)
@@ -218,7 +224,7 @@ namespace Macro.Models
                 }
                 else if (EventType == EventType.RelativeToImage)
                 {
-                    return $"X : { MouseTriggerInfo.StartPoint.X.ToString()} Y : {MouseTriggerInfo.StartPoint.Y.ToString() }";
+                    return $"X : { MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}";
                 }
                 else
                 {

@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Utils;
 
 namespace Macro.View
 {
@@ -64,25 +65,17 @@ namespace Macro.View
             {
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
-
-                btnMouseCoordinate.Visibility = Visibility.Visible;
-                btnMouseCoordinate.IsEnabled = true;
-
-                checkSameImageDrag.Visibility = Visibility.Collapsed;
-                numMaxSameImageCount.Visibility = Visibility.Collapsed;
+                gridMouse.Visibility = Visibility.Visible;
+                gridImage.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
             }
             else if (etm.EventType == EventType.Keyboard)
             {
                 txtKeyboardCmd.Visibility = Visibility.Visible;
+                gridMouse.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
-
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
-                btnMouseCoordinate.IsEnabled = false;
-
-                checkSameImageDrag.Visibility = Visibility.Collapsed;
-                numMaxSameImageCount.Visibility = Visibility.Collapsed;
+                gridImage.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -93,12 +86,9 @@ namespace Macro.View
             {
                 gridRelative.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                gridMouse.Visibility = Visibility.Collapsed;
+                gridImage.Visibility = Visibility.Collapsed;
 
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
-                btnMouseCoordinate.IsEnabled = false;
-
-                checkSameImageDrag.Visibility = Visibility.Collapsed;
-                numMaxSameImageCount.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.Visibility = Visibility.Collapsed;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -107,11 +97,8 @@ namespace Macro.View
             }
             else if (etm.EventType == EventType.Image)
             {
-                checkSameImageDrag.Visibility = Visibility.Visible;
-
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
-                btnMouseCoordinate.IsEnabled = false;
-
+                gridImage.Visibility = Visibility.Visible;
+                gridMouse.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
             }
@@ -119,12 +106,9 @@ namespace Macro.View
             {
                 gridRelative.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
+                gridMouse.Visibility = Visibility.Collapsed;
 
-                btnMouseCoordinate.Visibility = Visibility.Visible;
-                btnMouseCoordinate.IsEnabled = false;
-
-                checkSameImageDrag.Visibility = Visibility.Collapsed;
-                numMaxSameImageCount.Visibility = Visibility.Collapsed;
+                gridImage.Visibility = Visibility.Visible;
                 //btnMouseWheel.Visibility = Visibility.Visible;
                 //btnMouseWheel.IsEnabled = false;
 
@@ -296,8 +280,6 @@ namespace Macro.View
 
         private void EventConfigView_Loaded(object sender, RoutedEventArgs e)
         {
-            
-
             foreach (var type in Enum.GetValues(typeof(RepeatType)))
             {
                 if (Enum.TryParse($"Repeat{type}", out Utils.Document.Label label))
@@ -306,10 +288,11 @@ namespace Macro.View
                 }
             }
 
-            foreach (var item in _mousePointViews)
+            foreach(var item in DisplayHelper.MonitorInfo())
             {
-                item.SettingViewMode(MousePointViewMode.Common);
+                _mousePointViews.Add(new MousePositionView(item));
             }
+
 
             comboRepeatSubItem.ItemsSource = _repeatItems;
             comboRepeatSubItem.DisplayMemberPath = "Value";
@@ -341,7 +324,7 @@ namespace Macro.View
             _repeatItems.Clear();
             foreach (var type in Enum.GetValues(typeof(RepeatType)))
             {
-                if (Enum.TryParse($"Repeat{type.ToString()}", out Utils.Document.Label label))
+                if (Enum.TryParse($"Repeat{type}", out Utils.Document.Label label))
                 {
                     _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, DocumentHelper.Get(label)));
                 }
@@ -362,7 +345,13 @@ namespace Macro.View
                 }
             }
         }
-
+        private void ShowMousePoisitionView()
+        {
+            foreach (var item in _mousePointViews)
+            {
+                item.ShowActivate();
+            }
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (sender.Equals(btnMouseCoordinate))
@@ -373,7 +362,7 @@ namespace Macro.View
                 {
                     _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
                 }
-                //ShowMousePoisitionView();
+                ShowMousePoisitionView();
             }
             else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
             {

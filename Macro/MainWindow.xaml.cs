@@ -32,13 +32,12 @@ namespace Macro
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
         private Config _config;
-        private string _savePath;
-        private string _fullSavePath;
         private ContentView _contentView;
         private ContentController _contentController = new ContentController();
         public MainWindow()
         {
             InitializeComponent();
+            _config = ServiceProviderManager.Instance.GetService<Config>();
             Loaded += MainWindow_Loaded;
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -46,6 +45,7 @@ namespace Macro
             InitEvent();
             Init();
             VersionCheck();
+            
         }
         private void InitEvent()
         {
@@ -84,32 +84,27 @@ namespace Macro
                 ApplicationManager.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
                 Process.GetCurrentProcess().Kill();
             }
-            _config = ServiceProviderManager.Instance.GetService<Config>();
-
             Refresh();
-            //_contentView.LoadDatas(_fullSavePath);
+            LoadDatas(GetSaveFilePath());
         }
-        private void RefreshPath()
+        private string GetSaveFilePath()
         {
-            _savePath = _config.SavePath;
-            if (string.IsNullOrEmpty(_config.SavePath) == true)
+            if(string.IsNullOrEmpty(_config.SavePath) == true)
             {
-                _savePath = ConstHelper.DefaultSavePath;
+                return $"{ConstHelper.DefaultSavePath}{ConstHelper.DefaultSaveFileName}";
             }
             else
             {
-                _savePath += @"\";
+                return $"{_config.SavePath}\\{ConstHelper.DefaultSaveFileName}";
             }
-
-            _fullSavePath = $"{_savePath}\\{ConstHelper.DefaultSaveFileName}";
         }
+
         private void Refresh()
         {
-            RefreshPath();
-
-            if (Directory.Exists(_savePath) == false)
+            FileInfo fileInfo = new FileInfo(GetSaveFilePath());
+            if (fileInfo.Directory.Exists == false)
             {
-                Directory.CreateDirectory(_savePath);
+                fileInfo.Directory.Create();
             }
 
             _processes = Process.GetProcesses().Where(r => r.MainWindowHandle != IntPtr.Zero)
@@ -169,7 +164,6 @@ namespace Macro
             }
 
             _contentController.SetContentView(_contentView);
-
         }
         private void SettingProcessMonitorInfo(EventTriggerModel model, Process process)
         {
@@ -184,7 +178,9 @@ namespace Macro
                     if (monitor.Rect.IsContain(rect))
                     {
                         if (model.MonitorInfo != null)
+                        {
                             model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
+                        }
 
                         model.MonitorInfo = monitor;
                         break;
@@ -204,7 +200,6 @@ namespace Macro
                     }
                 }
             });
-
         }
         
         private void NotifyHelper_DeleteEventTriggerModel(DeleteEventTriggerModelArgs obj)
@@ -228,6 +223,8 @@ namespace Macro
 
             var rect = new Rect();
 
+            NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
+
             obj.CurrentEventTriggerModel.ProcessInfo = new ProcessInfo()
             {
                 ProcessName = process != null ? $"{process.ProcessName}" : "",
@@ -236,15 +233,12 @@ namespace Macro
 
             if (_contentController.Validate(obj.CurrentEventTriggerModel, out Message error))
             {
-                NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
-
-                var path = _fullSavePath;
-
                 Dispatcher.InvokeAsync(() =>
                 {
-                    var model = obj.CurrentEventTriggerModel as EventTriggerModel;
+                    var model = obj.CurrentEventTriggerModel;
                     SettingProcessMonitorInfo(model, process);
-                    _contentView.Save(_fullSavePath);
+                    CacheDataManager.Instance.MakeIndexTriggerModel(model);
+                    _contentView.Save(GetSaveFilePath());
                     Clear();
                 });
             }
@@ -346,14 +340,30 @@ namespace Macro
                 comboProcess.SelectedValue = pair.Value;
             }
             else
+            {
                 comboProcess.SelectedValue = _fixProcess.Value.Value;
+            }
         }
+
+        public async void LoadDatas(string path)
+        {
+            var loadDatas = await FileManager.Instance.Load<EventTriggerModel>(path);
+            if (loadDatas == null)
+            {
+                loadDatas = new List<EventTriggerModel>();
+                _contentView.Save(GetSaveFilePath());
+            }
+            CacheDataManager.Instance.InitMaxIndex(loadDatas);
+
+            _contentView.SaveDataBind(loadDatas);
+        }
+
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
         {
             ApplicationManager.ShowProgressbar();
             _config = e.Config;
             Refresh();
-            _contentView.LoadDatas(_fullSavePath);
+            LoadDatas(GetSaveFilePath());
             settingFlyout.IsOpen = !settingFlyout.IsOpen;
             ApplicationManager.HideProgressbar();
         }
@@ -401,27 +411,27 @@ namespace Macro
                 return;
             }
             var latest = ApplicationManager.Instance.GetLatestVersion();
-            if(latest != null)
+            if(latest == null)
             {
-                if(latest.CompareTo(Version.CurrentVersion) > 0)
+                return;
+            }
+            if (latest.CompareTo(Version.CurrentVersion) > 0)
+            {
+                if (ApplicationManager.MessageShow("Infomation", DocumentHelper.Get(Message.NewVersion), MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
                 {
-                    if (ApplicationManager.MessageShow("Infomation", DocumentHelper.Get(Message.NewVersion), MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                    if (File.Exists("Patcher.exe"))
                     {
-                        if (File.Exists("Patcher.exe"))
-                        {
-                            var param = $"{Version.CurrentVersion.Major}.{Version.CurrentVersion.Minor}.{Version.CurrentVersion.Build} " +
-                                $"{latest.Major}.{latest.Minor}.{latest.Build}";
-                            Process.Start("Patcher.exe", param);
-                            Application.Current.Shutdown();
-                        }
-                        else
-                        {
-                            Process.Start(ConstHelper.ReleaseUrl);
-                        }
+                        var param = $"{Version.CurrentVersion.Major}.{Version.CurrentVersion.Minor}.{Version.CurrentVersion.Build} " +
+                            $"{latest.Major}.{latest.Minor}.{latest.Build}";
+                        Process.Start("Patcher.exe", param);
+                        Application.Current.Shutdown();
+                    }
+                    else
+                    {
+                        Process.Start(ConstHelper.ReleaseUrl);
                     }
                 }
             }
-
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -447,10 +457,8 @@ namespace Macro
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
                 tab_content.IsEnabled = false;
-                if(SchedulerManager.Instance.IsRunning() == false)
-                {
-                    SchedulerManager.Instance.Start();
-                }
+
+                SchedulerManager.Instance.Start();
 
                 ApplicationManager.HideProgressbar();
             }
