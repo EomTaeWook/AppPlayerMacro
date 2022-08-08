@@ -1,28 +1,32 @@
-﻿using Macro.Extensions;
+﻿using KosherUtils.Framework;
+using Macro.Extensions;
 using Macro.Models;
 using Utils.Document;
 using Utils.Extensions;
 
 namespace Macro.Infrastructure
 {
-    public class DocumentHelper
+    public class DocumentHelper : Singleton<DocumentHelper>
     {
-        private static Language _language;
+        private static Language language;
         public DocumentHelper()
         {
-            _language= ObjectExtensions.GetInstance<Config>().Language;
+        }
+        public void Init(Config config)
+        {
+            language = config.Language;
             NotifyHelper.ConfigChanged += (e) =>
             {
-                _language = e.Config.Language;
+                language = e.Config.Language;
             };
         }
         public static string Get(Label label)
         {
-            return DocumentExtensions.Get(label, _language);
+            return DocumentExtensions.Get(label, language);
         }
         public static string Get(Message mesage)
         {
-            return DocumentExtensions.Get(mesage, _language);
+            return DocumentExtensions.Get(mesage, language);
         }
     }
 }

@@ -60,7 +60,7 @@ namespace Macro.Infrastructure.Serialize
                     {
                         throw new FormatException(DocumentHelper.Get(Utils.Document.Message.FailedFileBroken));
                     }
-                    var @object = (T)Activator.CreateInstance(typeof(T));
+                    var obj = (T)Activator.CreateInstance(typeof(T));
                     bool isComplete = true;
                     foreach (var prop in properties)
                     {
@@ -70,15 +70,17 @@ namespace Macro.Infrastructure.Serialize
                             isComplete = false;
                             break;
                         }
-                        prop.SetValue(@object, val);
+                        prop.SetValue(obj, val);
                     }
                     if (isComplete)
                     {
                         var endTag = bf.Deserialize(ms);
                         if (!endTag.Equals("\uFF1E"))
+                        {
                             throw new FormatException(DocumentHelper.Get(Utils.Document.Message.FailedFileBroken));
+                        }
                     }
-                    list.Add(@object);
+                    list.Add(obj);
                 }
             }
             return list;

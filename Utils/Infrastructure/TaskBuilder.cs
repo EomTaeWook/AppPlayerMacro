@@ -10,13 +10,19 @@ namespace Utils.Infrastructure
         {
             return Task.Run(action);
         }
+        public static Task Build(Action action, out CancellationTokenSource tokenSource)
+        {
+            tokenSource = new CancellationTokenSource();
+            return Task.Run(action);
+        }
         public static Task Build(Func<object, Task> func, out CancellationTokenSource tokenSource)
         {
             tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             return Task.Run(()=> 
             {
-                func(token);
+                func?.Invoke(token);
+
             }, tokenSource.Token);
         }
 
@@ -25,7 +31,7 @@ namespace Utils.Infrastructure
             return Task.Run(async () =>
             {
                 await Task.Delay(millisecondsDelay);
-                action();
+                action?.Invoke();
             });
         }
     }

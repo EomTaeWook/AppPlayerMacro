@@ -50,7 +50,7 @@ namespace Utils
             }
             catch (Exception ex)
             {
-                Log.Warning(ex);
+                LogHelper.Error(ex);
                 return null;
             }
         }
@@ -100,7 +100,7 @@ namespace Utils
             }
             catch(Exception ex)
             {
-                Log.Warning(ex);
+                LogHelper.Error(ex);
                 bmp = null;
                 return false;
             }

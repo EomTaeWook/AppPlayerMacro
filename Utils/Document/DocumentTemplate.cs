@@ -6,22 +6,22 @@ namespace Utils.Document
 {
     public class DocumentTemplate<T> : IDocument where T : struct //7.3 Enum
     {
-        private readonly Dictionary<T, Dictionary<Language, string>> _datas;
+        private readonly Dictionary<T, Dictionary<Language, string>> datas;
         public DocumentTemplate()
         {
-            _datas = new Dictionary<T, Dictionary<Language, string>>();
+            datas = new Dictionary<T, Dictionary<Language, string>>();
         }
         public void Init(string path)
         {
             var json = File.ReadAllText($@"{path}{typeof(T).Name}Document.json");
-            if (!string.IsNullOrEmpty(json))
+            if (string.IsNullOrEmpty(json) == false)
             {
                 var jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject<List<DocumentData>>(json);
                 foreach (var data in jsonData)
                 {
                     if(Enum.TryParse(data.Code, true, out T code))
                     {
-                        _datas.Add(code, new Dictionary<Language, string>()
+                        datas.Add(code, new Dictionary<Language, string>()
                         {
                             { Language.Kor, data.Kor},
                             { Language.Eng, data.Eng},
@@ -30,6 +30,6 @@ namespace Utils.Document
                 }
             }
         }
-        public string this[T code, Language language] => _datas[code][language];
+        public string this[T code, Language language] => datas[code][language];
     }
 }

@@ -3,9 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:util="clr-namespace:Utils;assembly=Utils"
+             xmlns:util="clr-namespace:Utils;assembly=Utils" xmlns:viewmodel="clr-namespace:Macro.Models.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:SettingViewModel}"
              mc:Ignorable="d">
     <Grid>
         <DockPanel LastChildFill="False">
@@ -26,46 +26,46 @@
                     <ColumnDefinition Width="5.5*"></ColumnDefinition>
                     <ColumnDefinition Width="4.5*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.Language, Source={StaticResource Locator} }"></Label>
-                <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
+                <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=LabelViewModel.Language, Source={StaticResource Locator} }"></Label>
+                <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
 
-                <Label Grid.Row="1" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.SavePath, Source={StaticResource Locator}}"></Label>
-                <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Style="{DynamicResource SearchMetroTextBox}" Text ="{Binding Path=Config.SavePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                         Controls:TextBoxHelper.ButtonCommand="{Binding SavePathButtonCmd }"
-                         Controls:TextBoxHelper.ButtonCommandParameter="{Binding ElementName=txtSavePath}"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=LabelViewModel.SavePath, Source={StaticResource Locator}}"></Label>
+                <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Text ="{Binding Path=Config.SavePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         mah:TextBoxHelper.ButtonCommand="{Binding SavePathButtonCmd }"
+                         mah:TextBoxHelper.ButtonCommandParameter="{Binding ElementName=txtSavePath}"/>
 
-                <Label Grid.Row="2" Grid.Column="0"  FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.Period, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.Period, Mode=TwoWay}"></Controls:NumericUpDown>
+                <Label Grid.Row="2" Grid.Column="0"  Content="{Binding Path=LabelViewModel.Period, Source={StaticResource Locator}}"></Label>
+                <mah:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.Period, Mode=TwoWay}"></mah:NumericUpDown>
 
-                <Label Grid.Row="3" Grid.Column="0"  FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.ItemDelay, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinItemDelay}}" Grid.Row="3" Grid.Column="1" Value="{Binding Path=Config.ItemDelay, Mode=TwoWay}"></Controls:NumericUpDown>
+                <Label Grid.Row="3" Grid.Column="0"  Content="{Binding Path=LabelViewModel.ItemDelay, Source={StaticResource Locator}}"></Label>
+                <mah:NumericUpDown Name="numDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinItemDelay}}" Grid.Row="3" Grid.Column="1" Value="{Binding Path=Config.ItemDelay, Mode=TwoWay}"></mah:NumericUpDown>
 
-                <Label Grid.Row="4" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.Similarity, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></Controls:NumericUpDown>
+                <Label Grid.Row="4" Grid.Column="0" Content="{Binding Path=LabelViewModel.Similarity, Source={StaticResource Locator}}"></Label>
+                <mah:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></mah:NumericUpDown>
                 
-                <Label Grid.Row="5" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.DragDelay, Source={StaticResource Locator}}"></Label>
-                <Controls:NumericUpDown Name="numDragDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinDragDelay}}" Grid.Row="5" Grid.Column="1" Value="{Binding Path=Config.DragDelay, Mode=TwoWay}"></Controls:NumericUpDown>
+                <Label Grid.Row="5" Grid.Column="0" Content="{Binding Path=LabelViewModel.DragDelay, Source={StaticResource Locator}}"></Label>
+                <mah:NumericUpDown Name="numDragDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinDragDelay}}" Grid.Row="5" Grid.Column="1" Value="{Binding Path=Config.DragDelay, Mode=TwoWay}"></mah:NumericUpDown>
 
-                <Label Grid.Row="6" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.SearchResultDisplay, Source={StaticResource Locator}}"></Label>
-                <ComboBox Name="comboSearchResultDisplay" Grid.Row="6" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.SearchImageResultDisplay, Mode=TwoWay}">
+                <Label Grid.Row="6" Grid.Column="0" Content="{Binding Path=LabelViewModel.SearchResultDisplay, Source={StaticResource Locator}}"></Label>
+                <ComboBox Name="comboSearchResultDisplay" Grid.Row="6" Grid.Column="1" SelectedValue="{Binding Path=Config.SearchImageResultDisplay, Mode=TwoWay}">
                     <ComboBox.Items>
                         <system:Boolean>True</system:Boolean>
                         <system:Boolean>False</system:Boolean>
                     </ComboBox.Items>
                 </ComboBox>
 
-                <Label Grid.Row="7" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.VersionCheck, Source={StaticResource Locator}}"></Label>
-                <ComboBox Name="comboVersionCheck" Grid.Row="7" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.VersionCheck, Mode=TwoWay}">
+                <Label Grid.Row="7" Grid.Column="0" Content="{Binding Path=LabelViewModel.VersionCheck, Source={StaticResource Locator}}"></Label>
+                <ComboBox Name="comboVersionCheck" Grid.Row="7" Grid.Column="1" SelectedValue="{Binding Path=Config.VersionCheck, Mode=TwoWay}">
                     <ComboBox.Items>
                         <system:Boolean>True</system:Boolean>
                         <system:Boolean>False</system:Boolean>
                     </ComboBox.Items>
                 </ComboBox>
-                <Label Grid.Row="8" Grid.Column="0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}" Content="{Binding Path=LabelViewModel.InitialTab, Source={StaticResource Locator}}"></Label>
-                <ComboBox Name="comboInitialTab" Grid.Row="8" Grid.Column="1" FontSize="{Binding Source={x:Static util:ConstHelper.ItemFontSize}}" SelectedValue="{Binding Path=Config.InitialTab, Mode=TwoWay}">
+                <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=LabelViewModel.InitialTab, Source={StaticResource Locator}}"></Label>
+                <ComboBox Name="comboInitialTab" Grid.Row="8" Grid.Column="1" SelectedValue="{Binding Path=Config.InitialTab, Mode=TwoWay}">
                 </ComboBox>
             </Grid>
-            <Button Name="btnSave" DockPanel.Dock="Bottom" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}" Style="{DynamicResource SquareButtonStyle}"></Button>
+            <Button Name="btnSave" DockPanel.Dock="Bottom" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
         </DockPanel>
     </Grid>
 </UserControl>

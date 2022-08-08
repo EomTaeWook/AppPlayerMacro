@@ -40,6 +40,8 @@
 
         TreeGridViewFocus,
 
+        UpdatedTime,
+
         Max
     }
 
@@ -61,15 +63,6 @@
         Max
     }
 
-    public enum CaptureViewMode
-    {
-        Common,
-        Game,
-        HP,
-        Mp,
-
-        Max
-    }
     public enum MousePointViewMode
     {
         Common,

@@ -11,7 +11,6 @@ namespace Utils
         private readonly Random _random;
         public SeedRandom() : this(DateTime.Now.Ticks)
         {
-
         }
         public SeedRandom(long seed)
         {

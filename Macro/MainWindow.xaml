@@ -1,31 +1,30 @@
-﻿<Controls:MetroWindow x:Class="Macro.MainWindow"
+﻿<mah:MetroWindow  x:Class="Macro.MainWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:view="clr-namespace:Macro.View"
-                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns:util="clr-namespace:Utils;assembly=Utils"
-                      BorderBrush="{DynamicResource AccentColorBrush}"
+                      xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      GlowBrush="{DynamicResource mah.Brushes.Accent}"
                       BorderThickness="1"
                       Title="{Binding Path=LabelViewModel.Title, Source={StaticResource Locator}}" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
                       mc:Ignorable="d">
-    <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands>
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
             <Button Name="btnGithub">
                 <StackPanel Orientation="Horizontal">
-                    <IconPacks:PackIconMaterial Width="24" Height="24" Kind="GithubBox" />
+                    <IconPacks:PackIconMaterial Width="24" Height="24" Kind="Github" />
                 </StackPanel>
             </Button>
             <Button Name="btnSetting">
                 <StackPanel Orientation="Horizontal">
-                    <IconPacks:PackIconMaterial Width="24" Height="24" Kind="SettingsOutline" />
+                    <IconPacks:PackIconMaterial Width="24" Height="24" Kind="ContentSaveSettingsOutline" />
                     <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="{Binding Path=LabelViewModel.Setting, Source={StaticResource Locator}}" />
                 </StackPanel>
             </Button>
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
     <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
         <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">
             <DockPanel LastChildFill="True" Margin="0,0,0,6">
@@ -46,28 +45,25 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=LabelViewModel.Fix, Source={StaticResource Locator}}" Margin="5,0,0,0" FontSize="{Binding Source={x:Static util:ConstHelper.FontSize}}"></CheckBox>
-                        <Button Grid.Column="1" Style="{DynamicResource MetroCircleButtonStyle}" x:Name="btnRefresh" Width="40" Height="40" FontFamily="Wingdings 3">
+                        <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=LabelViewModel.Fix, Source={StaticResource Locator}}" Margin="5,0,0,0"></CheckBox>
+                        <Button Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="40" Height="40">
                             <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
                         </Button>
                     </Grid>
                 </Grid>
             </DockPanel>
         </Border>
-        <Controls:MetroAnimatedTabControl x:Name="tab_content" Controls:TabControlHelper.IsUnderlined="True" Controls:TabControlHelper.Underlined="SelectedTabItem">
-            <Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
-                <view:CommonContentView x:Name="commonContentView" Tag="Common"/>
-            </Controls:MetroTabItem>
-            <!--<Controls:MetroTabItem Header="{Binding Path=LabelViewModel.Game, Source={StaticResource Locator}}" >
-                <view:GameContentView x:Name="gameContentView" Tag="Game"/>
-            </Controls:MetroTabItem>-->
-        </Controls:MetroAnimatedTabControl>
+        <mah:MetroAnimatedTabControl x:Name="tab_content">
+            <mah:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
+                <view:ContentView x:Name="contentView" Tag="Common"/>
+            </mah:MetroTabItem>
+        </mah:MetroAnimatedTabControl>
     </DockPanel>
-    <Controls:MetroWindow.Flyouts>
-        <Controls:FlyoutsControl x:Name="flyoutsControl">
-            <Controls:Flyout x:Name="settingFlyout" Position="Right" Width="350">
-                <view:SettingView x:Name="settingView" Tag="Game"></view:SettingView>
-            </Controls:Flyout>
-        </Controls:FlyoutsControl>
-    </Controls:MetroWindow.Flyouts>
-</Controls:MetroWindow>
+    <mah:MetroWindow.Flyouts>
+        <mah:FlyoutsControl x:Name="flyoutsControl">
+            <mah:Flyout x:Name="settingFlyout" Position="Right" Width="350">
+                <view:SettingView x:Name="settingView"></view:SettingView>
+            </mah:Flyout>
+        </mah:FlyoutsControl>
+    </mah:MetroWindow.Flyouts>
+</mah:MetroWindow>

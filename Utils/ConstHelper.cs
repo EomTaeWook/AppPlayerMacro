@@ -2,15 +2,11 @@
 {
     public class ConstHelper
     {
-        public static readonly double FontSize = 17.0;
-        public static readonly double ItemFontSize = FontSize - 5.0;
         public static readonly string DefaultSavePath = @".\Save\";
         public static readonly string DefaultSaveFileName = "save.dll";
-        public static readonly string DefaultGameSaveFileName = "saveGame.dll";
         public static readonly string DefaultConfigFile = "config.json";
         public static readonly string DefaultDatasFilePath = @".\Datas\";
         public static readonly string DefaultSaveCacheFile = @"Cache.dll";
-        public static readonly string DefaultGameCacheFile = @"CacheGame.dll";
         public static readonly string DefaultPatcherName = @"Patcher.exe";
 
 

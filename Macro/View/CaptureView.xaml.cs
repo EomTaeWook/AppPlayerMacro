@@ -23,12 +23,10 @@ namespace Macro.View
         private readonly Border _dummyBorder;
         private Border _dragBorder;
         private Point _factor;
-        private CaptureViewMode _captureViewMode;
 
         public CaptureView(MonitorInfo monitorInfo)
         {
             _monitorInfo = monitorInfo;
-            _captureViewMode = CaptureViewMode.Common;
 
             _dummyBorder = new Border
             {
@@ -40,8 +38,8 @@ namespace Macro.View
                 CornerRadius = new CornerRadius(1)
             };
             var systemDPI = NativeHelper.GetSystemDPI();
-            _factor.X = 1.0F * _monitorInfo.Dpi.X / systemDPI.X;
-            _factor.Y = 1.0F *_monitorInfo.Dpi.Y / systemDPI.Y;
+            _factor.X = 1.0F * monitorInfo.Dpi.X / systemDPI.X;
+            _factor.Y = 1.0F *monitorInfo.Dpi.Y / systemDPI.Y;
             InitializeComponent();
             Loaded += CaptureView_Loaded;
         }
@@ -51,10 +49,6 @@ namespace Macro.View
             Clear();
             Show();
             Activate();
-        }
-        public void Setting(CaptureViewMode captureViewMode)
-        {
-            _captureViewMode = captureViewMode;
         }
         private void CaptureView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -98,7 +92,6 @@ namespace Macro.View
                 e.Handled = true;
                 NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBInd, new CaptureEventArgs()
                 {
-                    CaptureViewMode = _captureViewMode,
                     MonitorInfo = _monitorInfo,
                     CaptureImage = null
                 });
@@ -124,24 +117,43 @@ namespace Macro.View
         private void UpdateDragSelectionRect(Point origin, Point current)
         {
             if (origin.X - current.X > 0)
+            {
                 Canvas.SetLeft(_dragBorder, current.X);
+            }
             else
+            {
                 Canvas.SetLeft(_dragBorder, origin.X);
+            }
+                
 
             if (origin.Y - current.Y > 0)
+            {
                 Canvas.SetTop(_dragBorder, current.Y);
+            }
             else
+            {
                 Canvas.SetTop(_dragBorder, origin.Y);
+            }
+                
 
             if (current.X > origin.X)
+            {
                 _dragBorder.Width = current.X - origin.X;
+            }
             else
+            {
                 _dragBorder.Width = origin.X - current.X;
+            }
+                
 
-           if (current.Y > origin.Y)
+            if (current.Y > origin.Y)
+            {
                 _dragBorder.Height = current.Y - origin.Y;
+            }
             else
+            {
                 _dragBorder.Height = origin.Y - current.Y;
+            }
         }
 
         private void CaptureZone_MouseLeave(object sender, MouseEventArgs e)
@@ -151,7 +163,7 @@ namespace Macro.View
                 WindowState = WindowState.Minimized;
                 int left = (int)(Canvas.GetLeft(_dragBorder) * _factor.X);
                 int top = (int)(Canvas.GetTop(_dragBorder) * _factor.Y);
-                int width = (int)(_dragBorder.Width * _factor.X);
+                int width = (int)(_dragBorder.Width *  _factor.X);
                 int height = (int)(_dragBorder.Height * _factor.Y);
                 var rect = new Rect
                 {
@@ -163,7 +175,6 @@ namespace Macro.View
                 var image = DisplayHelper.Capture(_monitorInfo, rect);
                 NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBInd, new CaptureEventArgs()
                 {
-                    CaptureViewMode = _captureViewMode,
                     MonitorInfo = _monitorInfo,
                     CaptureImage = image,
                     Position = rect

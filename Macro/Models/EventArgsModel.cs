@@ -17,7 +17,6 @@ namespace Macro.Models
     }
     public class CaptureEventArgs : INotifyEventArgs
     {
-        public CaptureViewMode CaptureViewMode { get; set; }
         public MonitorInfo MonitorInfo { get; set; }
         public Bitmap CaptureImage { get; set; }
         public Rect Position { get; set; }
@@ -29,8 +28,8 @@ namespace Macro.Models
     }
     public class EventTriggerOrderChangedEventArgs : INotifyEventArgs
     {
-        public IBaseEventTriggerModel TriggerModel1 { get; set; }
-        public IBaseEventTriggerModel TriggerModel2 { get; set; }
+        public EventTriggerModel TriggerModel1 { get; set; }
+        public EventTriggerModel TriggerModel2 { get; set; }
 
         public TreeViewItem SelectedTreeViewItem { get; set; }
     }
@@ -41,17 +40,22 @@ namespace Macro.Models
     public class EventTriggerEventArgs : INotifyEventArgs
     {
         public ulong Index { get; set; }
-        public IBaseEventTriggerModel TriggerModel { get; set; }
+        public EventTriggerModel TriggerModel { get; set; }
     }
+    public class UpdatedTimeArgs : INotifyEventArgs
+    { 
+        public float DeltaTime { get; set; }
+    }   
+
 
     public class SaveEventTriggerModelArgs : INotifyEventArgs 
     {
-        public IBaseEventTriggerModel CurrentEventTriggerModel { get; set; }
+        public EventTriggerModel CurrentEventTriggerModel { get; set; }
     }
 
     public class DeleteEventTriggerModelArgs : INotifyEventArgs
     {
-        public IBaseEventTriggerModel CurrentEventTriggerModel { get; set; }
+        public EventTriggerModel CurrentEventTriggerModel { get; set; }
     }
 
     public class ComboProcessChangedEventArgs : INotifyEventArgs

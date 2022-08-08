@@ -1,40 +1,89 @@
-﻿using KosherUtils.Log;
+﻿using KosherUtils.Coroutine;
+using KosherUtils.Log;
 using Macro.Extensions;
-using Macro.Infrastructure.Impl;
-using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
+using Macro.View;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Utils;
+using Utils.Document;
 using Utils.Extensions;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
 
 namespace Macro.Infrastructure.Controller
 {
-    public class BaseContentController : IContentController
+    public class ContentController
     {
+        private CoroutineWoker _coroutineWoker = new CoroutineWoker();
         private readonly SeedRandom _random;
-        private BaseContentView baseContentView;
-        public BaseContentController()
+        private ContentView _contentView;
+        private ApplicationDataHelper _applicationDataHelper;
+        private InputManager _inputManager;
+        private CacheDataManager _cacheDataManager;
+        public ContentController()
         {
             _random = new SeedRandom();
+            _applicationDataHelper = ServiceProviderManager.Instance.GetService<ApplicationDataHelper>();
+            _inputManager = ServiceProviderManager.Instance.GetService<InputManager>();
+            _cacheDataManager = ServiceProviderManager.Instance.GetService<CacheDataManager>();
+
+            NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
         }
-        public void SetContentView(BaseContentView baseContentView)
+        
+
+        private void NotifyHelper_UpdatedTime(UpdatedTimeArgs arg)
         {
-            this.baseContentView = baseContentView;
+            _coroutineWoker.WorksUpdate(arg.DeltaTime);
         }
 
-        public async Task<Tuple<bool, IBaseEventTriggerModel>> TriggerProcess<T>(T model, ProcessConfigModel processConfigModel) where T : BaseEventTriggerModel<T>
+        public void SetContentView(ContentView baseContentView)
+        {
+            this._contentView = baseContentView;
+        }
+
+        public bool Validate(EventTriggerModel model, out Message error)
+        {
+            error = Message.Success;
+
+            model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
+
+            if (model.Image == null)
+            {
+                error = Message.FailedImageValidate;
+                return false;
+            }
+            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
+            {
+                error = Message.FailedMouseCoordinatesValidate;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
+            {
+                error = Message.FailedKeyboardCommandValidate;
+                return false;
+            }
+            if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
+            {
+                error = Message.FailedProcessValidate;
+                return false;
+            }
+
+            return true;
+        }
+        
+
+        public async Task<Tuple<bool, EventTriggerModel>> TriggerProcess(EventTriggerModel model, ProcessConfigModel processConfigModel)
         {
             var isExcute = false;
 
             var hWnd = IntPtr.Zero;
-            var applciationData = ObjectExtensions.GetInstance<ApplicationDataManager>().Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
+            var applciationData = _applicationDataHelper.Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
             for (int i = 0; i < processConfigModel.Processes.Count; ++i)
             {
                 var factor = CalculateFactor(processConfigModel.Processes[i].MainWindowHandle, model, applciationData.IsDynamic);
@@ -47,10 +96,7 @@ namespace Macro.Infrastructure.Controller
                 {
                     var item = NativeHelper.GetChildHandles(processConfigModel.Processes[i].MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
 
-                    if (item != null)
-                        hWnd = item.Item2;
-                    else
-                        hWnd = processConfigModel.Processes[i].MainWindowHandle;
+                    hWnd = item != null ? item.Item2 : processConfigModel.Processes[i].MainWindowHandle;
                 }
 
                 if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
@@ -60,8 +106,8 @@ namespace Macro.Infrastructure.Controller
                     {
                         var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item1));
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
-                        Log.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
-                        this.baseContentView.CaptureImage(bmp);
+                        LogHelper.Debug($"RepeatType[Search : {count}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+                        this._contentView.DrawCaptureImage(bmp);
                         if (!await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, processConfigModel.Token) || similarity > processConfigModel.Similarity)
                             break;
                         for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
@@ -87,7 +133,7 @@ namespace Macro.Infrastructure.Controller
                                 var locations = OpenCVHelper.MultipleSearch(bmp, targetBmp, processConfigModel.Similarity, 2, processConfigModel.SearchImageResultDisplay);
                                 if (locations.Count > 1)
                                 {
-                                    this.baseContentView.CaptureImage(bmp);
+                                    this._contentView.DrawCaptureImage(bmp);
                                     var startPoint = new Point(locations[0].X + targetBmp.Width / 2, locations[0].Y + targetBmp.Height / 2);
 
                                     startPoint.X += this.GetRandomValue(0, targetBmp.Width / 2);
@@ -109,10 +155,10 @@ namespace Macro.Infrastructure.Controller
                     else if (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
                     {
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
-                        Log.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+                        LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
                         if (model.SameImageDrag == false)
                         {
-                            this.baseContentView.CaptureImage(bmp);
+                            this._contentView.DrawCaptureImage(bmp);
                         }
                         if (similarity > processConfigModel.Similarity)
                         {
@@ -188,19 +234,13 @@ namespace Macro.Infrastructure.Controller
 
                                 if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)
                                 {
-                                    IBaseEventTriggerModel nextModel = null;
-                                    if (model is GameEventTriggerModel)
-                                    {
-                                        nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetGameEventTriggerModel(model.EventToNext);
-                                    }
-                                    else if (model is EventTriggerModel)
-                                    {
-                                        nextModel = ObjectExtensions.GetInstance<CacheDataManager>().GetEventTriggerModel(model.EventToNext);
-                                    }
+                                    EventTriggerModel nextModel = null;
+
+                                    nextModel = _cacheDataManager.GetEventTriggerModel(model.EventToNext);
 
                                     if (nextModel != null)
                                     {
-                                        Log.Debug($">>>>Next Move Event : CurrentIndex [ {model.TriggerIndex} ] NextIndex [ {nextModel.TriggerIndex} ] ");
+                                        LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {model.TriggerIndex} ] NextIndex [ {nextModel.TriggerIndex} ] ");
                                         return Tuple.Create(isExcute, nextModel);
                                     }
                                 }
@@ -210,10 +250,10 @@ namespace Macro.Infrastructure.Controller
                 }
             }
             await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, processConfigModel.Token);
-            return Tuple.Create<bool, IBaseEventTriggerModel>(isExcute, null);
+            return Tuple.Create<bool, EventTriggerModel>(isExcute, null);
         }
 
-        private void KeyboardTriggerProcess(IntPtr hWnd, IBaseEventTriggerModel model)
+        private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
         {
             var hWndActive = NativeHelper.GetForegroundWindow();
             Task.Delay(100).Wait();
@@ -258,9 +298,9 @@ namespace Macro.Infrastructure.Controller
                 return keyCode;
             }).ToArray();
 
-            ObjectExtensions.GetInstance<InputManager>().Keyboard.ModifiedKeyStroke(modifiedKey, keys);
+            _inputManager.Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             Task.Delay(100).Wait();
-            Log.Debug($">>>>Keyboard Event");
+            LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }
 
@@ -277,7 +317,7 @@ namespace Macro.Infrastructure.Controller
                 return random.Next(minValue, maxValue);
             }
         }
-        private void MouseTriggerProcess(IntPtr hWnd, Point location, IBaseEventTriggerModel model, Tuple<float, float> factor, ProcessConfigModel config)
+        private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model, Tuple<float, float> factor, ProcessConfigModel config)
         {
             var mousePosition = new Point()
             {
@@ -287,21 +327,21 @@ namespace Macro.Infrastructure.Controller
 
             if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
-                Log.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.RightClick)
             {
-                Log.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
                 NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Drag)
             {
-                Log.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(10).Wait();
                 for (int i = 0; i < model.MouseTriggerInfo.MiddlePoint.Count; ++i)
@@ -322,11 +362,11 @@ namespace Macro.Infrastructure.Controller
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(10).Wait();
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-                Log.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
             {
-                Log.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 //Task.Delay(100).Wait();
                 //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
@@ -336,9 +376,9 @@ namespace Macro.Infrastructure.Controller
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
             }
         }
-        private void SameImageMouseDragTriggerProcess(IntPtr hWnd, Point start, Point arrive, IBaseEventTriggerModel model, Tuple<float, float> factor, ProcessConfigModel config)
+        private void SameImageMouseDragTriggerProcess(IntPtr hWnd, Point start, Point arrive, EventTriggerModel model, Tuple<float, float> factor, ProcessConfigModel config)
         {
-            Log.Debug($">>>>Same Drag Mouse Start Target X : { arrive.X } Target Y : { arrive.Y }");
+            LogHelper.Debug($">>>>Same Drag Mouse Start Target X : { arrive.X } Target Y : { arrive.Y }");
             var interval = 3;
             var middlePoints = this.GetIntevalDragMiddlePoint(start, arrive, interval);
 
@@ -353,7 +393,7 @@ namespace Macro.Infrastructure.Controller
                     X = Math.Abs(model.ProcessInfo.Position.Left + middlePoints[i].X * -1) * factor.Item1,
                     Y = Math.Abs(model.ProcessInfo.Position.Top + middlePoints[i].Y * -1) * factor.Item2
                 };
-                Log.Debug($">>>>Same Drag Move Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Same Drag Move Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(config.DragDelay).Wait();
             }
@@ -365,9 +405,9 @@ namespace Macro.Infrastructure.Controller
             NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
             Task.Delay(10).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-            Log.Debug($">>>>Same Drag End Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+            LogHelper.Debug($">>>>Same Drag End Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
         }
-        private void ImageTriggerProcess(IntPtr hWnd, Point location, IBaseEventTriggerModel model)
+        private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
         {
             var position = new Point()
             {
@@ -375,12 +415,12 @@ namespace Macro.Infrastructure.Controller
                 Y = location.Y + model.MouseTriggerInfo.StartPoint.Y
             };
 
-            Log.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
+            LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
             Task.Delay(100).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
         }
-        protected Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, IBaseEventTriggerModel model, bool isDynamic)
+        protected Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, EventTriggerModel model, bool isDynamic)
         {
             var currentPosition = new Rect();
             NativeHelper.GetWindowRect(hWnd, ref currentPosition);
@@ -423,7 +463,7 @@ namespace Macro.Infrastructure.Controller
 
             while (Point.Subtract(recent, arrive).Length > interval)
             {
-                Log.Debug($">>> Get Middle Interval Drag Mouse : {Point.Subtract(recent, arrive).Length}");
+                LogHelper.Debug($">>> Get Middle Interval Drag Mouse : {Point.Subtract(recent, arrive).Length}");
                 double middleX;
                 if (recent.X > arrive.X)
                 {

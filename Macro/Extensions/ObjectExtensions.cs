@@ -1,7 +1,5 @@
-﻿using KosherUtils.Framework;
-using Macro.View;
+﻿using Macro.View;
 using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Unity;
 using Point = System.Windows.Point;
 
 namespace Macro.Extensions
@@ -38,13 +35,18 @@ namespace Macro.Extensions
         private static IEnumerable<DependencyObject> GetChildObjects(this DependencyObject parent)
         {
             if (parent == null)
+            {
                 yield break;
+            }
+                
             if (parent is ContentElement || parent is FrameworkElement)
             {
                 foreach (object obj in LogicalTreeHelper.GetChildren(parent))
                 {
                     if (obj is DependencyObject dep)
-                        yield return (DependencyObject)obj;
+                    {
+                        yield return dep;
+                    }
                 }
             }
             else
@@ -57,16 +59,6 @@ namespace Macro.Extensions
             }
         }
 
-        public static MessageDialogResult MessageShow(this MetroWindow @object, string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
-        {
-            return @object.ShowModalMessageExternal(title,
-                                                message,
-                                                style,
-                                                new MetroDialogSettings()
-                                                {
-                                                    ColorScheme = MetroDialogColorScheme.Inverted,
-                                                });
-        }
         public static Border Clone(this Border source)
         {
             var item = new Border
@@ -81,45 +73,33 @@ namespace Macro.Extensions
             return item;
         }
 
-        public static T GetInstance<T>() where T :new()
-        {
-            if(Singleton<UnityContainer>.Instance.IsRegistered<T>())
-            {
-                return Singleton<UnityContainer>.Instance.Resolve<T>();
-            }
-            else
-            {
-                return Singleton<T>.Instance;
-            }
-        }
-
-        public static Task ProgressbarShow(this MetroWindow @object, Func<Task> action)
-        {
-            return Task.Run(() =>
-            {
-                @object.Dispatcher.Invoke(() =>
-                {
-                    var progress = new ProgressView
-                    {
-                        Owner = @object,
-                        Left = @object.Left / 2,
-                        Width = @object.Width / 2,
-                        Top = @object.Top / 2,
-                        Height = @object.Height / 2
-                    };
-                    progress.Loaded += (s, e) =>
-                    {
-                        action().ContinueWith(task =>
-                        {
-                            progress.Dispatcher.Invoke(() => {
-                                progress.Close();
-                            });
-                        });
-                    };
-                    progress.ShowDialog();
-                });
-            });
-        }
+        //public static Task ProgressbarShow(this MetroWindow @object, Func<Task> action)
+        //{
+        //    return Task.Run(() =>
+        //    {
+        //        @object.Dispatcher.Invoke(() =>
+        //        {
+        //            var progress = new ProgressView
+        //            {
+        //                Owner = @object,
+        //                Left = @object.Left / 2,
+        //                Width = @object.Width / 2,
+        //                Top = @object.Top / 2,
+        //                Height = @object.Height / 2
+        //            };
+        //            progress.Loaded += (s, e) =>
+        //            {
+        //                action().ContinueWith(task =>
+        //                {
+        //                    progress.Dispatcher.Invoke(() => {
+        //                        progress.Close();
+        //                    });
+        //                });
+        //            };
+        //            progress.ShowDialog();
+        //        });
+        //    });
+        //}
 
         public static int MakeWParam(int low, int high) => (low & 0xFFFF) | (high << 16);
 
@@ -147,21 +127,33 @@ namespace Macro.Extensions
         {
             var parentObject = GetParentObject(child);
             if (parentObject == null)
+            {
                 return null;
-            if (parentObject is T)
-                return parentObject as T;
+            }   
+            if (parentObject is T obj)
+            {
+                return obj;
+            }
             else
+            {
                 return TryFindParent<T>(parentObject);
+            }
+                
         }
         private static DependencyObject GetParentObject(DependencyObject child)
         {
             if (child == null)
+            {
                 return null;
+            }
+                
             if (child is ContentElement contentElement)
             {
                 DependencyObject parent = ContentOperations.GetParent(contentElement);
                 if (parent != null)
+                {
                     return parent;
+                }
                 return contentElement is FrameworkContentElement ce ? ce.Parent : null;
             }
             return VisualTreeHelper.GetParent(child);
@@ -192,16 +184,21 @@ namespace Macro.Extensions
         public static T DataContext<T>(this FrameworkElement control) where T : class
         {
             if (control.DataContext is T context)
+            {
                 return context;
-            else
-                return null;
+            }
+
+            return null;
+
         }
         public static T DataContext<T>(this ItemsControl control) where T : class
         {
             if(control.DataContext is T context)
+            {
                 return context;
-            else
-                return null;
+            }
+               
+            return null;
         }
 
         public static T FindVisualParent<T>(DependencyObject @object) where T : DependencyObject

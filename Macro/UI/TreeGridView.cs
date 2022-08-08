@@ -97,7 +97,10 @@ namespace Macro.UI
         private void UpdateLeave(TreeGridViewItem item)
         {
             if (item == null)
+            {
                 return;
+            }
+
             item.IsDrag = false;
 
             if (item.Template.FindName("Border", item) is Border border)
@@ -115,7 +118,10 @@ namespace Macro.UI
         {
             base.PrepareContainerForItemOverride(element, item);
             if (!(element is TreeGridViewItem treeViewItem))
+            {
                 return;
+            }
+
             treeViewItem.ParentItem = ItemsControlFromItemContainer(element) as TreeGridViewItem;
         }
         protected override DependencyObject GetContainerForItemOverride()
@@ -133,7 +139,9 @@ namespace Macro.UI
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
+            {
                 return null;
+            }
 
             var level = -1;
             if (targetType == typeof(double) && typeof(DependencyObject).IsAssignableFrom(value.GetType()))
@@ -142,7 +150,9 @@ namespace Macro.UI
                 while ((element = VisualTreeHelper.GetParent(element)) != null)
                 {
                     if (typeof(TreeViewItem).IsAssignableFrom(element.GetType()))
+                    {
                         level++;
+                    }
                 }
             }
             return Indentation * level;

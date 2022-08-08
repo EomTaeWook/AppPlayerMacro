@@ -162,7 +162,7 @@ namespace Patcher
             }
             catch(Exception ex)
             {
-                Log.Warning(ex);
+                LogHelper.Error(ex);
             }
             return;
         }
@@ -218,7 +218,7 @@ namespace Patcher
                 catch (Exception ex)
                 {
                     //재시도
-                    Log.Warning(ex);
+                    LogHelper.Error(ex);
                     i--;
                 }
             }
@@ -245,7 +245,7 @@ namespace Patcher
                 }
                 catch(Exception ex)
                 {
-                    Log.Warning(ex);
+                    LogHelper.Error(ex);
                 }
             }
         }
@@ -316,7 +316,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning(ex);
+                    LogHelper.Error(ex);
                     MessageBox.Show(ObjectCache.GetValue("FailedPatchUpdate").ToString(), ObjectCache.GetValue("FailedPatch").ToString());
                 }
             }
@@ -351,7 +351,7 @@ namespace Patcher
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning(ex);
+                    LogHelper.Error(ex);
                 }
             }
         } 

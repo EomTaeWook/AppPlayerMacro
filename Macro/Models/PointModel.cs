@@ -4,23 +4,23 @@ namespace Macro.Models
 {
     public class PointModel : INotifyPropertyChanged
     {
-        private double _x;
-        private double _y;
+        private double x;
+        private double y;
         public double X
         {
-            get => _x;
+            get => x;
             set
             {
-                _x = value;
+                x = value;
                 OnPropertyChanged("X");
             }
         }
         public double Y
         {
-            get => _y;
+            get => y;
             set
             {
-                _y = value;
+                y = value;
                 OnPropertyChanged("Y");
             }
         }

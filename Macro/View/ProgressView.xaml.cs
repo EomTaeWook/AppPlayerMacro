@@ -10,6 +10,15 @@ namespace Macro.View
         public ProgressView()
         {
             InitializeComponent();
+            HideProgressView();
+        }
+        public void ShowProgressView()
+        {
+            this.Visibility = Visibility.Visible;
+        }
+        public void HideProgressView()
+        {
+            this.Visibility = Visibility.Hidden;
         }
     }
 }

@@ -68,25 +68,27 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
+    <Reference Include="ControlzEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.5.0.1\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="KosherUtils">
-      <HintPath>..\Dll\Release\KosherUtils.dll</HintPath>
+    <Reference Include="KosherUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Resources\KosherUtils.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.2.4.9\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\Dll\Debug\NLog.dll</HintPath>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -155,7 +157,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
-    <EmbeddedResource Include="Resources\NLog.dll" />
     <EmbeddedResource Include="Resources\Utils.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -172,15 +173,15 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF $(ConfigurationName) == Release (
-IF NOT EXIST $(SolutionDir)\Release\exe\ mkdir "$(SolutionDir)\Release\exe"
+IF NOT EXIST $(SolutionDir)Release\exe\ mkdir "$(SolutionDir)Release\exe"
 copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
 copy "$(TargetPath).config" "$(SolutionDir)Release\exe\"
-del /S/Q $(SolutionDir)\Release\exe\Datas\PatchList.json)
-del /S/Q $(SolutionDir)\Release\exe\Datas\PatchListV2.json)</PostBuildEvent>
+del /S/Q $(SolutionDir)Release\exe\Datas\PatchList.json
+del /S/Q $(SolutionDir)Release\exe\Datas\PatchListV2.json)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy $(SolutionDir)Utils\$(OutDir)$(ConfigurationName)\Newtonsoft.Json.dll $(ProjectDir)Resources
-copy $(SolutionDir)Utils\$(OutDir)$(ConfigurationName)\NLog.dl $(ProjectDir)Resources
-copy $(SolutionDir)Utils\$(OutDir)$(ConfigurationName)\Utils.dll $(ProjectDir)Resources</PreBuildEvent>
+    <PreBuildEvent>copy $(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll $(ProjectDir)Resources
+copy $(SolutionDir)Utils\$(OutDir)NLog.dl $(ProjectDir)Resources
+copy $(SolutionDir)Utils\$(OutDir)Utils.dll $(ProjectDir)Resources</PreBuildEvent>
   </PropertyGroup>
 </Project>

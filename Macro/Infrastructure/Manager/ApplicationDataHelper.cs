@@ -6,10 +6,11 @@ using Utils.Document;
 
 namespace Macro.Infrastructure.Manager
 {
-    public class ApplicationDataManager : IDocument
+    public class ApplicationDataHelper : IDocument
     {
         private IList<ApplicationDataModel> _applications;
-        public ApplicationDataManager()
+
+        public ApplicationDataHelper()
         {
         }
         public void Init(string filename)

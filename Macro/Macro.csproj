@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\OpenCvSharp4.runtime.win.4.5.3.20210817\build\net\OpenCvSharp4.runtime.win.props" Condition="Exists('..\packages\OpenCvSharp4.runtime.win.4.5.3.20210817\build\net\OpenCvSharp4.runtime.win.props')" />
+  <Import Project="..\packages\OpenCvSharp4.runtime.win.4.6.0.20220608\build\netstandard\OpenCvSharp4.runtime.win.props" Condition="Exists('..\packages\OpenCvSharp4.runtime.win.4.6.0.20220608\build\netstandard\OpenCvSharp4.runtime.win.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -117,56 +117,59 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
+    <Reference Include="ControlzEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
+      <HintPath>..\packages\ControlzEx.5.0.1\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="KosherUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="KosherUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dll\Release\KosherUtils.dll</HintPath>
+      <HintPath>..\Dll\KosherUtils.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.6.5\lib\net47\MahApps.Metro.dll</HintPath>
+    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.2.4.9\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro.IconPacks.Material, Version=2.3.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.IconPacks.Material.2.3.0\lib\net46\MahApps.Metro.IconPacks.Material.dll</HintPath>
+    <Reference Include="MahApps.Metro.IconPacks.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.IconPacks.Material.4.11.0\lib\net47\MahApps.Metro.IconPacks.Core.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dll\Release\NLog.dll</HintPath>
+    <Reference Include="MahApps.Metro.IconPacks.Material, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.IconPacks.Material.4.11.0\lib\net47\MahApps.Metro.IconPacks.Material.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenCvSharp4.4.5.3.20210817\lib\net461\OpenCvSharp.dll</HintPath>
+      <HintPath>..\packages\OpenCvSharp4.4.6.0.20220608\lib\netstandard2.0\OpenCvSharp.dll</HintPath>
     </Reference>
     <Reference Include="OpenCvSharp.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenCvSharp4.4.5.3.20210817\lib\net461\OpenCvSharp.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenCvSharp.WpfExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenCvSharp4.WpfExtensions.4.5.3.20210817\lib\net461\OpenCvSharp.WpfExtensions.dll</HintPath>
+      <HintPath>..\packages\OpenCvSharp4.Extensions.4.6.0.20220608\lib\netstandard2.0\OpenCvSharp.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Common, Version=4.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Common.5.0.2\lib\net461\System.Drawing.Common.dll</HintPath>
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
     <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
     </Reference>
@@ -176,10 +179,9 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net462\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -190,12 +192,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.11.10\lib\net47\Unity.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Container, Version=5.11.11.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.11.10\lib\net47\Unity.Container.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -203,33 +199,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Infrastructure\Controller\BaseContentController.cs" />
-    <Compile Include="Infrastructure\Controller\CommonContentController.cs" />
+    <Compile Include="Infrastructure\Controller\ContentController.cs" />
     <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
-    <Compile Include="Infrastructure\Controller\GameContentController.cs" />
+    <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
+    <Compile Include="Infrastructure\Manager\FileManager.cs" />
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />
     <Compile Include="Command\FolderBrowserDialogCommand.cs" />
-    <Compile Include="Infrastructure\Impl\BaseContentView.cs" />
-    <Compile Include="Infrastructure\Impl\BaseEventConfigView.cs" />
-    <Compile Include="Infrastructure\Impl\GameContentImpl.cs" />
-    <Compile Include="Infrastructure\Impl\GameEventConfigImpl.cs" />
-    <Compile Include="Infrastructure\Interface\IContentController.cs" />
     <Compile Include="Infrastructure\Interface\IKeyboardInput.cs" />
     <Compile Include="Infrastructure\Converter\ImageConverter.cs" />
     <Compile Include="Infrastructure\Interface\IMouseInput.cs" />
-    <Compile Include="Infrastructure\Impl\AppImpl.cs" />
-    <Compile Include="Infrastructure\Impl\CommonContentImpl.cs" />
-    <Compile Include="Infrastructure\Impl\CommonEventConfigImpl.cs" />
-    <Compile Include="Infrastructure\Impl\SettingImpl.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Impl\MainWindowImpl.cs" />
-    <Compile Include="Infrastructure\Manager\ApplicationDataManager.cs" />
+    <Compile Include="Infrastructure\Manager\ApplicationDataHelper.cs" />
     <Compile Include="Infrastructure\Manager\CacheDataManager.cs" />
     <Compile Include="Infrastructure\Manager\InputManager.cs" />
+    <Compile Include="Infrastructure\Manager\SchedulerManager.cs" />
+    <Compile Include="Infrastructure\Manager\ServiceProviderManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
@@ -237,10 +226,8 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\BaseEventTriggerModel.cs" />
     <Compile Include="Models\CacheModel.cs" />
     <Compile Include="Models\ColorModel.cs" />
-    <Compile Include="Models\GameEventTriggerModel.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessConfigModel.cs" />
     <Compile Include="Models\RepeatInfoModel.cs" />
@@ -252,28 +239,19 @@
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\Version.cs" />
     <Compile Include="Models\RoiPositionModel.cs" />
-    <Compile Include="Models\SaveFileLoadModel.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
-    <Compile Include="Models\ViewModel\BaseEventConfigViewModel.cs" />
-    <Compile Include="Models\ViewModel\GameEventConfigViewModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
-    <Compile Include="Models\ViewModel\CommonEventConfigViewModel.cs" />
+    <Compile Include="Models\ViewModel\EventConfigViewModel.cs" />
     <Compile Include="Models\ViewModel\SettingViewModel.cs" />
     <Compile Include="View\CaptureView.xaml.cs">
       <DependentUpon>CaptureView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CommonContentView.xaml.cs">
-      <DependentUpon>CommonContentView.xaml</DependentUpon>
+    <Compile Include="View\ContentView.xaml.cs">
+      <DependentUpon>ContentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CommonEventConfigView.xaml.cs">
-      <DependentUpon>CommonEventConfigView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\GameContentView.xaml.cs">
-      <DependentUpon>GameContentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\GameEventConfigView.xaml.cs">
-      <DependentUpon>GameEventConfigView.xaml</DependentUpon>
+    <Compile Include="View\EventConfigView.xaml.cs">
+      <DependentUpon>EventConfigView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MousePositionView.xaml.cs">
       <DependentUpon>MousePositionView.xaml</DependentUpon>
@@ -303,19 +281,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CommonContentView.xaml">
+    <Page Include="View\ContentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CommonEventConfigView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\GameContentView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\GameEventConfigView.xaml">
+    <Page Include="View\EventConfigView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -369,7 +339,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
-xcopy /S/Y "$(SolutionDir)Dll\$(ConfigurationName)\*.dll" "$(SolutionDir)Release\exe\"
+xcopy /S/Y "$(SolutionDir)Dll\*.dll" "$(SolutionDir)Release\exe\"
+xcopy /S/Y "$(SolutionDir)Dll\*.config" "$(TargetDir)"
+xcopy /S/Y "$(SolutionDir)Dll\*.config" "$(SolutionDir)Release\exe\"
 
 IF $(ConfigurationName) == Release (
 xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
@@ -392,6 +364,6 @@ mkdir $(SolutionDir)Release\exe )</PreBuildEvent>
     <PropertyGroup>
       <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\OpenCvSharp4.runtime.win.4.5.3.20210817\build\net\OpenCvSharp4.runtime.win.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCvSharp4.runtime.win.4.5.3.20210817\build\net\OpenCvSharp4.runtime.win.props'))" />
+    <Error Condition="!Exists('..\packages\OpenCvSharp4.runtime.win.4.6.0.20220608\build\netstandard\OpenCvSharp4.runtime.win.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCvSharp4.runtime.win.4.6.0.20220608\build\netstandard\OpenCvSharp4.runtime.win.props'))" />
   </Target>
 </Project>

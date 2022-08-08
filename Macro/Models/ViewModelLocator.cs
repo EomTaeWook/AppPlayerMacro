@@ -1,6 +1,6 @@
 ﻿using KosherUtils.Framework;
+using Macro.Infrastructure.Manager;
 using Macro.Models.ViewModel;
-using Unity;
 
 namespace Macro.Models
 {
@@ -8,19 +8,11 @@ namespace Macro.Models
     {
         public LabelViewModel LabelViewModel
         {
-            get => Singleton<UnityContainer>.Instance.Resolve<LabelViewModel>();
-        }
-        public CommonEventConfigViewModel CommonEventConfigViewModel
-        {
-            get => Singleton<UnityContainer>.Instance.Resolve<CommonEventConfigViewModel>();
-        }
-        public GameEventConfigViewModel GameEventConfigViewModel
-        {
-            get => Singleton<UnityContainer>.Instance.Resolve<GameEventConfigViewModel>();
+            get => ServiceProviderManager.Instance.GetService<LabelViewModel>();
         }
         public SettingViewModel SettingViewModel
         {
-            get=> Singleton<UnityContainer>.Instance.Resolve<SettingViewModel>();
+            get=> ServiceProviderManager.Instance.GetService<SettingViewModel>();
         }
     }
 }

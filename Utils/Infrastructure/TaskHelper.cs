@@ -16,11 +16,11 @@ namespace Utils.Infrastructure
             }
             catch (TaskCanceledException ex)
             {
-                Log.Debug(ex.Message);
+                LogHelper.Debug(ex.Message);
             }
             catch (AggregateException ex)
             {
-                Log.Debug(ex.Message);
+                LogHelper.Debug(ex.Message);
             }
             return !token.IsCancellationRequested;
         }

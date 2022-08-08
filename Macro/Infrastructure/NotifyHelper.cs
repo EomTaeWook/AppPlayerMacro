@@ -5,6 +5,8 @@ namespace Macro.Infrastructure
 {
     public class NotifyHelper
     {
+        public static event Action<UpdatedTimeArgs> UpdatedTime;
+
         public static event Action<ConfigEventArgs> ConfigChanged;
         public static event Action<MousePointEventArgs> MousePositionDataBind;
         public static event Action<CaptureEventArgs> ScreenCaptureDataBind;
@@ -20,6 +22,8 @@ namespace Macro.Infrastructure
         public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
 
         public static event Action<TreeGridViewFocusEventArgs> TreeGridViewFocus;
+
+
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {
             switch(eventType)
@@ -60,6 +64,9 @@ namespace Macro.Infrastructure
 
                 case NotifyEventType.TreeGridViewFocus:
                     TreeGridViewFocus?.Invoke(args as TreeGridViewFocusEventArgs);
+                    break;
+                case NotifyEventType.UpdatedTime:
+                    UpdatedTime?.Invoke(args as UpdatedTimeArgs);
                     break;
             }
         }
