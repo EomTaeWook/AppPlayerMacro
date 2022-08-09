@@ -1,12 +1,9 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
-using Macro.Infrastructure.Serialize;
 using Macro.Models;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -20,7 +17,6 @@ namespace Macro.View
     /// </summary>
     public partial class ContentView : UserControl
     {
-        private List<CaptureView> _captureViews = new List<CaptureView>();
         private Bitmap _bitmap;
         
         public ContentView()
@@ -40,10 +36,8 @@ namespace Macro.View
         {
             Clear();
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
-            foreach (var item in _captureViews)
-            {
-                item.ShowActivate();
-            }
+
+            ApplicationManager.Instance.ShowCaptureView();
         }
         
        
@@ -65,6 +59,7 @@ namespace Macro.View
                 canvasCaptureImage.Background = new ImageBrush(bmp.ToBitmapSource());
             });
         }
+
         private void InitEvent()
         {
             btnSave.Click += Button_Click;
@@ -76,8 +71,6 @@ namespace Macro.View
 
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
-
-            Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
         }
 
         private void ContentView_Loaded(object sender, RoutedEventArgs e)
@@ -87,26 +80,13 @@ namespace Macro.View
 
         private void Init()
         {
-            foreach (var item in DisplayHelper.MonitorInfo())
-            {
-                _captureViews.Add(new CaptureView(item));
-            }
             Clear();
-        }
-        private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
-        {
-            foreach(var item in _captureViews)
-            {
-                item.Close();
-            }
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
         {
-            foreach (var item in _captureViews)
-            {
-                item.Hide();
-            }
+            ApplicationManager.Instance.CloseCaptureView();
+            
             if (e.CaptureImage != null)
             {
                 var capture = e.CaptureImage;

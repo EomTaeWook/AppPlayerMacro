@@ -213,7 +213,6 @@
     <Compile Include="Infrastructure\Converter\ImageConverter.cs" />
     <Compile Include="Infrastructure\Interface\IMouseInput.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
-    <Compile Include="Infrastructure\Impl\MainWindowImpl.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationDataHelper.cs" />
     <Compile Include="Infrastructure\Manager\CacheDataManager.cs" />
     <Compile Include="Infrastructure\Manager\InputManager.cs" />

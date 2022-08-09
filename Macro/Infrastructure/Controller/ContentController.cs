@@ -109,7 +109,6 @@ namespace Macro.Infrastructure.Controller
         {
             _token = CancellationToken.None;
         }
-
         
         public async Task<Tuple<bool, EventTriggerModel>> TriggerProcess(EventTriggerModel model, ProcessConfigModel processConfigModel)
         {

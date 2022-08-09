@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Windows;
 using Utils;
+using System.Collections.Generic;
 
 namespace Macro.Infrastructure.Manager
 {
@@ -35,6 +36,10 @@ namespace Macro.Infrastructure.Manager
         private ProgressView progress;
 
         private MetroWindow metroWindow;
+
+        private readonly List<CaptureView> _captureViews = new List<CaptureView>();
+        private readonly List<MousePositionView> _mousePointViews = new List<MousePositionView>();
+
         public ApplicationManager()
         {
             metroWindow = Application.Current.MainWindow as MetroWindow;
@@ -47,8 +52,63 @@ namespace Macro.Infrastructure.Manager
                 Top = metroWindow.Top / 2,
                 Height = metroWindow.Height / 2
             };
+
+            foreach (var item in DisplayHelper.MonitorInfo())
+            {
+                _captureViews.Add(new CaptureView(item));
+                _mousePointViews.Add(new MousePositionView(item));
+            }
+            Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
         }
-        
+
+        private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Dispose();
+        }
+        public void ShowMousePointView()
+        {
+            foreach (var item in _mousePointViews)
+            {
+                item.ShowActivate();
+            }
+        }
+        public void CloseMousePointView()
+        {
+            foreach (var item in _mousePointViews)
+            {
+                item.Hide();
+            }
+        }
+
+        public void ShowCaptureView()
+        {
+            foreach (var item in _captureViews)
+            {
+                item.ShowActivate();
+            }
+        }
+
+        public void CloseCaptureView()
+        {
+            foreach(var item in _captureViews)
+            {
+                item.Hide();
+            }
+        }
+
+        public void Dispose()
+        {
+            progress.Close();
+            foreach (var item in _captureViews)
+            {
+                item.Close();
+            }
+            foreach(var item in _mousePointViews)
+            {
+                item.Close();
+            }
+        }
+
         public Version GetLatestVersion()
         {
             Version version = null;

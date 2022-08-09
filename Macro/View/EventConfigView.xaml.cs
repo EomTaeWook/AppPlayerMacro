@@ -23,7 +23,7 @@ namespace Macro.View
         private TreeGridViewItem _dummyTreeGridViewItem;
         private PointModel _dummyRelativePosition;
         private bool _isDrag;
-        private readonly List<MousePositionView> _mousePointViews = new List<MousePositionView>();
+        
         private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
         private EventConfigViewModel _eventConfigViewModelCached;
         public EventConfigView()
@@ -292,12 +292,6 @@ namespace Macro.View
                 }
             }
 
-            foreach(var item in DisplayHelper.MonitorInfo())
-            {
-                _mousePointViews.Add(new MousePositionView(item));
-            }
-
-
             comboRepeatSubItem.ItemsSource = _repeatItems;
             comboRepeatSubItem.DisplayMemberPath = "Value";
             comboRepeatSubItem.SelectedValuePath = "Key";
@@ -349,13 +343,6 @@ namespace Macro.View
                 }
             }
         }
-        private void ShowMousePoisitionView()
-        {
-            foreach (var item in _mousePointViews)
-            {
-                item.ShowActivate();
-            }
-        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (sender.Equals(btnMouseCoordinate))
@@ -364,7 +351,7 @@ namespace Macro.View
                 {
                     _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
                 }
-                ShowMousePoisitionView();
+                ApplicationManager.Instance.ShowMousePointView();
             }
             else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
             {
@@ -520,10 +507,7 @@ namespace Macro.View
             }
             _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = e.MonitorInfo;
             _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = e.MouseTriggerInfo;
-            foreach (var item in _mousePointViews)
-            {
-                item.Hide();
-            }
+            ApplicationManager.Instance.CloseMousePointView();
 
             //btnMouseWheel.Visibility = Visibility.Visible;
             //btnMouseWheel.IsEnabled = true;

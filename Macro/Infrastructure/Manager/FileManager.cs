@@ -15,7 +15,6 @@ namespace Macro.Infrastructure.Manager
     {
         public FileManager()
         {
-            
         }
 
         public bool SaveJson<T>(string path, T model)
@@ -48,6 +47,7 @@ namespace Macro.Infrastructure.Manager
                     {
                         datas.AddRange(buffer.Take(read));
                     }
+                    stream.Close();
                     return ObjectSerializer.DeserializeObject<T>(datas.ToArray());
                 }
             }

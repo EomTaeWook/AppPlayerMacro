@@ -41,12 +41,13 @@ namespace Macro
             _config = ServiceProviderManager.Instance.GetService<Config>();
             Loaded += MainWindow_Loaded;
         }
+        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             InitEvent();
             Init();
             VersionCheck();
-            
+
         }
         private void InitEvent()
         {
@@ -101,7 +102,7 @@ namespace Macro
         }
 
         private void Refresh()
-       {
+        {
             FileInfo fileInfo = new FileInfo(GetSaveFilePath());
             if (fileInfo.Directory.Exists == false)
             {
@@ -202,7 +203,7 @@ namespace Macro
                 }
             }
         }
-        private void Clear()
+        public void Clear()
         {
             Dispatcher.Invoke(() =>
             {
@@ -379,43 +380,6 @@ namespace Macro
             settingFlyout.IsOpen = !settingFlyout.IsOpen;
             ApplicationManager.HideProgressbar();
         }
-
-        //private async Task InvokeNextEventTriggerAsync(ContentView view, EventTriggerModel model, CancellationToken token)
-        //{
-        //    if (token.IsCancellationRequested)
-        //    {
-        //        LogHelper.Debug($"token.IsCancellationRequested!");
-        //        return;
-        //    }
-
-        //    var processConfigModel = new ProcessConfigModel()
-        //    {
-        //        ItemDelay = config.ItemDelay,
-        //        SearchImageResultDisplay = config.SearchImageResultDisplay,
-        //        Processes = new List<Process>(),
-        //        Token = token,
-        //        Similarity = config.Similarity,
-        //        DragDelay = config.DragDelay
-        //    };
-
-        //    Dispatcher.Invoke(() =>
-        //    {
-        //        if (fixProcess.HasValue)
-        //        {
-        //            processConfigModel.Processes.Add(fixProcess.Value.Value);
-        //        }
-        //        else
-        //        {
-        //            processConfigModel.Processes.AddRange(processes.Where(r => r.Key.Equals(model.ProcessInfo.ProcessName)).Select(r => r.Value));
-        //        }
-        //    });
-
-        //    var nextItem = await view.InvokeNextEventTriggerAsync(model, processConfigModel);
-        //    if (nextItem != null)
-        //    {
-        //        //await taskQueue.Enqueue(async () => await InvokeNextEventTriggerAsync(view, nextItem, token));
-        //    }
-        //}
         private void VersionCheck()
         {
             if (_config.VersionCheck == false)
