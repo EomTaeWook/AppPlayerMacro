@@ -17,7 +17,9 @@ namespace Patcher.Infrastructure
         public static object GetValue(string key)
         {
             if (!_caches.TryGetValue(key, out object obj))
+            {
                 return null;
+            }
             return obj;
         }
         public static KeyValuePair<string, object>[] GetCaches()

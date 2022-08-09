@@ -37,7 +37,7 @@ namespace Macro
 #if DEBUG
                 LogHelper.Debug(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
 #else
-                LogHelper.Warning(ex.Exception);
+                LogHelper.Error(ex.Exception);
 #endif
             };
 

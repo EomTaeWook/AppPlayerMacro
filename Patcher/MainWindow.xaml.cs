@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -342,7 +341,6 @@ namespace Patcher
                     {
                         File.Delete(_patchList[i].Item1);
                     }
-                        
 
                     if (File.Exists($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
                     {

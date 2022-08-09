@@ -149,15 +149,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{da7e0725-f356-48bc-b586-4cd4dea35803}</Project>
-      <Name>Utils</Name>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
-    <EmbeddedResource Include="Resources\Utils.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ControlzEx.dll" />
@@ -170,18 +162,25 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\KosherUtils.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Microsoft.Xaml.Behaviors.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{da7e0725-f356-48bc-b586-4cd4dea35803}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Utils.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF $(ConfigurationName) == Release (
-IF NOT EXIST $(SolutionDir)Release\exe\ mkdir "$(SolutionDir)Release\exe"
-copy "$(TargetPath)" "$(SolutionDir)Release\exe\"
-copy "$(TargetPath).config" "$(SolutionDir)Release\exe\"
-del /S/Q $(SolutionDir)Release\exe\Datas\PatchList.json
-del /S/Q $(SolutionDir)Release\exe\Datas\PatchListV2.json)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy $(SolutionDir)Utils\$(OutDir)Newtonsoft.Json.dll $(ProjectDir)Resources
-copy $(SolutionDir)Utils\$(OutDir)NLog.dl $(ProjectDir)Resources
-copy $(SolutionDir)Utils\$(OutDir)Utils.dll $(ProjectDir)Resources</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

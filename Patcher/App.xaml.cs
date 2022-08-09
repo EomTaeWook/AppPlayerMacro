@@ -37,7 +37,7 @@ namespace Patcher
                     }
                 }
             }
-            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
         }
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
@@ -63,12 +63,20 @@ namespace Patcher
             ObjectCache.SetValue("Version", compare);
             ObjectCache.SetValue("PathchVersion", nextVersion);
 #else
-            AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
+            //AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
             ObjectCache.SetValue("Version", 1);
-            ObjectCache.SetValue("PathchVersion", new Infrastructure.Version(2, 4, 1));
+            ObjectCache.SetValue("PathchVersion", new Infrastructure.Version(2, 6, 0));
 #endif
             InitDirectory();
-            Init();
+            try
+            {
+                Init();
+            }
+            catch(Exception ex)
+            {
+
+            }
+            
             InitTemplate();
 
             base.OnStartup(e);
@@ -183,12 +191,12 @@ namespace Patcher
         {
             var path = Utils.ConstHelper.DefaultDatasFilePath;
 #if DEBUG
-            path = $@"..\..\..\Datas\";
+            path = $@"..\..\..\..\Datas\";
 #endif
             Singleton<DocumentTemplate<Label>>.Instance.Init(path);
             Singleton<DocumentTemplate<Message>>.Instance.Init(path);
 
-            ObjectCache.SetValue("PatchUrl", Utils.ConstHelper.PatchV2Url.ToString());
+            ObjectCache.SetValue("PatchUrl", Utils.ConstHelper.PatchV3Url.ToString());
             
             if (Enum.TryParse(ObjectCache.GetValue("language").ToString(), out Language language))
             {
