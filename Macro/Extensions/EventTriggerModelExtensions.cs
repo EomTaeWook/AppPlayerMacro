@@ -94,17 +94,5 @@ namespace Macro.Extensions
                 Rect = source.Rect.Clone()
             };
         }
-        public static ulong CompareIndex(this EventTriggerModel source, ulong index)
-        {
-            if (source.TriggerIndex > index)
-            {
-                index = source.TriggerIndex;
-            }
-            foreach (var child in source.SubEventTriggers)
-            {
-                index = child.CompareIndex(index);
-            }
-            return index;
-        }
     }
 }

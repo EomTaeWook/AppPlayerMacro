@@ -58,7 +58,7 @@ namespace Macro.Infrastructure.Manager
             return null;
         }
 
-        public async void Save<T>(string path, ObservableCollection<T> list)
+        public async Task Save<T>(string path, ObservableCollection<T> list)
         {
             if (File.Exists(path))
             {

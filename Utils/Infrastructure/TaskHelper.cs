@@ -12,15 +12,17 @@ namespace Utils.Infrastructure
             try
             {
                 if (millisecondsDelay > 0)
+                {
                     await Task.Delay(millisecondsDelay, token);
+                }
             }
             catch (TaskCanceledException ex)
             {
-                LogHelper.Debug(ex.Message);
+                LogHelper.Error(ex.Message);
             }
             catch (AggregateException ex)
             {
-                LogHelper.Debug(ex.Message);
+                LogHelper.Error(ex.Message);
             }
             return !token.IsCancellationRequested;
         }

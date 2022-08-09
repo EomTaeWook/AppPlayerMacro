@@ -25,7 +25,10 @@ namespace Macro.Infrastructure
         public IKeyboardInput KeyUp(params KeyCode[] keyCodes)
         {
             if (keyCodes != null)
+            {
                 KeyUp(keyCodes);
+            }
+                
             return this;
         }
 
@@ -40,7 +43,9 @@ namespace Macro.Infrastructure
         public IKeyboardInput KeyDown(params KeyCode[] keyCodes)
         {
             if (keyCodes != null)
+            {
                 KeyDown(keyCodes);
+            }
             return this;
         }
 
@@ -55,7 +60,9 @@ namespace Macro.Infrastructure
         public IKeyboardInput KeyPress(params KeyCode[] keyCodes)
         {
             if (keyCodes != null)
+            {
                 KeyPress(keyCodes);
+            }
             return this;
         }
 
@@ -70,27 +77,41 @@ namespace Macro.Infrastructure
         public IKeyboardInput KeyDown(InputBuilder builder, IEnumerable<KeyCode> keyCodes)
         {
             if (keyCodes == null)
+            {
                 return this;
+            }
+                
             foreach (var key in keyCodes)
+            {
                 builder.AddKeyDown(key);
+            }
+                
             return this;
         }
 
         private void KeyPress(InputBuilder builder, IEnumerable<KeyCode> keyCodes)
         {
             if (keyCodes == null)
+            {
                 return;
-
+            }
+                
             foreach (var key in keyCodes)
+            {
                 builder.AddKeyPress(key);
+            }
         }
         private void KeyUp(InputBuilder builder, IEnumerable<KeyCode> keyCodes)
         {
             if (keyCodes == null)
+            {
                 return;
-
+            }
+                
             foreach (var key in keyCodes)
+            {
                 builder.AddKeyUp(key);
+            }
         }
     }
 }

@@ -29,9 +29,13 @@ namespace Macro.Infrastructure.Serialize
                     var val = prop.GetValue(model);
                     var nullableType =  Nullable.GetUnderlyingType(prop.PropertyType);
                     if (nullableType == null)
+                    {
                         val = val ?? Activator.CreateInstance(prop.PropertyType);
+                    }
                     else
+                    {
                         val = val ?? Activator.CreateInstance(nullableType);
+                    }
                     bf.Serialize(ms, val);
                 }
                 bf.Serialize(ms, "\uFF1E");
@@ -49,9 +53,11 @@ namespace Macro.Infrastructure.Serialize
                                             .OrderBy(o => ((OrderAttribute)o.GetCustomAttribute(typeof(OrderAttribute))).Order);
 
                 if (properties.Count() == 0)
+                {
                     properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                                 .Where(r => r.CanRead && r.CanWrite)
                                                 .OrderBy(o => o.Name);
+                }
 
                 while (ms.Position < ms.Length)
                 {

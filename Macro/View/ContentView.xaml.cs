@@ -34,7 +34,7 @@ namespace Macro.View
             btnAddSameContent.Visibility = Visibility.Collapsed;
             _bitmap = null;
             canvasCaptureImage.Background = System.Windows.Media.Brushes.White;
-            //eventConfigView.Clear();
+            eventConfigView.Clear();
         }
         public void Capture()
         {
@@ -136,37 +136,7 @@ namespace Macro.View
                 canvasCaptureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
             }
         }
-        public Task Delete(object state)
-        {
-            if (state is string path)
-            {
-                eventConfigView.RemoveCurrentItem();
-
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                    using (var fs = new FileStream(path, FileMode.CreateNew))
-                    {
-                        foreach (var data in eventConfigView.DataContext<Models.ViewModel.EventConfigViewModel>().TriggerSaves)
-                        {
-                            var bytes = ObjectSerializer.SerializeObject(data);
-                            fs.Write(bytes, 0, bytes.Length);
-                        }
-                        fs.Close();
-                    }
-                }
-            }
-            return Task.CompletedTask;
-        }
-        public void Save(string path)
-        {
-            eventConfigView.InsertCurrentItem();
-
-            var viewModel = eventConfigView.DataContext as Models.ViewModel.EventConfigViewModel;
-
-            FileManager.Instance.Save(path, viewModel.TriggerSaves);
-            
-        }
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
@@ -193,7 +163,10 @@ namespace Macro.View
             {
                 var item = eventConfigView.CopyCurrentItem();
                 if (item == null)
+                {
                     return;
+                }
+                    
                 NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = item,
@@ -201,10 +174,10 @@ namespace Macro.View
             }
             else if(btn.Equals(btnDelete))
             {
-                var model = eventConfigView.GetDataContext();
+                var model = eventConfigView.GetDataContext().CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 NotifyHelper.InvokeNotify(NotifyEventType.Delete, new DeleteEventTriggerModelArgs()
                 {
-                    CurrentEventTriggerModel = model.CurrentTreeViewItem.DataContext<EventTriggerModel>(),
+                    CurrentEventTriggerModel = model,
                 });
             }
         }

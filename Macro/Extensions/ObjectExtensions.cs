@@ -72,35 +72,6 @@ namespace Macro.Extensions
             };
             return item;
         }
-
-        //public static Task ProgressbarShow(this MetroWindow @object, Func<Task> action)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        @object.Dispatcher.Invoke(() =>
-        //        {
-        //            var progress = new ProgressView
-        //            {
-        //                Owner = @object,
-        //                Left = @object.Left / 2,
-        //                Width = @object.Width / 2,
-        //                Top = @object.Top / 2,
-        //                Height = @object.Height / 2
-        //            };
-        //            progress.Loaded += (s, e) =>
-        //            {
-        //                action().ContinueWith(task =>
-        //                {
-        //                    progress.Dispatcher.Invoke(() => {
-        //                        progress.Close();
-        //                    });
-        //                });
-        //            };
-        //            progress.ShowDialog();
-        //        });
-        //    });
-        //}
-
         public static int MakeWParam(int low, int high) => (low & 0xFFFF) | (high << 16);
 
         public static int ToLParam(this Point point) => (int)point.X & 0xFFFF | ((int)point.Y << 0x10);
@@ -117,11 +88,18 @@ namespace Macro.Extensions
         public static T TryFindFromPoint<T>(this UIElement element, Point point) where T : class
         {
             if (!(element.InputHitTest(point) is DependencyObject @object))
+            {
                 return default;
+
+            }
             else if (@object is T)
+            {
                 return @object as T;
+            }
             else
+            {
                 return TryFindParent<T>(@object);
+            }
         }
         private static T TryFindParent<T>(DependencyObject child) where T : class
         {
@@ -167,7 +145,10 @@ namespace Macro.Extensions
         public static T GetSelectItemFromObject<T>(this ItemsControl control, object item) where T : ItemsControl
         {
             if (control.ItemContainerGenerator.ContainerFromItem(item) is T target)
+            {
                 return target;
+            }
+
             for (int i=0; i< control.Items.Count; ++i)
             {
                 if (control.ItemContainerGenerator.ContainerFromIndex(i) is T subControl)

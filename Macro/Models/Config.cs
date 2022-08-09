@@ -15,7 +15,7 @@ namespace Macro.Models
         private bool _searchImageResultDisplay = true;
         private int _dragDelay = ConstHelper.MinDragDelay;
         private bool _versionCheck = true;
-        private InitialTab _initialTab = Infrastructure.InitialTab.Common;
+        private InitialTab _initialTab = InitialTab.Common;
 
         public Language Language
         {

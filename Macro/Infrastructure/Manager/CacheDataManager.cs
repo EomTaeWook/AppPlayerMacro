@@ -15,13 +15,13 @@ namespace Macro.Infrastructure.Manager
             _indexTriggerModelToMap = new Dictionary<ulong, EventTriggerModel>();
 
             NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
-
             NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
         }
 
         public void InitMaxIndex(List<EventTriggerModel> eventTriggerDatas)
         {
-            foreach(var item in eventTriggerDatas)
+            _indexTriggerModelToMap.Clear();
+            foreach (var item in eventTriggerDatas)
             {
                 if(item.TriggerIndex > _maxIndex)
                 {
@@ -30,36 +30,6 @@ namespace Macro.Infrastructure.Manager
             }
         }
 
-        //public bool CheckAndMakeCacheFile(List<EventTriggerModel> saves, string path)
-        //{
-        //    var isNewCreated = false;
-        //    var isExists = File.Exists(path);
-        //    if (isExists && saves.Count > 0)
-        //    {
-        //        var bytes = File.ReadAllBytes(path);
-        //        commonCacheData = ObjectSerializer.DeserializeObject<CacheModel>(bytes).FirstOrDefault();
-        //    }
-        //    else
-        //    {
-        //        isNewCreated = true;
-        //    }
-        //    foreach (var save in saves)
-        //    {
-        //        MakeIndexTriggerModel(save);
-        //        InsertIndexTriggerModel(save);
-        //    }
-        //    UpdateCacheData(path, commonCacheData);
-        //    return isNewCreated;
-        //}
-        
-        //public bool IsUpdated()
-        //{
-        //    return TimeSpan.FromTicks(DateTime.Now.Ticks - commonCacheData.LatestCheckDateTime).TotalDays > 1;
-        //}
-        //public ulong GetMaxIndex()
-        //{
-        //    return commonCacheData.MaxIndex;
-        //}
         public ulong IncreaseIndex()
         {
             if(Interlocked.Exchange(ref _atomic, 1) == 0)
@@ -84,12 +54,12 @@ namespace Macro.Infrastructure.Manager
 
         private void NotifyHelper_EventTriggerRemoved(EventTriggerEventArgs obj)
         {
-            RemoveIndexTriggerModel(obj.TriggerModel as EventTriggerModel);
+            RemoveIndexTriggerModel(obj.TriggerModel);
         }
 
         private void NotifyHelper_EventTriggerInserted(EventTriggerEventArgs obj)
         {
-            InsertIndexTriggerModel(obj.TriggerModel as EventTriggerModel);
+            InsertIndexTriggerModel(obj.TriggerModel);
         }
         public void MakeIndexTriggerModel(EventTriggerModel model)
         {

@@ -5,14 +5,12 @@ using Utils.Extensions;
 
 namespace Utils.Infrastructure
 {
-
     public class TaskQueue
     {
         private object _lock;
         private readonly int _maxSize;
         private int _size;
         private Task _lastQueuedTask;
-        private volatile bool _drained;
         public TaskQueue() : this(int.MaxValue)
         {
         }
@@ -27,22 +25,16 @@ namespace Utils.Infrastructure
             _maxSize = maxSize;
         }
 
-        public bool IsDrained => _drained;
-
         public Task Enqueue(Func<object, Task> func, object state)
         {
             lock(_lock)
             {
-                if (IsDrained)
-                {
-                    return _lastQueuedTask;
-                }
                 if (Interlocked.Increment(ref _size) >= _maxSize)
                 {
                     Interlocked.Decrement(ref _size);
                     return null;
                 }
-                var newTask = _lastQueuedTask.Then( (next, s, q) => q.InvokeNext(next, s), func, state, this);
+                var newTask = _lastQueuedTask.Then((next, s, q) => q.InvokeNext(next, s), func, state, this);
                 return _lastQueuedTask = newTask;
             }
         }
@@ -50,17 +42,9 @@ namespace Utils.Infrastructure
         {
             return func(nextState).Finally((q) => { ((TaskQueue)q).Dequeue(); }, this);
         }
-        public Task Drain()
-        {
-            lock (_lock)
-            {
-                _drained = true;
-                return _lastQueuedTask;
-            }
-        }
         public void Clear()
         {
-            _drained = false;
+            _lastQueuedTask = Task.CompletedTask;
         }
         public Task Enqueue(Func<Task> func)
         {

@@ -213,25 +213,27 @@ namespace Macro.View
 
                 if (_eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null)
                 {
-                    this.DataContext<EventConfigViewModel>().TriggerSaves.Remove(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                    _eventConfigViewModelCached.TriggerSaves.Remove(model);
                 }
                 else
                 {
-                    _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers.Remove(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
+                    _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers.Remove(model);
                 }
+
                 NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerRemoved, new EventTriggerEventArgs()
                 {
                     Index = model.TriggerIndex,
                     TriggerModel = model
                 });
+
+                _eventConfigViewModelCached.CurrentTreeViewItem = _dummyTreeGridViewItem;
+                _eventConfigViewModelCached.RelativePosition = _dummyRelativePosition;
             });
         }
 
         public void Clear()
         {
             _eventConfigViewModelCached.CurrentTreeViewItem.IsSelected = false;
-            _dummyTreeGridViewItem.DataContext<EventTriggerModel>().Clear();
-
             if (_eventConfigViewModelCached.CurrentTreeViewItem != _dummyTreeGridViewItem)
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem = _dummyTreeGridViewItem;
@@ -241,6 +243,8 @@ namespace Macro.View
             {
                 _eventConfigViewModelCached.RelativePosition = _dummyRelativePosition;
             }
+            _dummyTreeGridViewItem.DataContext<EventTriggerModel>().Clear();
+
             RadioButtonRefresh();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
             lblRepeatSubItems.Visibility = Visibility.Collapsed;
@@ -356,8 +360,6 @@ namespace Macro.View
         {
             if (sender.Equals(btnMouseCoordinate))
             {
-                //lblWheelData.Visibility = Visibility.Collapsed;
-                //gridWheelData.Visibility = Visibility.Collapsed;
                 if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
                 {
                     _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
@@ -436,15 +438,6 @@ namespace Macro.View
                 else if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Mouse)
                 {
                     RadioButton_Click(rbMouse, null);
-                    //btnMouseWheel.IsEnabled = true;
-                    //lblWheelData.Visibility = Visibility.Collapsed;
-                    //gridWheelData.Visibility = Visibility.Collapsed;
-
-                    //if (CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
-                    //{
-                    //    lblWheelData.Visibility = Visibility.Visible;
-                    //    gridWheelData.Visibility = Visibility.Visible;
-                    //}
                 }
                 else if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType == EventType.Image)
                 {

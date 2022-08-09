@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -63,7 +64,7 @@ namespace Macro
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
-            NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
+            NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModelAsync;
         }
 
         private void Init()
@@ -100,7 +101,7 @@ namespace Macro
         }
 
         private void Refresh()
-        {
+       {
             FileInfo fileInfo = new FileInfo(GetSaveFilePath());
             if (fileInfo.Directory.Exists == false)
             {
@@ -167,9 +168,22 @@ namespace Macro
         }
         private void SettingProcessMonitorInfo(EventTriggerModel model, Process process)
         {
+            if(process == null)
+            {
+                model.ProcessInfo = new ProcessInfo()
+                {
+                    ProcessName = string.Empty
+                };
+                return;
+            }
+
             var rect = new Rect();
             NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
-            model.ProcessInfo.Position = rect;
+            model.ProcessInfo = new ProcessInfo()
+            {
+                ProcessName = process.ProcessName,
+                Position = rect
+            };
 
             if (model.EventType != EventType.Mouse)
             {
@@ -202,43 +216,42 @@ namespace Macro
             });
         }
         
-        private void NotifyHelper_DeleteEventTriggerModel(DeleteEventTriggerModelArgs obj)
+        private async void NotifyHelper_DeleteEventTriggerModelAsync(DeleteEventTriggerModelArgs obj)
         {
-            //if (tab_content.SelectedContent is ContentView view)
-            //{
-            //    var path = _viewMap[view.Tag.ToString()].SaveFilePath;
-            //    _taskQueue.Enqueue(() =>
-            //    {
-            //        return view.Delete(path);
-            //    }).ContinueWith(task =>
-            //    {
-            //        Clear();
-            //    });
-            //}
-        }
+            _contentView.eventConfigView.RemoveCurrentItem();
 
+            if (File.Exists(GetSaveFilePath()))
+            {
+                File.Delete(GetSaveFilePath());
+            }
+
+            var triggers = _contentView.eventConfigView.GetDataContext().TriggerSaves;
+
+            await FileManager.Instance.Save(GetSaveFilePath(), triggers);
+
+            Dispatcher.Invoke(() =>
+            {
+                Clear();
+            });
+        }
+        
         private void NotifyHelper_SaveEventTriggerModel(SaveEventTriggerModelArgs obj)
         {
             var process = comboProcess.SelectedValue as Process;
 
-            var rect = new Rect();
-
-            NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
-
-            obj.CurrentEventTriggerModel.ProcessInfo = new ProcessInfo()
-            {
-                ProcessName = process != null ? $"{process.ProcessName}" : "",
-                Position = rect
-            };
+            SettingProcessMonitorInfo(obj.CurrentEventTriggerModel, process);
 
             if (_contentController.Validate(obj.CurrentEventTriggerModel, out Message error))
             {
-                Dispatcher.InvokeAsync(() =>
+                Dispatcher.Invoke(async () =>
                 {
-                    var model = obj.CurrentEventTriggerModel;
-                    SettingProcessMonitorInfo(model, process);
-                    CacheDataManager.Instance.MakeIndexTriggerModel(model);
-                    _contentView.Save(GetSaveFilePath());
+                    CacheDataManager.Instance.MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
+
+                    _contentView.eventConfigView.InsertCurrentItem();
+                    var triggers = _contentView.eventConfigView.GetDataContext().TriggerSaves;
+
+                    await FileManager.Instance.Save(GetSaveFilePath(), triggers);
+
                     Clear();
                 });
             }
@@ -298,19 +311,18 @@ namespace Macro
         {
             if (sender.Equals(checkFix))
             {
-                if (checkFix.IsChecked.HasValue)
+                if(checkFix.IsChecked.HasValue == false)
                 {
-                    if(checkFix.IsChecked.Value)
+                    _fixProcess = null;
+                    return;
+                }
+
+                if (checkFix.IsChecked.Value)
+                {
+                    if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
                     {
-                        if(comboProcess.SelectedItem is KeyValuePair<string, Process> item)
-                        {
-                            _fixProcess = new KeyValuePair<string, Process>(item.Key, item.Value);
-                        }
+                        _fixProcess = new KeyValuePair<string, Process>(item.Key, item.Value);
                     }
-                    else
-                    {
-                        _fixProcess = null;
-                    }                        
                 }
                 else
                 {
@@ -351,7 +363,6 @@ namespace Macro
             if (loadDatas == null)
             {
                 loadDatas = new List<EventTriggerModel>();
-                _contentView.Save(GetSaveFilePath());
             }
             CacheDataManager.Instance.InitMaxIndex(loadDatas);
 
@@ -363,6 +374,7 @@ namespace Macro
             ApplicationManager.ShowProgressbar();
             _config = e.Config;
             Refresh();
+
             LoadDatas(GetSaveFilePath());
             settingFlyout.IsOpen = !settingFlyout.IsOpen;
             ApplicationManager.HideProgressbar();

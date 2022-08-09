@@ -226,7 +226,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\CacheModel.cs" />
     <Compile Include="Models\ColorModel.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessConfigModel.cs" />

@@ -6,7 +6,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:view="clr-namespace:Macro.View"
                       xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      GlowBrush="{DynamicResource mah.Brushes.Accent}"
+                      GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                       BorderThickness="1"
                       Title="{Binding Path=LabelViewModel.Title, Source={StaticResource Locator}}" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
                       mc:Ignorable="d">
