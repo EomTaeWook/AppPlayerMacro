@@ -6,7 +6,6 @@ namespace Macro.Models
 {
     public class ProcessConfigModel
     {
-        public List<Process> Processes { get; set; }
         public int ItemDelay { get; set; }
         public int Similarity { get; set; }
         public int DragDelay { get; set; }

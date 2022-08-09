@@ -27,6 +27,7 @@ namespace Macro.Infrastructure.Controller
         private InputManager _inputManager;
         private int _delay = 0;
         private ProcessConfigModel _processConfig;
+        private CancellationTokenSource _cts;
         private CancellationToken _token;
         public ContentController()
         {
@@ -34,20 +35,24 @@ namespace Macro.Infrastructure.Controller
             _applicationDataHelper = ServiceProviderManager.Instance.GetService<ApplicationDataHelper>();
             _inputManager = ServiceProviderManager.Instance.GetService<InputManager>();
 
+            SetConfig(ServiceProviderManager.Instance.GetService<Config>());
+
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
         }
-
-        private void NotifyHelper_ConfigChanged(ConfigEventArgs obj)
+        private void SetConfig(Config config)
         {
             _processConfig = new ProcessConfigModel()
             {
-                ItemDelay = obj.Config.ItemDelay,
-                SearchImageResultDisplay = obj.Config.SearchImageResultDisplay,
-                Processes = new List<Process>(),
-                Similarity = obj.Config.Similarity,
-                DragDelay = obj.Config.DragDelay
+                ItemDelay = config.ItemDelay,
+                SearchImageResultDisplay = config.SearchImageResultDisplay,
+                Similarity = config.Similarity,
+                DragDelay = config.DragDelay
             };
-            _delay = obj.Config.Period;
+            _delay = config.Period;
+        }
+        private void NotifyHelper_ConfigChanged(ConfigEventArgs obj)
+        {
+            SetConfig(obj.Config);
         }
         
         public void SetContentView(ContentView baseContentView)
@@ -85,14 +90,17 @@ namespace Macro.Infrastructure.Controller
 
             return true;
         }
-        public async Task Start(CancellationToken token)
+        public async Task Start()
         {
-            _token = token;
-            await ProcessStartAsync();
+            if(_cts == null)
+            {
+                _cts = new CancellationTokenSource();
+                _token = _cts.Token;
+            }
+            await ProcessStart();
         }
-        public async Task ProcessStartAsync()
+        public async Task ProcessStart()
         {
-
             List<EventTriggerModel> models = new List<EventTriggerModel>();
             models.AddRange(_contentView.eventConfigView.GetDataContext().TriggerSaves);
 
@@ -107,33 +115,36 @@ namespace Macro.Infrastructure.Controller
         }
         public void Stop()
         {
-            _token = CancellationToken.None;
+            _cts.Cancel();
+            _cts = null;
         }
         
         public async Task<Tuple<bool, EventTriggerModel>> TriggerProcess(EventTriggerModel model, ProcessConfigModel processConfigModel)
         {
             var isExcute = false;
             var hWnd = IntPtr.Zero;
+
+            var processDatas = Process.GetProcessesByName(model.ProcessInfo.ProcessName);
             var applciationData = _applicationDataHelper.Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
-            for (int i = 0; i < processConfigModel.Processes.Count; ++i)
+            for (int i = 0; i < processDatas.Length; ++i)
             {
-                var factor = CalculateFactor(processConfigModel.Processes[i].MainWindowHandle, model, applciationData.IsDynamic);
+                var factor = CalculateFactor(processDatas[i].MainWindowHandle, model, applciationData.IsDynamic);
 
                 if (string.IsNullOrEmpty(applciationData.HandleName))
                 {
-                    hWnd = processConfigModel.Processes[i].MainWindowHandle;
+                    hWnd = processDatas[i].MainWindowHandle;
                 }
                 else
                 {
-                    var item = NativeHelper.GetChildHandles(processConfigModel.Processes[i].MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
+                    var item = NativeHelper.GetChildHandles(processDatas[i].MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
 
-                    hWnd = item != null ? item.Item2 : processConfigModel.Processes[i].MainWindowHandle;
+                    hWnd = item != null ? item.Item2 : processDatas[i].MainWindowHandle;
                 }
 
                 if (model.RepeatInfo.RepeatType == RepeatType.Search && model.SubEventTriggers.Count > 0)
                 {
                     var count = model.RepeatInfo.Count;
-                    while (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
+                    while (DisplayHelper.ProcessCapture(processDatas[i], out Bitmap bmp, applciationData.IsDynamic) && count-- > 0)
                     {
                         var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Item1.Item1), (int)Math.Truncate(model.Image.Height * factor.Item1.Item1));
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
@@ -155,7 +166,7 @@ namespace Macro.Infrastructure.Controller
                             }
                         }
 
-                        factor = CalculateFactor(processConfigModel.Processes[i].MainWindowHandle, model, applciationData.IsDynamic);
+                        factor = CalculateFactor(processDatas[i].MainWindowHandle, model, applciationData.IsDynamic);
                     }
                 }
                 else
@@ -164,7 +175,7 @@ namespace Macro.Infrastructure.Controller
 
                     if (model.SameImageDrag == true)
                     {
-                        if (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
+                        if (DisplayHelper.ProcessCapture(processDatas[i], out Bitmap bmp, applciationData.IsDynamic))
                         {
                             //Todo
                             for (int ii = 0; ii < model.MaxSameImageCount; ++ii)
@@ -191,7 +202,7 @@ namespace Macro.Infrastructure.Controller
                             }
                         }
                     }
-                    else if (DisplayHelper.ProcessCapture(processConfigModel.Processes[i], out Bitmap bmp, applciationData.IsDynamic))
+                    else if (DisplayHelper.ProcessCapture(processDatas[i], out Bitmap bmp, applciationData.IsDynamic))
                     {
                         var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
                         LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
@@ -275,7 +286,7 @@ namespace Macro.Infrastructure.Controller
                                 }
                                 else if (model.EventType == EventType.Keyboard)
                                 {
-                                    KeyboardTriggerProcess(processConfigModel.Processes[i].MainWindowHandle, model);
+                                    KeyboardTriggerProcess(processDatas[i].MainWindowHandle, model);
                                 }
 
                                 if (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, _token) == false)

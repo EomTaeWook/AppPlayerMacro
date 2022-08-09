@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -434,16 +434,17 @@ namespace Macro
                 btnStart.Visibility = Visibility.Collapsed;
                 tab_content.IsEnabled = false;
 
-                SchedulerManager.Instance.Start();
+                TaskBuilder.Build(() =>
+                {
+                    _contentController.Start();
+                });
 
                 ApplicationManager.HideProgressbar();
             }
             else if (btn.Equals(btnStop))
             {
                 ApplicationManager.ShowProgressbar();
-
-                SchedulerManager.Instance.Stop();
-
+                _contentController.Stop();
                 tab_content.IsEnabled = true;
                 Dispatcher.Invoke(() =>
                 {
