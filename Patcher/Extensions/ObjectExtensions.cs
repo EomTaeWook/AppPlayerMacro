@@ -5,7 +5,7 @@ namespace Patcher.Extensions
 {
     public static class ObjectExtensions
     {
-        public static MessageDialogResult MessageShow(this MetroWindow @object, string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative, MetroDialogSettings settings = null)
+        public static MessageDialogResult ShowMessageDialog(this MetroWindow @object, string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative, MetroDialogSettings settings = null)
         {
             return @object.ShowModalMessageExternal(title,
                                                 message,

@@ -97,6 +97,7 @@
         CancelPatch,
         FailedPatchUpdate,
         CompletePatch,
+        GoDownloadUrl,
 
         Max
     }

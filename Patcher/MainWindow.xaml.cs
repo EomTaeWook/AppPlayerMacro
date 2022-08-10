@@ -1,13 +1,13 @@
-﻿using KosherUtils.Log;
+﻿using KosherUtils.Coroutine;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
 using Patcher.Infrastructure;
 using Patcher.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -15,7 +15,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Utils;
-using ConstHelper = Patcher.Infrastructure.ConstHelper;
+using Utils.Document;
+using Version = Utils.Infrastructure.Version;
 
 namespace Patcher
 {
@@ -24,15 +25,25 @@ namespace Patcher
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        private readonly List<Tuple<string, string>> _patchList;
-        private readonly CancellationTokenSource _cts;
-
         private static HttpClient httpClient = new HttpClient();
+
+        private bool _isRunning = false;
+
+        private CoroutineWoker _coroutineWoker = new CoroutineWoker();
+
+        private SortedList<int, PatchInfoModel> _patchDatas = new SortedList<int, PatchInfoModel>();
+
+        private DocumentTemplate<Label> _labelTemplate;
+
+        private DocumentTemplate<Message> _messageTemplate;
+
+        private Language _language;
 
         public MainWindow()
         {
-            _patchList = new List<Tuple<string, string>>();
-            _cts = new CancellationTokenSource();
+            _labelTemplate = ServiceProviderManager.GetService<DocumentTemplate<Label>>("Label");
+            _messageTemplate = ServiceProviderManager.GetService<DocumentTemplate<Message>>("Message");
+            _language = ServiceProviderManager.GetRefService<Language>("Language");
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
@@ -42,24 +53,112 @@ namespace Patcher
             InitEvent();
             Init();
             Topmost = true;
-            if (ObjectCache.GetValue("Version").ToString().Equals("1"))
+
+            _ = RequestPatchListAsync();
+
+
+            //if (ObjectCache.GetValue("Version").ToString().Equals("1"))
+            //{
+
+            //    Task.Run(async ()=> 
+            //    {
+            //        await RunPatch();
+            //    });
+            //}
+            //else
+            //{
+            //    Application.Current.Shutdown();
+            //}
+        }
+
+        private async Task RequestPatchListAsync()
+        {
+            lblState.Content = _labelTemplate.Get(Label.SearchPatchList, _language);
+
+            var currentVersion = ServiceProviderManager.GetService<Version>("CurrentVersion");
+
+            var response = await httpClient.GetAsync(ServiceProviderManager.GetService<string>("PatchUrl"));
+
+            using (var reader = new StreamReader(await response.Content.ReadAsStreamAsync()))
             {
-                Task.Run(async ()=> 
+                var json = reader.ReadToEnd();
+                var patchModel = JsonHelper.DeserializeObject<PatchListModel>(json);
+                var newVersion = Version.MakeVersion(patchModel.CurrentVersion.Version);
+
+                foreach (var item in patchModel.OldVersion)
                 {
-                    await CheckPatchList();
-                    await RunPatch();
-                });
+                    var version = item.GetVersion();
+                    if (version < currentVersion)
+                    {
+                        continue;
+                    }
+                    _patchDatas.Add(version.GetVersionNumber(), item);
+                }
+                _patchDatas.Add(newVersion.GetVersionNumber(), patchModel.CurrentVersion);
             }
-            else
+            _coroutineWoker.Start(DownLoadFiles());
+
+        }
+        private IEnumerator DownLoadFiles()
+        {
+            foreach(var patchData in _patchDatas)
             {
-                Application.Current.Shutdown();
+                var fileList = patchData.Value.GetFileList();
+                var index = 0;
+                foreach(var kv in fileList)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        lblState.Content = $"{_labelTemplate.Get(Label.Download, _language)} : {kv.Key}";
+                        lblCount.Content = $"({index++}/{fileList.Count})";
+                        progress.Value = 0;
+                    });
+
+                    var response =  httpClient.GetAsync(kv.Value).GetAwaiter().GetResult();
+
+                    var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
+
+                    var buffer = new byte[4096];
+
+                    using (var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
+                    {
+                        var fileInfo = new FileInfo($"{Infrastructure.ConstHelper.TempPath}{kv.Key}");
+                        fileInfo.Directory.Create();
+                        using (var fileStream = fileInfo.Open(FileMode.Create))
+                        {
+                            var read = 0;
+                            var current = 0L;
+                            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fileStream.Write(buffer, 0, read);
+                                current += read;
+                                yield return null;
+                                Dispatcher.Invoke(() =>
+                                {
+                                    progress.Value = 100.0 / (totalSize / current);
+                                });
+                            }
+                            fileStream.Flush();
+                            fileStream.Close();
+                        }
+                    }
+                }
+                yield return null;
             }
+        }
+ 
+        private async Task UpdateTime(long dateTimeTicks)
+        {
+            var currentTime = DateTime.Now.Ticks;
+            _coroutineWoker.WorksUpdate((float)TimeSpan.FromTicks(DateTime.Now.Ticks - dateTimeTicks).TotalSeconds);
+            await Task.Delay(10);
+            await UpdateTime(currentTime);
         }
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
             e.Cancel = true;
-            if (this.MessageShow("", ObjectCache.GetValue("CancelPatch").ToString(), MessageDialogStyle.AffirmativeAndNegative,
+            if (this.ShowMessageDialog("", _messageTemplate.Get(Message.CancelPatch, _language), MessageDialogStyle.AffirmativeAndNegative,
                     new MetroDialogSettings()
                     {
                         DialogTitleFontSize = 0.1F,
@@ -67,12 +166,13 @@ namespace Patcher
                     }) == MessageDialogResult.Affirmative)
             {
                 btnCancel.IsEnabled = false;
-                _cts.Cancel();
             }
         }
         private void Init()
         {
-            btnCancel.Content = ObjectCache.GetValue("Cancel");
+            btnCancel.Content = _labelTemplate.Get(Label.Cancel, _language);
+
+            _ = UpdateTime(DateTime.Now.Ticks);
         }
         private void InitEvent()
         {
@@ -82,7 +182,7 @@ namespace Patcher
         {
             if(sender.Equals(btnCancel))
             {
-                if (this.MessageShow("", ObjectCache.GetValue("CancelPatch").ToString(), MessageDialogStyle.AffirmativeAndNegative,
+                if (this.ShowMessageDialog("", _messageTemplate.Get(Message.CancelPatch, _language), MessageDialogStyle.AffirmativeAndNegative,
                     new MetroDialogSettings()
                     {
                         DialogTitleFontSize = 0.1F,
@@ -90,7 +190,6 @@ namespace Patcher
                     }) == MessageDialogResult.Affirmative)
                 {
                     btnCancel.IsEnabled = false;
-                    _cts.Cancel();
                     Rollback();
                     Application.Current.Shutdown();
                 }
@@ -100,11 +199,11 @@ namespace Patcher
         private async Task RunPatch()
         {
             Backup();
-            await DownloadFiles(_cts.Token);
-            await Patching(_cts.Token);
+            //await DownloadFiles(_cts.Token);
+            //await Patching(_cts.Token);
             await Dispatcher.InvokeAsync(() =>
             {
-                if (this.MessageShow("", ObjectCache.GetValue("CompletePatch").ToString(), MessageDialogStyle.Affirmative,
+                if (this.ShowMessageDialog("", _messageTemplate.Get(Message.CompletePatch, _language), MessageDialogStyle.Affirmative,
                     new MetroDialogSettings()
                     {
                         DialogTitleFontSize = 0.1F,
@@ -115,243 +214,138 @@ namespace Patcher
                 }
             });
         }
-        private async Task CheckPatchList()
-        {
-            try
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    lblState.Content = ObjectCache.GetValue("SearchPatchList");
-                });
-                
-                var response = await httpClient.GetAsync(ObjectCache.GetValue("PatchUrl").ToString());
-                using (var stream = await response.Content.ReadAsStreamAsync())
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        var json = reader.ReadToEnd();
-                        var patchModels = JsonHelper.DeserializeObject<Dictionary<string, PatchInfoModel>>(json);
-                        var version = ObjectCache.GetValue("PathchVersion") as Infrastructure.Version;
-                        if (patchModels.ContainsKey(version.ToVersionString()))
-                        {
-                            var patchModel = patchModels[version.ToVersionString()];
-                            ObjectCache.SetValue("PatchMethod", patchModel.Method);
-                            if (patchModel.Method == PatchMethod.Exe)
-                            {
-                                _patchList.AddRange(patchModel.List.Where(r => r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() == 2)
-                                .Select(r =>
-                                {
-                                    var split = r.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                    return new Tuple<string, string>(split[0], split[1]);
-                                }));
-                            }
-                            else
-                            {
-                                Process.Start(Utils.ConstHelper.ReleaseUrl);
-                                Application.Current.Shutdown();
-                            }
-                        }
-                    }
-                }
-                await Task.Delay(1);
-                Dispatcher.Invoke(() =>
-                {
-                    lblCount.Content = $"(0/{_patchList.Count})";
-                });
-            }
-            catch(Exception ex)
-            {
-                LogHelper.Error(ex);
-            }
-            return;
-        }
-        private async Task DownloadFiles(CancellationToken token)
-        {
-            for (int i = 0; i < _patchList.Count; ++i)
-            {
-                try
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        Rollback();
-                        return;
-                    }
-
-                    Dispatcher.Invoke(() =>
-                    {
-                        lblState.Content = $"{ObjectCache.GetValue("Download")} : {_patchList[i].Item1}";
-                        lblCount.Content = $"({i + 1}/{_patchList.Count})";
-                        progress.Value = 0;
-                    });
-
-                    var response = await httpClient.GetAsync(_patchList[i].Item2);
-
-                    var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
-
-                    using (var stream = await response.Content.ReadAsStreamAsync())
-                    {
-                        if (_patchList[i].Item1.Contains(@"\"))
-                        {
-                            var index = _patchList[i].Item1.LastIndexOf(@"\");
-                            Directory.CreateDirectory($@"{ConstHelper.TempPath}\{_patchList[i].Item1.Substring(0, index)}");
-                        }
-                        using (var fs = new FileStream($@"{ConstHelper.TempPath}\{_patchList[i].Item1}", FileMode.Create, FileAccess.Write))
-                        {
-                            var buffer = new byte[4096];
-                            var read = 0;
-                            var current = 0L;
-                            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                fs.Write(buffer, 0, read);
-                                current += read;
-                                await Task.Delay(10);
-                                await Dispatcher.InvokeAsync(() =>
-                                {
-                                    progress.Value = 100 / (totalSize / current);
-                                }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }
-                            fs.Flush();
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //재시도
-                    LogHelper.Error(ex);
-                    i--;
-                }
-            }
-        }
+        
+        
         private void Backup()
         {
-            for(int i=0; i<_patchList.Count; ++i)
-            {
-                try
-                {
-                    if (_patchList[i].Item1.Contains(@"\"))
-                    {
-                        var index = _patchList[i].Item1.LastIndexOf(@"\");
-                        Directory.CreateDirectory($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1.Substring(0, index)}");
-                    }
-                    if (File.Exists(_patchList[i].Item1))
-                    {
-                        if(File.Exists($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
-                        {
-                            File.Delete($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}");
-                        }
-                        File.Move(_patchList[i].Item1, $"{ConstHelper.TempBackupPath}{_patchList[i].Item1}");
-                    }
-                }
-                catch(Exception ex)
-                {
-                    LogHelper.Error(ex);
-                }
-            }
+            //for(int i=0; i<_patchList.Count; ++i)
+            //{
+            //    try
+            //    {
+            //        if (_patchList[i].Item1.Contains(@"\"))
+            //        {
+            //            var index = _patchList[i].Item1.LastIndexOf(@"\");
+            //            Directory.CreateDirectory($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1.Substring(0, index)}");
+            //        }
+            //        if (File.Exists(_patchList[i].Item1))
+            //        {
+            //            if(File.Exists($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
+            //            {
+            //                File.Delete($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}");
+            //            }
+            //            File.Move(_patchList[i].Item1, $"{ConstHelper.TempBackupPath}{_patchList[i].Item1}");
+            //        }
+            //    }
+            //    catch(Exception ex)
+            //    {
+            //        LogHelper.Error(ex);
+            //    }
+            //}
         }
         private async Task Patching(CancellationToken token)
         {
-            var copy = new List<Tuple<string, string>>();
+            //var copy = new List<Tuple<string, string>>();
 
-            for(int i=0; i< _patchList.Count; ++i)
-            {
-                if (_patchList[i].Item1.Equals(AppDomain.CurrentDomain.FriendlyName))
-                {
-                    ObjectCache.SetValue("Patcher", _patchList[i].Item1);
-                    continue;
-                }
-                copy.Add(_patchList[i]);
-            }
+            //for(int i=0; i< _patchList.Count; ++i)
+            //{
+            //    if (_patchList[i].Item1.Equals(AppDomain.CurrentDomain.FriendlyName))
+            //    {
+            //        ObjectCache.SetValue("Patcher", _patchList[i].Item1);
+            //        continue;
+            //    }
+            //    copy.Add(_patchList[i]);
+            //}
 
-            for (int i=0; i< copy.Count; ++i)
-            {
-                try
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        Rollback();
-                        return;
-                    }
-                    await Dispatcher.InvokeAsync(() =>
-                    {
-                        lblState.Content = $"{ObjectCache.GetValue("Patching")} : {copy[i].Item1}";
-                        lblCount.Content = $"({i + 1}/{copy.Count})";
-                        progress.Value = 0;
-                    });
+            //for (int i=0; i< copy.Count; ++i)
+            //{
+            //    try
+            //    {
+            //        if (token.IsCancellationRequested)
+            //        {
+            //            Rollback();
+            //            return;
+            //        }
+            //        await Dispatcher.InvokeAsync(() =>
+            //        {
+            //            lblState.Content = $"{ObjectCache.GetValue("Patching")} : {copy[i].Item1}";
+            //            lblCount.Content = $"({i + 1}/{copy.Count})";
+            //            progress.Value = 0;
+            //        });
 
-                    if (_patchList[i].Item1.Contains(@"\"))
-                    {
-                        var index = copy[i].Item1.LastIndexOf(@"\");
-                        Directory.CreateDirectory($"{copy[i].Item1.Substring(0, index)}");
-                    }
-                    if (File.Exists(copy[i].Item1))
-                    {
-                        File.Delete(copy[i].Item1);
-                    }
-                    if (File.Exists($@"{ConstHelper.TempPath}\{copy[i].Item1}"))
-                    {
-                        var totalSize = new FileInfo($@"{ConstHelper.TempPath}\{copy[i].Item1}").Length;
-                        byte[] buffer = new byte[4096];
-                        using (var inStream = new FileStream($@"{ConstHelper.TempPath}\{copy[i].Item1}", FileMode.Open))
-                        {
-                            using (var outStream = new FileStream(copy[i].Item1, FileMode.OpenOrCreate))
-                            {
-                                var read = 0;
-                                var current = 0;
-                                while((read = inStream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    outStream.Write(buffer, 0, read);
+            //        if (_patchList[i].Item1.Contains(@"\"))
+            //        {
+            //            var index = copy[i].Item1.LastIndexOf(@"\");
+            //            Directory.CreateDirectory($"{copy[i].Item1.Substring(0, index)}");
+            //        }
+            //        if (File.Exists(copy[i].Item1))
+            //        {
+            //            File.Delete(copy[i].Item1);
+            //        }
+            //        if (File.Exists($@"{ConstHelper.TempPath}\{copy[i].Item1}"))
+            //        {
+            //            var totalSize = new FileInfo($@"{ConstHelper.TempPath}\{copy[i].Item1}").Length;
+            //            byte[] buffer = new byte[4096];
+            //            using (var inStream = new FileStream($@"{ConstHelper.TempPath}\{copy[i].Item1}", FileMode.Open))
+            //            {
+            //                using (var outStream = new FileStream(copy[i].Item1, FileMode.OpenOrCreate))
+            //                {
+            //                    var read = 0;
+            //                    var current = 0;
+            //                    while((read = inStream.Read(buffer, 0, buffer.Length)) > 0)
+            //                    {
+            //                        outStream.Write(buffer, 0, read);
 
-                                    current += read;
-                                    await Task.Delay(10);
-                                    await Dispatcher.InvokeAsync(() =>
-                                    {
-                                        progress.Value = 100 / (totalSize / current);
-                                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                                }
-                                outStream.Flush();
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error(ex);
-                    MessageBox.Show(ObjectCache.GetValue("FailedPatchUpdate").ToString(), ObjectCache.GetValue("FailedPatch").ToString());
-                }
-            }
+            //                        current += read;
+            //                        await Task.Delay(10);
+            //                        await Dispatcher.InvokeAsync(() =>
+            //                        {
+            //                            progress.Value = 100 / (totalSize / current);
+            //                        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            //                    }
+            //                    outStream.Flush();
+            //                }
+            //            }
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        LogHelper.Error(ex);
+            //        MessageBox.Show(ObjectCache.GetValue("FailedPatchUpdate").ToString(), ObjectCache.GetValue("FailedPatch").ToString());
+            //    }
+            //}
         }
         private void Rollback()
         {
-            for (int i = 0; i < _patchList.Count; ++i)
-            {
-                try
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        lblState.Content = $"{ObjectCache.GetValue("Rollback")} : {_patchList[i].Item1}";
-                        lblCount.Content = $"({i + 1}/{_patchList.Count})";
-                        progress.Value = 0;
-                    });
-                    if (_patchList[i].Item1.Contains(@"\"))
-                    {
-                        var index = _patchList[i].Item1.LastIndexOf(@"\");
-                        Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
-                    }
-                    if (File.Exists(_patchList[i].Item1))
-                    {
-                        File.Delete(_patchList[i].Item1);
-                    }
+            //for (int i = 0; i < _patchList.Count; ++i)
+            //{
+            //    try
+            //    {
+            //        Dispatcher.Invoke(() =>
+            //        {
+            //            lblState.Content = $"{ObjectCache.GetValue("Rollback")} : {_patchList[i].Item1}";
+            //            lblCount.Content = $"({i + 1}/{_patchList.Count})";
+            //            progress.Value = 0;
+            //        });
+            //        if (_patchList[i].Item1.Contains(@"\"))
+            //        {
+            //            var index = _patchList[i].Item1.LastIndexOf(@"\");
+            //            Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
+            //        }
+            //        if (File.Exists(_patchList[i].Item1))
+            //        {
+            //            File.Delete(_patchList[i].Item1);
+            //        }
 
-                    if (File.Exists($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
-                    {
-                        File.Move($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}", _patchList[i].Item1);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error(ex);
-                }
-            }
+            //        if (File.Exists($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
+            //        {
+            //            File.Move($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}", _patchList[i].Item1);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        LogHelper.Error(ex);
+            //    }
+            //}
         } 
     }
 }

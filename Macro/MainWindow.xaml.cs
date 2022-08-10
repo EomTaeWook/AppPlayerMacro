@@ -83,7 +83,7 @@ namespace Macro
             }
             else
             {
-                ApplicationManager.MessageShow("Error", DocumentHelper.Get(Message.FailedOSVersion));
+                ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(Message.FailedOSVersion));
                 Process.GetCurrentProcess().Kill();
             }
             Refresh();
@@ -258,7 +258,7 @@ namespace Macro
             }
             else
             {
-                ApplicationManager.MessageShow("Error", DocumentHelper.Get(error));
+                ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(error));
             }
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
@@ -391,15 +391,13 @@ namespace Macro
             {
                 return;
             }
-            if (latest.CompareTo(Version.CurrentVersion) > 0)
+            if (latest > Version.CurrentVersion)
             {
-                if (ApplicationManager.MessageShow("Infomation", DocumentHelper.Get(Message.NewVersion), MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                if (ApplicationManager.ShowMessageDialog("Infomation", DocumentHelper.Get(Message.NewVersion), MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
                 {
                     if (File.Exists("Patcher.exe"))
                     {
-                        var param = $"{Version.CurrentVersion.Major}.{Version.CurrentVersion.Minor}.{Version.CurrentVersion.Build} " +
-                            $"{latest.Major}.{latest.Minor}.{latest.Build}";
-                        Process.Start("Patcher.exe", param);
+                        Process.Start("Patcher.exe", $"{Version.CurrentVersion.ToVersionString()} {latest.ToVersionString()}");
                         Application.Current.Shutdown();
                     }
                     else

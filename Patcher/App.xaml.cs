@@ -11,6 +11,7 @@ using Utils;
 using Utils.Document;
 using Utils.Extensions;
 using ConstHelper = Patcher.Infrastructure.ConstHelper;
+using Version = Utils.Infrastructure.Version;
 
 namespace Patcher
 {
@@ -56,50 +57,34 @@ namespace Patcher
                 process.Kill();
             }
 #if !DEBUG
-            if(e.Args.Count() != 2)
+            if(VersionValidate(e.Args) == false)
+            {
                 Current.Shutdown();
-            if(!VersionValidate(e.Args[0].Split('.'), e.Args[1].Split('.'), out int compare, out Infrastructure.Version nextVersion))
-                Current.Shutdown();
-            ObjectCache.SetValue("Version", compare);
-            ObjectCache.SetValue("PathchVersion", nextVersion);
+            }
+            var currentVersion = Version.MakeVersion(e.Args[0]);
+            var patchVersion = Version.MakeVersion(e.Args[1]);
 #else
-            //AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
-            ObjectCache.SetValue("Version", 1);
-            ObjectCache.SetValue("PathchVersion", new Infrastructure.Version(2, 6, 0));
+            var currentVersion = Version.MakeVersion("2.4.0");
+            var patchVersion = Version.MakeVersion("9.6.0");
 #endif
-            InitDirectory();
-            try
-            {
-                Init();
-            }
-            catch(Exception ex)
-            {
 
+            if(currentVersion >= patchVersion)
+            {
+                Current.Shutdown();
             }
-            
+
+            ServiceProviderManager.AddService("CurrentVersion", currentVersion);
+            ServiceProviderManager.AddService("PatchVersion", patchVersion);
+            DependenciesResolved();
+            InitDirectory();
             InitTemplate();
+            
 
             base.OnStartup(e);
         }
+
         protected override void OnExit(ExitEventArgs e)
         {
-            foreach (var item in Dependency.List)
-            {
-                if (File.Exists(item))
-                    continue;
-                File.Move($"{ConstHelper.TempBackupPath}{item}", item);
-            }
-            if(ObjectCache.GetValue("PatchMethod") is PatchMethod patchMethod)
-            {
-                if(patchMethod == PatchMethod.Exe && File.Exists(@".\Macro.exe"))
-                {
-                    Process.Start(@".\Macro.exe", $"{ObjectCache.GetValue("Patcher") ?? ""}");
-                }
-            }
-            else
-            {
-                Process.Start(@".\Macro.exe", $"{ObjectCache.GetValue("Patcher") ?? ""}");
-            }
             base.OnExit(e);
         }
 
@@ -122,70 +107,48 @@ namespace Patcher
             {
                 Trace.WriteLine(ex.Message);
             }
-
-            foreach (var item in Dependency.List)
-            {
-                if (File.Exists(item))
-                {
-                    if (File.Exists($"{ConstHelper.TempBackupPath}{item}"))
-                    {
-                        File.Delete($"{ConstHelper.TempBackupPath}{item}");
-                    }
-                    File.Move(item, $"{ConstHelper.TempBackupPath}{item}");
-                }
-            }
         }
 
-        private bool VersionValidate(string[] current, string[] next, out int compare, out Infrastructure.Version nextVersion)
+        private bool VersionValidate(string [] args)
         {
-            compare = 0;
-
-            if (current.Count() != next.Count() || current.Count() != 3 || next.Count() != 3)
+            if (args.Count() != 2)
             {
-                nextVersion = null;
                 return false;
             }
+            var currentVersion = args[0].Split('.');
 
-            var currentVersion = new Infrastructure.Version()
-            {
-                Major = Convert.ToInt32(current[0]),
-                Minor = Convert.ToInt32(current[1]),
-                Build = Convert.ToInt32(current[2])
-            };
-            nextVersion = new Infrastructure.Version()
-            {
-                Major = Convert.ToInt32(next[0]),
-                Minor = Convert.ToInt32(next[1]),
-                Build = Convert.ToInt32(next[2]),
-            };
-            compare = nextVersion.CompareTo(currentVersion);
+            var nextVersion = args[1].Split('.');
 
+            if (currentVersion.Count() != nextVersion.Count() || currentVersion.Count() != 3 || nextVersion.Count() != 3)
+            {
+                return false;
+            }
+               
             return true;
         }
 
-        private void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            if (args.LoadedAssembly.ManifestModule.Name.Equals("Utils.dll"))
-            {
-                Trace.WriteLine($">>>>{args.LoadedAssembly.ManifestModule.Name} Loaded<<<<");
-            }
-        }
-        private void Init()
+        private void DependenciesResolved()
         {
             var path = Environment.CurrentDirectory + $@"\{Utils.ConstHelper.DefaultConfigFile}";
 
             if (File.Exists(path))
             {
                 var config = JsonHelper.DeserializeObject<dynamic>(File.ReadAllText(path));
-                if (Enum.TryParse(config["Language"].ToString(), true, result: out Language _))
+
+                if (Enum.TryParse(config["Language"].ToString(), true, result: out Language @enum))
                 {
-                    ObjectCache.SetValue("language", config["Language"].ToString());
+                    ServiceProviderManager.AddRefService("Language", @enum);
                 }
             }
             else
             {
-                ObjectCache.SetValue("language", Language.Kor.ToString());
+                ServiceProviderManager.AddRefService("Language", Language.Kor);
             }
+
+            ServiceProviderManager.AddService("PatchUrl", Utils.ConstHelper.PatchV3Url.ToString());
+            ServiceProviderManager.AddService("Label", Singleton<DocumentTemplate<Label>>.Instance);
+            ServiceProviderManager.AddService("Message", Singleton<DocumentTemplate<Message>>.Instance);
+
         }
         private void InitTemplate()
         {
@@ -193,24 +156,9 @@ namespace Patcher
 #if DEBUG
             path = $@"..\..\..\..\Datas\";
 #endif
-            Singleton<DocumentTemplate<Label>>.Instance.Init(path);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(path);
-
-            ObjectCache.SetValue("PatchUrl", Utils.ConstHelper.PatchV3Url.ToString());
+            ServiceProviderManager.GetService<DocumentTemplate<Label>>("Label").Init(path);
+            ServiceProviderManager.GetService<DocumentTemplate<Message>>("Message").Init(path);
             
-            if (Enum.TryParse(ObjectCache.GetValue("language").ToString(), out Language language))
-            {
-                ObjectCache.SetValue("SearchPatchList", DocumentExtensions.Get(Label.SearchPatchList, language));
-                ObjectCache.SetValue("Cancel", DocumentExtensions.Get(Label.Cancel, language));
-                ObjectCache.SetValue("Download", DocumentExtensions.Get(Label.Download, language));                
-                ObjectCache.SetValue("Patching", DocumentExtensions.Get(Label.Patching, language));
-                ObjectCache.SetValue("Rollback", DocumentExtensions.Get(Label.Rollback, language));
-                ObjectCache.SetValue("FailedPatch", DocumentExtensions.Get(Label.FailedPatch, language));
-
-                ObjectCache.SetValue("CancelPatch", DocumentExtensions.Get(Message.CancelPatch, language));
-                ObjectCache.SetValue("CompletePatch", DocumentExtensions.Get(Message.CompletePatch, language));
-                ObjectCache.SetValue("FailedPatchUpdate", DocumentExtensions.Get(Message.FailedPatchUpdate, language));
-            }
         }
     }
 }

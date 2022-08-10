@@ -6,10 +6,10 @@ namespace Utils.Document
 {
     public class DocumentTemplate<T> : IDocument where T : struct //7.3 Enum
     {
-        private readonly Dictionary<T, Dictionary<Language, string>> datas;
+        private readonly Dictionary<T, Dictionary<Language, string>> _datas;
         public DocumentTemplate()
         {
-            datas = new Dictionary<T, Dictionary<Language, string>>();
+            _datas = new Dictionary<T, Dictionary<Language, string>>();
         }
         public void Init(string path)
         {
@@ -21,7 +21,7 @@ namespace Utils.Document
                 {
                     if(Enum.TryParse(data.Code, true, out T code))
                     {
-                        datas.Add(code, new Dictionary<Language, string>()
+                        _datas.Add(code, new Dictionary<Language, string>()
                         {
                             { Language.Kor, data.Kor},
                             { Language.Eng, data.Eng},
@@ -30,6 +30,6 @@ namespace Utils.Document
                 }
             }
         }
-        public string this[T code, Language language] => datas[code][language];
+        public string this[T code, Language language] => _datas[code][language];
     }
 }

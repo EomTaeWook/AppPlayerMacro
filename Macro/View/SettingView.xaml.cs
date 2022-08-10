@@ -57,7 +57,7 @@ namespace Macro.View
                 }
                 else
                 {
-                    ApplicationManager.MessageShow("Error", DocumentHelper.Get(error));
+                    ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(error));
                 }
             }
         }

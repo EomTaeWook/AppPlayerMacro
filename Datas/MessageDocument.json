@@ -103,6 +103,11 @@
     "Code": "CompletePatch",
     "Kor": "패치가 적용되었습니다.",
     "Eng": "Complete Patch!"
+  },
+  {
+    "Code": "GoDownloadUrl",
+    "Kor": "다운로드 페이지로 이동하시겠습니까?",
+    "Eng": "Do you want to go to the download page?"
   }
 ]
 

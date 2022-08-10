@@ -14,7 +14,7 @@ namespace Macro.Infrastructure.Manager
 {
     public class ApplicationManager : Singleton<ApplicationManager>
     {
-        public static MessageDialogResult MessageShow(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
+        public static MessageDialogResult ShowMessageDialog(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
         {
             return ApplicationManager.Instance.metroWindow.ShowModalMessageExternal(title, message, style, new MetroDialogSettings()
             {

@@ -115,12 +115,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extensions\DocumentTemplateExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Infrastructure\ConstHelper.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
-    <Compile Include="Infrastructure\ObjectCache.cs" />
-    <Compile Include="Infrastructure\Dependency.cs" />
-    <Compile Include="Infrastructure\Version.cs" />
+    <Compile Include="Infrastructure\ServiceProviderManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -128,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\PatchInfoModel.cs" />
+    <Compile Include="Models\PatchListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -149,30 +149,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\ControlzEx.dll" />
-    <EmbeddedResource Include="Resources\MahApps.Metro.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\System.Windows.Interactivity.dll" />
-    <EmbeddedResource Include="Resources\WindowsBase.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\KosherUtils.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Microsoft.Xaml.Behaviors.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{da7e0725-f356-48bc-b586-4cd4dea35803}</Project>
       <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Utils.dll" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
