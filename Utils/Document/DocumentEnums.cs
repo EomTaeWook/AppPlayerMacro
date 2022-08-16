@@ -48,6 +48,7 @@
         RepeatSearch,
 
         Cancel,
+        Backup,
         Rollback,
         Download,
         SearchPatchList,

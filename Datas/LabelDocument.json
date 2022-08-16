@@ -160,6 +160,11 @@
     "Eng": "Cancel"
   },
   {
+    "Code": "Backup",
+    "Kor": "백업 중",
+    "Eng": "Backup"
+  },
+  {
     "Code": "Rollback",
     "Kor": "변경을 되돌리는 중입니다.",
     "Eng": "Rollback is in progress."

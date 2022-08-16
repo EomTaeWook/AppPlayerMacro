@@ -1,7 +1,5 @@
 ﻿using KosherUtils.Framework;
-using System;
 using System.Collections.Generic;
-using Utils.Document;
 
 namespace Patcher.Infrastructure
 {

@@ -1,5 +1,4 @@
-﻿using Patcher.Infrastructure;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Utils.Infrastructure;
 
 namespace Patcher.Models
@@ -9,9 +8,15 @@ namespace Patcher.Models
         public string Version { get; set; }
         public List<string> List { get; set; }
 
+        private Dictionary<string, string> fileToMap;
+
         public Dictionary<string, string> GetFileList()
         {
-            var fileToMap = new Dictionary<string, string>();
+            if (fileToMap != null)
+            {
+                return fileToMap;
+            }
+            fileToMap = new Dictionary<string, string>();
             foreach(var item in List)
             {
                 var splits = item.Split(' ');

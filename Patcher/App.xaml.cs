@@ -1,7 +1,11 @@
 ﻿using KosherUtils.Framework;
+using KosherUtils.Log;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Patcher.Extensions;
 using Patcher.Infrastructure;
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,7 +13,6 @@ using System.Reflection;
 using System.Windows;
 using Utils;
 using Utils.Document;
-using Utils.Extensions;
 using ConstHelper = Patcher.Infrastructure.ConstHelper;
 using Version = Utils.Infrastructure.Version;
 
@@ -20,35 +23,108 @@ namespace Patcher
     /// </summary>
     public partial class App : Application
     {
-        private readonly ConcurrentDictionary<string, Assembly> _assembies;
+        private readonly Dictionary<string, Assembly> _assembies;
         public App()
         {
-            _assembies = new ConcurrentDictionary<string, Assembly>();
-            var resources = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(r => r.EndsWith(".dll"));
-            foreach (var resource in resources)
+            _assembies = new Dictionary<string, Assembly>();
+            LoadAssemblyInfo();
+            
+
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
+        }
+        private void LoadAssemblyInfo()
+        {
+            var directoryInfo = new DirectoryInfo(Environment.CurrentDirectory);
+
+            LoadDirectoryAssembly(directoryInfo);
+        }
+        private void LoadDirectoryAssembly(DirectoryInfo directoryInfo)
+        {
+            foreach (var item in directoryInfo.GetDirectories())
             {
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
+                LoadDirectoryAssembly(item);
+            }
+            foreach(var item in directoryInfo.GetFiles())
+            {
+                if(item.Extension.ToLower().Equals(".dll") == true)
                 {
-                    if (stream != null)
-                    {
-                        var buffer = new byte[stream.Length];
-                        stream.Read(buffer, 0, buffer.Length);
-                        var assembly = Assembly.Load(buffer);
-                        _assembies.GetOrAdd(assembly.FullName, assembly);
-                    }
+                    var assembly = Assembly.Load(File.ReadAllBytes(item.FullName));
+                    _assembies.Add(assembly.GetName().Name, assembly);
                 }
             }
-            //AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
         }
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            Trace.WriteLine(args.Name);
-            if(_assembies.TryGetValue(args.Name, out Assembly assembly))
+            if(_assembies.ContainsKey(args.Name) == true)
             {
-                return assembly;
+                return _assembies[args.Name];
             }
             return null;
-        }        
+        }
+
+
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            
+        }
+
+        private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            if (Current == null)
+            {
+                return;
+            }
+            LogHelper.Fatal(e.Exception);
+
+            var result = (Current.MainWindow as MetroWindow).ShowMessageDialog("", $"{e.Exception.Message}", MessageDialogStyle.Affirmative);
+
+            if(result == MessageDialogResult.Affirmative)
+            {
+                Current.Shutdown();
+            }
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (Current == null)
+            {
+                return;
+
+            }
+            var ex = e.ExceptionObject as Exception;
+            if(ex != null)
+            {
+                LogHelper.Fatal(ex);
+
+                var result = (Current.MainWindow as MetroWindow).ShowMessageDialog("", $"{ex.Message}", MessageDialogStyle.Affirmative);
+
+                if (result == MessageDialogResult.Affirmative)
+                {
+                    Current.Shutdown();
+                }
+            }
+        }
+
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (Current == null)
+            {
+                return;
+            }
+
+            LogHelper.Fatal(e.Exception);
+
+            var result = (Current.MainWindow as MetroWindow).ShowMessageDialog("", $"{e.Exception.Message}", MessageDialogStyle.Affirmative);
+
+            if (result == MessageDialogResult.Affirmative)
+            {
+                Current.Shutdown();
+            }
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             var processes = Process.GetProcessesByName("Macro");
@@ -76,37 +152,15 @@ namespace Patcher
             ServiceProviderManager.AddService("CurrentVersion", currentVersion);
             ServiceProviderManager.AddService("PatchVersion", patchVersion);
             DependenciesResolved();
-            InitDirectory();
             InitTemplate();
-            
 
+            
             base.OnStartup(e);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-        }
-
-        private void InitDirectory()
-        {
-            try
-            {
-                if(Directory.Exists(ConstHelper.TempBackupPath))
-                {
-                    Directory.Delete(ConstHelper.TempBackupPath, true);
-                }
-                if(Directory.Exists(ConstHelper.TempPath))
-                {
-                    Directory.Delete(ConstHelper.TempPath, true);
-                }
-                Directory.CreateDirectory(ConstHelper.TempPath);
-                Directory.CreateDirectory(ConstHelper.TempBackupPath);
-            }
-            catch(Exception ex)
-            {
-                Trace.WriteLine(ex.Message);
-            }
         }
 
         private bool VersionValidate(string [] args)
@@ -145,7 +199,7 @@ namespace Patcher
                 ServiceProviderManager.AddRefService("Language", Language.Kor);
             }
 
-            ServiceProviderManager.AddService("PatchUrl", Utils.ConstHelper.PatchV3Url.ToString());
+            ServiceProviderManager.AddService("PatchUrl", ConstHelper.PatchV3Url);
             ServiceProviderManager.AddService("Label", Singleton<DocumentTemplate<Label>>.Instance);
             ServiceProviderManager.AddService("Message", Singleton<DocumentTemplate<Message>>.Instance);
 
