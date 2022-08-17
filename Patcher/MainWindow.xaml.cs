@@ -59,20 +59,6 @@ namespace Patcher
             Topmost = true;
 
             _ = RequestPatchListAsync();
-
-
-            //if (ObjectCache.GetValue("Version").ToString().Equals("1"))
-            //{
-
-            //    Task.Run(async ()=> 
-            //    {
-            //        await RunPatch();
-            //    });
-            //}
-            //else
-            //{
-            //    Application.Current.Shutdown();
-            //}
         }
 
         private async Task RequestPatchListAsync()
@@ -90,7 +76,7 @@ namespace Patcher
 #endif
             using (var reader = new StreamReader(readStream))
             {
-                var json = reader.ReadToEnd();
+                var json = await reader.ReadToEndAsync();
                 var patchModel = JsonHelper.DeserializeObject<PatchListModel>(json);
 
                 var newVersion = Version.MakeVersion(patchModel.CurrentVersion.Version);
@@ -165,44 +151,43 @@ namespace Patcher
             foreach (var patchData in _patchDatas)
             {
                 var fileList = patchData.Value.GetFileList();
-                
-                //foreach(var kv in fileList)
-                //{
-                //    Dispatcher.Invoke(() =>
-                //    {
-                //        lblState.Content = $"{_labelTemplate.Get(Label.Download, _language)} : {kv.Key}";
-                //        lblCount.Content = $"({++index}/{totalCount})";
-                //        progress.Value = 0;
-                //    });
 
-                //    var response =  httpClient.GetAsync(kv.Value).GetAwaiter().GetResult();
+                foreach (var kv in fileList)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        lblState.Content = $"{_labelTemplate.Get(Label.Download, _language)} : {kv.Key}";
+                        lblCount.Content = $"({++index}/{totalCount})";
+                        progress.Value = 0;
+                    });
 
-                //    var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
+                    //var response = httpClient.GetAsync(kv.Value).GetAwaiter().GetResult();
 
-                //    using (var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                //    {
-                //        var fileInfo = new FileInfo($"{ConstHelper.TempPath}{kv.Key}");
-                //        fileInfo.Directory.Create();
-                //        using (var fileStream = fileInfo.Open(FileMode.Create))
-                //        {
-                //            var read = 0;
-                //            var current = 0L;
-                //            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                //            {
-                //                fileStream.Write(buffer, 0, read);
-                //                current += read;
-                //                yield return null;
-                //                Dispatcher.Invoke(() =>
-                //                {
-                //                    progress.Value = 100.0 / (totalSize / current);
-                //                });
-                //            }
-                //            fileStream.Flush();
-                //            fileStream.Close();
-                //        }
-                //    }
+                    //var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
 
-                //}
+                    //using (var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
+                    //{
+                    //    var fileInfo = new FileInfo($"{ConstHelper.TempPath}{kv.Key}");
+                    //    fileInfo.Directory.Create();
+                    //    using (var fileStream = fileInfo.Open(FileMode.Create))
+                    //    {
+                    //        var read = 0;
+                    //        var current = 0L;
+                    //        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                    //        {
+                    //            fileStream.Write(buffer, 0, read);
+                    //            current += read;
+                    //            yield return null;
+                    //            Dispatcher.Invoke(() =>
+                    //            {
+                    //                progress.Value = 100.0 / (totalSize / current);
+                    //            });
+                    //        }
+                    //        fileStream.Flush();
+                    //        fileStream.Close();
+                    //    }
+                    //}
+                }
 
                 yield return PatchingFiles(fileList);
 
@@ -250,21 +235,6 @@ namespace Patcher
             }
         }
         
-        private async Task RunPatch()
-        {
-            Backup();
-            //await DownloadFiles(_cts.Token);
-            //await Patching(_cts.Token);
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (this.ShowMessageDialog("", _messageTemplate.Get(Message.CompletePatch, _language), MessageDialogStyle.Affirmative) == MessageDialogResult.Affirmative)
-                {
-                    Application.Current.Shutdown();
-                }
-            });
-        }
-        
-        
         private IEnumerator Backup()
         {
             var buffer = new byte[4096];
@@ -310,82 +280,12 @@ namespace Patcher
                             }
                         }
                     }
+
+                    fileInfo.Delete();
                 }
                 
                 yield return null;
             }
-        }
-        private async Task Patching(CancellationToken token)
-        {
-            //var copy = new List<Tuple<string, string>>();
-
-            //for(int i=0; i< _patchList.Count; ++i)
-            //{
-            //    if (_patchList[i].Item1.Equals(AppDomain.CurrentDomain.FriendlyName))
-            //    {
-            //        ObjectCache.SetValue("Patcher", _patchList[i].Item1);
-            //        continue;
-            //    }
-            //    copy.Add(_patchList[i]);
-            //}
-
-            //for (int i=0; i< copy.Count; ++i)
-            //{
-            //    try
-            //    {
-            //        if (token.IsCancellationRequested)
-            //        {
-            //            Rollback();
-            //            return;
-            //        }
-            //        await Dispatcher.InvokeAsync(() =>
-            //        {
-            //            lblState.Content = $"{ObjectCache.GetValue("Patching")} : {copy[i].Item1}";
-            //            lblCount.Content = $"({i + 1}/{copy.Count})";
-            //            progress.Value = 0;
-            //        });
-
-            //        if (_patchList[i].Item1.Contains(@"\"))
-            //        {
-            //            var index = copy[i].Item1.LastIndexOf(@"\");
-            //            Directory.CreateDirectory($"{copy[i].Item1.Substring(0, index)}");
-            //        }
-            //        if (File.Exists(copy[i].Item1))
-            //        {
-            //            File.Delete(copy[i].Item1);
-            //        }
-            //        if (File.Exists($@"{ConstHelper.TempPath}\{copy[i].Item1}"))
-            //        {
-            //            var totalSize = new FileInfo($@"{ConstHelper.TempPath}\{copy[i].Item1}").Length;
-            //            byte[] buffer = new byte[4096];
-            //            using (var inStream = new FileStream($@"{ConstHelper.TempPath}\{copy[i].Item1}", FileMode.Open))
-            //            {
-            //                using (var outStream = new FileStream(copy[i].Item1, FileMode.OpenOrCreate))
-            //                {
-            //                    var read = 0;
-            //                    var current = 0;
-            //                    while((read = inStream.Read(buffer, 0, buffer.Length)) > 0)
-            //                    {
-            //                        outStream.Write(buffer, 0, read);
-
-            //                        current += read;
-            //                        await Task.Delay(10);
-            //                        await Dispatcher.InvokeAsync(() =>
-            //                        {
-            //                            progress.Value = 100 / (totalSize / current);
-            //                        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            //                    }
-            //                    outStream.Flush();
-            //                }
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        LogHelper.Error(ex);
-            //        MessageBox.Show(ObjectCache.GetValue("FailedPatchUpdate").ToString(), ObjectCache.GetValue("FailedPatch").ToString());
-            //    }
-            //}
         }
         private void Rollback()
         {
