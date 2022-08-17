@@ -23,23 +23,27 @@ namespace Patcher
     /// </summary>
     public partial class App : Application
     {
-        private readonly Dictionary<string, Assembly> _assembies;
+        private readonly Dictionary<string, string> _assemblyPathToMap;
+        private readonly Dictionary<string, Assembly> _assemblyToMap;
         public App()
         {
-            _assembies = new Dictionary<string, Assembly>();
+            _assemblyPathToMap = new Dictionary<string, string> ();
+            _assemblyToMap = new Dictionary<string, Assembly>();
+
             LoadAssemblyInfo();
             
-
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             DispatcherUnhandledException += App_DispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
         }
+
         private void LoadAssemblyInfo()
         {
             var directoryInfo = new DirectoryInfo(Environment.CurrentDirectory);
 
             LoadDirectoryAssembly(directoryInfo);
+
         }
         private void LoadDirectoryAssembly(DirectoryInfo directoryInfo)
         {
@@ -51,26 +55,30 @@ namespace Patcher
             {
                 if(item.Extension.ToLower().Equals(".dll") == true)
                 {
-                    var assembly = Assembly.Load(File.ReadAllBytes(item.FullName));
-                    _assembies.Add(assembly.GetName().Name, assembly);
+                    var name = item.Name;
+                    _assemblyPathToMap.Add(name.Substring(0, name.IndexOf(".dll")), item.FullName);
                 }
             }
         }
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            if(_assembies.ContainsKey(args.Name) == true)
+            var assemblyName = args.Name.Substring(0, args.Name.IndexOf(","));
+
+            if(_assemblyToMap.ContainsKey(assemblyName) == true)
             {
-                return _assembies[args.Name];
+                return _assemblyToMap[assemblyName];
             }
+
+            if(_assemblyPathToMap.ContainsKey(assemblyName) == true)
+            {
+                var assembly = Assembly.LoadFrom(_assemblyPathToMap[assemblyName]);
+                _assemblyToMap.Add(assemblyName, assembly);
+                return assembly;
+            }
+
+            LogHelper.Debug($"not loaded assembly {assemblyName}");
             return null;
         }
-
-
-        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            
-        }
-
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
             if (Current == null)

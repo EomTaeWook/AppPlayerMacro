@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="Extensions\DocumentTemplateExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Infrastructure\AssemblyManager.cs" />
     <Compile Include="Infrastructure\ConstHelper.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
     <Compile Include="Infrastructure\ServiceProviderManager.cs" />

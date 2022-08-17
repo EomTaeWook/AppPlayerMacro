@@ -126,11 +126,12 @@ namespace Patcher
                 Dispatcher.Invoke(() =>
                 {
                     lblState.Content = $"{_labelTemplate.Get(Label.Patching, _language)} : {kv.Key}";
-                    lblCount.Content = $"({index++}/{patchFileList.Keys.Count})";
+                    lblCount.Content = $"({++index}/{patchFileList.Keys.Count})";
                     progress.Value = 0;
                 });
 
                 fileInfo.Directory.Create();
+                fileInfo.Delete();
                 using (var rs = new FileStream($"{ConstHelper.TempPath}{kv.Key}", FileMode.OpenOrCreate))
                 {
                     var totalSize = rs.Length;
@@ -165,43 +166,43 @@ namespace Patcher
             {
                 var fileList = patchData.Value.GetFileList();
                 
-                foreach(var kv in fileList)
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        lblState.Content = $"{_labelTemplate.Get(Label.Download, _language)} : {kv.Key}";
-                        lblCount.Content = $"({index++}/{totalCount})";
-                        progress.Value = 0;
-                    });
+                //foreach(var kv in fileList)
+                //{
+                //    Dispatcher.Invoke(() =>
+                //    {
+                //        lblState.Content = $"{_labelTemplate.Get(Label.Download, _language)} : {kv.Key}";
+                //        lblCount.Content = $"({++index}/{totalCount})";
+                //        progress.Value = 0;
+                //    });
 
-                    var response =  httpClient.GetAsync(kv.Value).GetAwaiter().GetResult();
+                //    var response =  httpClient.GetAsync(kv.Value).GetAwaiter().GetResult();
 
-                    var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
+                //    var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
 
-                    using (var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                    {
-                        var fileInfo = new FileInfo($"{ConstHelper.TempPath}{kv.Key}");
-                        fileInfo.Directory.Create();
-                        using (var fileStream = fileInfo.Open(FileMode.Create))
-                        {
-                            var read = 0;
-                            var current = 0L;
-                            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                fileStream.Write(buffer, 0, read);
-                                current += read;
-                                yield return null;
-                                Dispatcher.Invoke(() =>
-                                {
-                                    progress.Value = 100.0 / (totalSize / current);
-                                });
-                            }
-                            fileStream.Flush();
-                            fileStream.Close();
-                        }
-                    }
+                //    using (var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
+                //    {
+                //        var fileInfo = new FileInfo($"{ConstHelper.TempPath}{kv.Key}");
+                //        fileInfo.Directory.Create();
+                //        using (var fileStream = fileInfo.Open(FileMode.Create))
+                //        {
+                //            var read = 0;
+                //            var current = 0L;
+                //            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                //            {
+                //                fileStream.Write(buffer, 0, read);
+                //                current += read;
+                //                yield return null;
+                //                Dispatcher.Invoke(() =>
+                //                {
+                //                    progress.Value = 100.0 / (totalSize / current);
+                //                });
+                //            }
+                //            fileStream.Flush();
+                //            fileStream.Close();
+                //        }
+                //    }
 
-                }
+                //}
 
                 yield return PatchingFiles(fileList);
 
@@ -214,7 +215,7 @@ namespace Patcher
             var currentTime = DateTime.Now.Ticks;
             _coroutineWoker.WorksUpdate((float)TimeSpan.FromTicks(DateTime.Now.Ticks - dateTimeTicks).TotalSeconds);
             await Task.Delay(50);
-            await UpdateTime(currentTime);
+            _ = UpdateTime(currentTime);
         }
         protected override void OnClosing(CancelEventArgs e)
         {
