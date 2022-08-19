@@ -1,4 +1,6 @@
-﻿namespace Utils
+﻿using System.IO;
+
+namespace Utils
 {
     public class ConstHelper
     {
@@ -9,6 +11,8 @@
         public static readonly string DefaultSaveCacheFile = @"Cache.dll";
         public static readonly string DefaultPatcherName = @"Patcher.exe";
 
+        public static readonly string TempPath = Path.GetTempPath() + $"Macro\\";
+        public static readonly string TempBackupPath = $"{ TempPath }backup\\";
 
         public static readonly int MinPeriod = 100;
         public static readonly int MinItemDelay = 100;

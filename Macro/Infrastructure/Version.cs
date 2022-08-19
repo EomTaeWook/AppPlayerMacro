@@ -9,7 +9,7 @@ namespace Macro.Infrastructure
         public static readonly int Build = 4;
     }
 
-    public class Version : Utils.Infrastructure.Version
+    public class Version : Utils.Models.Version
     {
         public Version()
         {

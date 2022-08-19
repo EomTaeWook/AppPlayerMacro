@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Utils.Infrastructure;
+using Utils.Models;
 
 namespace Patcher.Models
 {
@@ -26,7 +26,7 @@ namespace Patcher.Models
         }
         public Version GetVersion()
         {
-            return Utils.Infrastructure.Version.MakeVersion(this.Version);
+            return Utils.Models.Version.MakeVersion(this.Version);
         }
     }
 }

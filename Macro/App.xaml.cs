@@ -41,18 +41,7 @@ namespace Macro
 #endif
             };
 
-            var exeList = e.Args.Where(r => Path.GetExtension(r).Equals(".exe")).ToArray();
-            if(exeList.Count() > 0)
-            {
-                for (int i = 0; i < exeList.Length; ++i)
-                {
-                    TempFolderFileMove(exeList[i]);
-                }
-            }
-            else
-            {
-                TempFolderFileMove(ConstHelper.DefaultPatcherName);
-            }
+            TempFolderFileMove();
             Init();
             base.OnStartup(e);
         }
@@ -63,23 +52,36 @@ namespace Macro
 
             ShutdownMode = ShutdownMode.OnLastWindowClose;
         }
-        private void TempFolderFileMove(string fileName)
+        private void TempFolderFileMove()
         {
-            var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(Path.GetFileNameWithoutExtension(fileName))).ToArray();
-            foreach (var process in processes)
-            {
-                process.Kill();
-            }
-            if (File.Exists(fileName) && File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
-            {
-                File.Delete(fileName);
-                File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
-            }
-            else if (File.Exists($@"{Path.GetTempPath()}Macro\{fileName}"))
-            {
-                File.Move($@"{Path.GetTempPath()}Macro\{fileName}", fileName);
-            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(ConstHelper.TempPath);
+
+            MoveTempFolderFile(directoryInfo);
+
         }
+        private void MoveTempFolderFile(DirectoryInfo directoryInfo)
+        {
+            foreach(var item in directoryInfo.GetDirectories())
+            {
+                MoveTempFolderFile(item);
+            }
+
+            foreach(var item in directoryInfo.GetFiles())
+            {
+                if(item.Extension.ToLower().Equals(".exe") == true)
+                {
+                    var name = Path.GetFileNameWithoutExtension(item.Name);
+                    var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(name));
+                    foreach (var process in processes)
+                    {
+                        process.Kill();
+                    }
+                    File.Move(item.FullName, item.Name);
+                }
+            }
+
+        }
+
         private void InitTemplate()
         {
             Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFilePath);

@@ -5,16 +5,14 @@ using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
 using Patcher.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using Utils;
 using Utils.Document;
 using ConstHelper = Patcher.Infrastructure.ConstHelper;
-using Version = Utils.Infrastructure.Version;
+using Version = Utils.Models.Version;
 
 namespace Patcher
 {
@@ -25,9 +23,6 @@ namespace Patcher
     {
         public App()
         {
-            DispatcherUnhandledException += App_DispatcherUnhandledException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
         }
         
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
@@ -102,8 +97,11 @@ namespace Patcher
             var currentVersion = Version.MakeVersion("2.4.0");
             var patchVersion = Version.MakeVersion("9.6.0");
 #endif
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
 
-            if(currentVersion >= patchVersion)
+            if (currentVersion >= patchVersion)
             {
                 Current.Shutdown();
             }
@@ -112,7 +110,6 @@ namespace Patcher
             ServiceProviderManager.AddService("PatchVersion", patchVersion);
             DependenciesResolved();
             InitTemplate();
-
             
             base.OnStartup(e);
         }

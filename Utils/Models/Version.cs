@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Utils.Infrastructure
+namespace Utils.Models
 {
     public class Version
     {

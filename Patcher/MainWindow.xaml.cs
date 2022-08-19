@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -18,7 +19,7 @@ using System.Windows;
 using Utils;
 using Utils.Document;
 using ConstHelper = Patcher.Infrastructure.ConstHelper;
-using Version = Utils.Infrastructure.Version;
+using Version = Utils.Models.Version;
 
 namespace Patcher
 {
@@ -60,6 +61,20 @@ namespace Patcher
 
             _ = RequestPatchListAsync();
         }
+        private void ProcessDownloadFiles()
+        {
+            _coroutineWoker.Start(DownloadFiles(), ProcessRunMacro);
+        }
+        private void ProcessRunMacro()
+        {
+#if !DEBUG
+            Process.Start("Macro");
+#else
+            Process.Start(@"..\..\..\..\Release\exe\Macro.exe");
+#endif
+
+            Application.Current.Shutdown();
+        }
 
         private async Task RequestPatchListAsync()
         {
@@ -68,9 +83,9 @@ namespace Patcher
             var currentVersion = ServiceProviderManager.GetService<Version>("CurrentVersion");
 
 #if !DEBUG
-            //var response = await httpClient.GetAsync(ServiceProviderManager.GetService<string>("PatchUrl"));
+            var response = await httpClient.GetAsync(ServiceProviderManager.GetService<string>("PatchUrl"));
 
-            //var readStream = await response.Content.ReadAsStreamAsync();
+            var readStream = await response.Content.ReadAsStreamAsync();
 #else
             var readStream = new FileStream(@"..\..\..\..\Datas\PatchListV3.json", FileMode.Open);
 #endif
@@ -92,12 +107,9 @@ namespace Patcher
                 }
                 _patchDatas.Add(newVersion.GetVersionNumber(), patchModel.CurrentVersion);
             }
-            _coroutineWoker.Start(Backup(), ()=> 
-            {
-                _coroutineWoker.Start(DownloadFiles());
-            });
-
+            _coroutineWoker.Start(Backup(), ProcessDownloadFiles);
         }
+
         private IEnumerator PatchingFiles(Dictionary<string, string> patchFileList)
         {
             var buffer = new byte[4096];
@@ -161,32 +173,34 @@ namespace Patcher
                         progress.Value = 0;
                     });
 
-                    //var response = httpClient.GetAsync(kv.Value).GetAwaiter().GetResult();
+#if !DEBUG
+                    var response = httpClient.GetAsync(kv.Value).GetAwaiter().GetResult();
 
-                    //var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
+                    var totalSize = response.Content.Headers.ContentLength == null ? 0L : (long)response.Content.Headers.ContentLength;
 
-                    //using (var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
-                    //{
-                    //    var fileInfo = new FileInfo($"{ConstHelper.TempPath}{kv.Key}");
-                    //    fileInfo.Directory.Create();
-                    //    using (var fileStream = fileInfo.Open(FileMode.Create))
-                    //    {
-                    //        var read = 0;
-                    //        var current = 0L;
-                    //        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                    //        {
-                    //            fileStream.Write(buffer, 0, read);
-                    //            current += read;
-                    //            yield return null;
-                    //            Dispatcher.Invoke(() =>
-                    //            {
-                    //                progress.Value = 100.0 / (totalSize / current);
-                    //            });
-                    //        }
-                    //        fileStream.Flush();
-                    //        fileStream.Close();
-                    //    }
-                    //}
+                    using (var stream = response.Content.ReadAsStreamAsync().GetAwaiter().GetResult())
+                    {
+                        var fileInfo = new FileInfo($"{ConstHelper.TempPath}{kv.Key}");
+                        fileInfo.Directory.Create();
+                        using (var fileStream = fileInfo.Open(FileMode.Create))
+                        {
+                            var read = 0;
+                            var current = 0L;
+                            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fileStream.Write(buffer, 0, read);
+                                current += read;
+                                yield return null;
+                                Dispatcher.Invoke(() =>
+                                {
+                                    progress.Value = 100.0 / (totalSize / current);
+                                });
+                            }
+                            fileStream.Flush();
+                            fileStream.Close();
+                        }
+                    }
+#endif
                 }
 
                 yield return PatchingFiles(fileList);
@@ -229,8 +243,13 @@ namespace Patcher
                 if (this.ShowMessageDialog("", _messageTemplate.Get(Message.CancelPatch, _language), MessageDialogStyle.AffirmativeAndNegative) == MessageDialogResult.Affirmative)
                 {
                     btnCancel.IsEnabled = false;
-                    Rollback();
-                    Application.Current.Shutdown();
+
+                    this._coroutineWoker.StopAll();
+
+                    this._coroutineWoker.Start(Rollback(), () => 
+                    {
+                        Application.Current.Shutdown();
+                    });
                 }
             }
         }
@@ -287,38 +306,57 @@ namespace Patcher
                 yield return null;
             }
         }
-        private void Rollback()
+        private IEnumerator Rollback()
         {
-            //for (int i = 0; i < _patchList.Count; ++i)
-            //{
-            //    try
-            //    {
-            //        Dispatcher.Invoke(() =>
-            //        {
-            //            lblState.Content = $"{ObjectCache.GetValue("Rollback")} : {_patchList[i].Item1}";
-            //            lblCount.Content = $"({i + 1}/{_patchList.Count})";
-            //            progress.Value = 0;
-            //        });
-            //        if (_patchList[i].Item1.Contains(@"\"))
-            //        {
-            //            var index = _patchList[i].Item1.LastIndexOf(@"\");
-            //            Directory.CreateDirectory($"{_patchList[i].Item1.Substring(0, index)}");
-            //        }
-            //        if (File.Exists(_patchList[i].Item1))
-            //        {
-            //            File.Delete(_patchList[i].Item1);
-            //        }
+            var buffer = new byte[4096];
+            foreach (var patchData in _patchDatas)
+            {
+                foreach (var item in patchData.Value.GetFileList())
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        lblState.Content = $"{_labelTemplate.Get(Label.Rollback, _language)} : {item.Key}";
+                    });
 
-            //        if (File.Exists($@"{ConstHelper.TempBackupPath}{_patchList[i].Item1}"))
-            //        {
-            //            File.Move($"{ConstHelper.TempBackupPath}{_patchList[i].Item1}", _patchList[i].Item1);
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        LogHelper.Error(ex);
-            //    }
-            //}
+                    var rollbackFileInfo = new FileInfo($"{ConstHelper.TempBackupPath}{item.Key}");
+
+                    if(rollbackFileInfo.Exists == false)
+                    {
+                        continue;
+                    }
+
+                    var fileInfo = new FileInfo($"{item.Key}");
+
+                    if(fileInfo.Exists == true)
+                    {
+                        fileInfo.Delete();
+                    }
+
+                    using (var rs = rollbackFileInfo.OpenRead())
+                    {
+                        var read = 0;
+                        var totalSize = rollbackFileInfo.Length;
+                        var current = 0;
+                        while ((read = rs.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            using (var ws = fileInfo.OpenWrite())
+                            {
+                                ws.Write(buffer, 0, read);
+                                current += read;
+
+                                Dispatcher.Invoke(() =>
+                                {
+                                    progress.Value = 100.0 / (totalSize / current);
+                                });
+                                yield return null;
+                            }
+                        }
+                    }
+
+                    rollbackFileInfo.Delete();
+                }
+                yield return null;
+            }
         } 
     }
 }
