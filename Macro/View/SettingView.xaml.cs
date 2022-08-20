@@ -31,7 +31,6 @@ namespace Macro.View
         {
             var languages = Enum.GetValues(typeof(Language)).Cast<Language>().Where(r => r != Utils.Document.Language.Max);
             comboLanguage.ItemsSource = languages;
-            comboInitialTab.ItemsSource = Enum.GetValues(typeof(InitialTab)).Cast<InitialTab>().Where(r => r != InitialTab.Max);
 
             DataContext = new ViewModelLocator().SettingViewModel;
         }

@@ -1,0 +1,8 @@
+﻿<FileList>
+  <File Reference="AdsJumboWinForm.dll">
+    <ToolboxItems UIFramework="AdsJumbo"  VSCategory="AdsJumbo" BlendCategory="AdsJumbo">
+      <Item Type="AdsJumboWinForm.BannerAds"/>
+      <Item Type="AdsJumboWinForm.InterstitialAd"/>
+    </ToolboxItems>
+  </File>
+</FileList>

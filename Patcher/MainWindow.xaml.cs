@@ -44,6 +44,8 @@ namespace Patcher
 
         private Language _language;
 
+        private FileManager _fileManager = new FileManager();
+
         public MainWindow()
         {
             _labelTemplate = ServiceProviderManager.GetService<DocumentTemplate<Label>>("Label");
@@ -63,10 +65,20 @@ namespace Patcher
         }
         private void ProcessDownloadFiles()
         {
-            _coroutineWoker.Start(DownloadFiles(), ProcessRunMacro);
+            _coroutineWoker.Start(DownloadFiles(), RestoreNotPatchFiles);
+        }
+        private void RestoreNotPatchFiles()
+        {
+            _fileManager.Move(Environment.CurrentDirectory,
+                            new DirectoryInfo(ConstHelper.TempBackupPath));
+
+            ProcessRunMacro();
         }
         private void ProcessRunMacro()
         {
+            var directoryInfo = new DirectoryInfo(ConstHelper.TempBackupPath);
+            directoryInfo.Delete(true);
+
 #if !DEBUG
             Process.Start("Macro");
 #else
@@ -107,7 +119,7 @@ namespace Patcher
                 }
                 _patchDatas.Add(newVersion.GetVersionNumber(), patchModel.CurrentVersion);
             }
-            _coroutineWoker.Start(Backup(), ProcessDownloadFiles);
+            ProcessDownloadFiles();
         }
 
         private IEnumerator PatchingFiles(Dictionary<string, string> patchFileList)
@@ -251,59 +263,6 @@ namespace Patcher
                         Application.Current.Shutdown();
                     });
                 }
-            }
-        }
-        
-        private IEnumerator Backup()
-        {
-            var buffer = new byte[4096];
-            foreach (var patchData in _patchDatas)
-            {
-                foreach(var item in patchData.Value.GetFileList())
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        lblState.Content = $"{_labelTemplate.Get(Label.Backup, _language)} : {item.Key}";
-                    });
-
-                    var fileInfo = new FileInfo($"{item.Key}");
-
-                    if (fileInfo.Exists == false)
-                    {
-                        continue;
-                    }
-
-                    var newFileInfo = new FileInfo($"{ConstHelper.TempBackupPath}{item.Key}");
-                    if (newFileInfo.Exists == true)
-                    {
-                        newFileInfo.Delete();
-                    }
-                    newFileInfo.Directory.Create();
-                    using (var rs = fileInfo.OpenRead())
-                    {
-                        var read = 0;
-                        var totalSize = fileInfo.Length;
-                        var current = 0;
-                        while ((read = rs.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            using (var ws = newFileInfo.OpenWrite())
-                            {
-                                ws.Write(buffer, 0, read);
-                                current += read;
-
-                                Dispatcher.Invoke(() =>
-                                {
-                                    progress.Value = 100.0 / (totalSize / current);
-                                });
-                                yield return null;
-                            }
-                        }
-                    }
-
-                    fileInfo.Delete();
-                }
-                
-                yield return null;
             }
         }
         private IEnumerator Rollback()

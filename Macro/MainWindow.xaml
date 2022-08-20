@@ -1,4 +1,5 @@
-﻿<mah:MetroWindow  x:Class="Macro.MainWindow"
+﻿<mah:MetroWindow xmlns:AdsJumboWinForm="clr-namespace:AdsJumboWinForm;assembly=AdsJumboWinForm" 
+                    x:Class="Macro.MainWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

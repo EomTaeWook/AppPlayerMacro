@@ -2,6 +2,12 @@
 {
     public class ConstHelper
     {
+        public static readonly string[] ExcludeExtension = new string[]
+        {
+            ".config",
+            ".pdb",
+        };
+
         public static readonly string TempBackupPath = Utils.ConstHelper.TempBackupPath;
         public static readonly string TempPath = Utils.ConstHelper.TempPath;
 

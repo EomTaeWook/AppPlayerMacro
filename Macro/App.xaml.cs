@@ -41,7 +41,7 @@ namespace Macro
 #endif
             };
 
-            TempFolderFileMove();
+            MovePatcherFile();
             Init();
             base.OnStartup(e);
         }
@@ -52,23 +52,16 @@ namespace Macro
 
             ShutdownMode = ShutdownMode.OnLastWindowClose;
         }
-        private void TempFolderFileMove()
+        private void MovePatcherFile()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(ConstHelper.TempPath);
-
-            MoveTempFolderFile(directoryInfo);
-
-        }
-        private void MoveTempFolderFile(DirectoryInfo directoryInfo)
-        {
-            foreach(var item in directoryInfo.GetDirectories())
+            if(directoryInfo.Exists == false)
             {
-                MoveTempFolderFile(item);
+                return;
             }
-
-            foreach(var item in directoryInfo.GetFiles())
+            foreach (var item in directoryInfo.GetFiles())
             {
-                if(item.Extension.ToLower().Equals(".exe") == true)
+                if (item.Extension.ToLower().Equals(".exe") == true)
                 {
                     var name = Path.GetFileNameWithoutExtension(item.Name);
                     var processes = Process.GetProcesses().Where(r => r.ProcessName.Equals(name));
@@ -79,9 +72,7 @@ namespace Macro
                     File.Move(item.FullName, item.Name);
                 }
             }
-
         }
-
         private void InitTemplate()
         {
             Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFilePath);

@@ -21,6 +21,7 @@ namespace Patcher
     /// </summary>
     public partial class App : Application
     {
+        private FileManager _fileManager = new FileManager();
         public App()
         {
         }
@@ -78,7 +79,11 @@ namespace Patcher
                 Current.Shutdown();
             }
         }
-
+        
+        private void AllFileBackup()
+        {
+            _fileManager.Move(ConstHelper.TempBackupPath, new DirectoryInfo(Environment.CurrentDirectory), true);
+        }
         protected override void OnStartup(StartupEventArgs e)
         {
             var processes = Process.GetProcessesByName("Macro");
@@ -86,6 +91,7 @@ namespace Patcher
             {
                 process.Kill();
             }
+            AllFileBackup();
 #if !DEBUG
             if(VersionValidate(e.Args) == false)
             {
