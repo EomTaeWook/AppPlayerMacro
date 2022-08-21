@@ -351,6 +351,7 @@ namespace Macro.View
                 {
                     _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
                 }
+                Application.Current.MainWindow.WindowState = WindowState.Minimized;
                 ApplicationManager.Instance.ShowMousePointView();
             }
             else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
@@ -507,7 +508,9 @@ namespace Macro.View
             }
             _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = e.MonitorInfo;
             _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = e.MouseTriggerInfo;
+
             ApplicationManager.Instance.CloseMousePointView();
+            Application.Current.MainWindow.WindowState = WindowState.Normal;
 
             //btnMouseWheel.Visibility = Visibility.Visible;
             //btnMouseWheel.IsEnabled = true;

@@ -54,11 +54,17 @@
                 </Grid>
             </DockPanel>
         </Border>
-        <mah:MetroAnimatedTabControl x:Name="tab_content">
-            <mah:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
-                <view:ContentView x:Name="contentView" Tag="Common"/>
-            </mah:MetroTabItem>
-        </mah:MetroAnimatedTabControl>
+        <DockPanel>
+            <WindowsFormsHost DockPanel.Dock="Top" Height="70">
+                <AdsJumboWinForm:BannerAds x:Name="ads" />
+            </WindowsFormsHost>
+            <mah:MetroAnimatedTabControl x:Name="tab_content" DockPanel.Dock="Bottom">
+                <mah:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
+                    <view:ContentView x:Name="contentView" Tag="Common"/>
+                </mah:MetroTabItem>
+            </mah:MetroAnimatedTabControl>
+        </DockPanel>
+        
     </DockPanel>
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl x:Name="flyoutsControl">

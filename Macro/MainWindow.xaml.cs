@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -47,7 +48,7 @@ namespace Macro
             InitEvent();
             Init();
             VersionCheck();
-
+            this.ads.ShowAd(728, 90, "5ybbzi0gxwn0");
         }
         private void InitEvent()
         {
@@ -261,39 +262,25 @@ namespace Macro
                 ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(error));
             }
         }
+        private async Task Save()
+        {
+            var triggers = _contentView.eventConfigView.GetDataContext().TriggerSaves;
+
+            await FileManager.Instance.Save(GetSaveFilePath(), triggers);
+        }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
-            //if (tab_content.SelectedContent is ContentView view)
-            //{
-            //    var path = _viewMap[view.Tag.ToString()].SaveFilePath;
-            //    _taskQueue.Enqueue(() =>
-            //    {
-            //        return view.Delete(path);
-            //    }).ContinueWith(task => 
-            //    {
-            //        Dispatcher.Invoke(() =>
-            //        {
-            //            view.Clear();
-            //            Clear();
-            //        });
-            //    }); ;
-            //}
+            if (File.Exists(GetSaveFilePath()))
+            {
+                File.Delete(GetSaveFilePath());
+            }
+            _ = Save();
         }
         private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
         {
-            //if(tab_content.SelectedContent is ContentView view)
-            //{
-            //    var path = _viewMap[view.Tag.ToString()].SaveFilePath;
-            //    _taskQueue.Enqueue(async () =>
-            //    {
-            //        await view.Save(path);
-            //        obj.SelectedTreeViewItem.IsSelected = true;
-            //        NotifyHelper.InvokeNotify(NotifyEventType.TreeGridViewFocus, new TreeGridViewFocusEventArgs()
-            //        {
-            //            Mode = (InitialTab)Enum.Parse(typeof(InitialTab), view.Tag.ToString())
-            //        });
-            //    });
-            //}
+            obj.SelectedTreeViewItem.IsSelected = true;
+
+            _ = Save();
         }
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
