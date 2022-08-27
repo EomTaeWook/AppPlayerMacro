@@ -49,6 +49,7 @@ namespace Macro
             Init();
             VersionCheck();
             this.ads.ShowAd(728, 90, "5ybbzi0gxwn0");
+            ApplicationManager.Instance.Init();
         }
         private void InitEvent()
         {
@@ -275,6 +276,8 @@ namespace Macro
                 File.Delete(GetSaveFilePath());
             }
             _ = Save();
+
+            Clear();
         }
         private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
         {

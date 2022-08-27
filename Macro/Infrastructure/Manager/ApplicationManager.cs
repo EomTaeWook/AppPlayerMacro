@@ -58,7 +58,12 @@ namespace Macro.Infrastructure.Manager
                 _captureViews.Add(new CaptureView(item));
                 _mousePointViews.Add(new MousePositionView(item));
             }
+            
+        }
+        public void Init()
+        {
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
+            SchedulerManager.Instance.Start();
         }
 
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
@@ -98,6 +103,7 @@ namespace Macro.Infrastructure.Manager
 
         public void Dispose()
         {
+            SchedulerManager.Instance.Stop();
             progress.Close();
             foreach (var item in _captureViews)
             {

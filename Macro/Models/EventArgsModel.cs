@@ -27,9 +27,6 @@ namespace Macro.Models
     }
     public class EventTriggerOrderChangedEventArgs : INotifyEventArgs
     {
-        public EventTriggerModel TriggerModel1 { get; set; }
-        public EventTriggerModel TriggerModel2 { get; set; }
-
         public TreeViewItem SelectedTreeViewItem { get; set; }
     }
     public class SelctTreeViewItemChangedEventArgs : INotifyEventArgs

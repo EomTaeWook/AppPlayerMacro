@@ -1,4 +1,5 @@
-﻿using Macro.Extensions;
+﻿using KosherUtils.Coroutine;
+using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
@@ -6,6 +7,7 @@ using Macro.Models.ViewModel;
 using Macro.UI;
 using MahApps.Metro.Controls;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -26,6 +28,9 @@ namespace Macro.View
         
         private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
         private EventConfigViewModel _eventConfigViewModelCached;
+        private CoroutineWoker _coroutineWoker = new CoroutineWoker();
+
+        private bool isBtnTreeItemPress = false;
         public EventConfigView()
         {
             InitializeComponent();
@@ -258,6 +263,7 @@ namespace Macro.View
             NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.TreeGridViewFocus += NotifyHelper_TreeGridViewFocus;
+            NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
 
             var radioButtons = this.FindChildren<RadioButton>();
             foreach (var button in radioButtons)
@@ -269,8 +275,11 @@ namespace Macro.View
             {
                 button.Click += Button_Click;
             }
-            
-            PreviewKeyDown += ConfigEventView_PreviewKeyDown;
+
+            btnTreeItemUp.PreviewMouseDown += BtnTreeItem_MouseDown; ;
+            btnTreeItemDown.PreviewMouseDown += BtnTreeItem_MouseDown;
+            btnTreeItemUp.PreviewMouseUp += BtnTreeItem_MouseUp;
+            btnTreeItemDown.PreviewMouseUp += BtnTreeItem_MouseUp;
 
             treeSaves.SelectedItemChanged += TreeSaves_SelectedItemChanged;
             treeSaves.PreviewMouseLeftButtonDown += TreeSaves_PreviewMouseLeftButtonDown;
@@ -280,6 +289,70 @@ namespace Macro.View
             comboRepeatSubItem.SelectionChanged += ComboRepeatSubItem_SelectionChanged;
             checkSameImageDrag.Checked += CheckSameImageDrag_Checked;
             checkSameImageDrag.Unchecked += CheckSameImageDrag_Checked;
+        }
+
+        private void NotifyHelper_UpdatedTime(UpdatedTimeArgs obj)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _coroutineWoker.WorksUpdate(obj.DeltaTime);
+            });
+        }
+
+        private void BtnTreeItem_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            isBtnTreeItemPress = true;
+            _coroutineWoker.StopAll();
+            _coroutineWoker.Start(1F, ProcessLongClickTreePositionButton(sender));
+        }
+        private IEnumerator ProcessLongClickTreePositionButton(object sender)
+        {
+            var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventConfigViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+            var currentIndex = itemContainer.IndexOf(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
+            var changedIndex = currentIndex;
+            var addIndex = 0;
+            if (sender.Equals(btnTreeItemUp))
+            {
+                addIndex = -1;
+            }
+            else if(sender.Equals(btnTreeItemDown))
+            {
+                addIndex = 1;
+            }
+
+            while (isBtnTreeItemPress == true)
+            {
+                if(addIndex ==0)
+                {
+                    yield break;
+                }
+                if (_eventConfigViewModelCached.CurrentTreeViewItem == null)
+                {
+                    yield break;
+                }
+                if(changedIndex + addIndex < 0 || changedIndex + addIndex >= itemContainer.Count)
+                { 
+                    break;
+                }
+                changedIndex += addIndex;
+                itemContainer.Swap(currentIndex, changedIndex);
+                currentIndex = changedIndex;
+
+                yield return 0.3F;
+            }
+
+            NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+            {
+                SelectedTreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
+            });
+
+            yield break;
+        }
+
+        private void BtnTreeItem_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            isBtnTreeItemPress = false;
+            _coroutineWoker.StopAll();
         }
 
         private void EventConfigView_Loaded(object sender, RoutedEventArgs e)
@@ -370,8 +443,6 @@ namespace Macro.View
 
                     NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
-                        TriggerModel1 = itemContainer[currentIndex],
-                        TriggerModel2 = itemContainer[currentIndex - 1],
                         SelectedTreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
                     });
                 }
@@ -382,8 +453,6 @@ namespace Macro.View
 
                     NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
-                        TriggerModel1 = itemContainer[currentIndex],
-                        TriggerModel2 = itemContainer[currentIndex + 1],
                         SelectedTreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
                     });
                 }
@@ -460,10 +529,10 @@ namespace Macro.View
                 ItemContainerPositionChange(targetRow);
                 var item = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 Clear();
+
                 NotifyHelper.InvokeNotify(NotifyEventType.TreeItemOrderChanged, new EventTriggerOrderChangedEventArgs()
                 {
-                    TriggerModel1 = item,
-                    TriggerModel2 = targetRow?.DataContext<EventTriggerModel>()
+                    SelectedTreeViewItem = targetRow
                 });
             }
         }
