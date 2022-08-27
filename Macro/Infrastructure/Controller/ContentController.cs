@@ -396,6 +396,7 @@ namespace Macro.Infrastructure.Controller
             if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
                 LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(100).Wait();
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
@@ -444,7 +445,12 @@ namespace Macro.Infrastructure.Controller
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
             }
         }
-        private void SameImageMouseDragTriggerProcess(IntPtr hWnd, Point start, Point arrive, EventTriggerModel model, Tuple<float, float> factor, ProcessConfigModel config)
+        private void SameImageMouseDragTriggerProcess(IntPtr hWnd,
+                                                    Point start,
+                                                    Point arrive,
+                                                    EventTriggerModel model,
+                                                    Tuple<float, float> factor,
+                                                    ProcessConfigModel config)
         {
             LogHelper.Debug($">>>>Same Drag Mouse Start Target X : { arrive.X } Target Y : { arrive.Y }");
             var interval = 3;
@@ -475,7 +481,9 @@ namespace Macro.Infrastructure.Controller
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             LogHelper.Debug($">>>>Same Drag End Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
         }
-        private void ImageTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model)
+        private void ImageTriggerProcess(IntPtr hWnd,
+                                        Point location,
+                                        EventTriggerModel model)
         {
             var position = new Point()
             {
@@ -484,9 +492,11 @@ namespace Macro.Infrastructure.Controller
             };
 
             LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
+
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
             Task.Delay(100).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
+
         }
         protected Tuple<Tuple<float, float>, Tuple<float, float>> CalculateFactor(IntPtr hWnd, EventTriggerModel model, bool isDynamic)
         {
