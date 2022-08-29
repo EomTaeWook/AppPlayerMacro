@@ -239,7 +239,7 @@
     <Compile Include="Models\ApplicationDataModel.cs" />
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
-    <Compile Include="Infrastructure\Version.cs" />
+    <Compile Include="Infrastructure\VersionNote.cs" />
     <Compile Include="Models\RoiPositionModel.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />

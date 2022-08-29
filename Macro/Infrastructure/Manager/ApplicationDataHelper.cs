@@ -8,18 +8,28 @@ namespace Macro.Infrastructure.Manager
 {
     public class ApplicationDataHelper : IDocument
     {
-        private IList<ApplicationDataModel> _applications;
+        private Dictionary<string, ApplicationDataModel> _applicationToMap;
 
         public ApplicationDataHelper()
         {
+            _applicationToMap = new Dictionary<string, ApplicationDataModel>();
         }
         public void Init(string filename)
         {
-            _applications = JsonHelper.Load<IList<ApplicationDataModel>>($"{ConstHelper.DefaultDatasFilePath}{filename}.json");
+            var list = JsonHelper.Load<IList<ApplicationDataModel>>($"{ConstHelper.DefaultDatasFilePath}{filename}.json");
+
+            foreach(var item in list)
+            {
+                _applicationToMap.Add(item.Code, item);
+            }
         }
         public ApplicationDataModel Find(string name)
         {
-            return _applications.Where(r => r.Code.ToLower().Equals(name.ToLower())).FirstOrDefault();
-        }        
+            if(_applicationToMap.ContainsKey(name) == true)
+            {
+                return _applicationToMap[name];
+            }
+            return null;
+        }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Utils.Models
+﻿namespace Utils.Models
 {
     public class Version
     {

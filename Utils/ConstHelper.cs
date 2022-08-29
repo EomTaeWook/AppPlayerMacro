@@ -24,8 +24,7 @@ namespace Utils
         public static readonly short WheelDelta = 120;
         public static readonly int DefaultMaxSameImageCount = 5;
 
-        
-        public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=188XWJsrFW39ty-VltB-7OjdYZf9FV3Q1";
+        public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=1WzaTDn7gj0cQZAz5gQt_VMgQ10Y01mPL";
         public static readonly string ReleaseUrl = @"https://github.com/EomTaeWook/EmulatorMacro/releases";
         
         public static readonly string HelpUrl = @"https://github.com/EomTaeWook/EmulatorMacro/blob/master/README.md";

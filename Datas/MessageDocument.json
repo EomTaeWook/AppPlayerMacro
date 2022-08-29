@@ -60,6 +60,11 @@
     "Eng": "There is a new version."
   },
   {
+    "Code": "PatchContent",
+    "Kor": "패치 내용 : {0}",
+    "Eng": "Patch Content : {0}"
+  },
+  {
     "Code": "CancelPatch",
     "Kor": "패치를 중단하시겠습니까?",
     "Eng": "Stop patching?"
