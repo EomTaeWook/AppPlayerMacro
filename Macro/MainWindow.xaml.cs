@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +21,6 @@ using Utils.Extensions;
 using Utils.Infrastructure;
 using Label = System.Windows.Controls.Label;
 using Rect = Utils.Infrastructure.Rect;
-using Version = Macro.Infrastructure.Version;
 
 namespace Macro
 {
@@ -376,24 +374,29 @@ namespace Macro
             {
                 return;
             }
-            var latest = ApplicationManager.Instance.GetLatestVersion();
-            if(latest == null)
+            var latestNote = ApplicationManager.Instance.GetLatestVersion();
+            if(latestNote == null)
             {
                 return;
             }
-            if (latest > Version.CurrentVersion)
+            if (latestNote.Version > VersionNote.CurrentVersion)
             {
-                if (ApplicationManager.ShowMessageDialog("Infomation", DocumentHelper.Get(Message.NewVersion), MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                if (ApplicationManager.ShowMessageDialog("Infomation",
+                                                        $"{DocumentHelper.Get(Message.NewVersion)}{Environment.NewLine}{Environment.NewLine}" +
+                                                        $"{DocumentHelper.Get(Message.PatchContent, latestNote.Desc)}",
+                                                        MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
                 {
-                    if (File.Exists("Patcher.exe"))
-                    {
-                        Process.Start("Patcher.exe", $"{Version.CurrentVersion.ToVersionString()} {latest.ToVersionString()}");
-                        Application.Current.Shutdown();
-                    }
-                    else
-                    {
-                        Process.Start(ConstHelper.ReleaseUrl);
-                    }
+                    Process.Start(ConstHelper.ReleaseUrl);
+
+                    //if (File.Exists("Patcher.exe"))
+                    //{
+                    //    Process.Start("Patcher.exe", $"{VersionNote.CurrentVersion.ToVersionString()} {latestNote.Version.ToVersionString()}");
+                    //    Application.Current.Shutdown();
+                    //}
+                    //else
+                    //{
+                    //    Process.Start(ConstHelper.ReleaseUrl);
+                    //}
                 }
             }
         }

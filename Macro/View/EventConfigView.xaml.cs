@@ -216,6 +216,8 @@ namespace Macro.View
             {
                 var model = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>();
 
+                _eventConfigViewModelCached.CurrentTreeViewItem.IsSelected = false;
+
                 if (_eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null)
                 {
                     _eventConfigViewModelCached.TriggerSaves.Remove(model);
@@ -289,6 +291,7 @@ namespace Macro.View
             comboRepeatSubItem.SelectionChanged += ComboRepeatSubItem_SelectionChanged;
             checkSameImageDrag.Checked += CheckSameImageDrag_Checked;
             checkSameImageDrag.Unchecked += CheckSameImageDrag_Checked;
+            KeyDown += ConfigEventView_PreviewKeyDown;
         }
 
         private void NotifyHelper_UpdatedTime(UpdatedTimeArgs obj)
@@ -372,10 +375,7 @@ namespace Macro.View
 
         private void NotifyHelper_TreeGridViewFocus(TreeGridViewFocusEventArgs obj)
         {
-            if(obj.Mode == InitialTab.Common)
-            {
-                this.treeSaves.Focus();
-            }
+            this.treeSaves.Focus();
         }
 
         private void CheckSameImageDrag_Checked(object sender, RoutedEventArgs e)

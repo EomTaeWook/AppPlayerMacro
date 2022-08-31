@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "Code": "Nox",
     "IsDynamic": true,
@@ -30,9 +30,9 @@
   {
     "Code": "HD-Player",
     "IsDynamic": true,
-    "HandleName": "plrNativeInputWindow",
+    "HandleName": "HD-Player",
     "OffsetX": 0,
-    "OffsetY": 0
+    "OffsetY": -35
   },
   {
     "Code": "mspaint",

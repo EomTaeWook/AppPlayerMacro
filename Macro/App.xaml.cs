@@ -1,4 +1,5 @@
-﻿using KosherUtils.Framework;
+﻿using KosherExtensions.Log.Helper;
+using KosherUtils.Framework;
 using KosherUtils.Log;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Interface;
@@ -20,8 +21,14 @@ namespace Macro
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+        }
         protected override void OnStartup(StartupEventArgs e)
         {
+            LogBuilder.AddLogConfig(LogConfigXmlReader.Load("KosherLog.config"));
+            LogBuilder.Build();
+
             DispatcherUnhandledException += (s, ex) =>
             {
                 ex.Handled = true;

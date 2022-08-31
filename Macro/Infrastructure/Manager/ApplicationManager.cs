@@ -115,9 +115,9 @@ namespace Macro.Infrastructure.Manager
             }
         }
 
-        public Version GetLatestVersion()
+        public VersionNote GetLatestVersion()
         {
-            Version version = null;
+            VersionNote versionNote = null;
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(ConstHelper.VersionUrl);
@@ -125,7 +125,7 @@ namespace Macro.Infrastructure.Manager
                 {
                     using (var stream = new StreamReader(response.GetResponseStream()))
                     {
-                        version = JsonHelper.DeserializeObject<Version>(stream.ReadToEnd());
+                        versionNote = JsonHelper.DeserializeObject<VersionNote>(stream.ReadToEnd());
                     }
                 }
             }
@@ -134,7 +134,7 @@ namespace Macro.Infrastructure.Manager
                 LogHelper.Error(ex);
             }
 
-            return version;
+            return versionNote;
         }
     }
 }

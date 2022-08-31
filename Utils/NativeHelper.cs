@@ -17,15 +17,21 @@ namespace Utils
 
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetFocus(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr rect, MonitorEnumDelegate callback, int data);
         public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data);
 
-        [DllImport("user32")]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         [DllImport("user32.dll")]
         private static extern int GetWindowTextLength(IntPtr hWnd);
+
+        [DllImport("User32.dll")]
+        public static extern IntPtr GetParent(IntPtr hWnd);
+
 
         [DllImport("user32.dll")]
         private static extern bool EnumChildWindows(IntPtr hwnd, EnumWindowProcDelegate callback, IntPtr lParam);
@@ -41,7 +47,10 @@ namespace Utils
                 {
                     var lParamHwnd = GCHandle.FromIntPtr(lParam);
                     if (lParamHwnd.Target == null && lParamHwnd == null)
+                    {
                         return false;
+                    }
+                        
                     if (lParamHwnd.Target is List<Tuple<string, IntPtr>> list)
                     {
                         var sb = new StringBuilder();
@@ -54,7 +63,10 @@ namespace Utils
             finally
             {
                 if (gcHandle.IsAllocated)
+                {
                     gcHandle.Free();
+                }
+                    
             }
             return childHandles;
         }

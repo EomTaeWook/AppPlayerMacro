@@ -45,6 +45,8 @@ namespace Utils.Infrastructure
     {
         None = 0x000,
 
+        MouseActive = 0x021,
+
         KeyDown = 0x100,
         KeyUp,
         Char,
@@ -63,6 +65,7 @@ namespace Utils.Infrastructure
         RButtonDoubleClick,
 
         MouseWheel = 0x20A,
+        ParentNotify = 0x210,
 
         Max
     }

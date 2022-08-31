@@ -123,6 +123,9 @@
     <Reference Include="ControlzEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.5.0.1\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
+    <Reference Include="KosherExtensions">
+      <HintPath>..\Dll\KosherExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="KosherUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dll\KosherUtils.dll</HintPath>
@@ -239,7 +242,7 @@
     <Compile Include="Models\ApplicationDataModel.cs" />
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
-    <Compile Include="Infrastructure\Version.cs" />
+    <Compile Include="Infrastructure\VersionNote.cs" />
     <Compile Include="Models\RoiPositionModel.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />

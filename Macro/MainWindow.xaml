@@ -64,7 +64,6 @@
                 </mah:MetroTabItem>
             </mah:MetroAnimatedTabControl>
         </DockPanel>
-        
     </DockPanel>
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl x:Name="flyoutsControl">

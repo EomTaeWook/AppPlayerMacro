@@ -27,5 +27,10 @@ namespace Macro.Infrastructure
         {
             return DocumentExtensions.Get(mesage, _language);
         }
+        public static string Get(Message mesage, params string[] args)
+        {
+            var format = DocumentExtensions.Get(mesage, _language);
+            return string.Format(format, args);
+        }
     }
 }

@@ -95,6 +95,7 @@
         FailedInvalidateRoiCapturePosition,
 
         NewVersion,
+        PatchContent,
         CancelPatch,
         FailedPatchUpdate,
         CompletePatch,

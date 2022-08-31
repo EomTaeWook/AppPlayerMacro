@@ -92,6 +92,9 @@
     <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
     </Reference>
+    <Reference Include="KosherExtensions">
+      <HintPath>..\Dll\KosherExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="KosherUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dll\KosherUtils.dll</HintPath>
