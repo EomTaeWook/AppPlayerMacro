@@ -1,6 +1,6 @@
 ﻿using KosherUtils.Framework;
 using KosherUtils.Log;
-using KosherUtils.Log.Config;
+using KosherUtils.Log.LogTarget;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
@@ -25,19 +25,21 @@ namespace Patcher
         private FileManager _fileManager = new FileManager();
         public App()
         {
-            LogBuilder.AddLogConfig(new FileLogConfig()
+            var configuration = new LogConfiguration();
+
+            FileLogTarget fileLogTarget = new FileLogTarget()
             {
                 ArchiveFileName = @"./archive/patcher_log.{#}.txt",
                 ArchiveRollingType = FileRollingType.Day,
                 AutoFlush = true,
                 FileName = @"./logs/patcherLogFile.txt",
                 KeepOpenFile = true,
-                LogFormat = @"${date} | ${level} | ${message}",
+                LogForm = @"${date} | ${level} | ${message}",
                 MaxArchiveFile = 7,
-                MinLogLevel = LogLevel.Info
-            });
-
-            LogBuilder.Build();
+            };
+            configuration.AddTarget("file", fileLogTarget);
+            configuration.AddRule("file", LogLevel.Debug, fileLogTarget);
+            LogBuilder.Configuration(configuration).Build();
         }
         
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
