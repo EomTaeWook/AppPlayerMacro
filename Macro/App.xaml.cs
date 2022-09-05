@@ -26,7 +26,8 @@ namespace Macro
         }
         protected override void OnStartup(StartupEventArgs e)
         {
-            LogBuilder.AddLogConfig(LogConfigXmlReader.Load("KosherLog.config")).Build();
+            LogBuilder.Configuration(LogConfigXmlReader.Load("KosherLog.config"));
+            LogBuilder.Build();
 
             DispatcherUnhandledException += (s, ex) =>
             {
