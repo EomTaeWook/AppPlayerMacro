@@ -1,6 +1,5 @@
 ﻿using KosherUtils.Framework;
 using KosherUtils.Log;
-using KosherUtils.Log.Config;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
@@ -35,9 +34,7 @@ namespace Patcher
                 LogFormat = @"${date} | ${level} | ${message}",
                 MaxArchiveFile = 7,
                 MinLogLevel = LogLevel.Info
-            });
-
-            LogBuilder.Build();
+            }).Build();
         }
         
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
