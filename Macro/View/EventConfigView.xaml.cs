@@ -1,4 +1,4 @@
-﻿using KosherUtils.Coroutine;
+﻿using Kosher.Coroutine;
 using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;

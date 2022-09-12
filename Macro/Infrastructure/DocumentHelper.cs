@@ -1,4 +1,4 @@
-﻿using KosherUtils.Framework;
+﻿using Kosher.Framework;
 using Macro.Models;
 using Utils.Document;
 using Utils.Extensions;

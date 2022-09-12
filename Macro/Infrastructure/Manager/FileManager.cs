@@ -1,5 +1,5 @@
-﻿using KosherUtils.Framework;
-using KosherUtils.Log;
+﻿using Kosher.Framework;
+using Kosher.Log;
 using Macro.Infrastructure.Serialize;
 using System;
 using System.Collections.Generic;

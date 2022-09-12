@@ -1,6 +1,5 @@
-﻿using KosherExtensions.Log.Helper;
-using KosherUtils.Framework;
-using KosherUtils.Log;
+﻿using Kosher.Framework;
+using Kosher.Log;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
@@ -13,6 +12,7 @@ using System.Linq;
 using System.Windows;
 using Utils;
 using Utils.Document;
+using KosherExtensions.Log;
 
 namespace Macro
 {
@@ -42,7 +42,7 @@ namespace Macro
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
 #if DEBUG
-                LogHelper.Debug(ex.Exception.Message, 0, ex.Exception.TargetSite.DeclaringType.FullName);
+                LogHelper.Debug(ex.Exception.Message);
 #else
                 LogHelper.Error(ex.Exception);
 #endif

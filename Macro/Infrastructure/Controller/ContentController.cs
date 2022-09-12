@@ -1,4 +1,4 @@
-﻿using KosherUtils.Log;
+﻿using Kosher.Log;
 using Macro.Extensions;
 using Macro.Infrastructure.Manager;
 using Macro.Models;

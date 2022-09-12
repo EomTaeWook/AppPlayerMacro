@@ -1,4 +1,4 @@
-﻿using KosherUtils.Framework;
+﻿using Kosher.Framework;
 using System.Collections.Generic;
 
 namespace Patcher.Infrastructure

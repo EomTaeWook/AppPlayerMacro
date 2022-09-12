@@ -1,4 +1,4 @@
-﻿using KosherUtils.Log;
+﻿using Kosher.Log;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

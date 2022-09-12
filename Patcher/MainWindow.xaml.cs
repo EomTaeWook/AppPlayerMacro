@@ -1,5 +1,5 @@
-﻿using KosherUtils.Coroutine;
-using KosherUtils.Log;
+﻿using Kosher.Coroutine;
+using Kosher.Log;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;

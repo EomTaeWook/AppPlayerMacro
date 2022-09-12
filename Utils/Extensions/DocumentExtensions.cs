@@ -1,4 +1,4 @@
-﻿using KosherUtils.Framework;
+﻿using Kosher.Framework;
 using Utils.Document;
 
 namespace Utils.Extensions

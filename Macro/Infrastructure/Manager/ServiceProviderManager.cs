@@ -1,4 +1,4 @@
-﻿using KosherUtils.Framework;
+﻿using Kosher.Framework;
 
 namespace Macro.Infrastructure.Manager
 {

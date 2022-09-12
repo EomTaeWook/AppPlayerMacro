@@ -1,6 +1,6 @@
-﻿using KosherUtils.Coroutine;
-using KosherUtils.Framework;
-using KosherUtils.Log;
+﻿using Kosher.Coroutine;
+using Kosher.Framework;
+using Kosher.Log;
 using Macro.Models;
 using System;
 using System.Collections.Generic;

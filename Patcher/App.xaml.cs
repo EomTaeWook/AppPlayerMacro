@@ -1,6 +1,7 @@
-﻿using KosherUtils.Framework;
-using KosherUtils.Log;
-using KosherUtils.Log.LogTarget;
+﻿using Kosher.Framework;
+using Kosher.Log;
+using Kosher.Log.LogTarget;
+using Kosher.Log.Model.Rule;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
@@ -38,7 +39,7 @@ namespace Patcher
                 MaxArchiveFile = 7,
             };
             configuration.AddTarget("file", fileLogTarget);
-            configuration.AddRule("file", LogLevel.Debug, fileLogTarget);
+            configuration.AddRule("file", new LogRule("", LogLevel.Debug, fileLogTarget));
             LogBuilder.Configuration(configuration).Build();
         }
         

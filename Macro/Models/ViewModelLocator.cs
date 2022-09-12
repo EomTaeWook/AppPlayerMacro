@@ -1,4 +1,4 @@
-﻿using KosherUtils.Framework;
+﻿using Kosher.Framework;
 using Macro.Infrastructure.Manager;
 using Macro.Models.ViewModel;
 

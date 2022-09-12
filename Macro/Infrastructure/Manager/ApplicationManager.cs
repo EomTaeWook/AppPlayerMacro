@@ -1,5 +1,5 @@
-﻿using KosherUtils.Framework;
-using KosherUtils.Log;
+﻿using Kosher.Framework;
+using Kosher.Log;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
