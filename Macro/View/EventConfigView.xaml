@@ -27,6 +27,7 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -55,8 +56,8 @@
                     </Grid.ColumnDefinitions>
                     <Grid Name="gridImage" Grid.Column="0" Visibility="Visible">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5.5*"></ColumnDefinition>
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
+                            <ColumnDefinition Width="5.5*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.SameImageDrag, Mode=TwoWay}" Content="{Binding Path=LabelViewModel.SameImageDrag, Source={StaticResource Locator}}" Grid.Column="0"></CheckBox>
                         <mah:NumericUpDown Name="numMaxSameImageCount" Minimum="1" Grid.Column="1" Visibility="Hidden" Value="{Binding Path=CurrentTreeViewItem.DataContext.MaxSameImageCount, Mode=TwoWay}"></mah:NumericUpDown>
@@ -68,6 +69,7 @@
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Button Name="btnMouseCoordinate" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0"></Button>
+                        
                         <!--<Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
                     </Grid>
                     <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>
@@ -85,16 +87,6 @@
                         <mah:NumericUpDown Name="numRelativeY" Grid.Column="3" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></mah:NumericUpDown>
                     </Grid>
                 </Grid>
-                <!--<Label Grid.Column="0" Grid.Row="2" Content="{Binding Path=LabelViewModel.WheelData, Source={StaticResource Locator}}" Visibility="Collapsed" Name="lblWheelData"></Label>
-                <Grid Grid.Column="1" Grid.Row="2" Visibility="Collapsed" Name="gridWheelData">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Controls:NumericUpDown Name="numWheelData" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.MouseTriggerInfo.WheelData, Mode=TwoWay}"></Controls:NumericUpDown>
-                    <Button Name="btnWheelCancel" Grid.Column="1" Content="{Binding Path=LabelViewModel.Cancel, Source={StaticResource Locator}}"></Button>
-                </Grid>-->
-                
                 <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="3">
                     <Grid.ColumnDefinitions>
@@ -109,14 +101,14 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
-                        
-                        
                     </Grid.ColumnDefinitions>
                     <mah:NumericUpDown Name="numEventToNext" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.EventToNext, Mode=TwoWay}" HideUpDownButtons="True" Minimum="0" NumericInputMode="Numbers" ></mah:NumericUpDown>
                 </Grid>
+                <Label Name="lblHardClick" Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></Label>
+                <CheckBox x:Name="checkHardClick" Grid.Row="5" Grid.Column="1" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.HardClick, Mode=TwoWay}" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></CheckBox>
                 
-                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
-                <Grid Grid.Column="1" Grid.Row="5" Visibility="Collapsed" Name="gridRepeat">
+                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="6" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
+                <Grid Grid.Column="1" Grid.Row="6" Visibility="Collapsed" Name="gridRepeat">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                         <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -125,6 +117,8 @@
                     </ComboBox>
                     <mah:NumericUpDown Name="numRepeatCount" Minimum="1" Grid.Column="1" Value="{Binding Path=CurrentTreeViewItem.DataContext.RepeatInfo.Count, Mode=TwoWay}"></mah:NumericUpDown>
                 </Grid>
+                
+                
             </Grid>
             <DockPanel DockPanel.Dock="Left" LastChildFill="True">
                 <Grid DockPanel.Dock="Top">

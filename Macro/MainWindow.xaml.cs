@@ -363,9 +363,7 @@ namespace Macro
             ApplicationManager.ShowProgressbar();
             _config = e.Config;
             Refresh();
-
             LoadDatas(GetSaveFilePath());
-            settingFlyout.IsOpen = !settingFlyout.IsOpen;
             ApplicationManager.HideProgressbar();
         }
         private void VersionCheck()
@@ -455,7 +453,7 @@ namespace Macro
             }
             else if (btn.Equals(btnSetting))
             {
-                settingFlyout.IsOpen = !settingFlyout.IsOpen;
+                UIManager.Instance.AddPopup<SettingView>();
             }
             else if (btn.Equals(btnGithub))
             {

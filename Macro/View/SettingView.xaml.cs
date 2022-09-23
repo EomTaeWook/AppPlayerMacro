@@ -1,9 +1,11 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Controller;
+using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.Models.ViewModel;
+using Macro.UI;
 using MahApps.Metro.Controls;
 using System;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace Macro.View
     /// <summary>
     /// SettingView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class SettingView : UserControl
+    public partial class SettingView : UIItem
     {
         public Config Config { get; private set; }
 
@@ -42,6 +44,7 @@ namespace Macro.View
         private void EventInit()
         {
             btnSave.Click += Button_Click;
+            btnClose.Click += Button_Click;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -58,7 +61,14 @@ namespace Macro.View
                 {
                     ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(error));
                 }
+                UIManager.Instance.ClosePopup(this);
             }
+            else if(btn.Equals(btnClose))
+            {
+                UIManager.Instance.ClosePopup(this);
+            }
+
+
         }
         private void Save(Config model)
         {

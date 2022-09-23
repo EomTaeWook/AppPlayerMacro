@@ -21,8 +21,13 @@
   },
   {
     "Code": "Config",
-    "Kor": "설정",
+    "Kor": "환경 설정",
     "Eng": "Config"
+  },
+  {
+    "Code": "Preferences",
+    "Kor": "환경 설정",
+    "Eng": "Preferences"
   },
   {
     "Code": "EventType",
@@ -58,6 +63,11 @@
     "Code": "Save",
     "Kor": "저장",
     "Eng": "Save"
+  },
+  {
+    "Code": "Close",
+    "Kor": "닫기",
+    "Eng": "Close"
   },
   {
     "Code": "Delete",
@@ -253,6 +263,11 @@
     "Code": "DragDelay",
     "Kor": "드래그 딜레이",
     "Eng": "Drag Delay"
+  },
+  {
+    "Code": "HardClick",
+    "Kor": "물리 클릭",
+    "Eng": "Hard Clickk"
   }
 ]
 

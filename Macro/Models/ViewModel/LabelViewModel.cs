@@ -133,6 +133,14 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.DragDelay);
         }
+        public string Preferences
+        {
+            get => DocumentHelper.Get(Label.Preferences);
+        }
+        public string Close
+        {
+            get => DocumentHelper.Get(Label.Close);
+        }
         public string X
         {
             get => "X";
@@ -177,6 +185,10 @@ namespace Macro.Models.ViewModel
         public string SameImageDrag
         {
             get => DocumentHelper.Get(Label.SameImageDrag);
+        }
+        public string HardClick
+        {
+            get => DocumentHelper.Get(Label.HardClick);
         }
         public string MaxSameImageCount
         {

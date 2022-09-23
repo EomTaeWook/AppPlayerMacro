@@ -224,6 +224,7 @@
     <Compile Include="Infrastructure\Manager\InputManager.cs" />
     <Compile Include="Infrastructure\Manager\SchedulerManager.cs" />
     <Compile Include="Infrastructure\Manager\ServiceProviderManager.cs" />
+    <Compile Include="Infrastructure\Manager\UIManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
@@ -232,8 +233,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ColorModel.cs" />
+    <Compile Include="Models\EventFactorModel.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessConfigModel.cs" />
+    <Compile Include="Models\ProcessResultModel.cs" />
     <Compile Include="Models\RepeatInfoModel.cs" />
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
@@ -243,6 +246,7 @@
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\VersionNote.cs" />
     <Compile Include="Models\RoiPositionModel.cs" />
+    <Compile Include="UI\UIItem.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\Enums.cs" />

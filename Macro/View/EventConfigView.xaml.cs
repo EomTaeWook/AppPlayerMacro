@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Utils;
+using Utils.Infrastructure;
 
 namespace Macro.View
 {
@@ -72,8 +73,6 @@ namespace Macro.View
                 gridRelative.Visibility = Visibility.Collapsed;
                 gridMouse.Visibility = Visibility.Visible;
                 gridImage.Visibility = Visibility.Collapsed;
-                //btnMouseWheel.Visibility = Visibility.Visible;
-                //btnMouseWheel.IsEnabled = false;
             }
             else if (etm.EventType == EventType.Keyboard)
             {
@@ -81,11 +80,6 @@ namespace Macro.View
                 gridMouse.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
                 gridImage.Visibility = Visibility.Collapsed;
-                //btnMouseWheel.Visibility = Visibility.Collapsed;
-                //btnMouseWheel.IsEnabled = false;
-
-                //lblWheelData.Visibility = Visibility.Collapsed;
-                //gridWheelData.Visibility = Visibility.Collapsed;
             }
             else if (etm.EventType == EventType.RelativeToImage)
             {
@@ -93,12 +87,6 @@ namespace Macro.View
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridMouse.Visibility = Visibility.Collapsed;
                 gridImage.Visibility = Visibility.Collapsed;
-
-                //btnMouseWheel.Visibility = Visibility.Collapsed;
-                //btnMouseWheel.IsEnabled = false;
-
-                //lblWheelData.Visibility = Visibility.Collapsed;
-                //gridWheelData.Visibility = Visibility.Collapsed;
             }
             else if (etm.EventType == EventType.Image)
             {
@@ -112,13 +100,7 @@ namespace Macro.View
                 gridRelative.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridMouse.Visibility = Visibility.Collapsed;
-
                 gridImage.Visibility = Visibility.Visible;
-                //btnMouseWheel.Visibility = Visibility.Visible;
-                //btnMouseWheel.IsEnabled = false;
-
-                //lblWheelData.Visibility = Visibility.Collapsed;
-                //gridWheelData.Visibility = Visibility.Collapsed;
             }
         }
         private void ItemContainerPositionChange(TreeGridViewItem target)
@@ -250,7 +232,15 @@ namespace Macro.View
             {
                 _eventConfigViewModelCached.RelativePosition = _dummyRelativePosition;
             }
-            _dummyTreeGridViewItem.DataContext<EventTriggerModel>().Clear();
+            _dummyTreeGridViewItem.DataContext = new EventTriggerModel()
+            {
+                EventType = EventType.Image,
+                MouseTriggerInfo = new MouseTriggerInfo(),
+                MonitorInfo = new MonitorInfo(),
+                ProcessInfo = new ProcessInfo(),
+                SubEventTriggers = new ObservableCollection<EventTriggerModel>(),
+                RepeatInfo = new RepeatInfoModel()
+            };
 
             RadioButtonRefresh();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;

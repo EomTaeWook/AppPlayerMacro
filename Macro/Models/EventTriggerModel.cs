@@ -24,6 +24,7 @@ namespace Macro.Models
         private ulong _triggerIndex = 0;
         private bool _imageSearchRequired = false;
         private bool _sameImageDrag = false;
+        private bool _hardClick = false;
         private int _maxSameImageCount = 1;
         private Bitmap _image;
 
@@ -45,6 +46,7 @@ namespace Macro.Models
             _imageSearchRequired = other.ImageSearchRequired;
             _sameImageDrag = other.SameImageDrag;
             _maxSameImageCount = other.MaxSameImageCount;
+            _hardClick = other._hardClick;
         }
 
         [Order(1)]
@@ -186,6 +188,17 @@ namespace Macro.Models
             }
             get => _maxSameImageCount;
         }
+        [Order(15)]
+        public bool HardClick
+        {
+            set
+            {
+                _hardClick = value;
+                OnPropertyChanged("HardClick");
+            }
+            get => _hardClick;
+        }
+
         public string Desc
         {
             get

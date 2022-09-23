@@ -65,11 +65,11 @@
             </mah:MetroAnimatedTabControl>
         </DockPanel>
     </DockPanel>
-    <mah:MetroWindow.Flyouts>
+    <!--<mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl x:Name="flyoutsControl">
             <mah:Flyout x:Name="settingFlyout" Position="Right" Width="350">
                 <view:SettingView x:Name="settingView"></view:SettingView>
             </mah:Flyout>
         </mah:FlyoutsControl>
-    </mah:MetroWindow.Flyouts>
+    </mah:MetroWindow.Flyouts>-->
 </mah:MetroWindow>

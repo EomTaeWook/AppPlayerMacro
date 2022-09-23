@@ -69,6 +69,9 @@
         InitialTab,
         MaxSameImageCount,
         DragDelay,
+        Preferences,
+        Close,
+        HardClick,
 
         Max
     }
