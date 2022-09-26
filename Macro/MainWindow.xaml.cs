@@ -427,7 +427,7 @@ namespace Macro
                 {
                     await _contentController.Start();
                 });
-
+                //_contentController.Start();
                 ApplicationManager.HideProgressbar();
             }
             else if (btn.Equals(btnStop))

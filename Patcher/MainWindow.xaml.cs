@@ -34,7 +34,7 @@ namespace Patcher
         };
         private static HttpClient httpClient = new HttpClient(handler);
 
-        private CoroutineWoker _coroutineWoker = new CoroutineWoker();
+        private CoroutineWorker _coroutineWoker = new CoroutineWorker();
 
         private SortedList<int, PatchInfoModel> _patchDatas = new SortedList<int, PatchInfoModel>();
 

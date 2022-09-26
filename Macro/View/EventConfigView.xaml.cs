@@ -29,7 +29,7 @@ namespace Macro.View
         
         private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
         private EventConfigViewModel _eventConfigViewModelCached;
-        private CoroutineWoker _coroutineWoker = new CoroutineWoker();
+        private CoroutineWorker _coroutineWoker = new CoroutineWorker();
 
         private bool isBtnTreeItemPress = false;
         public EventConfigView()
