@@ -21,18 +21,18 @@ namespace Macro.View
     /// <summary>
     /// ConfigEventView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class EventConfigView : UserControl
+    public partial class EventSettingView : UserControl
     {
         private TreeGridViewItem _dummyTreeGridViewItem;
         private PointModel _dummyRelativePosition;
         private bool _isDrag;
         
         private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
-        private EventConfigViewModel _eventConfigViewModelCached;
+        private EventSettingViewModel _eventConfigViewModelCached;
         private CoroutineWorker _coroutineWoker = new CoroutineWorker();
 
         private bool isBtnTreeItemPress = false;
-        public EventConfigView()
+        public EventSettingView()
         {
             InitializeComponent();
             InitEvent();
@@ -45,14 +45,14 @@ namespace Macro.View
 
             _dummyRelativePosition = new PointModel();
 
-            _eventConfigViewModelCached = ServiceProviderManager.Instance.GetService<EventConfigViewModel>();
+            _eventConfigViewModelCached = ServiceProviderManager.Instance.GetService<EventSettingViewModel>();
 
             _eventConfigViewModelCached.CurrentTreeViewItem = _dummyTreeGridViewItem;
             _eventConfigViewModelCached.RelativePosition = _dummyRelativePosition;
 
             DataContext = _eventConfigViewModelCached;
         }
-        public EventConfigViewModel GetDataContext()
+        public EventSettingViewModel GetDataContext()
         {
             return _eventConfigViewModelCached;
         }
@@ -73,6 +73,7 @@ namespace Macro.View
                 gridRelative.Visibility = Visibility.Collapsed;
                 gridMouse.Visibility = Visibility.Visible;
                 gridImage.Visibility = Visibility.Collapsed;
+                gridHardClick.Visibility = Visibility.Visible;
             }
             else if (etm.EventType == EventType.Keyboard)
             {
@@ -80,6 +81,7 @@ namespace Macro.View
                 gridMouse.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
                 gridImage.Visibility = Visibility.Collapsed;
+                gridHardClick.Visibility = Visibility.Collapsed;
             }
             else if (etm.EventType == EventType.RelativeToImage)
             {
@@ -87,6 +89,7 @@ namespace Macro.View
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridMouse.Visibility = Visibility.Collapsed;
                 gridImage.Visibility = Visibility.Collapsed;
+                gridHardClick.Visibility = Visibility.Visible;
             }
             else if (etm.EventType == EventType.Image)
             {
@@ -94,6 +97,7 @@ namespace Macro.View
                 gridMouse.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridRelative.Visibility = Visibility.Collapsed;
+                gridHardClick.Visibility = Visibility.Visible;
             }
             else
             {
@@ -101,11 +105,12 @@ namespace Macro.View
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 gridMouse.Visibility = Visibility.Collapsed;
                 gridImage.Visibility = Visibility.Visible;
+                gridHardClick.Visibility = Visibility.Visible;
             }
         }
         private void ItemContainerPositionChange(TreeGridViewItem target)
         {
-            var parentItemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventConfigViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+            var parentItemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
 
             if (target != null)
             {
@@ -223,6 +228,8 @@ namespace Macro.View
         public void Clear()
         {
             _eventConfigViewModelCached.CurrentTreeViewItem.IsSelected = false;
+            _dummyTreeGridViewItem.DataContext = GetDummy();
+
             if (_eventConfigViewModelCached.CurrentTreeViewItem != _dummyTreeGridViewItem)
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem = _dummyTreeGridViewItem;
@@ -232,22 +239,25 @@ namespace Macro.View
             {
                 _eventConfigViewModelCached.RelativePosition = _dummyRelativePosition;
             }
-            _dummyTreeGridViewItem.DataContext = new EventTriggerModel()
-            {
-                EventType = EventType.Image,
-                MouseTriggerInfo = new MouseTriggerInfo(),
-                MonitorInfo = new MonitorInfo(),
-                ProcessInfo = new ProcessInfo(),
-                SubEventTriggers = new ObservableCollection<EventTriggerModel>(),
-                RepeatInfo = new RepeatInfoModel()
-            };
 
             RadioButtonRefresh();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Hidden;
             lblRepeatSubItems.Visibility = Visibility.Collapsed;
             gridRepeat.Visibility = Visibility.Collapsed;
         }
-         
+        private EventTriggerModel GetDummy()
+        {
+            return new EventTriggerModel()
+            {
+                EventType = EventType.Image,
+                MouseTriggerInfo = new MouseTriggerInfo(),
+                MonitorInfo = new MonitorInfo(),
+                ProcessInfo = new ProcessInfo(),
+                SubEventTriggers = new ObservableCollection<EventTriggerModel>(),
+                RepeatInfo = new RepeatInfoModel(),
+                HardClick = false,
+            };
+        }
         private void InitEvent()
         {
             this.Loaded += EventConfigView_Loaded;
@@ -300,7 +310,7 @@ namespace Macro.View
         }
         private IEnumerator ProcessLongClickTreePositionButton(object sender)
         {
-            var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventConfigViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+            var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
             var currentIndex = itemContainer.IndexOf(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
             var changedIndex = currentIndex;
             var addIndex = 0;
@@ -424,7 +434,7 @@ namespace Macro.View
                     return;
                 }
                     
-                var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventConfigViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+                var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
                 var currentIndex = itemContainer.IndexOf(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
                 {
@@ -515,9 +525,10 @@ namespace Macro.View
                 _isDrag = false;
                 var targetRow = treeSaves.TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
                 if (_eventConfigViewModelCached.CurrentTreeViewItem == targetRow)
+                {
                     return;
+                }
                 ItemContainerPositionChange(targetRow);
-                var item = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 Clear();
 
                 NotifyHelper.InvokeNotify(NotifyEventType.TreeItemOrderChanged, new EventTriggerOrderChangedEventArgs()
@@ -570,9 +581,6 @@ namespace Macro.View
 
             ApplicationManager.Instance.CloseMousePointView();
             Application.Current.MainWindow.WindowState = WindowState.Normal;
-
-            //btnMouseWheel.Visibility = Visibility.Visible;
-            //btnMouseWheel.IsEnabled = true;
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
@@ -611,6 +619,7 @@ namespace Macro.View
             else if (sender.Equals(rbKeyboard))
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Keyboard;
+                _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().HardClick = false;
             }
             else if(sender.Equals(rbImage))
             {
@@ -631,6 +640,6 @@ namespace Macro.View
                 _eventConfigViewModelCached.RelativePosition.Y = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.StartPoint.Y;
             }
             RadioButtonRefresh();
-        }        
+        }
     }
 }

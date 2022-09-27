@@ -12,7 +12,7 @@ namespace Utils.Infrastructure
         ScanCode = 0x0008,
     }
     [Flags]
-    internal enum MouseFlag: uint
+    public enum MouseFlag: uint
     {
         Move = 0x0001,
         LeftDown = 0x0002,

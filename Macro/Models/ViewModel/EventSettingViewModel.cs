@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Macro.Models.ViewModel
 {
-    public class EventConfigViewModel : INotifyPropertyChanged
+    public class EventSettingViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<EventTriggerModel> triggerSaves = new ObservableCollection<EventTriggerModel>();
         private TreeGridViewItem currentItem = new TreeGridViewItem();

@@ -9,6 +9,15 @@ namespace Macro.Infrastructure.Manager
         private List<Window> _activePopup = new List<Window>();
         public void AddPopup<T>() where T: Window, new()
         {
+            foreach(var item in _activePopup)
+            {
+                if(item is T == true)
+                {
+                    item.Activate();
+                    return;
+                }
+            }
+
             var window = new T();
             _activePopup.Add(window);
             window.Owner = Application.Current.MainWindow;

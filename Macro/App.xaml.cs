@@ -109,7 +109,7 @@ namespace Macro
             ServiceProviderManager.Instance.AddSingleton<InputManager, InputManager>();
             ServiceProviderManager.Instance.AddSingleton<CacheDataManager, CacheDataManager>();
 
-            ServiceProviderManager.Instance.AddSingleton<EventConfigViewModel, EventConfigViewModel>(); 
+            ServiceProviderManager.Instance.AddSingleton<EventSettingViewModel, EventSettingViewModel>(); 
             ServiceProviderManager.Instance.AddSingleton<LabelViewModel, LabelViewModel>();
             ServiceProviderManager.Instance.AddSingleton<SettingViewModel, SettingViewModel>();
             ServiceProviderManager.Instance.AddSingleton<ViewModelLocator, ViewModelLocator>();

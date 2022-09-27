@@ -1,14 +1,9 @@
-﻿using ControlzEx.Standard;
-using Kosher.Coroutine;
-using Kosher.Coroutine.Generic;
-using Kosher.Coroutine.Interface;
-using Kosher.Log;
+﻿using Kosher.Log;
 using Macro.Extensions;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.View;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -34,7 +29,6 @@ namespace Macro.Infrastructure.Controller
         private ProcessConfigModel _processConfig;
         private CancellationTokenSource _cts;
         private CancellationToken _token;
-        private CoroutineWorker coroutineWoker = new CoroutineWorker();
 
         public ContentController()
         {
@@ -45,13 +39,6 @@ namespace Macro.Infrastructure.Controller
             SetConfig(ServiceProviderManager.Instance.GetService<Config>());
 
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
-            NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
-            
-        }
-
-        private void NotifyHelper_UpdatedTime(UpdatedTimeArgs obj)
-        {
-            coroutineWoker.WorksUpdate(obj.DeltaTime);
         }
 
         private void SetConfig(Config config)
@@ -117,7 +104,7 @@ namespace Macro.Infrastructure.Controller
         public async Task ProcessStart()
         {
             List<EventTriggerModel> models = new List<EventTriggerModel>();
-            models.AddRange(_contentView.eventConfigView.GetDataContext().TriggerSaves);
+            models.AddRange(_contentView.eventSettingView.GetDataContext().TriggerSaves);
 
             while (_token.IsCancellationRequested == false)
             {
@@ -130,8 +117,11 @@ namespace Macro.Infrastructure.Controller
         }
         public void Stop()
         {
-            _cts.Cancel();
-            _cts = null;
+            if(_cts !=null)
+            {
+                _cts.Cancel();
+                _cts = null;
+            }
         }
 
         private async Task<Tuple<bool, EventTriggerModel>> ProcessEvents(Process process, EventTriggerModel model, ProcessConfigModel processConfigModel)
@@ -178,8 +168,6 @@ namespace Macro.Infrastructure.Controller
                 for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                 {
                     LogHelper.Debug($"RepeatType[Search : {ii}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
-                    this._contentView.DrawCaptureImage(bmp);
-
                     if (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, _token) == false ||
                                                             similarity > processConfigModel.Similarity)
                     {
@@ -270,7 +258,11 @@ namespace Macro.Infrastructure.Controller
                 }
                 else
                 {
-                    if (model.EventType == EventType.Mouse)
+                    if(model.HardClick == true)
+                    {
+                        HardClickProcess(model);
+                    }
+                    else if(model.EventType == EventType.Mouse)
                     {
                         location.X = applciationData.OffsetX;
                         location.Y = applciationData.OffsetY;
@@ -465,6 +457,28 @@ namespace Macro.Infrastructure.Controller
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
             }
         }
+        private void HardClickProcess(EventTriggerModel model)
+        {
+            var mousePosition = new Point();
+            if(model.EventType == EventType.Mouse)
+            {
+                mousePosition.X = model.MouseTriggerInfo.StartPoint.X;
+                mousePosition.Y = model.MouseTriggerInfo.StartPoint.Y;
+            }
+
+
+
+
+
+            NativeHelper.MouseEvent(MouseFlag.Move, (int)mousePosition.X, (int)mousePosition.Y);
+
+           // NativeHelper.MouseEvent(MouseFlag.Absolute | MouseFlag.LeftDown, (int)mousePosition.X, (int)mousePosition.Y);
+
+            Task.Delay(10).Wait();
+
+            //NativeHelper.MouseEvent(MouseFlag.Absolute | MouseFlag.LeftUp, 0, 0);
+        }
+
         private void SameImageMouseDragTriggerProcess(IntPtr hWnd,
                                                     Point start,
                                                     Point arrive,

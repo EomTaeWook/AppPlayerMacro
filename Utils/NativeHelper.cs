@@ -71,8 +71,19 @@ namespace Utils
             return childHandles;
         }
 
+
+        public static void MouseEvent(MouseFlag mouseFlag, int x, int y)
+        {
+            mouse_event((int)mouseFlag, x, y, 0, IntPtr.Zero);
+        }
+        [DllImport("user32.dll")]
+        static extern void mouse_event(int flag, int dx, int dy, int buttons, IntPtr extra);
+
         [DllImport("user32.dll")]
         public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int flags);
+
+        [DllImport("user32.dll")]
+        private static extern int GetCursorPos(int x, int y);
 
         [DllImport("user32.dll")]
         private static extern bool GetCursorPos(out InterPoint lpPoint);

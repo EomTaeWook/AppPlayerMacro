@@ -30,7 +30,7 @@ namespace Macro.View
             btnAddSameContent.Visibility = Visibility.Collapsed;
             _bitmap = null;
             canvasCaptureImage.Background = System.Windows.Media.Brushes.White;
-            eventConfigView.Clear();
+            eventSettingView.Clear();
         }
         public void Capture()
         {
@@ -45,10 +45,10 @@ namespace Macro.View
         {
             Dispatcher.Invoke(() =>
             {
-                (eventConfigView.DataContext as Models.ViewModel.EventConfigViewModel).TriggerSaves.Clear();
+                (eventSettingView.DataContext as Models.ViewModel.EventSettingViewModel).TriggerSaves.Clear();
                 foreach (var item in saves)
                 {
-                    (eventConfigView.DataContext as Models.ViewModel.EventConfigViewModel).TriggerSaves.Add(item);
+                    (eventSettingView.DataContext as Models.ViewModel.EventSettingViewModel).TriggerSaves.Add(item);
                 }
             });
         }
@@ -126,7 +126,7 @@ namespace Macro.View
             }
             else if (btn.Equals(btnSave))
             {
-                var dataContext = eventConfigView.GetDataContext();
+                var dataContext = eventSettingView.GetDataContext();
                 var model = dataContext.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 model.Image = _bitmap;
                 if (model.EventType == EventType.RelativeToImage)
@@ -141,7 +141,7 @@ namespace Macro.View
             }
             else if(btn.Equals(btnAddSameContent))
             {
-                var item = eventConfigView.CopyCurrentItem();
+                var item = eventSettingView.CopyCurrentItem();
                 if (item == null)
                 {
                     return;
@@ -154,7 +154,7 @@ namespace Macro.View
             }
             else if(btn.Equals(btnDelete))
             {
-                var model = eventConfigView.GetDataContext().CurrentTreeViewItem.DataContext<EventTriggerModel>();
+                var model = eventSettingView.GetDataContext().CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 NotifyHelper.InvokeNotify(NotifyEventType.Delete, new DeleteEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = model,

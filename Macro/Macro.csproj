@@ -236,6 +236,7 @@
     <Compile Include="Models\EventFactorModel.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessConfigModel.cs" />
+    <Compile Include="Models\ProcessResult.cs" />
     <Compile Include="Models\ProcessResultModel.cs" />
     <Compile Include="Models\RepeatInfoModel.cs" />
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
@@ -250,7 +251,7 @@
     <Compile Include="Models\ValueConditionModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
-    <Compile Include="Models\ViewModel\EventConfigViewModel.cs" />
+    <Compile Include="Models\ViewModel\EventSettingViewModel.cs" />
     <Compile Include="Models\ViewModel\SettingViewModel.cs" />
     <Compile Include="View\CaptureView.xaml.cs">
       <DependentUpon>CaptureView.xaml</DependentUpon>
@@ -258,8 +259,8 @@
     <Compile Include="View\ContentView.xaml.cs">
       <DependentUpon>ContentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\EventConfigView.xaml.cs">
-      <DependentUpon>EventConfigView.xaml</DependentUpon>
+    <Compile Include="View\EventSettingView.xaml.cs">
+      <DependentUpon>EventSettingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MousePositionView.xaml.cs">
       <DependentUpon>MousePositionView.xaml</DependentUpon>
@@ -293,7 +294,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\EventConfigView.xaml">
+    <Page Include="View\EventSettingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

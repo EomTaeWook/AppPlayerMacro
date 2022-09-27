@@ -60,12 +60,22 @@ namespace Macro
             checkFix.Unchecked += CheckFix_Checked;
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
 
+            KeyDown += MainWindow_KeyDown;
+
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.TreeItemOrderChanged += NotifyHelper_TreeItemOrderChanged;
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
             NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModelAsync;
+        }
+
+        private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if(e.Key == System.Windows.Input.Key.Escape)
+            {
+                Button_Click(btnStop, null);
+            }
         }
 
         private void Init()
@@ -219,14 +229,14 @@ namespace Macro
         
         private async void NotifyHelper_DeleteEventTriggerModelAsync(DeleteEventTriggerModelArgs obj)
         {
-            _contentView.eventConfigView.RemoveCurrentItem();
+            _contentView.eventSettingView.RemoveCurrentItem();
 
             if (File.Exists(GetSaveFilePath()))
             {
                 File.Delete(GetSaveFilePath());
             }
 
-            var triggers = _contentView.eventConfigView.GetDataContext().TriggerSaves;
+            var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
 
             await FileManager.Instance.Save(GetSaveFilePath(), triggers);
 
@@ -248,8 +258,8 @@ namespace Macro
                 {
                     CacheDataManager.Instance.MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
 
-                    _contentView.eventConfigView.InsertCurrentItem();
-                    var triggers = _contentView.eventConfigView.GetDataContext().TriggerSaves;
+                    _contentView.eventSettingView.InsertCurrentItem();
+                    var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
 
                     await FileManager.Instance.Save(GetSaveFilePath(), triggers);
 
@@ -263,7 +273,7 @@ namespace Macro
         }
         private async Task Save()
         {
-            var triggers = _contentView.eventConfigView.GetDataContext().TriggerSaves;
+            var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
 
             await FileManager.Instance.Save(GetSaveFilePath(), triggers);
         }
@@ -422,12 +432,11 @@ namespace Macro
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
                 tab_content.IsEnabled = false;
-
+                
                 TaskBuilder.Build(async () =>
                 {
                     await _contentController.Start();
                 });
-                //_contentController.Start();
                 ApplicationManager.HideProgressbar();
             }
             else if (btn.Equals(btnStop))

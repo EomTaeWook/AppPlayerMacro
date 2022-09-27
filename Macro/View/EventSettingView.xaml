@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Macro.View.EventConfigView"
+﻿<UserControl x:Class="Macro.View.EventSettingView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -104,9 +104,14 @@
                     </Grid.ColumnDefinitions>
                     <mah:NumericUpDown Name="numEventToNext" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.EventToNext, Mode=TwoWay}" HideUpDownButtons="True" Minimum="0" NumericInputMode="Numbers" ></mah:NumericUpDown>
                 </Grid>
-                <Label Name="lblHardClick" Grid.Column="0" Grid.Row="5" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></Label>
-                <CheckBox x:Name="checkHardClick" Grid.Row="5" Grid.Column="1" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.HardClick, Mode=TwoWay}" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></CheckBox>
-                
+                <Grid Grid.Row="5" Grid.ColumnSpan="2" Name="gridHardClick">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Name="lblHardClick" Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></Label>
+                    <CheckBox x:Name="checkHardClick" Grid.Row="0" Grid.Column="1" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.HardClick, Mode=TwoWay}" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></CheckBox>
+                </Grid>
                 <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="6" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
                 <Grid Grid.Column="1" Grid.Row="6" Visibility="Collapsed" Name="gridRepeat">
                     <Grid.ColumnDefinitions>
