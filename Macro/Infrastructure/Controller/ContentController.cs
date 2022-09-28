@@ -15,7 +15,7 @@ using Utils.Document;
 using Utils.Extensions;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
-using Rect = Utils.Infrastructure.Rect;
+//using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro.Infrastructure.Controller
 {
@@ -112,7 +112,7 @@ namespace Macro.Infrastructure.Controller
                 {
                     await ProcessTrigger(model, _processConfig);
                 }
-                await Task.Delay(_delay);
+                await TaskHelper.TokenCheckDelayAsync(_delay, _token);
             }
         }
         public void Stop()
@@ -152,11 +152,11 @@ namespace Macro.Infrastructure.Controller
             var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Factor.FactorX),
                                                 (int)Math.Truncate(model.Image.Height * factor.Factor.FactorY));
 
-            var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
+            var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point findLocation, processConfigModel.SearchImageResultDisplay);
 
             this._contentView.DrawCaptureImage(bmp);
 
-            LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+            LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {findLocation.X} Y: {findLocation.Y}");
             if (similarity < processConfigModel.Similarity)
             {
                 await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
@@ -168,7 +168,7 @@ namespace Macro.Infrastructure.Controller
             {
                 for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                 {
-                    LogHelper.Debug($"RepeatType[Search : {ii}] : >>>> Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
+                    LogHelper.Debug($"RepeatType[Search : {ii}] : >>>> Similarity : {similarity} % max Loc : X : {findLocation.X} Y: {findLocation.Y}");
                     if (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, _token) == false ||
                                                             similarity > processConfigModel.Similarity)
                     {
@@ -259,30 +259,54 @@ namespace Macro.Infrastructure.Controller
                 }
                 else
                 {
-                    if(model.HardClick == true)
+
+                    var processLocation = new Rect();
+
+                    NativeHelper.GetWindowRect(hWnd, ref processLocation);
+
+                    var currentProcessLocation = model.ProcessInfo.Position - processLocation;
+
+
+                    if (model.HardClick == true)
                     {
-                        HardClickProcess(model);
+                        var clickPoint = new Point();
+                        if(model.EventType == EventType.Mouse)
+                        {
+                            clickPoint.X = model.MouseTriggerInfo.StartPoint.X - currentProcessLocation.Left;
+                            clickPoint.Y = model.MouseTriggerInfo.StartPoint.Y - currentProcessLocation.Top;
+                        }
+                        else if(model.EventType == EventType.Image ||
+                            model.EventType == EventType.RelativeToImage)
+                        {
+
+                        }
+                        else
+                        {
+                            
+                        }
+
+                        HardClickProcess(clickPoint);
                     }
                     else if(model.EventType == EventType.Mouse)
                     {
-                        location.X = applciationData.OffsetX;
-                        location.Y = applciationData.OffsetY;
-                        MouseTriggerProcess(hWnd, location, model, factor.PositionFactor, processConfigModel);
+                        findLocation.X = applciationData.OffsetX;
+                        findLocation.Y = applciationData.OffsetY;
+                        MouseTriggerProcess(hWnd, findLocation, model, factor.PositionFactor, processConfigModel);
                     }
                     else if (model.EventType == EventType.Image)
                     {
                         var percentageX = _random.NextDouble();
                         var percentageY = _random.NextDouble();
 
-                        location.X = ((location.X + applciationData.OffsetX) / factor.PositionFactor.FactorX) + (targetBmp.Width / factor.PositionFactor.FactorX * percentageX);
-                        location.Y = ((location.Y + applciationData.OffsetY) / factor.PositionFactor.FactorY) + (targetBmp.Height / factor.PositionFactor.FactorY * percentageY);
-                        ImageTriggerProcess(hWnd, location, model);
+                        findLocation.X = ((findLocation.X + applciationData.OffsetX) / factor.PositionFactor.FactorX) + (targetBmp.Width / factor.PositionFactor.FactorX * percentageX);
+                        findLocation.Y = ((findLocation.Y + applciationData.OffsetY) / factor.PositionFactor.FactorY) + (targetBmp.Height / factor.PositionFactor.FactorY * percentageY);
+                        ImageTriggerProcess(hWnd, findLocation, model);
                     }
                     else if (model.EventType == EventType.RelativeToImage)
                     {
-                        location.X = ((location.X + applciationData.OffsetX) / factor.PositionFactor.FactorX) + (targetBmp.Width / factor.PositionFactor.FactorX / 2);
-                        location.Y = ((location.Y + applciationData.OffsetY) / factor.PositionFactor.FactorY) + (targetBmp.Height / factor.PositionFactor.FactorY / 2);
-                        ImageTriggerProcess(hWnd, location, model);
+                        findLocation.X = ((findLocation.X + applciationData.OffsetX) / factor.PositionFactor.FactorX) + (targetBmp.Width / factor.PositionFactor.FactorX / 2);
+                        findLocation.Y = ((findLocation.Y + applciationData.OffsetY) / factor.PositionFactor.FactorY) + (targetBmp.Height / factor.PositionFactor.FactorY / 2);
+                        ImageTriggerProcess(hWnd, findLocation, model);
                     }
                     else if (model.EventType == EventType.Keyboard)
                     {
@@ -450,26 +474,15 @@ namespace Macro.Infrastructure.Controller
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
             }
         }
-        private void HardClickProcess(EventTriggerModel model)
+        private void HardClickProcess(Point clickPoint)
         {
-            var mousePosition = new Point();
-            if(model.EventType == EventType.Mouse)
-            {
-                mousePosition.X = model.MouseTriggerInfo.StartPoint.X;
-                mousePosition.Y = model.MouseTriggerInfo.StartPoint.Y;
-            }
-
-
-
-
-
-            NativeHelper.MouseEvent(MouseFlag.Move, (int)mousePosition.X, (int)mousePosition.Y);
-
-           // NativeHelper.MouseEvent(MouseFlag.Absolute | MouseFlag.LeftDown, (int)mousePosition.X, (int)mousePosition.Y);
-
+            var currentPosition = NativeHelper.GetCursorPosition();
+            
+            NativeHelper.SetCursorPos((int)clickPoint.X, (int)clickPoint.Y);
+            NativeHelper.MouseEvent(MouseFlag.LeftDown, 0, 0);
             Task.Delay(10).Wait();
-
-            //NativeHelper.MouseEvent(MouseFlag.Absolute | MouseFlag.LeftUp, 0, 0);
+            NativeHelper.MouseEvent(MouseFlag.LeftUp, 0, 0);
+            NativeHelper.SetCursorPos(currentPosition.X, currentPosition.Y);
         }
 
         private void SameImageMouseDragTriggerProcess(IntPtr hWnd,
@@ -508,6 +521,9 @@ namespace Macro.Infrastructure.Controller
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             LogHelper.Debug($">>>>Same Drag End Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
         }
+
+        
+
         private void ImageTriggerProcess(IntPtr hWnd,
                                         Point location,
                                         EventTriggerModel model)

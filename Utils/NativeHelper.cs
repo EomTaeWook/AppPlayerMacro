@@ -86,6 +86,9 @@ namespace Utils
         private static extern int GetCursorPos(int x, int y);
 
         [DllImport("user32.dll")]
+        public static extern int SetCursorPos(int x, int y);
+
+        [DllImport("user32.dll")]
         private static extern bool GetCursorPos(out InterPoint lpPoint);
         public static Point GetCursorPosition()
         {
