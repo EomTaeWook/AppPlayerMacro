@@ -152,9 +152,10 @@ namespace Macro.Infrastructure.Controller
             var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Factor.FactorX),
                                                 (int)Math.Truncate(model.Image.Height * factor.Factor.FactorY));
 
+            var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
+
             this._contentView.DrawCaptureImage(bmp);
 
-            var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point location, processConfigModel.SearchImageResultDisplay);
             LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {location.X} Y: {location.Y}");
             if (similarity < processConfigModel.Similarity)
             {
@@ -312,15 +313,7 @@ namespace Macro.Infrastructure.Controller
             var excuted = false;
             for (int i = 0; i < processDatas.Length; ++i)
             {
-                var result = await ProcessEvents(processDatas[i], model, processConfigModel);
-                if(result.Item1 == true)
-                {
-                    excuted = true;
-                }
-                if(result.Item2 != null)
-                {
-
-                }
+                _ = await ProcessEvents(processDatas[i], model, processConfigModel);
                 await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
 
             }

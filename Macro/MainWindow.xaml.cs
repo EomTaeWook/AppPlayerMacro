@@ -432,6 +432,7 @@ namespace Macro
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
                 tab_content.IsEnabled = false;
+                Clear();
                 
                 TaskBuilder.Build(async () =>
                 {
