@@ -15,7 +15,6 @@ using Utils.Document;
 using Utils.Extensions;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
-//using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro.Infrastructure.Controller
 {
@@ -266,7 +265,6 @@ namespace Macro.Infrastructure.Controller
 
                     var currentProcessLocation = model.ProcessInfo.Position - processLocation;
 
-
                     if (model.HardClick == true)
                     {
                         var clickPoint = new Point();
@@ -278,11 +276,18 @@ namespace Macro.Infrastructure.Controller
                         else if(model.EventType == EventType.Image ||
                             model.EventType == EventType.RelativeToImage)
                         {
+                            var percentageX = _random.NextDouble();
+                            var percentageY = _random.NextDouble();
 
+                            clickPoint.X = ((findLocation.X + applciationData.OffsetX) / factor.PositionFactor.FactorX) + (targetBmp.Width / factor.PositionFactor.FactorX * percentageX);
+                            clickPoint.Y = ((findLocation.Y + applciationData.OffsetY) / factor.PositionFactor.FactorY) + (targetBmp.Height / factor.PositionFactor.FactorY * percentageY);
+
+                            clickPoint.X += processLocation.Left + model.MouseTriggerInfo.StartPoint.X;
+                            clickPoint.Y += processLocation.Top + model.MouseTriggerInfo.StartPoint.Y;
                         }
                         else
                         {
-                            
+                            Tuple.Create<bool, EventTriggerModel>(false, null);
                         }
 
                         HardClickProcess(clickPoint);
@@ -306,6 +311,7 @@ namespace Macro.Infrastructure.Controller
                     {
                         findLocation.X = ((findLocation.X + applciationData.OffsetX) / factor.PositionFactor.FactorX) + (targetBmp.Width / factor.PositionFactor.FactorX / 2);
                         findLocation.Y = ((findLocation.Y + applciationData.OffsetY) / factor.PositionFactor.FactorY) + (targetBmp.Height / factor.PositionFactor.FactorY / 2);
+
                         ImageTriggerProcess(hWnd, findLocation, model);
                     }
                     else if (model.EventType == EventType.Keyboard)
