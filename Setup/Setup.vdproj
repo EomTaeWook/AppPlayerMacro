@@ -4,9 +4,9 @@
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
 "ProjectName" = "8:Setup"
-"LanguageId" = "3:1042"
-"CodePage" = "3:949"
-"UILanguageId" = "3:1042"
+"LanguageId" = "3:1033"
+"CodePage" = "3:1252"
+"UILanguageId" = "3:1033"
 "SccProjectName" = "8:"
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
@@ -955,11 +955,6 @@
             "AssemblyAsmDisplayName" = "8:MahApps.Metro.resources, Version=2.0.0.0, Culture=de, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_06991235ABD24DF7997CCEF9B6644473"
-                    {
-                    "Name" = "8:MahApps.Metro.resources.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\de\\MahApps.Metro.resources.dll"
             "TargetName" = "8:"
@@ -986,11 +981,6 @@
             "AssemblyAsmDisplayName" = "8:MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_086324F5E9F744CFA80C12C53DE41E1C"
-                    {
-                    "Name" = "8:MahApps.Metro.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\MahApps.Metro.dll"
             "TargetName" = "8:"
@@ -1048,11 +1038,6 @@
             "AssemblyAsmDisplayName" = "8:AdsJumboWinForm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d4c9423ef164f081, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0D2B30DAE67CA06E41C2092EC3B30ED5"
-                    {
-                    "Name" = "8:AdsJumboWinForm.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:AdsJumboWinForm.dll"
             "TargetName" = "8:"
@@ -1079,11 +1064,6 @@
             "AssemblyAsmDisplayName" = "8:OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0ED75FA3C981EA89B61043EEDF479926"
-                    {
-                    "Name" = "8:OpenCvSharp.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:OpenCvSharp.dll"
             "TargetName" = "8:"
@@ -1110,11 +1090,6 @@
             "AssemblyAsmDisplayName" = "8:Kosher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_11204E3858DAE2DF06ADB56A471072CE"
-                    {
-                    "Name" = "8:Kosher.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Kosher.dll"
             "TargetName" = "8:"
@@ -1141,11 +1116,6 @@
             "AssemblyAsmDisplayName" = "8:System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1951925A9C28EA77AF7FB16D5CF575E1"
-                    {
-                    "Name" = "8:System.Buffers.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Buffers.dll"
             "TargetName" = "8:"
@@ -1172,11 +1142,6 @@
             "AssemblyAsmDisplayName" = "8:OpenCvSharp.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1CA5141C5DC24355961D869C4816FBD0"
-                    {
-                    "Name" = "8:OpenCvSharp.Extensions.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\OpenCvSharp.Extensions.dll"
             "TargetName" = "8:"
@@ -1203,11 +1168,6 @@
             "AssemblyAsmDisplayName" = "8:MahApps.Metro.IconPacks.Material, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_2DC0D4EB2B13438FA2061C1B84FA99EC"
-                    {
-                    "Name" = "8:MahApps.Metro.IconPacks.Material.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\MahApps.Metro.IconPacks.Material.dll"
             "TargetName" = "8:"
@@ -1265,11 +1225,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_33F64FEC4E390E15739F79D74AF0032F"
-                    {
-                    "Name" = "8:Microsoft.Xaml.Behaviors.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.Xaml.Behaviors.dll"
             "TargetName" = "8:"
@@ -1327,11 +1282,6 @@
             "AssemblyAsmDisplayName" = "8:OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_3A33E559E61848C8B223BEE1F45EB11B"
-                    {
-                    "Name" = "8:OpenCvSharp.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\OpenCvSharp.dll"
             "TargetName" = "8:"
@@ -1358,11 +1308,6 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_474C5C0F75404D378D51B2574BDC6D2F"
-                    {
-                    "Name" = "8:System.Runtime.CompilerServices.Unsafe.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.Runtime.CompilerServices.Unsafe.dll"
             "TargetName" = "8:"
@@ -1389,11 +1334,6 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_482493C9E46A6AEC7F2AE8F43EF8C920"
-                    {
-                    "Name" = "8:Newtonsoft.Json.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -1451,11 +1391,6 @@
             "AssemblyAsmDisplayName" = "8:MahApps.Metro.IconPacks.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4DB58715792283C2527A3FE75EFF9B4E"
-                    {
-                    "Name" = "8:MahApps.Metro.IconPacks.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:MahApps.Metro.IconPacks.Core.dll"
             "TargetName" = "8:"
@@ -1482,11 +1417,6 @@
             "AssemblyAsmDisplayName" = "8:OpenCvSharp.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_55B637131CB485A87685385CAC765DE0"
-                    {
-                    "Name" = "8:OpenCvSharp.Extensions.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:OpenCvSharp.Extensions.dll"
             "TargetName" = "8:"
@@ -1606,11 +1536,6 @@
             "AssemblyAsmDisplayName" = "8:Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
-                    "_61C4A6D0F4C8FADF3D04155DB255C825"
-                    {
-                    "Name" = "8:Utils.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Utils.dll"
             "TargetName" = "8:"
@@ -1637,11 +1562,6 @@
             "AssemblyAsmDisplayName" = "8:ControlzEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_63B465AF8E0E49E39088C38E4BD0A9AB"
-                    {
-                    "Name" = "8:ControlzEx.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\ControlzEx.dll"
             "TargetName" = "8:"
@@ -1730,11 +1650,6 @@
             "AssemblyAsmDisplayName" = "8:Macro, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
-                    "_6E3A4E20B9F74AB392E36362CECB55EA"
-                    {
-                    "Name" = "8:Macro.exe"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\Macro.exe"
             "TargetName" = "8:"
@@ -1761,11 +1676,6 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6FD28194035541E2D35293519CE84695"
-                    {
-                    "Name" = "8:System.Runtime.CompilerServices.Unsafe.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Runtime.CompilerServices.Unsafe.dll"
             "TargetName" = "8:"
@@ -1792,11 +1702,6 @@
             "AssemblyAsmDisplayName" = "8:AdsJumboWinForm, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d4c9423ef164f081, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_6FF5A012B40846D38F2791174C280F3D"
-                    {
-                    "Name" = "8:AdsJumboWinForm.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\AdsJumboWinForm.dll"
             "TargetName" = "8:"
@@ -1874,11 +1779,6 @@
             "AssemblyAsmDisplayName" = "8:System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_7F77EEA2B218C7EF491EBCC6B71C5D42"
-                    {
-                    "Name" = "8:System.Numerics.Vectors.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Numerics.Vectors.dll"
             "TargetName" = "8:"
@@ -1987,11 +1887,6 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_876A04B08EA840A7A70F3E4AD8B4CAAC"
-                    {
-                    "Name" = "8:Newtonsoft.Json.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -2018,11 +1913,6 @@
             "AssemblyAsmDisplayName" = "8:Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
                 "ScatterAssemblies"
                 {
-                    "_8B93D765E8824E3980F89058ED3D3D62"
-                    {
-                    "Name" = "8:Utils.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\Utils.dll"
             "TargetName" = "8:"
@@ -2049,11 +1939,6 @@
             "AssemblyAsmDisplayName" = "8:System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_92A8BE3640A44311A18B21A2A08095A6"
-                    {
-                    "Name" = "8:System.Memory.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.Memory.dll"
             "TargetName" = "8:"
@@ -2080,11 +1965,6 @@
             "AssemblyAsmDisplayName" = "8:System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_9E091B428D4A408E8D316CAB557A7169"
-                    {
-                    "Name" = "8:System.Security.AccessControl.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.Security.AccessControl.dll"
             "TargetName" = "8:"
@@ -2111,11 +1991,6 @@
             "AssemblyAsmDisplayName" = "8:System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A35209C24CAAEF5B21DF18BB36789B79"
-                    {
-                    "Name" = "8:System.Memory.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Memory.dll"
             "TargetName" = "8:"
@@ -2162,11 +2037,6 @@
             "AssemblyAsmDisplayName" = "8:MahApps.Metro.IconPacks.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A42EE6E5F4694A9EA9CE3F2DCBACED3C"
-                    {
-                    "Name" = "8:MahApps.Metro.IconPacks.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\MahApps.Metro.IconPacks.Core.dll"
             "TargetName" = "8:"
@@ -2193,11 +2063,6 @@
             "AssemblyAsmDisplayName" = "8:System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A815C08891E440C5BB7416263B8318E8"
-                    {
-                    "Name" = "8:System.Drawing.Common.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.Drawing.Common.dll"
             "TargetName" = "8:"
@@ -2224,11 +2089,6 @@
             "AssemblyAsmDisplayName" = "8:MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_ADEE6C4A56ACED64AD08303EA4DBE2D2"
-                    {
-                    "Name" = "8:MahApps.Metro.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:MahApps.Metro.dll"
             "TargetName" = "8:"
@@ -2255,11 +2115,6 @@
             "AssemblyAsmDisplayName" = "8:System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B0B1DFEDA0944D45BF6DCE8439D7FE07"
-                    {
-                    "Name" = "8:System.Security.Principal.Windows.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.Security.Principal.Windows.dll"
             "TargetName" = "8:"
@@ -2459,11 +2314,6 @@
             "AssemblyAsmDisplayName" = "8:System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_C5EA1E54C7E8422D8082BDE31223FB6D"
-                    {
-                    "Name" = "8:System.ValueTuple.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.ValueTuple.dll"
             "TargetName" = "8:"
@@ -2510,11 +2360,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_D7785DE12F8042288D754383D5178612"
-                    {
-                    "Name" = "8:Microsoft.Xaml.Behaviors.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\Microsoft.Xaml.Behaviors.dll"
             "TargetName" = "8:"
@@ -2541,11 +2386,6 @@
             "AssemblyAsmDisplayName" = "8:System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_D85BF03C71FFBB76B1313554534EC6D1"
-                    {
-                    "Name" = "8:System.Drawing.Common.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Drawing.Common.dll"
             "TargetName" = "8:"
@@ -2592,11 +2432,6 @@
             "AssemblyAsmDisplayName" = "8:Kosher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_DF5E0B4658744AFC8CC39D22D0976799"
-                    {
-                    "Name" = "8:Kosher.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\Kosher.dll"
             "TargetName" = "8:"
@@ -2674,11 +2509,6 @@
             "AssemblyAsmDisplayName" = "8:KosherExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E809D4D53C0CEF87C56C6139C648D90F"
-                    {
-                    "Name" = "8:KosherExtensions.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:KosherExtensions.dll"
             "TargetName" = "8:"
@@ -2705,11 +2535,6 @@
             "AssemblyAsmDisplayName" = "8:ControlzEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E8EB005AA600CC5237A9EF09B804CC0F"
-                    {
-                    "Name" = "8:ControlzEx.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ControlzEx.dll"
             "TargetName" = "8:"
@@ -2736,11 +2561,6 @@
             "AssemblyAsmDisplayName" = "8:System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_EA26712B7DB84DE3818A9B487F88AD40"
-                    {
-                    "Name" = "8:System.Numerics.Vectors.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.Numerics.Vectors.dll"
             "TargetName" = "8:"
@@ -2767,11 +2587,6 @@
             "AssemblyAsmDisplayName" = "8:System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F0D66B92EC9F4C1C88DAC29515C055CF"
-                    {
-                    "Name" = "8:System.Buffers.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\System.Buffers.dll"
             "TargetName" = "8:"
@@ -2798,11 +2613,6 @@
             "AssemblyAsmDisplayName" = "8:KosherExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F208578E3CBF435CB05F63D327503D22"
-                    {
-                    "Name" = "8:KosherExtensions.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Release\\Install\\exe\\KosherExtensions.dll"
             "TargetName" = "8:"
@@ -3008,7 +2818,7 @@
         }
         "MsiBootstrapper"
         {
-        "LangId" = "3:1042"
+        "LangId" = "3:1033"
         "RequiresElevation" = "11:FALSE"
         }
         "Product"
@@ -3016,15 +2826,15 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Setup"
         "ProductCode" = "8:{1346DA9B-6266-4957-8771-355C5F4850D9}"
-        "PackageCode" = "8:{B466CF46-AFB3-4CAF-83D8-2D5DA7673300}"
+        "PackageCode" = "8:{73414B75-A744-4595-9C97-5A82C0CB339C}"
         "UpgradeCode" = "8:{852D679B-5F12-4B95-B4A1-BE19FDCCB43D}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
+        "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:2.6.2"
-        "Manufacturer" = "8:Default Company Name"
+        "Manufacturer" = "8:Eomtaewook"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:Setup"
