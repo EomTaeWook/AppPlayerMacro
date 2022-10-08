@@ -103,8 +103,8 @@
     <Compile Include="Extensions\DocumentExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
+    <Compile Include="Infrastructure\DWMThumbnailProperties.cs" />
     <Compile Include="Infrastructure\InputBuilder.cs" />
-    <Compile Include="Infrastructure\DpiFlags.cs" />
     <Compile Include="Infrastructure\InputStruct.cs" />
     <Compile Include="Infrastructure\KeyCode.cs" />
     <Compile Include="Infrastructure\MonitorInfo.cs" />
@@ -113,7 +113,7 @@
     <Compile Include="Infrastructure\TaskHelper.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Models\Version.cs" />
-    <Compile Include="Infrastructure\WindowPosFlags.cs" />
+    <Compile Include="Infrastructure\WindowFlags.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="NativeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

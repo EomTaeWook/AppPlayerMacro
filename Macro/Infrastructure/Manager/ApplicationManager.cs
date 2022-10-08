@@ -9,6 +9,7 @@ using System.Net;
 using System.Windows;
 using Utils;
 using System.Collections.Generic;
+using System.Windows.Interop;
 
 namespace Macro.Infrastructure.Manager
 {
@@ -16,41 +17,42 @@ namespace Macro.Infrastructure.Manager
     {
         public static MessageDialogResult ShowMessageDialog(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
         {
-            return ApplicationManager.Instance.metroWindow.ShowModalMessageExternal(title, message, style, new MetroDialogSettings()
+            return ApplicationManager.Instance._metroWindow.ShowModalMessageExternal(title, message, style, new MetroDialogSettings()
             {
                 ColorScheme = MetroDialogColorScheme.Inverted,
             });
         }
         public static void ShowProgressbar()
         {
-            ApplicationManager.Instance.metroWindow.Dispatcher.Invoke(() =>
+            ApplicationManager.Instance._metroWindow.Dispatcher.Invoke(() =>
             {
-                ApplicationManager.Instance.progress.Show();
+                ApplicationManager.Instance._progress.Show();
             });
         }
         public static void HideProgressbar()
         {
-            ApplicationManager.Instance.progress.Hide();
+            ApplicationManager.Instance._progress.Hide();
         }
 
-        private ProgressView progress;
+        private ProgressView _progress;
 
-        private MetroWindow metroWindow;
+        private MetroWindow _metroWindow;
 
         private readonly List<CaptureView> _captureViews = new List<CaptureView>();
         private readonly List<MousePositionView> _mousePointViews = new List<MousePositionView>();
+        private IntPtr _mainWindowHandle;
 
         public ApplicationManager()
         {
-            metroWindow = Application.Current.MainWindow as MetroWindow;
+            _metroWindow = Application.Current.MainWindow as MetroWindow;
 
-            progress = new ProgressView
+            _progress = new ProgressView
             {
-                Owner = metroWindow,
-                Left = metroWindow.Left / 2,
-                Width = metroWindow.Width / 2,
-                Top = metroWindow.Top / 2,
-                Height = metroWindow.Height / 2
+                Owner = _metroWindow,
+                Left = _metroWindow.Left / 2,
+                Width = _metroWindow.Width / 2,
+                Top = _metroWindow.Top / 2,
+                Height = _metroWindow.Height / 2
             };
 
             foreach (var item in DisplayHelper.MonitorInfo())
@@ -60,9 +62,15 @@ namespace Macro.Infrastructure.Manager
             }
             
         }
+
+        public IntPtr GetMainWindowHandle()
+        {
+            return _mainWindowHandle;
+        }
         public void Init()
         {
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
+            _mainWindowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
             SchedulerManager.Instance.Start();
         }
 
@@ -104,7 +112,7 @@ namespace Macro.Infrastructure.Manager
         public void Dispose()
         {
             SchedulerManager.Instance.Stop();
-            progress.Close();
+            _progress.Close();
             foreach (var item in _captureViews)
             {
                 item.Close();

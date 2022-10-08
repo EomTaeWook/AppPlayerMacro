@@ -5,6 +5,13 @@ using System.Runtime.InteropServices;
 namespace Utils.Infrastructure
 {
     [StructLayout(LayoutKind.Sequential)]
+    public struct InterSize
+    {
+        public int X;
+        public int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct InterPoint
     {
         public int X;

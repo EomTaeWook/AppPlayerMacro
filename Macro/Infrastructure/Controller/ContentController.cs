@@ -139,14 +139,13 @@ namespace Macro.Infrastructure.Controller
                 hWnd = item != null ? item.Item2 : process.MainWindowHandle;
             }
             
-            var factor = CalculateFactor(hWnd, model, applciationData.IsDynamic);
-
-            if (DisplayHelper.ProcessCapture(process, out Bitmap bmp, applciationData.IsDynamic) == false)
+            if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetMainWindowHandle(), out Bitmap bmp, applciationData.IsDynamic) == false)
             {
                 await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
 
                 return Tuple.Create<bool, EventTriggerModel>(false, null);
             }
+            var factor = CalculateFactor(hWnd, model, applciationData.IsDynamic);
 
             var targetBmp = model.Image.Resize((int)Math.Truncate(model.Image.Width * factor.Factor.FactorX),
                                                 (int)Math.Truncate(model.Image.Height * factor.Factor.FactorY));

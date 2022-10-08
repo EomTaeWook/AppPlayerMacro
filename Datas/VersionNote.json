@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 1
+    "Build": 2
   },
-  "Desc": "마우스 물리 클릭 구현"
+  "Desc": "비활성화된 어플리케이션도 작동하게 변경"
 }

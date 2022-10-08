@@ -9,6 +9,15 @@ namespace Utils
 {
     public class NativeHelper
     {
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmUpdateThumbnailProperties(IntPtr thumbHandleWnd, ref DWMThumbnailProperties props);
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmUnregisterThumbnail(IntPtr thumbHandleWnd);
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmRegisterThumbnail(IntPtr destHandleWnd, IntPtr srcHandleWnd, out IntPtr thumbHandleWnd);
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmQueryThumbnailSourceSize(IntPtr thumbHandleWnd, out InterSize size);
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
