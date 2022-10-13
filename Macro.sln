@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Macro", "Macro\Macro.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patcher", "Patcher\Patcher.csproj", "{76B834A5-1AA7-445E-808C-5E90AB0F7CA6}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{A78AFCCD-8F31-4C9F-BFA3-45EE61AEDC53}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,12 +55,6 @@ Global
 		{76B834A5-1AA7-445E-808C-5E90AB0F7CA6}.Release|x64.Build.0 = Release|x64
 		{76B834A5-1AA7-445E-808C-5E90AB0F7CA6}.Release|x86.ActiveCfg = Release|Any CPU
 		{76B834A5-1AA7-445E-808C-5E90AB0F7CA6}.Release|x86.Build.0 = Release|Any CPU
-		{A78AFCCD-8F31-4C9F-BFA3-45EE61AEDC53}.Debug|Any CPU.ActiveCfg = Debug
-		{A78AFCCD-8F31-4C9F-BFA3-45EE61AEDC53}.Debug|x64.ActiveCfg = Debug
-		{A78AFCCD-8F31-4C9F-BFA3-45EE61AEDC53}.Debug|x86.ActiveCfg = Debug
-		{A78AFCCD-8F31-4C9F-BFA3-45EE61AEDC53}.Release|Any CPU.ActiveCfg = Release
-		{A78AFCCD-8F31-4C9F-BFA3-45EE61AEDC53}.Release|x64.ActiveCfg = Release
-		{A78AFCCD-8F31-4C9F-BFA3-45EE61AEDC53}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
