@@ -19,3 +19,5 @@ Patcher/obj/
 Patcher/bin/
 Macro/Macro.csproj.user
 *.user
+Setup/Setup.vdproj
+Release/Install/
