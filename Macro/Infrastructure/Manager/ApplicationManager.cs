@@ -38,9 +38,16 @@ namespace Macro.Infrastructure.Manager
 
         private MetroWindow _metroWindow;
 
+        private ChildWindow _drawWindow = new ChildWindow();
+
         private readonly List<CaptureView> _captureViews = new List<CaptureView>();
         private readonly List<MousePositionView> _mousePointViews = new List<MousePositionView>();
-        private IntPtr _mainWindowHandle;
+        private IntPtr _drawWindowHandle;
+
+        private Rect childRect = new Rect()
+        {
+
+        };
 
         public ApplicationManager()
         {
@@ -60,17 +67,25 @@ namespace Macro.Infrastructure.Manager
                 _captureViews.Add(new CaptureView(item));
                 _mousePointViews.Add(new MousePositionView(item));
             }
-            
         }
-
-        public IntPtr GetMainWindowHandle()
+        
+        public Window GetDrawWindow()
         {
-            return _mainWindowHandle;
+            return _drawWindow;
+        }
+        public IntPtr GetDrawWindowHandle()
+        {
+            return _drawWindowHandle;
         }
         public void Init()
         {
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
-            _mainWindowHandle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
+            _drawWindow.Opacity = 0;
+            _drawWindow.Show();
+#if DEBUG
+            //_drawWindow.Opacity = 1;
+#endif
+            _drawWindowHandle = new WindowInteropHelper(_drawWindow).Handle;
             SchedulerManager.Instance.Start();
         }
 
@@ -111,6 +126,7 @@ namespace Macro.Infrastructure.Manager
 
         public void Dispose()
         {
+            _drawWindow.Close();
             SchedulerManager.Instance.Stop();
             _progress.Close();
             foreach (var item in _captureViews)

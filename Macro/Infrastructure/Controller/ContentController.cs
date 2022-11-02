@@ -138,8 +138,11 @@ namespace Macro.Infrastructure.Controller
 
                 hWnd = item != null ? item.Item2 : process.MainWindowHandle;
             }
-            
-            if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetMainWindowHandle(), out Bitmap bmp, applciationData.IsDynamic) == false)
+
+            var window = ApplicationManager.Instance.GetDrawWindow();
+
+            if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetDrawWindowHandle(), out Bitmap bmp) == false)
+            //if(DisplayHelper.ProcessCapture(process, out Bitmap bmp, applciationData.IsDynamic) == false)
             {
                 await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
 
