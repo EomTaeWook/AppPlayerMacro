@@ -95,7 +95,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DisplayHelper.cs" />
     <Compile Include="ConstHelper.cs" />
     <Compile Include="Document\DocumentEnums.cs" />
     <Compile Include="Document\DocumentTemplate.cs" />

@@ -211,6 +211,7 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
+    <Compile Include="Infrastructure\Manager\DisplayHelper.cs" />
     <Compile Include="Infrastructure\Manager\FileManager.cs" />
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />

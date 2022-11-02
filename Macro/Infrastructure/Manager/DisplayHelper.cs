@@ -7,10 +7,11 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Utils;
 using Utils.Extensions;
 using Utils.Infrastructure;
 
-namespace Utils
+namespace Macro.Infrastructure.Manager
 {
     public class DisplayHelper
     {
@@ -60,6 +61,7 @@ namespace Utils
 
         public static bool ProcessCaptureV2(Process process,
                                             IntPtr destHandle,
+
                                             out Bitmap bmp)
         {
             try
@@ -70,16 +72,15 @@ namespace Utils
                     bmp = null;
                     return false;
                 }
-                if(NativeHelper.DwmRegisterThumbnail(destHandle, targetHandle, out IntPtr thumbHandle) == 0)
+                
+                if (NativeHelper.DwmRegisterThumbnail(destHandle, targetHandle, out IntPtr thumbHandle) == 0)
                 {
                     NativeHelper.DwmQueryThumbnailSourceSize(thumbHandle, out InterSize size);
-                    var destRect = new Rect();
-                    NativeHelper.GetWindowRect(targetHandle, ref destRect);
 
-                    var newRect = new Rect
+                    var destRect = new Rect
                     {
-                        Right = destRect.Right - destRect.Left,
-                        Bottom = destRect.Bottom - destRect.Top
+                        Right = size.X,
+                        Bottom = size.Y
                     };
 
                     var props = new DWMThumbnailProperties
@@ -87,7 +88,7 @@ namespace Utils
                         SourceClientAreaOnly = false,
                         Visible = true,
                         Opacity = 255,
-                        Destination = newRect,
+                        Destination = destRect,
                         Flags = (uint)(DWMThumbnailPropertiesType.SourcecLientareaOnly |
                                     DWMThumbnailPropertiesType.Visible |
                                     DWMThumbnailPropertiesType.Opacity |
@@ -95,14 +96,18 @@ namespace Utils
                                     )
                     };
                     NativeHelper.DwmUpdateThumbnailProperties(thumbHandle, ref props);
-                    bmp = new Bitmap(newRect.Width, newRect.Height, PixelFormat.Format32bppArgb);
-                    NativeHelper.SetWindowPos(destHandle, new Rect() 
-                    {
-                        Left = -999999,
-                        Right = -999999 + newRect.Right,
-                        Bottom = -99999 + newRect.Bottom,
-                        Top = -99999
-                    });
+
+                    var currentRect = new Rect();
+
+                    NativeHelper.GetWindowRect(destHandle, ref currentRect);
+
+                    currentRect.Right = currentRect.Left + size.X;
+                    currentRect.Bottom = currentRect.Top + size.Y;
+
+                    NativeHelper.SetWindowPos(destHandle, currentRect);
+
+                    bmp = new Bitmap(destRect.Width, destRect.Height, PixelFormat.Format32bppArgb);
+
                     using (var gfxBmp = Graphics.FromImage(bmp))
                     {
                         IntPtr hdcBitmap = gfxBmp.GetHdc();
@@ -127,7 +132,6 @@ namespace Utils
                 return false;
             }
         }
-
         public static bool ProcessCapture(Process process, out Bitmap bmp, bool isDynamic = false)
         {
             try

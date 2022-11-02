@@ -44,11 +44,6 @@ namespace Macro.Infrastructure.Manager
         private readonly List<MousePositionView> _mousePointViews = new List<MousePositionView>();
         private IntPtr _drawWindowHandle;
 
-        private Rect childRect = new Rect()
-        {
-
-        };
-
         public ApplicationManager()
         {
             _metroWindow = Application.Current.MainWindow as MetroWindow;

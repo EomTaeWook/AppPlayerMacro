@@ -1,5 +1,6 @@
 ﻿using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System.Windows;
 using System.Windows.Controls;
