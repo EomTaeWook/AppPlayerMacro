@@ -433,11 +433,9 @@ namespace Macro
                 btnStart.Visibility = Visibility.Collapsed;
                 tab_content.IsEnabled = false;
                 Clear();
-                
-                TaskBuilder.Build(async () =>
-                {
-                    await _contentController.Start();
-                });
+
+                _contentController.Start();
+
                 ApplicationManager.HideProgressbar();
             }
             else if (btn.Equals(btnStop))

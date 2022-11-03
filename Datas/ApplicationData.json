@@ -1,42 +1,42 @@
 ﻿[
   {
     "Code": "Nox",
-    "IsDynamic": true,
+    "NeedFocus": false,
     "HandleName": "",
     "OffsetX": 0,
     "OffsetY": 0
   },
   {
     "Code": "dnplayer",
-    "IsDynamic": false,
+    "NeedFocus": false,
     "HandleName": "TheRender",
     "OffsetX": 0,
     "OffsetY": -35
   },
   {
     "Code": "Peak",
-    "IsDynamic": false,
+    "NeedFocus": false,
     "HandleName": "kaopu001_tiantianplayer_opengl_wndWindow",
     "OffsetX": 0,
     "OffsetY": -35
   },
   {
     "Code": "Bluestacks",
-    "IsDynamic": true,
+    "NeedFocus": true,
     "HandleName": "BlueStacks Android PluginAndroid",
     "OffsetX": 0,
     "OffsetY": 0
   },
   {
     "Code": "HD-Player",
-    "IsDynamic": true,
+    "NeedFocus": true,
     "HandleName": "HD-Player",
     "OffsetX": 0,
-    "OffsetY": -35
+    "OffsetY": 0
   },
   {
     "Code": "mspaint",
-    "IsDynamic": true,
+    "NeedFocus": true,
     "HandleName": "",
     "OffsetX": 0,
     "OffsetY": 0

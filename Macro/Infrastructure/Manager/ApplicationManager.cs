@@ -17,15 +17,20 @@ namespace Macro.Infrastructure.Manager
     {
         public static MessageDialogResult ShowMessageDialog(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
         {
-            return ApplicationManager.Instance._metroWindow.ShowModalMessageExternal(title, message, style, new MetroDialogSettings()
+            return ApplicationManager.Instance._mainWindow.ShowModalMessageExternal(title, message, style, new MetroDialogSettings()
             {
                 ColorScheme = MetroDialogColorScheme.Inverted,
             });
         }
         public static void ShowProgressbar()
         {
-            ApplicationManager.Instance._metroWindow.Dispatcher.Invoke(() =>
+            ApplicationManager.Instance._mainWindow.Dispatcher.Invoke(() =>
             {
+                ApplicationManager.Instance._progress.Width = ApplicationManager.Instance._mainWindow.ActualWidth;
+                ApplicationManager.Instance._progress.Height = ApplicationManager.Instance._mainWindow.ActualHeight;
+
+                ApplicationManager.Instance._progress.Left = ApplicationManager.Instance._mainWindow.Left;
+                ApplicationManager.Instance._progress.Top = ApplicationManager.Instance._mainWindow.Top;
                 ApplicationManager.Instance._progress.Show();
             });
         }
@@ -36,7 +41,7 @@ namespace Macro.Infrastructure.Manager
 
         private ProgressView _progress;
 
-        private MetroWindow _metroWindow;
+        private MetroWindow _mainWindow;
 
         private ChildWindow _drawWindow = new ChildWindow();
 
@@ -46,15 +51,12 @@ namespace Macro.Infrastructure.Manager
 
         public ApplicationManager()
         {
-            _metroWindow = Application.Current.MainWindow as MetroWindow;
+            _mainWindow = Application.Current.MainWindow as MetroWindow;
 
             _progress = new ProgressView
             {
-                Owner = _metroWindow,
-                Left = _metroWindow.Left / 2,
-                Width = _metroWindow.Width / 2,
-                Top = _metroWindow.Top / 2,
-                Height = _metroWindow.Height / 2
+                Owner = _mainWindow,
+                RenderSize = _mainWindow.RenderSize
             };
 
             foreach (var item in DisplayHelper.MonitorInfo())

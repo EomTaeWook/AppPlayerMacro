@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="Manual"
              AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0" Background="Transparent">
     <Grid>
         <Controls:ProgressRing Foreground="{DynamicResource AccentColorBrush}" Opacity="1"/>

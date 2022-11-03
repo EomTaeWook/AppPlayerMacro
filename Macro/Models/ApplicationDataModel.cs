@@ -6,7 +6,7 @@ namespace Macro.Models
     {
         public string Code { get; set; }
 
-        public bool IsDynamic { get; set; } = false;
+        public bool NeedFocus { get; set; }
 
         public string HandleName { get; set; }
 

@@ -54,7 +54,7 @@ namespace Utils.Infrastructure
     {
         None = 0x000,
 
-        MouseActive = 0x021,
+        MouseActivate = 0x021,
 
         KeyDown = 0x100,
         KeyUp,
@@ -75,6 +75,8 @@ namespace Utils.Infrastructure
 
         MouseWheel = 0x20A,
         ParentNotify = 0x210,
+
+        IMESetContext = 0x281,
 
         Max
     }
