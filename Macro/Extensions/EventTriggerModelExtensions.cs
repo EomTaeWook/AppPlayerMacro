@@ -8,18 +8,7 @@ namespace Macro.Extensions
 {
     public static class EventTriggerModelExtensions
     {
-        public static void Clear(this EventTriggerModel source)
-        {
-            source = new EventTriggerModel
-            {
-                EventType = EventType.Image,
-                MouseTriggerInfo = new MouseTriggerInfo(),
-                MonitorInfo = new MonitorInfo(),
-                ProcessInfo = new ProcessInfo(),
-                SubEventTriggers = new ObservableCollection<EventTriggerModel>(),
-                RepeatInfo = new RepeatInfoModel()
-            };
-        }
+
         public static ValueConditionModel Clone(this ValueConditionModel source)
         {
             return new ValueConditionModel()

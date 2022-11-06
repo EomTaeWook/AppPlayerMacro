@@ -2,6 +2,7 @@
 using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,15 +22,18 @@ namespace Macro.View
         private bool _isDrag;
         private Point _originPoint;
         private readonly MonitorInfo _monitorInfo;
-        private readonly Border _dummyBorder;
+        private readonly Border _dummyCaptureBorder;
+        private readonly Border _dummyRoiBorder;
         private Border _dragBorder;
         private Point _factor;
+
+        private CaptureModeType _captureMode;
 
         public CaptureView(MonitorInfo monitorInfo)
         {
             _monitorInfo = monitorInfo;
 
-            _dummyBorder = new Border
+            _dummyCaptureBorder = new Border
             {
                 BorderBrush = Brushes.Blue,
                 BorderThickness = new Thickness(1),
@@ -38,6 +42,16 @@ namespace Macro.View
                 Opacity = 1,
                 CornerRadius = new CornerRadius(1)
             };
+            _dummyRoiBorder = new Border
+            {
+                BorderBrush = Brushes.Red,
+                BorderThickness = new Thickness(1),
+                Background = Brushes.LightPink,
+                SnapsToDevicePixels = true,
+                Opacity = 1,
+                CornerRadius = new CornerRadius(1)
+            };
+
             var systemDPI = NativeHelper.GetSystemDPI();
             _factor.X = 1.0F * monitorInfo.Dpi.X / systemDPI.X;
             _factor.Y = 1.0F *monitorInfo.Dpi.Y / systemDPI.Y;
@@ -45,9 +59,11 @@ namespace Macro.View
             Loaded += CaptureView_Loaded;
         }
 
-        public void ShowActivate()
+        public void ShowActivate(CaptureModeType captureModeType)
         {
+            this._captureMode = captureModeType;
             Clear();
+            WindowState = WindowState.Maximized;
             Show();
             Activate();
         }
@@ -74,7 +90,15 @@ namespace Macro.View
         private void Clear()
         {
             captureZone.Children.Clear();
-            _dragBorder = _dummyBorder.Clone();
+            if(this._captureMode == CaptureModeType.ImageCapture)
+            {
+                _dragBorder = _dummyCaptureBorder.Clone();
+            }
+            else if(this._captureMode == CaptureModeType.ROICapture)
+            {
+                _dragBorder = _dummyRoiBorder.Clone();
+            }
+            
             captureZone.Children.Add(_dragBorder);
         }
         private void EventInit()
@@ -91,11 +115,22 @@ namespace Macro.View
             if(e.Key == Key.Escape)
             {
                 e.Handled = true;
-                NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBInd, new CaptureEventArgs()
+                if(this._captureMode == CaptureModeType.ImageCapture)
                 {
-                    MonitorInfo = _monitorInfo,
-                    CaptureImage = null
-                });
+                    NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBind, new CaptureEventArgs()
+                    {
+                        MonitorInfo = _monitorInfo,
+                        CaptureImage = null
+                    });
+                }
+                else
+                {
+                    NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureDataBind, new ROICaptureEventArgs()
+                    {
+                        MonitorInfo = _monitorInfo,
+                        RoiRect = null
+                    });
+                }
             }
             base.OnPreviewKeyDown(e);
         }
@@ -173,15 +208,26 @@ namespace Macro.View
                     Bottom = top + height,
                     Top = top
                 };
-                var image = DisplayHelper.Capture(_monitorInfo, rect);
-                NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBInd, new CaptureEventArgs()
+                if(_captureMode == CaptureModeType.ImageCapture)
                 {
-                    MonitorInfo = _monitorInfo,
-                    CaptureImage = image,
-                    Position = rect
-                });
+                    var image = DisplayHelper.Capture(_monitorInfo, rect);
+                    NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBind, new CaptureEventArgs()
+                    {
+                        MonitorInfo = _monitorInfo,
+                        CaptureImage = image,
+                        Position = rect
+                    });
+                }
+                else if(_captureMode == CaptureModeType.ROICapture)
+                {
+                    NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureDataBind, new ROICaptureEventArgs()
+                    {
+                        MonitorInfo = _monitorInfo,
+                        RoiRect = rect
+                    });
+                }
+                
                 e.Handled = true;
-                WindowState = WindowState.Maximized;
             }
             _isDrag = false;
         }

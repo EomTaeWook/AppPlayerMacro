@@ -63,5 +63,9 @@ namespace Macro.Models
     {
         public InitialTab Mode { get; set; }
     }
-
+    public class ROICaptureEventArgs : INotifyEventArgs
+    {
+        public MonitorInfo MonitorInfo { get; set; }
+        public Rect? RoiRect { get; set; }
+    }
 }

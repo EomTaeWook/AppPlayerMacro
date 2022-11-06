@@ -149,6 +149,14 @@ namespace Macro.Infrastructure.Controller
 
             var targetBmp = model.Image;
 
+            if(model.RoiData != null)
+            {
+                var newRect = DisplayHelper.ApplyMonitorDPI(model.RoiData.RoiRect, model.RoiData.MonitorInfo);
+                var roiBmp = OpenCVHelper.CropImage(bmp, newRect);
+                roiBmp.Save("ImageCrop.png");
+                bmp.Save("Imagesoure.png");
+            }           
+
             var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point findLocation, processConfigModel.SearchImageResultDisplay);
 
             this._contentView.DrawCaptureImage(bmp);

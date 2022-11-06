@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
+using System.Text;
 using Utils.Infrastructure;
 
 namespace Macro.Models
@@ -26,6 +27,7 @@ namespace Macro.Models
         private bool _sameImageDrag = false;
         private bool _hardClick = false;
         private int _maxSameImageCount = 1;
+        private RoiModel _roiData { get; set; }
         private Bitmap _image;
 
         public EventTriggerModel()
@@ -47,6 +49,7 @@ namespace Macro.Models
             _sameImageDrag = other.SameImageDrag;
             _maxSameImageCount = other.MaxSameImageCount;
             _hardClick = other._hardClick;
+            _roiData = other._roiData;
         }
 
         [Order(1)]
@@ -198,50 +201,71 @@ namespace Macro.Models
             }
             get => _hardClick;
         }
+        [Order(16)]
+        public RoiModel RoiData
+        {
+            set
+            {
+                _roiData = value;
+                OnPropertyChanged("RoiData");
+                OnPropertyChanged("Desc");
+            }
+            get => _roiData;
+        }
 
         public string Desc
         {
             get
             {
+                var sb = new StringBuilder();
+                if(RoiData != null)
+                {
+                    sb.Append($"R : [X : {RoiData.RoiRect.Left} W : {RoiData.RoiRect.Width} Y : {RoiData.RoiRect.Top} H : {RoiData.RoiRect.Height}] ");
+                }
+                else
+                {
+                    sb.Append($"R : [-] ");
+                }
                 if (EventType == EventType.Mouse)
                 {
                     if (MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None && MouseTriggerInfo.MouseInfoEventType != MouseEventType.Wheel)
                     {
-                        return $"X : { MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}";
+                        sb.Append($"X : {MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}");
                     }
                     else if (MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
                     {
-                        return "";
+                        sb.Append($"Mouse None");
                     }
                     else if (MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
                     {
                         if (MouseTriggerInfo.WheelData > 0)
                         {
-                            return $"Wheel Up";
+                            sb.Append($"Wheel Up");
                         }
                         else
                         {
-                            return $"Wheel Down";
+                            sb.Append($"Wheel Down");
                         }
                     }
                     else
                     {
-                        return $"X : { MouseTriggerInfo.StartPoint.X:0} Y : {MouseTriggerInfo.StartPoint.Y:0}\r\n" +
-                            $"X : { MouseTriggerInfo.EndPoint.X:0} Y : {MouseTriggerInfo.EndPoint.Y:0}";
+                        sb.Append($"X : {MouseTriggerInfo.StartPoint.X:0} Y : {MouseTriggerInfo.StartPoint.Y:0}{Environment.NewLine}" +
+                            $"X : {MouseTriggerInfo.EndPoint.X:0} Y : {MouseTriggerInfo.EndPoint.Y:0}");
                     }
                 }
                 else if (EventType == EventType.Keyboard)
                 {
-                    return KeyboardCmd;
+                    sb.Append(KeyboardCmd);
                 }
                 else if (EventType == EventType.RelativeToImage)
                 {
-                    return $"X : { MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}";
+                    sb.Append($"X : {MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}");
                 }
                 else
                 {
-                    return "";
+                    
                 }
+                return sb.ToString();
             }
         }
         [field: NonSerialized]

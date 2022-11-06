@@ -211,7 +211,7 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
-    <Compile Include="Infrastructure\Manager\DisplayHelper.cs" />
+    <Compile Include="Infrastructure\DisplayHelper.cs" />
     <Compile Include="Infrastructure\Manager\FileManager.cs" />
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />
@@ -247,7 +247,7 @@
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\VersionNote.cs" />
-    <Compile Include="Models\RoiPositionModel.cs" />
+    <Compile Include="Models\RoiModel.cs" />
     <Compile Include="UI\UIItem.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />

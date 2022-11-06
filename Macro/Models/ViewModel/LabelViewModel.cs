@@ -33,6 +33,10 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.Config);
         }
+        public string SetROI
+        {
+            get => DocumentHelper.Get(Label.SetROI);
+        }
         public string Save
         {
             get => DocumentHelper.Get(Label.Save);
@@ -193,6 +197,10 @@ namespace Macro.Models.ViewModel
         public string MaxSameImageCount
         {
             get => DocumentHelper.Get(Label.MaxSameImageCount);
+        }
+        public string RemoveROI
+        {
+            get => DocumentHelper.Get(Label.RemoveROI);
         }
     }
 }

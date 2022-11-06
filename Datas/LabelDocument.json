@@ -268,6 +268,16 @@
     "Code": "HardClick",
     "Kor": "물리 클릭",
     "Eng": "Hard Clickk"
+  },
+  {
+    "Code": "SetROI",
+    "Kor": "관심영역 설정",
+    "Eng": "Set ROI"
+  },
+  {
+    "Code": "RemoveROI",
+    "Kor": "관심영역 제거",
+    "Eng": "Remove ROI"
   }
 ]
 

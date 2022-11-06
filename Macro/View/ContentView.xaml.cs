@@ -4,6 +4,7 @@ using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -17,8 +18,6 @@ namespace Macro.View
     /// </summary>
     public partial class ContentView : UserControl
     {
-        private Bitmap _bitmap;
-        
         public ContentView()
         {
             InitializeComponent();
@@ -28,18 +27,9 @@ namespace Macro.View
         {
             btnDelete.Visibility = Visibility.Collapsed;
             btnAddSameContent.Visibility = Visibility.Collapsed;
-            _bitmap = null;
             canvasCaptureImage.Background = System.Windows.Media.Brushes.White;
             eventSettingView.Clear();
         }
-        public void Capture()
-        {
-            Clear();
-            Application.Current.MainWindow.WindowState = WindowState.Minimized;
-
-            ApplicationManager.Instance.ShowCaptureView();
-        }
-        
        
         public void SaveDataBind(List<EventTriggerModel> saves)
         {
@@ -70,9 +60,9 @@ namespace Macro.View
             Loaded += ContentView_Loaded;
 
             NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
+            NotifyHelper.ROICaptureDataBind += NotifyHelper_ROICaptureDataBind;
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
         }
-
         private void ContentView_Loaded(object sender, RoutedEventArgs e)
         {
             Init();
@@ -80,7 +70,25 @@ namespace Macro.View
 
         private void Init()
         {
-            Clear();
+        }
+        private void NotifyHelper_ROICaptureDataBind(ROICaptureEventArgs e)
+        {
+            ApplicationManager.Instance.CloseCaptureView();
+            var dataContext = eventSettingView.GetDataContext();
+            var model = dataContext.CurrentTreeViewItem.DataContext<EventTriggerModel>();
+
+            if (e.RoiRect != null)
+            {
+                model.RoiData = new RoiModel()
+                {
+                    RoiRect = e.RoiRect.Value,
+                    MonitorInfo = e.MonitorInfo
+                };
+            }
+            else
+            {
+                model.RoiData = null;
+            }
         }
 
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
@@ -91,9 +99,13 @@ namespace Macro.View
             {
                 var capture = e.CaptureImage;
                 canvasCaptureImage.Background = new ImageBrush(capture.ToBitmapSource());
-                _bitmap = new Bitmap(capture, capture.Width, capture.Height);
+
+                var dataContext = eventSettingView.GetDataContext();
+                var model = dataContext.CurrentTreeViewItem.DataContext<EventTriggerModel>();
+
+                model.Image = new Bitmap(capture, capture.Width, capture.Height);
+                model.MonitorInfo = e.MonitorInfo;
             }
-            Application.Current.MainWindow.WindowState = WindowState.Normal;
         }
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {            
@@ -111,9 +123,7 @@ namespace Macro.View
                 var model = e.TreeViewItem.DataContext<EventTriggerModel>();
                 btnDelete.Visibility = Visibility.Visible;
                 btnAddSameContent.Visibility = Visibility.Visible;
-
-                _bitmap = model.Image;
-                canvasCaptureImage.Background = new ImageBrush(_bitmap.ToBitmapSource());
+                canvasCaptureImage.Background = new ImageBrush(model.Image.ToBitmapSource());
             }
         }
         
@@ -122,13 +132,17 @@ namespace Macro.View
             var btn = sender as Button;
             if (btn.Equals(btnCapture))
             {
-                Capture();
+                var dataContext = eventSettingView.GetDataContext();
+                if (dataContext.IsExistence() == true)
+                {
+                    dataContext.Clear();
+                }
+                ApplicationManager.Instance.ShowImageCaptureView();
             }
             else if (btn.Equals(btnSave))
             {
                 var dataContext = eventSettingView.GetDataContext();
                 var model = dataContext.CurrentTreeViewItem.DataContext<EventTriggerModel>();
-                model.Image = _bitmap;
                 if (model.EventType == EventType.RelativeToImage)
                 {
                     model.MouseTriggerInfo.StartPoint = new Point(dataContext.RelativePosition.X, dataContext.RelativePosition.Y);

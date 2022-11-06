@@ -2,9 +2,9 @@
 
 namespace Macro.Models
 {
-    public class RoiPositionModel
+    public class RoiModel
     {
-        public Rect RoiPosition { get; set; }
+        public Rect RoiRect { get; set; }
         public MonitorInfo MonitorInfo { get; set; }
     }
 }

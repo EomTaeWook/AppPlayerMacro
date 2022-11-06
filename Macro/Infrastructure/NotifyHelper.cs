@@ -1,4 +1,5 @@
-﻿using Macro.Models;
+﻿using Kosher.Log;
+using Macro.Models;
 using System;
 
 namespace Macro.Infrastructure
@@ -22,6 +23,7 @@ namespace Macro.Infrastructure
         public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
 
         public static event Action<TreeGridViewFocusEventArgs> TreeGridViewFocus;
+        public static event Action<ROICaptureEventArgs> ROICaptureDataBind;
 
 
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
@@ -34,7 +36,7 @@ namespace Macro.Infrastructure
                 case NotifyEventType.MousePointDataBind:
                     MousePositionDataBind?.Invoke(args as MousePointEventArgs);
                     break;
-                case NotifyEventType.ScreenCaptureDataBInd:
+                case NotifyEventType.ScreenCaptureDataBind:
                     ScreenCaptureDataBind?.Invoke(args as CaptureEventArgs);
                     break;
                 case NotifyEventType.TreeItemOrderChanged:
@@ -61,15 +63,18 @@ namespace Macro.Infrastructure
                 case NotifyEventType.ComboProcessChanged:
                     ComboProcessChanged?.Invoke(args as ComboProcessChangedEventArgs);
                     break;
-
                 case NotifyEventType.TreeGridViewFocus:
                     TreeGridViewFocus?.Invoke(args as TreeGridViewFocusEventArgs);
                     break;
                 case NotifyEventType.UpdatedTime:
                     UpdatedTime?.Invoke(args as UpdatedTimeArgs);
                     break;
+                case NotifyEventType.ROICaptureDataBind:
+                    ROICaptureDataBind?.Invoke(args as ROICaptureEventArgs);
+                    break;
                 case NotifyEventType.Max:
                 default:
+                    LogHelper.Debug($"what the case?");
                     break;
             }
         }

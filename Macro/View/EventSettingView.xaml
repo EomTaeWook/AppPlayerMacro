@@ -50,11 +50,18 @@
                 </Grid>
                 <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="6.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="3.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="3.*"></ColumnDefinition>
+                        <ColumnDefinition Width="7.*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Grid Name="gridImage" Grid.Column="0" Visibility="Visible">
+                    <Button Name="btnSetROI" Grid.Column="0" Content="{Binding Path=LabelViewModel.SetROI, Source={StaticResource Locator}}"></Button>
+                    <Button Name="btnRemoveROI" Visibility="Hidden" Grid.Column="0" Content="{Binding Path=LabelViewModel.RemoveROI, Source={StaticResource Locator}}"></Button>
+                    <Label Name="lblDesc" Content="{Binding Path=CurrentTreeViewItem.DataContext.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.ColumnSpan="2" Grid.Row="2"></Label>
+                    <Grid Name="gridImage" Grid.Column="1" Visibility="Visible">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
                             <ColumnDefinition Width="5.5*"></ColumnDefinition>
@@ -63,7 +70,7 @@
                         <mah:NumericUpDown Name="numMaxSameImageCount" Minimum="1" Grid.Column="1" Visibility="Hidden" Value="{Binding Path=CurrentTreeViewItem.DataContext.MaxSameImageCount, Mode=TwoWay}"></mah:NumericUpDown>
                         <!--<Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
                     </Grid>
-                    <Grid Name="gridMouse" Grid.Column="0" Visibility="Collapsed">
+                    <Grid Name="gridMouse" Grid.Column="1" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5.5*"></ColumnDefinition>
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
@@ -72,9 +79,10 @@
                         
                         <!--<Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
                     </Grid>
-                    <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Visibility="Collapsed" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>
-                    <Label Name="lblDesc" DockPanel.Dock="Right" Content="{Binding Path=CurrentTreeViewItem.DataContext.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.Column="1"></Label>
-                    <Grid Name="gridRelative" Grid.Column="0" Visibility="Collapsed">
+                    <Grid Name="gridKeyboard" Grid.Column="1" Visibility="Collapsed">
+                        <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>
+                    </Grid>
+                    <Grid Name="gridRelative" Grid.Column="1" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"></ColumnDefinition>
                             <ColumnDefinition Width="4*"></ColumnDefinition>

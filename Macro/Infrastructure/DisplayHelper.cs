@@ -15,6 +15,21 @@ namespace Macro.Infrastructure.Manager
 {
     public class DisplayHelper
     {
+        public static Rect ApplyMonitorDPI(Rect rect, MonitorInfo monitorInfo)
+        {
+            var factor = NativeHelper.GetSystemDPI();
+            var factorX = 1.0F * factor.X / ConstHelper.DefaultDPI;
+            var factorY = 1.0F * factor.Y / ConstHelper.DefaultDPI;
+
+            var newRect = new OpenCvSharp.Rect()
+            {
+                Left = Convert.ToInt32(monitorInfo.Rect.Left + rect.Left * factorX),
+                Top = Convert.ToInt32(monitorInfo.Rect.Top + rect.Top * factorY),
+                Height = Convert.ToInt32(rect.Height * factorY),
+                Width = Convert.ToInt32(rect.Width * factorX)
+            };
+            return rect;
+        }
         public static List<MonitorInfo> MonitorInfo()
         {
             var monitors = new List<MonitorInfo>();
@@ -58,6 +73,7 @@ namespace Macro.Infrastructure.Manager
                 return null;
             }
         }
+        
 
         public static bool ProcessCaptureV2(Process process,
                                             IntPtr destHandle,

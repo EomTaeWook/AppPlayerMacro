@@ -72,6 +72,8 @@
         Preferences,
         Close,
         HardClick,
+        SetROI,
+        RemoveROI,
 
         Max
     }

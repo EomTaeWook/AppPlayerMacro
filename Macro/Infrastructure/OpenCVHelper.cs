@@ -3,6 +3,7 @@ using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Color = System.Drawing.Color;
 using Point = OpenCvSharp.Point;
 using Rect = Utils.Infrastructure.Rect;
 
@@ -91,16 +92,26 @@ namespace Macro.Infrastructure
             }
             return locations;
         }
-        public static Bitmap MakeRoiImage(Bitmap source, Rect rect)
+        public static Bitmap CropImage(Bitmap source, Rect roiRect)
         {
             var sourceMat = BitmapConverter.ToMat(source);
-            var roiMat = sourceMat.SubMat(new OpenCvSharp.Rect()
+
+            var newRect = new OpenCvSharp.Rect()
             {
-                Left = rect.Left,
-                Top = rect.Top,
-                Height = rect.Height,
-                Width = rect.Width
-            });
+                Left = roiRect.Left,
+                Top = roiRect.Top,
+                Height = roiRect.Height,
+                Width = roiRect.Width
+            };
+            using (var g = Graphics.FromImage(source))
+            {
+                using (var pen = new Pen(Color.LightPink))
+                {
+                    g.DrawRectangle(pen, new Rectangle() { X = newRect.Left, Y = newRect.Top, Width = newRect.Width, Height = newRect.Height });
+                }
+            }
+
+            var roiMat = sourceMat.SubMat(newRect);
             var destBitmap = BitmapConverter.ToBitmap(roiMat);
             return destBitmap;
         }

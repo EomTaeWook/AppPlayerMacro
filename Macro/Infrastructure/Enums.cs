@@ -26,7 +26,7 @@
 
         ConfigChanged,
         MousePointDataBind,
-        ScreenCaptureDataBInd,
+        ScreenCaptureDataBind,
         TreeItemOrderChanged,
         SelctTreeViewItemChanged,
         EventTriggerOrderChanged,
@@ -39,6 +39,7 @@
         TreeGridViewFocus,
 
         UpdatedTime,
+        ROICaptureDataBind,
 
         Max
     }
@@ -57,7 +58,15 @@
     {
         Above,
         Below,
-        
+
+        Max
+    }
+
+    public enum CaptureModeType
+    {
+        ImageCapture,
+        ROICapture,
+
         Max
     }
 
