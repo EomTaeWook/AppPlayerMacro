@@ -10,25 +10,26 @@ using System.Security.Cryptography;
 using Utils;
 using Utils.Extensions;
 using Utils.Infrastructure;
+using Rectangle = Utils.Infrastructure.Rectangle;
 
 namespace Macro.Infrastructure.Manager
 {
     public class DisplayHelper
     {
-        public static Rect ApplyMonitorDPI(Rect rect, MonitorInfo monitorInfo)
+        public static Rect ApplyMonitorDPI(Rectangle rect, MonitorInfo monitorInfo)
         {
             var factor = NativeHelper.GetSystemDPI();
-            var factorX = 1.0F * factor.X / ConstHelper.DefaultDPI;
-            var factorY = 1.0F * factor.Y / ConstHelper.DefaultDPI;
+            var factorX = 1.0F * factor.X / monitorInfo.Dpi.X;
+            var factorY = 1.0F * factor.Y / monitorInfo.Dpi.Y;
 
-            var newRect = new OpenCvSharp.Rect()
+            var newRect = new Rect()
             {
-                Left = Convert.ToInt32(monitorInfo.Rect.Left + rect.Left * factorX),
-                Top = Convert.ToInt32(monitorInfo.Rect.Top + rect.Top * factorY),
-                Height = Convert.ToInt32(rect.Height * factorY),
-                Width = Convert.ToInt32(rect.Width * factorX)
+                Left = Convert.ToInt32(rect.Left * factorX),
+                Top = Convert.ToInt32(rect.Top * factorY),
+                Bottom = Convert.ToInt32(rect.Bottom * factorY),
+                Right = Convert.ToInt32(rect.Right * factorX)
             };
-            return rect;
+            return newRect;
         }
         public static List<MonitorInfo> MonitorInfo()
         {

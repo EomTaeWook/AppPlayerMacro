@@ -1,9 +1,13 @@
 {
   "currentVersion": {
-    "version": "2.6.3",
+    "version": "2.6.4",
     "list": []
   },
   "oldVersion": [
+    {
+      "version": "2.6.3",
+      "list": []
+    },
     {
       "version": "2.6.2",
       "list": []
@@ -21,7 +25,6 @@
       "list": [
         "Utils.dll https://drive.google.com/uc?id=1G1eeehvHoxR-WUFP5sFmM-xsuPmfx1fc&export=download",
         "Unity.Container.dll https://drive.google.com/uc?id=1p8Yg5kEynz-dxRxgKLZzfyXcTE2jaZdh&export=download"
-
       ]
     }
   ]

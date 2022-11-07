@@ -139,7 +139,7 @@ namespace Macro.Infrastructure.Controller
                 hWnd = item != null ? item.Item2 : process.MainWindowHandle;
             }
 
-            if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetDrawWindowHandle(), out Bitmap bmp) == false)
+            if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetDrawWindowHandle(), out Bitmap sourceBmp) == false)
             //if(DisplayHelper.ProcessCapture(process, out Bitmap bmp, applciationData.IsDynamic) == false)
             {
                 await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
@@ -147,19 +147,24 @@ namespace Macro.Infrastructure.Controller
                 return Tuple.Create<bool, EventTriggerModel>(false, null);
             }
 
-            var targetBmp = model.Image;
-
-            if(model.RoiData != null)
+            var findBmp = model.Image;
+            var similarity = 0;
+            Point findLocation;
+            if (model.RoiData != null)
             {
                 var newRect = DisplayHelper.ApplyMonitorDPI(model.RoiData.RoiRect, model.RoiData.MonitorInfo);
-                var roiBmp = OpenCVHelper.CropImage(bmp, newRect);
-                roiBmp.Save("ImageCrop.png");
-                bmp.Save("Imagesoure.png");
-            }           
+                var roiBmp = OpenCVHelper.CropImage(sourceBmp, newRect);
+                similarity = OpenCVHelper.Search(roiBmp, findBmp, out findLocation, processConfigModel.SearchImageResultDisplay);
 
-            var similarity = OpenCVHelper.Search(bmp, targetBmp, out Point findLocation, processConfigModel.SearchImageResultDisplay);
+                findLocation.X += newRect.Left;
+                findLocation.Y += newRect.Top;
+            }
+            else
+            {
+                similarity = OpenCVHelper.Search(sourceBmp, findBmp, out findLocation, processConfigModel.SearchImageResultDisplay);
+            }
 
-            this._contentView.DrawCaptureImage(bmp);
+            this._contentView.DrawCaptureImage(sourceBmp);
 
             LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {findLocation.X} Y: {findLocation.Y}");
             if (similarity < processConfigModel.Similarity)
@@ -197,18 +202,18 @@ namespace Macro.Infrastructure.Controller
                 //Todo
                 for (int ii = 0; ii < model.MaxSameImageCount; ++ii)
                 {
-                    var locations = OpenCVHelper.MultipleSearch(bmp, targetBmp, processConfigModel.Similarity, 2, processConfigModel.SearchImageResultDisplay);
+                    var locations = OpenCVHelper.MultipleSearch(sourceBmp, findBmp, processConfigModel.Similarity, 2, processConfigModel.SearchImageResultDisplay);
                     if (locations.Count > 1)
                     {
-                        this._contentView.DrawCaptureImage(bmp);
-                        var startPoint = new Point(locations[0].X + targetBmp.Width / 2, locations[0].Y + targetBmp.Height / 2);
+                        this._contentView.DrawCaptureImage(sourceBmp);
+                        var startPoint = new Point(locations[0].X + findBmp.Width / 2, locations[0].Y + findBmp.Height / 2);
 
-                        startPoint.X += this.GetRandomValue(0, targetBmp.Width / 2);
-                        startPoint.Y += this.GetRandomValue(0, targetBmp.Height / 2);
+                        startPoint.X += this.GetRandomValue(0, findBmp.Width / 2);
+                        startPoint.Y += this.GetRandomValue(0, findBmp.Height / 2);
 
-                        var endPoint = new Point(locations[1].X + targetBmp.Width / 2, locations[1].Y + targetBmp.Width / 2);
-                        endPoint.X += this.GetRandomValue(0, targetBmp.Width / 2);
-                        endPoint.Y += this.GetRandomValue(0, targetBmp.Height / 2);
+                        var endPoint = new Point(locations[1].X + findBmp.Width / 2, locations[1].Y + findBmp.Width / 2);
+                        endPoint.X += this.GetRandomValue(0, findBmp.Width / 2);
+                        endPoint.Y += this.GetRandomValue(0, findBmp.Height / 2);
 
                         SameImageMouseDragTriggerProcess(hWnd, startPoint, endPoint, model, processConfigModel);
                     }
@@ -262,14 +267,15 @@ namespace Macro.Infrastructure.Controller
                         }
                     }
                 }
+
                 else
                 {
-                    var focusHandle = NativeHelper.GetForegroundWindow();
+                    //var focusHandle = NativeHelper.GetForegroundWindow();
 
-                    if (applciationData.NeedFocus == true)
-                    {
-                        NativeHelper.PostMessage(hWnd, WindowMessage.IMESetContext, 1, 0);
-                    }
+                    //if (applciationData.NeedFocus == true)
+                    //{
+                    //    NativeHelper.PostMessage(hWnd, WindowMessage.IMESetContext, 1, 0);
+                    //}
                     var processLocation = new Rect();
 
                     NativeHelper.GetWindowRect(hWnd, ref processLocation);
@@ -298,8 +304,8 @@ namespace Macro.Infrastructure.Controller
                     {
                         var percentageX = _random.NextDouble();
                         var percentageY = _random.NextDouble();
-                        findLocation.X = (findLocation.X + applciationData.OffsetX) + (targetBmp.Width * percentageX);
-                        findLocation.Y = (findLocation.Y + applciationData.OffsetY) + (targetBmp.Height * percentageY);
+                        findLocation.X = (findLocation.X + applciationData.OffsetX) + (findBmp.Width * percentageX);
+                        findLocation.Y = (findLocation.Y + applciationData.OffsetY) + (findBmp.Height * percentageY);
 
                         if (model.HardClick == false)
                         {
@@ -319,19 +325,14 @@ namespace Macro.Infrastructure.Controller
                     }
                     else if (model.EventType == EventType.RelativeToImage)
                     {
-                        findLocation.X = (findLocation.X + applciationData.OffsetX) + (targetBmp.Width / 2);
-                        findLocation.Y = (findLocation.Y + applciationData.OffsetY) + (targetBmp.Height / 2);
+                        findLocation.X = (findLocation.X + applciationData.OffsetX) + (findBmp.Width / 2);
+                        findLocation.Y = (findLocation.Y + applciationData.OffsetY) + (findBmp.Height / 2);
 
                         ImageTriggerProcess(hWnd, findLocation, model);
                     }
                     else if (model.EventType == EventType.Keyboard)
                     {
                         KeyboardTriggerProcess(hWnd, model);
-                    }
-
-                    if (applciationData.NeedFocus == true)
-                    {
-                        NativeHelper.PostMessage(hWnd, WindowMessage.IMESetContext, 0, 0);
                     }
 
                     if (model.EventToNext > 0 && model.TriggerIndex != model.EventToNext)

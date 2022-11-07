@@ -107,20 +107,19 @@ namespace Macro.Infrastructure.Manager
 
         public void ShowImageCaptureView()
         {
-            Application.Current.MainWindow.WindowState = WindowState.Minimized;
-
             foreach (var item in _captureViews)
             {
                 item.ShowActivate(CaptureModeType.ImageCapture);
             }
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
         public void ShowSetROIView()
         {
-            Application.Current.MainWindow.WindowState = WindowState.Minimized;
             foreach (var item in _captureViews)
             {
                 item.ShowActivate(CaptureModeType.ROICapture);
             }
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 
         public void CloseCaptureView()

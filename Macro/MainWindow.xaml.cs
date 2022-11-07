@@ -202,16 +202,26 @@ namespace Macro
                 {
                     if (monitor.Rect.IsContain(rect))
                     {
-                        if (model.MonitorInfo != null)
+                        if(model.EventType != EventType.Mouse)
                         {
-                            model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
+                            if (model.MonitorInfo != null)
+                            {
+                                model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
+                            }
+                            model.MonitorInfo = monitor;
+                            
                         }
-
-                        model.MonitorInfo = monitor;
+                        if (model.RoiData != null)
+                        {
+                            model.RoiData.RoiRect.Left -= rect.Left - monitor.Rect.Left;
+                            model.RoiData.RoiRect.Top -= rect.Top - monitor.Rect.Top;
+                            model.RoiData.RoiRect.Right -= rect.Left - monitor.Rect.Left;
+                            model.RoiData.RoiRect.Bottom -= rect.Top - monitor.Rect.Top;
+                        }
                         break;
                     }
                 }
-            }
+            }    
         }
         public void Clear()
         {

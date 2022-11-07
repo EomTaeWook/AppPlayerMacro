@@ -62,10 +62,10 @@ namespace Macro.View
         public void ShowActivate(CaptureModeType captureModeType)
         {
             this._captureMode = captureModeType;
-            Clear();
-            WindowState = WindowState.Maximized;
+            SetPosition();
             Show();
             Activate();
+            Clear();
         }
         private void CaptureView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -80,12 +80,14 @@ namespace Macro.View
             Topmost = true;
 #endif
 
+            SetPosition();
+        }
+        private void SetPosition()
+        {
             Left = _monitorInfo.Rect.Left;
             Width = _monitorInfo.Rect.Width;
             Top = _monitorInfo.Rect.Top;
             Height = _monitorInfo.Rect.Height;
-
-            WindowState = WindowState.Maximized;
         }
         private void Clear()
         {
@@ -100,6 +102,7 @@ namespace Macro.View
             }
             
             captureZone.Children.Add(_dragBorder);
+            WindowState = WindowState.Normal;
         }
         private void EventInit()
         {

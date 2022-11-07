@@ -96,6 +96,11 @@ namespace Macro.Infrastructure
         {
             var sourceMat = BitmapConverter.ToMat(source);
 
+            if(source.Width <= roiRect.Width || source.Height <= roiRect.Height)
+            {
+                return source;
+            }
+
             var newRect = new OpenCvSharp.Rect()
             {
                 Left = roiRect.Left,
