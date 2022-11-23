@@ -33,7 +33,7 @@ namespace Patcher
                 ArchiveFileName = @"./archive/patcher_log.{#}.txt",
                 ArchiveRollingType = FileRollingType.Day,
                 AutoFlush = true,
-                FileName = @"./logs/patcherLogFile.txt",
+                LogFileName = @"./logs/patcherLogFile.txt",
                 KeepOpenFile = true,
                 LogForm = @"${date} | ${level} | ${message}",
                 MaxArchiveFile = 7,
