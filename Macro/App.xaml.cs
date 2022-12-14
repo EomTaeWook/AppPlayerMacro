@@ -1,4 +1,5 @@
-﻿using Kosher.Framework;
+﻿using Kosher.Extensions.Log;
+using Kosher.Framework;
 using Kosher.Log;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Interface;
@@ -12,7 +13,6 @@ using System.Linq;
 using System.Windows;
 using Utils;
 using Utils.Document;
-using KosherExtensions.Log;
 
 namespace Macro
 {
