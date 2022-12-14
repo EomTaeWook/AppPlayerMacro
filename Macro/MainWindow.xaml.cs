@@ -322,6 +322,7 @@ namespace Macro
             {
                 if(checkFix.IsChecked.HasValue == false)
                 {
+                    _contentController.SetFixProcess(null);
                     _fixProcess = null;
                     return;
                 }
@@ -331,14 +332,19 @@ namespace Macro
                     if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
                     {
                         _fixProcess = new KeyValuePair<string, Process>(item.Key, item.Value);
+                        _contentController.SetFixProcess(item.Value);
+
                     }
                 }
                 else
                 {
+                    _contentController.SetFixProcess(null);
                     _fixProcess = null;
                 }
             }
         }
+
+
 
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {

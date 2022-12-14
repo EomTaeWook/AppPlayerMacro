@@ -8,5 +8,10 @@ namespace Macro.Models
     {
         public Rectangle RoiRect { get; set; }
         public MonitorInfo MonitorInfo { get; set; }
+
+        public bool IsExists()
+        {
+            return RoiRect != null && MonitorInfo != null;
+        }
     }
 }

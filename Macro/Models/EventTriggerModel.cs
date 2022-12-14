@@ -206,9 +206,17 @@ namespace Macro.Models
         {
             set
             {
-                _roiData = value;
-                OnPropertyChanged("RoiData");
-                OnPropertyChanged("Desc");
+                if(value == null)
+                {
+                    return;
+                }
+
+                if (value.IsExists())
+                {
+                    _roiData = value;
+                    OnPropertyChanged("RoiData");
+                    OnPropertyChanged("Desc");
+                }
             }
             get => _roiData;
         }
@@ -226,6 +234,7 @@ namespace Macro.Models
                 {
                     sb.Append($"R : [-] ");
                 }
+
                 if (EventType == EventType.Mouse)
                 {
                     if (MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None && MouseTriggerInfo.MouseInfoEventType != MouseEventType.Wheel)

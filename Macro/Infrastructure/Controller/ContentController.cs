@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Utils;
@@ -29,6 +30,7 @@ namespace Macro.Infrastructure.Controller
         private CancellationTokenSource _cts;
         private CancellationToken _token;
         private object lockObject = new object();
+        private Process _fixProcess;
         public ContentController()
         {
             _random = new SeedRandom();
@@ -122,7 +124,10 @@ namespace Macro.Infrastructure.Controller
                 _cts = null;
             }
         }
-
+        public void SetFixProcess(Process process)
+        {
+            this._fixProcess = process;
+        }
         private async Task<Tuple<bool, EventTriggerModel>> ProcessEvents(Process process, EventTriggerModel model, ProcessConfigModel processConfigModel)
         {
             var hWnd = IntPtr.Zero;
@@ -357,14 +362,20 @@ namespace Macro.Infrastructure.Controller
         {
             var processDatas = Process.GetProcessesByName(model.ProcessInfo.ProcessName);
 
-            var excuted = false;
-            for (int i = 0; i < processDatas.Length; ++i)
+            if (_fixProcess != null)
             {
-                _ = await ProcessEvents(processDatas[i], model, processConfigModel);
+                _ = await ProcessEvents(_fixProcess, model, processConfigModel);
                 await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
-
             }
-            return excuted;
+            else
+            {
+                for (int i = 0; i < processDatas.Length; ++i)
+                {
+                    _ = await ProcessEvents(processDatas[i], model, processConfigModel);
+                    await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
+                }
+            }
+            return true; ;
         }
 
         private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
