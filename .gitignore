@@ -1,10 +1,8 @@
-NoxMacro/bin/
-NoxMacro/obj/
 Macro/bin/
 Macro/obj/
 Utils/obj/
 Utils/bin/
-.vs/Macro/v15/
+.vs/
 packages/
 Release/exe/
 Release/Install/Setup.exe
@@ -15,9 +13,7 @@ Patcher/Patcher/obj/
 .gitattributes
 Patcher/Patcher/Patcher.csproj.user
 Patcher/obj/
-.vs/
 Patcher/bin/
 Macro/Macro.csproj.user
 *.user
-Setup/Setup.vdproj
 Release/Install/
