@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 5
+    "Build": 6
   },
-  "Desc": "고정 기능 작동 안하던 현상 수정"
+  "Desc": "로그 기능 최적화 및 최신 바이너리 반영"
 }

@@ -39,7 +39,7 @@ namespace Patcher
                 MaxArchiveFile = 7,
             };
             configuration.AddTarget("file", fileLogTarget);
-            configuration.AddRule("file", new LogRule("", LogLevel.Debug, fileLogTarget));
+            configuration.AddLogger("file", new LoggerRule("", LogLevel.Debug, fileLogTarget));
             LogBuilder.Configuration(configuration).Build();
         }
         

@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Patcher</RootNamespace>
     <AssemblyName>Patcher</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -95,8 +95,8 @@
     <Reference Include="Kosher">
       <HintPath>..\Dll\Kosher.dll</HintPath>
     </Reference>
-    <Reference Include="KosherExtensions">
-      <HintPath>..\Dll\KosherExtensions.dll</HintPath>
+    <Reference Include="Kosher.Extensions">
+      <HintPath>..\Dll\Kosher.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.4.9\lib\net47\MahApps.Metro.dll</HintPath>
