@@ -14,8 +14,8 @@ namespace Utils
         public static readonly string TempPath = Path.GetTempPath() + $"Macro\\";
         public static readonly string TempBackupPath = $"{ TempPath }backup\\";
 
-        public static readonly int MinPeriod = 100;
-        public static readonly int MinItemDelay = 100;
+        public static readonly int MinPeriod = 0;
+        public static readonly int MinItemDelay = 0;
         public static readonly int MinSimilarity = 0;
         public static readonly int MinDragDelay = 1;
 
