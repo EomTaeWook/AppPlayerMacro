@@ -18,10 +18,8 @@ namespace Macro.Infrastructure.Manager
     {
         private CancellationTokenSource cts;
         private CancellationToken cancellationToken = CancellationToken.None;
-        private int period = ConstHelper.MinPeriod;
         public SchedulerManager()
         {
-            
         }
         public bool IsRunning()
         {
@@ -55,7 +53,7 @@ namespace Macro.Infrastructure.Manager
 
                 NotifyHelper.InvokeNotify(NotifyEventType.UpdatedTime, args);
 
-                await Task.Delay(period);
+                await Task.Delay(33);
             }
         }
     }

@@ -343,9 +343,6 @@ namespace Macro
                 }
             }
         }
-
-
-
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
             if(e.TreeViewItem == null)
