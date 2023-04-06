@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 6
+    "Build": 7
   },
-  "Desc": "로그 기능 최적화 및 최신 바이너리 반영"
+  "Desc": "아이템 및 프로세스 딜레이 0ms 까지 제공"
 }

@@ -414,7 +414,6 @@ namespace Macro.Infrastructure.Controller
                     {
                         command.Add(input[i]);
                     }
-                        
                 }
             }
             var keys = command.Where(r =>
@@ -618,5 +617,4 @@ namespace Macro.Infrastructure.Controller
             return middlePosition;
         }
     }
-
 }
