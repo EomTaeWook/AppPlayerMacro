@@ -8,12 +8,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 using Utils.Document;
-using Utils.Extensions;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
 
@@ -23,13 +21,12 @@ namespace Macro.Infrastructure.Controller
     {
         private readonly SeedRandom _random;
         private ContentView _contentView;
-        private ApplicationDataHelper _applicationDataHelper;
+        private readonly ApplicationDataHelper _applicationDataHelper;
         private InputManager _inputManager;
         private int _delay = 0;
         private ProcessConfigModel _processConfig;
         private CancellationTokenSource _cts;
         private CancellationToken _token;
-        private object lockObject = new object();
         private Process _fixProcess;
         public ContentController()
         {

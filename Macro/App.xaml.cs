@@ -103,6 +103,7 @@ namespace Macro
             var applicationDataHelper = Singleton<ApplicationDataHelper>.Instance;
             applicationDataHelper.Init("ApplicationData");
             ServiceProviderManager.Instance.AddSingleton<ApplicationDataHelper>(applicationDataHelper);
+            ServiceProviderManager.Instance.AddSingleton<FileService, FileService>();
 
             ServiceProviderManager.Instance.AddSingleton<IKeyboardInput, KeyboardInput>();
             ServiceProviderManager.Instance.AddSingleton<IMouseInput, MouseInput>();
@@ -113,6 +114,7 @@ namespace Macro
             ServiceProviderManager.Instance.AddSingleton<LabelViewModel, LabelViewModel>();
             ServiceProviderManager.Instance.AddSingleton<SettingViewModel, SettingViewModel>();
             ServiceProviderManager.Instance.AddSingleton<ViewModelLocator, ViewModelLocator>();
+            
         }
     }
 }

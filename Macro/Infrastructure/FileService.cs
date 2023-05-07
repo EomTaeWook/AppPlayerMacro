@@ -1,5 +1,4 @@
-﻿using Kosher.Framework;
-using Kosher.Log;
+﻿using Kosher.Log;
 using Macro.Infrastructure.Serialize;
 using System;
 using System.Collections.Generic;
@@ -11,12 +10,8 @@ using Utils;
 
 namespace Macro.Infrastructure.Manager
 {
-    public class FileManager : Singleton<FileManager>
+    public class FileService
     {
-        public FileManager()
-        {
-        }
-
         public bool SaveJson<T>(string path, T model)
         {
             try

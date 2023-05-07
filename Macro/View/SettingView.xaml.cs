@@ -22,7 +22,7 @@ namespace Macro.View
     public partial class SettingView : UIItem
     {
         public Config Config { get; private set; }
-
+        
         public SettingView()
         {
             InitializeComponent();
@@ -33,6 +33,7 @@ namespace Macro.View
         {
             var languages = Enum.GetValues(typeof(Language)).Cast<Language>().Where(r => r != Utils.Document.Language.Max);
             comboLanguage.ItemsSource = languages;
+            
 
             DataContext = new ViewModelLocator().SettingViewModel;
         }
@@ -73,7 +74,8 @@ namespace Macro.View
         private void Save(Config model)
         {
             var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
-            var saved = FileManager.Instance.SaveJson(path, model);
+            var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+            var saved = fileManager.SaveJson(path, model);
 
             if(saved == true)
             {

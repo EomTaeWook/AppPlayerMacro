@@ -247,8 +247,8 @@ namespace Macro
             }
 
             var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
-
-            await FileManager.Instance.Save(GetSaveFilePath(), triggers);
+            var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+            await fileManager.Save(GetSaveFilePath(), triggers);
 
             Dispatcher.Invoke(() =>
             {
@@ -270,8 +270,8 @@ namespace Macro
 
                     _contentView.eventSettingView.InsertCurrentItem();
                     var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
-
-                    await FileManager.Instance.Save(GetSaveFilePath(), triggers);
+                    var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+                    await fileManager.Save(GetSaveFilePath(), triggers);
 
                     Clear();
                 });
@@ -284,8 +284,8 @@ namespace Macro
         private async Task Save()
         {
             var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
-
-            await FileManager.Instance.Save(GetSaveFilePath(), triggers);
+            var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+            await fileManager.Save(GetSaveFilePath(), triggers);
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
@@ -371,7 +371,8 @@ namespace Macro
 
         public async void LoadDatas(string path)
         {
-            var loadDatas = await FileManager.Instance.Load<EventTriggerModel>(path);
+            var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+            var loadDatas = await fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {
                 loadDatas = new List<EventTriggerModel>();

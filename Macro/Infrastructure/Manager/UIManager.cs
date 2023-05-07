@@ -24,6 +24,7 @@ namespace Macro.Infrastructure.Manager
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.Show();
         }
+
         public void ClosePopup(Window popup)
         {
             foreach(var item in _activePopup)

@@ -217,7 +217,7 @@
     <Compile Include="Extensions\SizeObserver.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
     <Compile Include="Infrastructure\DisplayHelper.cs" />
-    <Compile Include="Infrastructure\Manager\FileManager.cs" />
+    <Compile Include="Infrastructure\FileService.cs" />
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />
     <Compile Include="Command\FolderBrowserDialogCommand.cs" />
