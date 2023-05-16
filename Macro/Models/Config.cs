@@ -16,6 +16,8 @@ namespace Macro.Models
         private int _dragDelay = ConstHelper.MinDragDelay;
         private bool _versionCheck = true;
         private InitialTab _initialTab = InitialTab.Common;
+        private int _processLocationX;
+        private int _processLocationY;
 
         public Language Language
         {
@@ -99,7 +101,24 @@ namespace Macro.Models
                 OnPropertyChanged("InitialTab");
             }
         }
-
+        public int ProcessLocationX
+        {
+            get => _processLocationX;
+            set
+            {
+                _processLocationX = value;
+                OnPropertyChanged("ProcessLocationX");
+            }
+        }
+        public int ProcessLocationY
+        {
+            get => _processLocationY;
+            set
+            {
+                _processLocationY = value;
+                OnPropertyChanged("ProcessLocationY");
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)

@@ -10,9 +10,9 @@
     "Eng": "CompareImage"
   },
   {
-    "Code": "ScreenCapture",
-    "Kor": "화면 캡쳐",
-    "Eng": "ScreenCapture"
+    "Code": "ImageCapture",
+    "Kor": "이미지 캡쳐",
+    "Eng": "Image Capture"
   },
   {
     "Code": "SaveConfig",
@@ -278,6 +278,11 @@
     "Code": "RemoveROI",
     "Kor": "관심영역 제거",
     "Eng": "Remove ROI"
+  },
+  {
+    "Code": "SetProcessLocation",
+    "Kor": "프로세스 위치 설정",
+    "Eng": "Set Process Location"
   }
 ]
 

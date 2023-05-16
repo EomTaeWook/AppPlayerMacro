@@ -15,7 +15,6 @@ namespace Macro.UI
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TreeGridView), new FrameworkPropertyMetadata(typeof(TreeGridView)));
         }
-
         public GridViewColumnCollection Columns
         {
             get { return (GridViewColumnCollection)GetValue(ColumnsProperty); }
@@ -26,7 +25,6 @@ namespace Macro.UI
             Columns = new GridViewColumnCollection();
             Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
         }
-
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             foreach (var column in Columns)
@@ -34,7 +32,6 @@ namespace Macro.UI
                 BindingOperations.GetBindingExpression(column, WidthProperty).UpdateTarget();
             }
         }
-
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new TreeGridViewItem();

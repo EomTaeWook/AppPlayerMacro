@@ -1,4 +1,4 @@
-﻿<ui:UIItem  xmlns:ui="clr-namespace:Macro.UI" 
+﻿<ui:UIItem xmlns:ui="clr-namespace:Macro.UI" 
             x:Class="Macro.View.SettingView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
              xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:util="clr-namespace:Utils;assembly=Utils" xmlns:viewmodel="clr-namespace:Macro.Models.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:SettingViewModel}"
-             mc:Ignorable="d" Height="360" Width="798">
+             mc:Ignorable="d" Width="798" Height="400">
     <StackPanel>
         <StackPanel>
             <Label Content="{Binding Path=LabelViewModel.Preferences, Source={StaticResource Locator} }"></Label>
@@ -17,6 +17,7 @@
                 <DockPanel LastChildFill="False">
                     <Grid DockPanel.Dock="Top">
                         <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -66,8 +67,20 @@
                                 <system:Boolean>False</system:Boolean>
                             </ComboBox.Items>
                         </ComboBox>
-                        <Button Name="btnSave" Grid.Row ="8" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
-                        <Button Name="btnClose" Grid.Row ="8" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=LabelViewModel.Close, Source={StaticResource Locator}}" Background="DarkGray"></Button>
+                        <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=LabelViewModel.SetProcessLocation, Source={StaticResource Locator}}"></Label>
+                        <DockPanel Grid.Row="8" Grid.Column="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <mah:NumericUpDown Grid.Column="0" Name="numProcessLocationX" Value="{Binding Path=Config.ProcessLocationX, Mode=TwoWay}"></mah:NumericUpDown>
+                                <mah:NumericUpDown Grid.Column="1" Name="numProcessLocationY" Value="{Binding Path=Config.ProcessLocationY, Mode=TwoWay}"></mah:NumericUpDown>
+                            </Grid>
+                        </DockPanel>
+                        
+                        <Button Name="btnSave" Grid.Row ="9" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
+                        <Button Name="btnClose" Grid.Row ="9" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=LabelViewModel.Close, Source={StaticResource Locator}}" Background="DarkGray"></Button>
                     </Grid>
                 </DockPanel>
             </Grid>

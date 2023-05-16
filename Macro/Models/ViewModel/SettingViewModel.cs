@@ -20,7 +20,9 @@ namespace Macro.Models.ViewModel
                 Similarity = config.Similarity,
                 DragDelay = config.DragDelay,
                 SearchImageResultDisplay = config.SearchImageResultDisplay,
-                VersionCheck = config.VersionCheck
+                VersionCheck = config.VersionCheck,
+                ProcessLocationX = config.ProcessLocationX,
+                ProcessLocationY = config.ProcessLocationY  
             };
         }
         public Config Config

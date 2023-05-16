@@ -28,7 +28,7 @@
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=LabelViewModel.CompareImage, Source={StaticResource Locator}}" ></Label>
                         <DockPanel Grid.Row="0" Grid.Column="1">
-                            <Button Name="btnCapture" Content="{Binding Path=LabelViewModel.ScreenCapture, Source={StaticResource Locator}}"/>
+                            <Button Name="btnCapture" Content="{Binding Path=LabelViewModel.ImageCapture, Source={StaticResource Locator}}"/>
                         </DockPanel>
                     </Grid>
                 </StackPanel>

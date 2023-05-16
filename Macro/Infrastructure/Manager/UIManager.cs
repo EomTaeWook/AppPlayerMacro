@@ -21,10 +21,10 @@ namespace Macro.Infrastructure.Manager
             var window = new T();
             _activePopup.Add(window);
             window.Owner = Application.Current.MainWindow;
+            window.ShowInTaskbar = false;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.Show();
         }
-
         public void ClosePopup(Window popup)
         {
             foreach(var item in _activePopup)

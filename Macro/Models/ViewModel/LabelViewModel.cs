@@ -45,9 +45,9 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.TriggerList);
         }
-        public string ScreenCapture
+        public string ImageCapture
         {
-            get => DocumentHelper.Get(Label.ScreenCapture);
+            get => DocumentHelper.Get(Label.ImageCapture);
         }
         public string CompareImage
         {
@@ -108,6 +108,10 @@ namespace Macro.Models.ViewModel
         public string SearchResultDisplay
         {
             get => DocumentHelper.Get(Label.SearchResultDisplay);
+        }
+        public string SetProcessLocation
+        {
+            get => DocumentHelper.Get(Label.SetProcessLocation);
         }
         public string VersionCheck
         {

@@ -14,7 +14,7 @@
         SelectProcess,
         NotSelectProcessMessage,
         CompareImage,
-        ScreenCapture,
+        ImageCapture,
         FailCapture,
         SaveConfig,
         Config,
@@ -74,6 +74,7 @@
         HardClick,
         SetROI,
         RemoveROI,
+        SetProcessLocation,
 
         Max
     }
