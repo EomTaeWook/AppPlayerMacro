@@ -67,7 +67,7 @@
                                 <system:Boolean>False</system:Boolean>
                             </ComboBox.Items>
                         </ComboBox>
-                        <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=LabelViewModel.SetProcessLocation, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=LabelViewModel.SettingProcessLocation, Source={StaticResource Locator}}"></Label>
                         <DockPanel Grid.Row="8" Grid.Column="1">
                             <Grid>
                                 <Grid.ColumnDefinitions>

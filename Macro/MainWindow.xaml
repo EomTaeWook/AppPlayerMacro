@@ -36,18 +36,21 @@
                 </DockPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="9*"></ColumnDefinition>
-                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <ComboBox Grid.Column="0" Name="comboProcess" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                     </ComboBox>
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                            <ColumnDefinition Width="8*"></ColumnDefinition>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=LabelViewModel.Fix, Source={StaticResource Locator}}" Margin="5,0,0,0"></CheckBox>
-                        <Button Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="40" Height="40">
+                        <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=LabelViewModel.Fix, Source={StaticResource Locator}}" Margin="5,0,0,0" Width="50"></CheckBox>
+                        <Button x:Name="btnMoveProcessLocation" Grid.Column="1" Content="{Binding Path=LabelViewModel.MoveProcessLocation, Source={StaticResource Locator}}" Width="240" Height="35" Visibility="Visible"></Button>
+                        <Button x:Name="btnRestoreMoveProcessLocation" Grid.Column="1" Content="{Binding Path=LabelViewModel.RestoreMoveProcessLocation, Source={StaticResource Locator}}" Width="240" Height="35"  Visibility="Collapsed"></Button>
+                        <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="40" Height="40" >
                             <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
                         </Button>
                     </Grid>

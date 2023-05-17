@@ -97,6 +97,7 @@ namespace Macro.Infrastructure.Controller
                 _cts = new CancellationTokenSource();
                 _token = _cts.Token;
             }
+
             var task = Task.Run(ProcessStart);
         }
         private async Task ProcessStart()

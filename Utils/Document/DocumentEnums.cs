@@ -74,7 +74,9 @@
         HardClick,
         SetROI,
         RemoveROI,
-        SetProcessLocation,
+        SettingProcessLocation,
+        MoveProcessLocation,
+        RestoreMoveProcessLocation,
 
         Max
     }

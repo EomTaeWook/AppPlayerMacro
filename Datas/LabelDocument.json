@@ -280,9 +280,19 @@
     "Eng": "Remove ROI"
   },
   {
-    "Code": "SetProcessLocation",
-    "Kor": "프로세스 위치 설정",
-    "Eng": "Set Process Location"
+    "Code": "SettingProcessLocation",
+    "Kor": "연결된 프로세스 위치 설정",
+    "Eng": "Setting Process Location"
+  },
+  {
+    "Code": "MoveProcessLocation",
+    "Kor": "프로세스 위치 이동",
+    "Eng": "Process Location Movement"
+  },
+  {
+    "Code": "RestoreMoveProcessLocation",
+    "Kor": "프로세스 위치 복구",
+    "Eng": "Process Location Restoration"
   }
 ]
 

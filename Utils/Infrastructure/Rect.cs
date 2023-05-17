@@ -10,7 +10,7 @@ namespace Utils.Infrastructure
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Rect
+    public struct Rect : IEquatable<Rect>
     {
         public int Left { get; set; }
         public int Top { get; set; }
@@ -38,6 +38,11 @@ namespace Utils.Infrastructure
                 Bottom = r1.Bottom + r2.Bottom,
                 Top = r1.Top + r2.Top
             };
+        }
+
+        public bool Equals(Rect other)
+        {
+            return object.Equals(this, other);
         }
     }
 

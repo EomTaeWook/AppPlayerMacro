@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 8
+    "Build": 9
   },
-  "Desc": "cpu 점유율 치솟던 문제 해결"
+  "Desc": "이제 연결된 프로세스를 모니터 밖으로 숨기세요!"
 }

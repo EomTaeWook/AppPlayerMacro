@@ -56,6 +56,9 @@ namespace Macro
             btnStop.Click += Button_Click;
             btnSetting.Click += Button_Click;
             btnGithub.Click += Button_Click;
+            btnMoveProcessLocation.Click += Button_Click;
+            btnRestoreMoveProcessLocation.Click += Button_Click;
+
             checkFix.Checked += CheckFix_Checked;
             checkFix.Unchecked += CheckFix_Checked;
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
@@ -138,7 +141,6 @@ namespace Macro
                 {
                     continue;
                 }
-                    
 
                 BindingOperations.GetBindingExpressionBase(button, ContentProperty).UpdateTarget();
             }
@@ -314,6 +316,29 @@ namespace Macro
                 {
                     Process = item.Value,
                 });
+                var savedPosition = CacheDataManager.Instance.GetData<Rect>(item.Value);
+
+                if(savedPosition.Equals(default) == false)
+                {
+                    var currentPosotion = new Rect();
+                    NativeHelper.GetWindowRect(item.Value.MainWindowHandle, ref currentPosotion);
+
+                    if(currentPosotion.Equals(savedPosition))
+                    {
+                        btnMoveProcessLocation.Visibility = Visibility.Visible;
+                        btnRestoreMoveProcessLocation.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        btnMoveProcessLocation.Visibility = Visibility.Collapsed;
+                        btnRestoreMoveProcessLocation.Visibility = Visibility.Visible;
+                    }
+                }
+                else
+                {
+                    btnMoveProcessLocation.Visibility = Visibility.Visible;
+                    btnRestoreMoveProcessLocation.Visibility = Visibility.Collapsed;
+                }
             }
         }
         private void CheckFix_Checked(object sender, RoutedEventArgs e)
@@ -480,6 +505,61 @@ namespace Macro
             else if (btn.Equals(btnGithub))
             {
                 Process.Start(ConstHelper.HelpUrl);
+            }
+            else if(btn.Equals(btnMoveProcessLocation))
+            {
+                if(comboProcess.SelectedValue == null)
+                {
+                    ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(Message.FailedProcessValidate));
+                    return;
+                }
+
+                if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
+                {
+                    var rect = new Rect();
+
+                    NativeHelper.GetWindowRect(item.Value.MainWindowHandle, ref rect);
+
+                    if(CacheDataManager.Instance.GetData(item.Value) == null)
+                    {
+                        CacheDataManager.Instance.AddData(item.Value, rect);
+                    }
+
+                    var moveRect = new Rect
+                    {
+                        Left = _config.ProcessLocationX,
+                        Top = _config.ProcessLocationY,
+                        Bottom = _config.ProcessLocationY + rect.Height,
+                        Right = _config.ProcessLocationX + rect.Width,
+                    };
+                    NativeHelper.SetWindowPos(item.Value.MainWindowHandle, moveRect);
+                }
+                else
+                {
+                    return;
+                }
+                
+                btnMoveProcessLocation.Visibility = Visibility.Collapsed;
+                btnRestoreMoveProcessLocation.Visibility = Visibility.Visible;
+            }
+            else if(btn.Equals(btnRestoreMoveProcessLocation))
+            {
+                if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
+                {
+                    var rect = CacheDataManager.Instance.GetData<Rect>(item.Value);
+                    if(rect.Equals(default) == false)
+                    {
+                        NativeHelper.SetWindowPos(item.Value.MainWindowHandle, rect);
+                        CacheDataManager.Instance.DeleteData(item.Value);
+                    }
+                }
+                else
+                {
+                    return;
+                }
+                
+                btnMoveProcessLocation.Visibility = Visibility.Visible;
+                btnRestoreMoveProcessLocation.Visibility = Visibility.Collapsed;
             }
         }
     }

@@ -109,9 +109,17 @@ namespace Macro.Models.ViewModel
         {
             get => DocumentHelper.Get(Label.SearchResultDisplay);
         }
-        public string SetProcessLocation
+        public string SettingProcessLocation
         {
-            get => DocumentHelper.Get(Label.SetProcessLocation);
+            get => DocumentHelper.Get(Label.SettingProcessLocation);
+        }
+        public string MoveProcessLocation
+        {
+            get => DocumentHelper.Get(Label.MoveProcessLocation);
+        }
+        public string RestoreMoveProcessLocation
+        {
+            get => DocumentHelper.Get(Label.RestoreMoveProcessLocation);
         }
         public string VersionCheck
         {

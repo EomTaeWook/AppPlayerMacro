@@ -2,6 +2,8 @@
 using Macro.Models;
 using System.Collections.Generic;
 using System.Threading;
+using System.Web.UI;
+using System.Windows.Controls;
 
 namespace Macro.Infrastructure.Manager
 {
@@ -10,6 +12,7 @@ namespace Macro.Infrastructure.Manager
         private ulong _maxIndex;
         private int _atomic = 0;
         private readonly Dictionary<ulong, EventTriggerModel> _indexTriggerModelToMap;
+        private readonly Dictionary<object, object> _cacheDataToMap = new Dictionary<object, object>();
         public CacheDataManager()
         {
             _indexTriggerModelToMap = new Dictionary<ulong, EventTriggerModel>();
@@ -93,6 +96,33 @@ namespace Macro.Infrastructure.Manager
             {
                 RemoveIndexTriggerModel(child);
             }
+        }
+        public void AddData(object key, object value)
+        {
+            if(_cacheDataToMap.ContainsKey(key) == false)
+            {
+                _cacheDataToMap.Add(key, value);
+                return;
+            }
+            _cacheDataToMap[key] = value;
+        }
+        public object GetData(object key)
+        {
+            _cacheDataToMap.TryGetValue(key, out object value);
+
+            return value;
+        }
+        public T GetData<T>(object key)
+        {
+            if(_cacheDataToMap.TryGetValue(key, out object value) == false)
+            {
+                return default;
+            }
+            return (T)value;
+        }
+        public void DeleteData(object key)
+        {
+            _cacheDataToMap.Remove(key);
         }
     }
 }

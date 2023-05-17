@@ -39,11 +39,11 @@ namespace Macro.Infrastructure.Manager
             ApplicationManager.Instance._progress.Hide();
         }
 
-        private ProgressView _progress;
+        private readonly ProgressView _progress;
 
-        private MetroWindow _mainWindow;
+        private readonly MetroWindow _mainWindow;
 
-        private ChildWindow _drawWindow = new ChildWindow();
+        private readonly ChildWindow _drawWindow = new ChildWindow();
 
         private readonly List<CaptureView> _captureViews = new List<CaptureView>();
         private readonly List<MousePositionView> _mousePointViews = new List<MousePositionView>();
