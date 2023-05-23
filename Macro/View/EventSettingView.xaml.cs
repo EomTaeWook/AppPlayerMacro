@@ -37,7 +37,7 @@ namespace Macro.View
 
             _isDrag = false;
 
-            _eventConfigViewModelCached = ServiceProviderManager.Instance.GetService<EventSettingViewModel>();
+            _eventConfigViewModelCached = ServiceDispatcher.Resolve<EventSettingViewModel>();
             DataContext = _eventConfigViewModelCached;
         }
         public EventSettingViewModel GetDataContext()

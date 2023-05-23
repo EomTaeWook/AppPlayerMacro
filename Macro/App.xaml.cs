@@ -1,4 +1,5 @@
-﻿using Kosher.Extensions.Log;
+﻿using Kosher.DependencyInjection;
+using Kosher.Extensions.Log;
 using Kosher.Framework;
 using Kosher.Log;
 using Macro.Infrastructure;
@@ -93,28 +94,31 @@ namespace Macro
                 File.WriteAllText(path, JsonHelper.SerializeObject(new Config(), true));
             }
             var config = JsonHelper.Load<Config>(path);
-
-            ServiceProviderManager.Instance.AddSingleton<Config>(config);
+            ServiceContainer serviceContainer = new ServiceContainer();
+            serviceContainer.RegisterType(config);
 
             var documentHelper = Singleton<DocumentHelper>.Instance;
             documentHelper.Init(config);
-            ServiceProviderManager.Instance.AddSingleton<DocumentHelper>(documentHelper);
+            serviceContainer.RegisterType(documentHelper);
 
             var applicationDataHelper = Singleton<ApplicationDataHelper>.Instance;
             applicationDataHelper.Init("ApplicationData");
-            ServiceProviderManager.Instance.AddSingleton<ApplicationDataHelper>(applicationDataHelper);
-            ServiceProviderManager.Instance.AddSingleton<FileService, FileService>();
+            serviceContainer.RegisterType(applicationDataHelper);
+            serviceContainer.RegisterType<FileService, FileService>();
 
-            ServiceProviderManager.Instance.AddSingleton<IKeyboardInput, KeyboardInput>();
-            ServiceProviderManager.Instance.AddSingleton<IMouseInput, MouseInput>();
-            ServiceProviderManager.Instance.AddSingleton<InputManager, InputManager>();
-            ServiceProviderManager.Instance.AddSingleton<CacheDataManager, CacheDataManager>();
+            serviceContainer.RegisterType<IKeyboardInput, KeyboardInput>();
+            serviceContainer.RegisterType<IMouseInput, MouseInput>();
+            serviceContainer.RegisterType<InputManager, InputManager>();
+            serviceContainer.RegisterType<CacheDataManager, CacheDataManager>();
 
-            ServiceProviderManager.Instance.AddSingleton<EventSettingViewModel, EventSettingViewModel>(); 
-            ServiceProviderManager.Instance.AddSingleton<LabelViewModel, LabelViewModel>();
-            ServiceProviderManager.Instance.AddSingleton<SettingViewModel, SettingViewModel>();
-            ServiceProviderManager.Instance.AddSingleton<ViewModelLocator, ViewModelLocator>();
-            
+            serviceContainer.RegisterType<EventSettingViewModel, EventSettingViewModel>();
+            serviceContainer.RegisterType<LabelViewModel, LabelViewModel>();
+            serviceContainer.RegisterType<SettingViewModel, SettingViewModel>();
+            serviceContainer.RegisterType<ViewModelLocator, ViewModelLocator>();
+
+            ServiceDispatcher.SetContainer(serviceContainer);
+
+
         }
     }
 }

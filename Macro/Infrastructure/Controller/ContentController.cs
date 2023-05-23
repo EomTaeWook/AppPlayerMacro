@@ -31,10 +31,10 @@ namespace Macro.Infrastructure.Controller
         public ContentController()
         {
             _random = new SeedRandom();
-            _applicationDataHelper = ServiceProviderManager.Instance.GetService<ApplicationDataHelper>();
-            _inputManager = ServiceProviderManager.Instance.GetService<InputManager>();
+            _applicationDataHelper = ServiceDispatcher.Resolve<ApplicationDataHelper>();
+            _inputManager = ServiceDispatcher.Resolve<InputManager>();
 
-            SetConfig(ServiceProviderManager.Instance.GetService<Config>());
+            SetConfig(ServiceDispatcher.Resolve<Config>());
 
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
         }

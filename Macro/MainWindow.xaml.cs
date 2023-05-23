@@ -37,7 +37,7 @@ namespace Macro
         public MainWindow()
         {
             InitializeComponent();
-            _config = ServiceProviderManager.Instance.GetService<Config>();
+            _config = ServiceDispatcher.Resolve<Config>();
             Loaded += MainWindow_Loaded;
         }
         
@@ -249,7 +249,7 @@ namespace Macro
             }
 
             var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
-            var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+            var fileManager = ServiceDispatcher.Resolve<FileService>();
             await fileManager.Save(GetSaveFilePath(), triggers);
 
             Dispatcher.Invoke(() =>
@@ -272,7 +272,7 @@ namespace Macro
 
                     _contentView.eventSettingView.InsertCurrentItem();
                     var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
-                    var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+                    var fileManager = ServiceDispatcher.Resolve<FileService>();
                     await fileManager.Save(GetSaveFilePath(), triggers);
 
                     Clear();
@@ -286,7 +286,7 @@ namespace Macro
         private async Task Save()
         {
             var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
-            var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+            var fileManager = ServiceDispatcher.Resolve<FileService>();
             await fileManager.Save(GetSaveFilePath(), triggers);
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
@@ -396,7 +396,7 @@ namespace Macro
 
         public async void LoadDatas(string path)
         {
-            var fileManager = ServiceProviderManager.Instance.GetService<FileService>();
+            var fileManager = ServiceDispatcher.Resolve<FileService>();
             var loadDatas = await fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {

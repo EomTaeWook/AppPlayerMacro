@@ -8,11 +8,11 @@ namespace Macro.Models
     {
         public LabelViewModel LabelViewModel
         {
-            get => ServiceProviderManager.Instance.GetService<LabelViewModel>();
+            get => ServiceDispatcher.Resolve<LabelViewModel>();
         }
         public SettingViewModel SettingViewModel
         {
-            get=> ServiceProviderManager.Instance.GetService<SettingViewModel>();
+            get=> ServiceDispatcher.Resolve<SettingViewModel>();
         }
     }
 }

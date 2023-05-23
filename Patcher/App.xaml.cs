@@ -179,7 +179,7 @@ namespace Patcher
             }
 
             ServiceProviderManager.AddService("PatchUrl", ConstHelper.PatchV3Url);
-            ServiceProviderManager.AddService("Label", Singleton<DocumentTemplate<Label>>.Instance);
+            ServiceProviderManager.AddService("Label", Singleton<DocumentTemplate<Label>>.Instance);    
             ServiceProviderManager.AddService("Message", Singleton<DocumentTemplate<Message>>.Instance);
 
         }
