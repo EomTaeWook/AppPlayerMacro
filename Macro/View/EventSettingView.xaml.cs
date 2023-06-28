@@ -1,4 +1,4 @@
-﻿using Kosher.Coroutine;
+﻿using Dignus.Coroutine;
 using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
@@ -13,8 +13,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Utils;
-using Utils.Infrastructure;
 
 namespace Macro.View
 {
@@ -27,7 +25,7 @@ namespace Macro.View
         
         private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
         private EventSettingViewModel _eventConfigViewModelCached;
-        private CoroutineWorker _coroutineWoker = new CoroutineWorker();
+        private CoroutineHandler _coroutineHandler = new CoroutineHandler();
 
         private bool isBtnTreeItemPress = false;
         public EventSettingView()
@@ -293,15 +291,15 @@ namespace Macro.View
         {
             Dispatcher.Invoke(() =>
             {
-                _coroutineWoker.WorksUpdate(obj.DeltaTime);
+                _coroutineHandler.WorksUpdate(obj.DeltaTime);
             });
         }
 
         private void BtnTreeItem_MouseDown(object sender, MouseButtonEventArgs e)
         {
             isBtnTreeItemPress = true;
-            _coroutineWoker.StopAll();
-            _coroutineWoker.Start(1F, ProcessLongClickTreePositionButton(sender));
+            _coroutineHandler.StopAll();
+            _coroutineHandler.Start(1F, ProcessLongClickTreePositionButton(sender));
         }
         private IEnumerator ProcessLongClickTreePositionButton(object sender)
         {
@@ -350,7 +348,7 @@ namespace Macro.View
         private void BtnTreeItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
             isBtnTreeItemPress = false;
-            _coroutineWoker.StopAll();
+            _coroutineHandler.StopAll();
         }
 
         private void EventConfigView_Loaded(object sender, RoutedEventArgs e)

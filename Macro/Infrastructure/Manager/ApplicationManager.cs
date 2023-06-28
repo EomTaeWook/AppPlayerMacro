@@ -1,15 +1,15 @@
-﻿using Kosher.Framework;
-using Kosher.Log;
+﻿using Dignus.Framework;
+using Dignus.Log;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Windows;
-using Utils;
-using System.Collections.Generic;
 using System.Windows.Interop;
+using Utils;
 
 namespace Macro.Infrastructure.Manager
 {

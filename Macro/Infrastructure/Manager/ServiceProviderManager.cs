@@ -1,4 +1,4 @@
-﻿using Kosher.DependencyInjection;
+﻿using Dignus.DependencyInjection;
 
 namespace Macro.Infrastructure.Manager
 {

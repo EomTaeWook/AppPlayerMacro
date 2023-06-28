@@ -1,4 +1,4 @@
-﻿using Kosher.Framework;
+﻿using Dignus.Framework;
 using Utils.Document;
 
 namespace Utils.Extensions

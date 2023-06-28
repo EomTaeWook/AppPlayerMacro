@@ -92,11 +92,11 @@
     <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
     </Reference>
-    <Reference Include="Kosher">
-      <HintPath>..\Dll\Kosher.dll</HintPath>
+    <Reference Include="Dignus">
+      <HintPath>..\Dll\Dignus.dll</HintPath>
     </Reference>
-    <Reference Include="Kosher.Extensions">
-      <HintPath>..\Dll\Kosher.Extensions.dll</HintPath>
+    <Reference Include="Dignus.Extensions">
+      <HintPath>..\Dll\Dignus.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.4.9\lib\net47\MahApps.Metro.dll</HintPath>

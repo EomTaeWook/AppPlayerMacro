@@ -1,4 +1,4 @@
-﻿using Kosher.Log;
+﻿using Dignus.Log;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

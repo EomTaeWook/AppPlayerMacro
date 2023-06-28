@@ -1,4 +1,4 @@
-﻿using Kosher.Log;
+﻿using Dignus.Log;
 using Macro.Models;
 using System;
 

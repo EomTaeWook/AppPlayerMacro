@@ -1,15 +1,9 @@
-﻿using Kosher.Coroutine;
-using Kosher.Framework;
-using Kosher.Log;
+﻿using Dignus.Framework;
+using Dignus.Log;
 using Macro.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
-using Utils;
 using Utils.Infrastructure;
 
 namespace Macro.Infrastructure.Manager

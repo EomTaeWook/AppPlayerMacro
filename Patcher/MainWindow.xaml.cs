@@ -1,5 +1,4 @@
-﻿using Kosher.Coroutine;
-using Kosher.Log;
+﻿using Dignus.Coroutine;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
@@ -13,7 +12,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Utils;
@@ -34,7 +32,7 @@ namespace Patcher
         };
         private static HttpClient httpClient = new HttpClient(handler);
 
-        private CoroutineWorker _coroutineWoker = new CoroutineWorker();
+        private CoroutineHandler _coroutineHandler = new CoroutineHandler();
 
         private SortedList<int, PatchInfoModel> _patchDatas = new SortedList<int, PatchInfoModel>();
 
@@ -65,7 +63,7 @@ namespace Patcher
         }
         private void ProcessDownloadFiles()
         {
-            _coroutineWoker.Start(DownloadFiles(), RestoreNotPatchFiles);
+            _coroutineHandler.Start(DownloadFiles(), RestoreNotPatchFiles);
         }
         private void RestoreNotPatchFiles()
         {
@@ -224,7 +222,7 @@ namespace Patcher
         private async Task UpdateTime(long dateTimeTicks)
         {
             var currentTime = DateTime.Now.Ticks;
-            _coroutineWoker.WorksUpdate((float)TimeSpan.FromTicks(DateTime.Now.Ticks - dateTimeTicks).TotalSeconds);
+            _coroutineHandler.WorksUpdate((float)TimeSpan.FromTicks(DateTime.Now.Ticks - dateTimeTicks).TotalSeconds);
             await Task.Delay(50);
             _ = UpdateTime(currentTime);
         }
@@ -256,9 +254,9 @@ namespace Patcher
                 {
                     btnCancel.IsEnabled = false;
 
-                    this._coroutineWoker.StopAll();
+                    this._coroutineHandler.StopAll();
 
-                    this._coroutineWoker.Start(Rollback(), () => 
+                    this._coroutineHandler.Start(Rollback(), () => 
                     {
                         Application.Current.Shutdown();
                     });

@@ -1,5 +1,5 @@
-﻿using Kosher.DependencyInjection;
-using Kosher.Framework;
+﻿using Dignus.DependencyInjection;
+using Dignus.Framework;
 using System.Collections.Generic;
 
 namespace Patcher.Infrastructure

@@ -1,4 +1,4 @@
-﻿using Kosher.Log;
+﻿using Dignus.Log;
 using Macro.Infrastructure.Serialize;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
-﻿using Kosher.Framework;
-using Kosher.Log;
-using Kosher.Log.LogTarget;
-using Kosher.Log.Model.Rule;
+﻿using Dignus.Framework;
+using Dignus.Log;
+using Dignus.Log.LogTarget;
+using Dignus.Log.Model.Rule;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;

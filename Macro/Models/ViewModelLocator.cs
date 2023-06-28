@@ -1,5 +1,4 @@
-﻿using Kosher.Framework;
-using Macro.Infrastructure.Manager;
+﻿using Macro.Infrastructure.Manager;
 using Macro.Models.ViewModel;
 
 namespace Macro.Models

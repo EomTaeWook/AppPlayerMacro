@@ -1,7 +1,7 @@
-﻿using Kosher.DependencyInjection;
-using Kosher.Extensions.Log;
-using Kosher.Framework;
-using Kosher.Log;
+﻿using Dignus.DependencyInjection;
+using Dignus.Extensions.Log;
+using Dignus.Framework;
+using Dignus.Log;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
@@ -27,7 +27,7 @@ namespace Macro
         }
         protected override void OnStartup(StartupEventArgs e)
         {
-            LogBuilder.Configuration(LogConfigXmlReader.Load("KosherLog.config"));
+            LogBuilder.Configuration(LogConfigXmlReader.Load("DignusLog.config"));
             LogBuilder.Build();
 
             DispatcherUnhandledException += (s, ex) =>

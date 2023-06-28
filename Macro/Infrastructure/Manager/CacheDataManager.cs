@@ -1,9 +1,7 @@
-﻿using Kosher.Framework;
+﻿using Dignus.Framework;
 using Macro.Models;
 using System.Collections.Generic;
 using System.Threading;
-using System.Web.UI;
-using System.Windows.Controls;
 
 namespace Macro.Infrastructure.Manager
 {

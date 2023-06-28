@@ -1,4 +1,4 @@
-﻿using Kosher.Framework;
+﻿using Dignus.Framework;
 using System.Collections.Generic;
 using System.Windows;
 

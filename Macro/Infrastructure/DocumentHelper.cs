@@ -1,4 +1,4 @@
-﻿using Kosher.Framework;
+﻿using Dignus.Framework;
 using Macro.Models;
 using Utils.Document;
 using Utils.Extensions;
