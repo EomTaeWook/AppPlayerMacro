@@ -1,7 +1,7 @@
 ﻿using Dignus.Framework;
 using Dignus.Log;
 using Dignus.Log.LogTarget;
-using Dignus.Log.Model.Rule;
+using Dignus.Log.Rule;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Patcher.Extensions;
@@ -38,11 +38,11 @@ namespace Patcher
                 LogForm = @"${date} | ${level} | ${message}",
                 MaxArchiveFile = 7,
             };
-            configuration.AddTarget("file", fileLogTarget);
-            configuration.AddLogger("file", new LoggerRule("", LogLevel.Debug, fileLogTarget));
+            configuration.AddTarget("file target", fileLogTarget);
+            configuration.AddLogRule("file rule", new LoggerRule("", LogLevel.Debug, fileLogTarget));
             LogBuilder.Configuration(configuration).Build();
         }
-        
+
         private void CurrentDomain_FirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
         {
             if (Current == null)
@@ -53,7 +53,7 @@ namespace Patcher
 
             var result = (Current.MainWindow as MetroWindow).ShowMessageDialog("", $"{e.Exception.Message}", MessageDialogStyle.Affirmative);
 
-            if(result == MessageDialogResult.Affirmative)
+            if (result == MessageDialogResult.Affirmative)
             {
                 Current.Shutdown();
             }
@@ -67,7 +67,7 @@ namespace Patcher
 
             }
             var ex = e.ExceptionObject as Exception;
-            if(ex != null)
+            if (ex != null)
             {
                 LogHelper.Fatal(ex);
 
@@ -96,7 +96,7 @@ namespace Patcher
                 Current.Shutdown();
             }
         }
-        
+
         private void AllFileBackup()
         {
             _fileManager.Move(ConstHelper.TempBackupPath, new DirectoryInfo(Environment.CurrentDirectory), true);
@@ -133,7 +133,7 @@ namespace Patcher
             ServiceProviderManager.AddService("PatchVersion", patchVersion);
             DependenciesResolved();
             InitTemplate();
-            
+
             base.OnStartup(e);
         }
 
@@ -142,7 +142,7 @@ namespace Patcher
             base.OnExit(e);
         }
 
-        private bool VersionValidate(string [] args)
+        private bool VersionValidate(string[] args)
         {
             if (args.Count() != 2)
             {
@@ -156,7 +156,7 @@ namespace Patcher
             {
                 return false;
             }
-               
+
             return true;
         }
 
@@ -179,7 +179,7 @@ namespace Patcher
             }
 
             ServiceProviderManager.AddService("PatchUrl", ConstHelper.PatchV3Url);
-            ServiceProviderManager.AddService("Label", Singleton<DocumentTemplate<Label>>.Instance);    
+            ServiceProviderManager.AddService("Label", Singleton<DocumentTemplate<Label>>.Instance);
             ServiceProviderManager.AddService("Message", Singleton<DocumentTemplate<Message>>.Instance);
 
         }
@@ -191,7 +191,7 @@ namespace Patcher
 #endif
             ServiceProviderManager.GetService<DocumentTemplate<Label>>("Label").Init(path);
             ServiceProviderManager.GetService<DocumentTemplate<Message>>("Message").Init(path);
-            
+
         }
     }
 }
