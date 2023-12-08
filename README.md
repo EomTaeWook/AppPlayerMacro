@@ -1,7 +1,8 @@
 ﻿
 연결 프로세스의 화면을 분석해서 키보드나 마우스 이벤트 반복
 
-<img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/capture.png" width="100%"></img>
+![picture](/Release/Resource/capture.png)
+![picture](/Release/Resource/capture_eng.png)
 
 
 다운로드 : https://github.com/EomTaeWook/EmulatorMacro/releases
@@ -93,7 +94,7 @@ OS 버전
 
 ※ 이미지 조합을 통한 이벤트 발생 방법
 
-<img src="https://github.com/EomTaeWook/EmulatorMacro/blob/master/Release/Resource/imageCombination.png" width="100%"></img>
+![picture](/Release/Resource/imageCombination.png)
 
 설정(Config.json 혹은 프로그램 내 Setting)
 

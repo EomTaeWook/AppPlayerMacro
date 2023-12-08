@@ -35,7 +35,7 @@ namespace Patcher
                 AutoFlush = true,
                 LogFileName = @"./logs/patcherLogFile.txt",
                 KeepOpenFile = true,
-                LogForm = @"${date} | ${level} | ${message}",
+                LogFormatRenderer = @"${date} | ${level} | ${message}",
                 MaxArchiveFile = 7,
             };
             configuration.AddTarget("file target", fileLogTarget);
