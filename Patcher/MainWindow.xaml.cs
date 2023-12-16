@@ -218,11 +218,11 @@ namespace Patcher
                 yield return null;
             }
         }
- 
+
         private async Task UpdateTime(long dateTimeTicks)
         {
             var currentTime = DateTime.Now.Ticks;
-            _coroutineHandler.WorksUpdate((float)TimeSpan.FromTicks(DateTime.Now.Ticks - dateTimeTicks).TotalSeconds);
+            _coroutineHandler.UpdateCoroutines((float)TimeSpan.FromTicks(DateTime.Now.Ticks - dateTimeTicks).TotalSeconds);
             await Task.Delay(50);
             _ = UpdateTime(currentTime);
         }
@@ -248,7 +248,7 @@ namespace Patcher
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(sender.Equals(btnCancel))
+            if (sender.Equals(btnCancel))
             {
                 if (this.ShowMessageDialog("", _messageTemplate.Get(Message.CancelPatch, _language), MessageDialogStyle.AffirmativeAndNegative) == MessageDialogResult.Affirmative)
                 {
@@ -256,7 +256,7 @@ namespace Patcher
 
                     this._coroutineHandler.StopAll();
 
-                    this._coroutineHandler.Start(Rollback(), () => 
+                    this._coroutineHandler.Start(Rollback(), () =>
                     {
                         Application.Current.Shutdown();
                     });
@@ -277,14 +277,14 @@ namespace Patcher
 
                     var rollbackFileInfo = new FileInfo($"{ConstHelper.TempBackupPath}{item.Key}");
 
-                    if(rollbackFileInfo.Exists == false)
+                    if (rollbackFileInfo.Exists == false)
                     {
                         continue;
                     }
 
                     var fileInfo = new FileInfo($"{item.Key}");
 
-                    if(fileInfo.Exists == true)
+                    if (fileInfo.Exists == true)
                     {
                         fileInfo.Delete();
                     }
@@ -314,6 +314,6 @@ namespace Patcher
                 }
                 yield return null;
             }
-        } 
+        }
     }
 }

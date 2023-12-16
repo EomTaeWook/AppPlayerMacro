@@ -40,13 +40,15 @@ namespace Macro
             _config = ServiceDispatcher.Resolve<Config>();
             Loaded += MainWindow_Loaded;
         }
-        
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             InitEvent();
             Init();
             VersionCheck();
+#if !DEBUG
             this.ads.ShowAd(728, 90, "5ybbzi0gxwn0");
+#endif
             ApplicationManager.Instance.Init();
         }
         private void InitEvent()
@@ -75,7 +77,7 @@ namespace Macro
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if(e.Key == System.Windows.Input.Key.Escape)
+            if (e.Key == System.Windows.Input.Key.Escape)
             {
                 Button_Click(btnStop, null);
             }
@@ -104,7 +106,7 @@ namespace Macro
         }
         private string GetSaveFilePath()
         {
-            if(string.IsNullOrEmpty(_config.SavePath) == true)
+            if (string.IsNullOrEmpty(_config.SavePath) == true)
             {
                 return $"{ConstHelper.DefaultSavePath}{ConstHelper.DefaultSaveFileName}";
             }
@@ -181,7 +183,7 @@ namespace Macro
         }
         private void SettingProcessMonitorInfo(EventTriggerModel model, Process process)
         {
-            if(process == null)
+            if (process == null)
             {
                 model.ProcessInfo = new ProcessInfo()
                 {
@@ -204,14 +206,14 @@ namespace Macro
                 {
                     if (monitor.Rect.IsContain(rect))
                     {
-                        if(model.EventType != EventType.Mouse)
+                        if (model.EventType != EventType.Mouse)
                         {
                             if (model.MonitorInfo != null)
                             {
                                 model.Image = model.Image.Resize((int)(model.Image.Width * (monitor.Dpi.X * 1.0F / model.MonitorInfo.Dpi.X)), (int)(model.Image.Height * (monitor.Dpi.Y * 1.0F / model.MonitorInfo.Dpi.Y)));
                             }
                             model.MonitorInfo = monitor;
-                            
+
                         }
                         if (model.RoiData != null)
                         {
@@ -223,7 +225,7 @@ namespace Macro
                         break;
                     }
                 }
-            }    
+            }
         }
         public void Clear()
         {
@@ -238,7 +240,7 @@ namespace Macro
                 }
             });
         }
-        
+
         private async void NotifyHelper_DeleteEventTriggerModelAsync(DeleteEventTriggerModelArgs obj)
         {
             _contentView.eventSettingView.RemoveCurrentItem();
@@ -257,7 +259,7 @@ namespace Macro
                 Clear();
             });
         }
-        
+
         private void NotifyHelper_SaveEventTriggerModel(SaveEventTriggerModelArgs obj)
         {
             var process = comboProcess.SelectedValue as Process;
@@ -318,12 +320,12 @@ namespace Macro
                 });
                 var savedPosition = CacheDataManager.Instance.GetData<Rect>(item.Value);
 
-                if(savedPosition.Equals(default) == false)
+                if (savedPosition.Equals(default) == false)
                 {
                     var currentPosotion = new Rect();
                     NativeHelper.GetWindowRect(item.Value.MainWindowHandle, ref currentPosotion);
 
-                    if(currentPosotion.Equals(savedPosition))
+                    if (currentPosotion.Equals(savedPosition))
                     {
                         btnMoveProcessLocation.Visibility = Visibility.Visible;
                         btnRestoreMoveProcessLocation.Visibility = Visibility.Collapsed;
@@ -345,7 +347,7 @@ namespace Macro
         {
             if (sender.Equals(checkFix))
             {
-                if(checkFix.IsChecked.HasValue == false)
+                if (checkFix.IsChecked.HasValue == false)
                 {
                     _contentController.SetFixProcess(null);
                     _fixProcess = null;
@@ -370,7 +372,7 @@ namespace Macro
         }
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
-            if(e.TreeViewItem == null)
+            if (e.TreeViewItem == null)
             {
                 return;
             }
@@ -422,7 +424,7 @@ namespace Macro
                 return;
             }
             var latestNote = ApplicationManager.Instance.GetLatestVersion();
-            if(latestNote == null)
+            if (latestNote == null)
             {
                 return;
             }
@@ -465,7 +467,7 @@ namespace Macro
                     {
                         continue;
                     }
-                        
+
                     button.IsEnabled = false;
                 }
                 btnStop.Visibility = Visibility.Visible;
@@ -506,9 +508,9 @@ namespace Macro
             {
                 Process.Start(ConstHelper.HelpUrl);
             }
-            else if(btn.Equals(btnMoveProcessLocation))
+            else if (btn.Equals(btnMoveProcessLocation))
             {
-                if(comboProcess.SelectedValue == null)
+                if (comboProcess.SelectedValue == null)
                 {
                     ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(Message.FailedProcessValidate));
                     return;
@@ -520,7 +522,7 @@ namespace Macro
 
                     NativeHelper.GetWindowRect(item.Value.MainWindowHandle, ref rect);
 
-                    if(CacheDataManager.Instance.GetData(item.Value) == null)
+                    if (CacheDataManager.Instance.GetData(item.Value) == null)
                     {
                         CacheDataManager.Instance.AddData(item.Value, rect);
                     }
@@ -538,16 +540,16 @@ namespace Macro
                 {
                     return;
                 }
-                
+
                 btnMoveProcessLocation.Visibility = Visibility.Collapsed;
                 btnRestoreMoveProcessLocation.Visibility = Visibility.Visible;
             }
-            else if(btn.Equals(btnRestoreMoveProcessLocation))
+            else if (btn.Equals(btnRestoreMoveProcessLocation))
             {
                 if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
                 {
                     var rect = CacheDataManager.Instance.GetData<Rect>(item.Value);
-                    if(rect.Equals(default) == false)
+                    if (rect.Equals(default) == false)
                     {
                         NativeHelper.SetWindowPos(item.Value.MainWindowHandle, rect);
                         CacheDataManager.Instance.DeleteData(item.Value);
@@ -557,7 +559,7 @@ namespace Macro
                 {
                     return;
                 }
-                
+
                 btnMoveProcessLocation.Visibility = Visibility.Visible;
                 btnRestoreMoveProcessLocation.Visibility = Visibility.Collapsed;
             }

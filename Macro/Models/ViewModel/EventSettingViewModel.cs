@@ -1,8 +1,6 @@
-﻿using Macro.Infrastructure;
-using Macro.UI;
+﻿using Macro.UI;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 
 namespace Macro.Models.ViewModel
 {
@@ -16,7 +14,23 @@ namespace Macro.Models.ViewModel
 
         private readonly TreeGridViewItem _dummy;
         private readonly PointModel _dummyRelativePosition;
-
+        private bool _isAllSelected = true;
+        public bool IsAllSelected
+        {
+            get { return _isAllSelected; }
+            set
+            {
+                if (_isAllSelected != value)
+                {
+                    _isAllSelected = value;
+                    OnPropertyChanged(nameof(IsAllSelected));
+                    foreach (var item in _triggerSaves)
+                    {
+                        item.IsChecked = value;
+                    }
+                }
+            }
+        }
         public EventSettingViewModel()
         {
             _dummy = new TreeGridViewItem()
@@ -26,7 +40,7 @@ namespace Macro.Models.ViewModel
             _dummyRelativePosition = new PointModel();
             _currentItem = _dummy;
             _pointModel = _dummyRelativePosition;
-            
+
         }
 
         public void Clear()
@@ -36,7 +50,7 @@ namespace Macro.Models.ViewModel
             {
                 CurrentTreeViewItem = _dummy;
             }
-            if(RelativePosition != _dummyRelativePosition)
+            if (RelativePosition != _dummyRelativePosition)
             {
                 RelativePosition = _dummyRelativePosition;
             }
@@ -75,9 +89,9 @@ namespace Macro.Models.ViewModel
         }
         public TreeGridViewItem CurrentTreeViewItem
         {
-            get 
+            get
             {
-                if(_currentItem == _dummy)
+                if (_currentItem == _dummy)
                 {
                     _currentItem = new TreeGridViewItem()
                     {

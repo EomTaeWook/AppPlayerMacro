@@ -160,7 +160,19 @@
                     <UI:TreeGridView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Path= SubEventTriggers }" />
                     </UI:TreeGridView.ItemTemplate>
+                    
                     <UI:TreeGridView.Columns>
+                        <GridViewColumn Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.05*, UpdateSourceTrigger=PropertyChanged}">
+                            <GridViewColumn.Header>
+                                <CheckBox IsChecked="{Binding Path=DataContext.IsAllSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsChecked="{Binding IsChecked}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
                         <GridViewColumn Header="Image" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -178,7 +190,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="EventType" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
+                        <GridViewColumn Header="EventType" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.15*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding EventType}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>

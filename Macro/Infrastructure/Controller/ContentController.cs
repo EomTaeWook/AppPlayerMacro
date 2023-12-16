@@ -54,7 +54,7 @@ namespace Macro.Infrastructure.Controller
         {
             SetConfig(obj.Config);
         }
-        
+
         public void SetContentView(ContentView baseContentView)
         {
             this._contentView = baseContentView;
@@ -103,7 +103,14 @@ namespace Macro.Infrastructure.Controller
         private async Task ProcessStart()
         {
             List<EventTriggerModel> models = new List<EventTriggerModel>();
-            models.AddRange(_contentView.eventSettingView.GetDataContext().TriggerSaves);
+
+            foreach (var item in _contentView.eventSettingView.GetDataContext().TriggerSaves)
+            {
+                if (item.IsChecked)
+                {
+                    models.Add(item);
+                }
+            }
 
             while (_token.IsCancellationRequested == false)
             {
@@ -116,7 +123,7 @@ namespace Macro.Infrastructure.Controller
         }
         public void Stop()
         {
-            if(_cts !=null)
+            if (_cts != null)
             {
                 _cts.Cancel();
                 _cts = null;
@@ -285,7 +292,7 @@ namespace Macro.Infrastructure.Controller
 
                     var currentProcessLocation = model.ProcessInfo.Position - processLocation;
 
-                    if(model.EventType == EventType.Mouse)
+                    if (model.EventType == EventType.Mouse)
                     {
                         if (model.HardClick == false)
                         {
@@ -352,7 +359,7 @@ namespace Macro.Infrastructure.Controller
                     }
                 }
             }
-            
+
             return Tuple.Create<bool, EventTriggerModel>(false, null);
         }
 
@@ -435,7 +442,7 @@ namespace Macro.Infrastructure.Controller
         {
             var random = new SeedRandom();
             var choice = random.Next(0, 2);
-            if(choice == 0)
+            if (choice == 0)
             {
                 return -random.Next(minValue, maxValue);
             }
@@ -454,7 +461,7 @@ namespace Macro.Infrastructure.Controller
 
             if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
-                LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
 
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(10).Wait();
@@ -462,14 +469,14 @@ namespace Macro.Infrastructure.Controller
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.RightClick)
             {
-                LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
                 NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(10).Wait();
                 NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Drag)
             {
-                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(10).Wait();
                 for (int i = 0; i < model.MouseTriggerInfo.MiddlePoint.Count; ++i)
@@ -490,11 +497,11 @@ namespace Macro.Infrastructure.Controller
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(10).Wait();
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
             }
             else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
             {
-                LogHelper.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
                 //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 //Task.Delay(100).Wait();
                 //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
@@ -507,7 +514,7 @@ namespace Macro.Infrastructure.Controller
         private void HardClickProcess(Point clickPoint)
         {
             var currentPosition = NativeHelper.GetCursorPosition();
-            
+
             NativeHelper.SetCursorPos((int)clickPoint.X, (int)clickPoint.Y);
             NativeHelper.MouseEvent(MouseFlag.LeftDown, 0, 0);
             Task.Delay(10).Wait();
@@ -521,7 +528,7 @@ namespace Macro.Infrastructure.Controller
                                                     EventTriggerModel model,
                                                     ProcessConfigModel config)
         {
-            LogHelper.Debug($">>>>Same Drag Mouse Start Target X : { arrive.X } Target Y : { arrive.Y }");
+            LogHelper.Debug($">>>>Same Drag Mouse Start Target X : {arrive.X} Target Y : {arrive.Y}");
             var interval = 3;
             var middlePoints = this.GetIntevalDragMiddlePoint(start, arrive, interval);
 
@@ -536,7 +543,7 @@ namespace Macro.Infrastructure.Controller
                     X = Math.Abs(model.ProcessInfo.Position.Left + middlePoints[i].X * -1),
                     Y = Math.Abs(model.ProcessInfo.Position.Top + middlePoints[i].Y * -1)
                 };
-                LogHelper.Debug($">>>>Same Drag Move Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+                LogHelper.Debug($">>>>Same Drag Move Mouse Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(config.DragDelay).Wait();
             }
@@ -548,10 +555,10 @@ namespace Macro.Infrastructure.Controller
             NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
             Task.Delay(10).Wait();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-            LogHelper.Debug($">>>>Same Drag End Mouse Target X : { mousePosition.X } Target Y : { mousePosition.Y }");
+            LogHelper.Debug($">>>>Same Drag End Mouse Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
         }
 
-        
+
 
         private void ImageTriggerProcess(IntPtr hWnd,
                                         Point location,

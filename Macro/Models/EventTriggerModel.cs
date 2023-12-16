@@ -27,6 +27,7 @@ namespace Macro.Models
         private bool _sameImageDrag = false;
         private bool _hardClick = false;
         private int _maxSameImageCount = 1;
+        private bool _isChecked = true;
         private RoiModel _roiData { get; set; }
         private Bitmap _image;
 
@@ -50,13 +51,14 @@ namespace Macro.Models
             _maxSameImageCount = other.MaxSameImageCount;
             _hardClick = other._hardClick;
             _roiData = other._roiData;
+            _isChecked = other._isChecked;
         }
 
         [Order(1)]
-        public Bitmap Image 
-        { 
+        public Bitmap Image
+        {
             get => _image;
-            set => _image = value; 
+            set => _image = value;
         }
 
         [Order(2)]
@@ -206,7 +208,7 @@ namespace Macro.Models
         {
             set
             {
-                if(value == null)
+                if (value == null)
                 {
                     return;
                 }
@@ -220,13 +222,22 @@ namespace Macro.Models
             }
             get => _roiData;
         }
-
+        [Order(17)]
+        public bool IsChecked
+        {
+            set
+            {
+                _isChecked = value;
+                OnPropertyChanged("IsChecked");
+            }
+            get => _isChecked;
+        }
         public string Desc
         {
             get
             {
                 var sb = new StringBuilder();
-                if(RoiData != null)
+                if (RoiData != null)
                 {
                     sb.Append($"R : [X : {RoiData.RoiRect.Left} W : {RoiData.RoiRect.Width} Y : {RoiData.RoiRect.Top} H : {RoiData.RoiRect.Height}] ");
                 }
@@ -272,7 +283,7 @@ namespace Macro.Models
                 }
                 else
                 {
-                    
+
                 }
                 return sb.ToString();
             }

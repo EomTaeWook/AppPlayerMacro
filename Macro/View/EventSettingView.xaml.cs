@@ -22,7 +22,7 @@ namespace Macro.View
     public partial class EventSettingView : UserControl
     {
         private bool _isDrag;
-        
+
         private readonly ObservableCollection<KeyValuePair<RepeatType, string>> _repeatItems = new ObservableCollection<KeyValuePair<RepeatType, string>>();
         private EventSettingViewModel _eventConfigViewModelCached;
         private CoroutineHandler _coroutineHandler = new CoroutineHandler();
@@ -291,7 +291,7 @@ namespace Macro.View
         {
             Dispatcher.Invoke(() =>
             {
-                _coroutineHandler.WorksUpdate(obj.DeltaTime);
+                _coroutineHandler.UpdateCoroutines(obj.DeltaTime);
             });
         }
 
@@ -311,14 +311,14 @@ namespace Macro.View
             {
                 addIndex = -1;
             }
-            else if(sender.Equals(btnTreeItemDown))
+            else if (sender.Equals(btnTreeItemDown))
             {
                 addIndex = 1;
             }
 
             while (isBtnTreeItemPress == true)
             {
-                if(addIndex ==0)
+                if (addIndex == 0)
                 {
                     yield break;
                 }
@@ -326,8 +326,8 @@ namespace Macro.View
                 {
                     yield break;
                 }
-                if(changedIndex + addIndex < 0 || changedIndex + addIndex >= itemContainer.Count)
-                { 
+                if (changedIndex + addIndex < 0 || changedIndex + addIndex >= itemContainer.Count)
+                {
                     break;
                 }
                 changedIndex += addIndex;
@@ -373,7 +373,7 @@ namespace Macro.View
 
         private void CheckSameImageDrag_Checked(object sender, RoutedEventArgs e)
         {
-            if(checkSameImageDrag.IsChecked == true)
+            if (checkSameImageDrag.IsChecked == true)
             {
                 numMaxSameImageCount.Visibility = Visibility.Visible;
             }
@@ -399,7 +399,7 @@ namespace Macro.View
         {
             if (sender.Equals(comboRepeatSubItem) && comboRepeatSubItem.SelectedItem is KeyValuePair<RepeatType, string> item)
             {
-                if(item.Key == RepeatType.Count || item.Key == RepeatType.Search)
+                if (item.Key == RepeatType.Count || item.Key == RepeatType.Search)
                 {
                     numRepeatCount.Visibility = Visibility.Visible;
                 }
@@ -426,7 +426,7 @@ namespace Macro.View
                 {
                     return;
                 }
-                    
+
                 var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
                 var currentIndex = itemContainer.IndexOf(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
@@ -450,11 +450,11 @@ namespace Macro.View
                     });
                 }
             }
-            else if(sender.Equals(btnSetROI))
+            else if (sender.Equals(btnSetROI))
             {
                 ApplicationManager.Instance.ShowSetROIView();
             }
-            else if(sender.Equals(btnRemoveROI))
+            else if (sender.Equals(btnRemoveROI))
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().RoiData = null;
                 RefreshUI();
@@ -482,7 +482,7 @@ namespace Macro.View
 
         private void TreeSaves_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if(treeSaves.SelectedItem is EventTriggerModel item)
+            if (treeSaves.SelectedItem is EventTriggerModel item)
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem);
                 NotifyHelper.InvokeNotify(NotifyEventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
@@ -504,7 +504,7 @@ namespace Macro.View
                 {
                     RadioButton_Click(rbImage, null);
                 }
-                else if(eventType == EventType.RelativeToImage)
+                else if (eventType == EventType.RelativeToImage)
                 {
                     RadioButton_Click(rbRelativeToImage, null);
                 }
@@ -514,7 +514,7 @@ namespace Macro.View
 
         private void TreeSaves_Drop(object sender, DragEventArgs e)
         {
-            if(_isDrag == true)
+            if (_isDrag == true)
             {
                 _isDrag = false;
                 var targetRow = treeSaves.TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
@@ -533,7 +533,7 @@ namespace Macro.View
         }
         private void TreeSaves_MouseMove(object sender, MouseEventArgs e)
         {
-            if(!_isDrag && e.LeftButton == MouseButtonState.Pressed)
+            if (!_isDrag && e.LeftButton == MouseButtonState.Pressed)
             {
                 var target = (sender as UIElement).TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeSaves));
                 if (target == null)
@@ -585,7 +585,7 @@ namespace Macro.View
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Keyboard;
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().HardClick = false;
             }
-            else if(sender.Equals(rbImage))
+            else if (sender.Equals(rbImage))
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Image;
                 if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
@@ -593,10 +593,10 @@ namespace Macro.View
                     _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
                 }
             }
-            else if(sender.Equals(rbRelativeToImage))
+            else if (sender.Equals(rbRelativeToImage))
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.RelativeToImage;
-                if(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
                 {
                     _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
                 }
