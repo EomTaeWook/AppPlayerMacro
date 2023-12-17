@@ -24,10 +24,18 @@ namespace Macro.Models.ViewModel
                 {
                     _isAllSelected = value;
                     OnPropertyChanged(nameof(IsAllSelected));
-                    foreach (var item in _triggerSaves)
-                    {
-                        item.IsChecked = value;
-                    }
+                    ApplySelectionToAllTriggers(_triggerSaves, value);
+                }
+            }
+        }
+        private void ApplySelectionToAllTriggers(ObservableCollection<EventTriggerModel> eventTriggerModels, bool value)
+        {
+            foreach (var item in eventTriggerModels)
+            {
+                item.IsChecked = value;
+                if (item.SubEventTriggers.Count > 0)
+                {
+                    ApplySelectionToAllTriggers(item.SubEventTriggers, value);
                 }
             }
         }
