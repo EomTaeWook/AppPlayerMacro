@@ -271,7 +271,7 @@ namespace Macro.View
                 button.Click += Button_Click;
             }
 
-            btnTreeItemUp.PreviewMouseDown += BtnTreeItem_MouseDown; ;
+            btnTreeItemUp.PreviewMouseDown += BtnTreeItem_MouseDown;
             btnTreeItemDown.PreviewMouseDown += BtnTreeItem_MouseDown;
             btnTreeItemUp.PreviewMouseUp += BtnTreeItem_MouseUp;
             btnTreeItemDown.PreviewMouseUp += BtnTreeItem_MouseUp;
