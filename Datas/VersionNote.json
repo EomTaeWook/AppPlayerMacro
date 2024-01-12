@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 10
+    "Build": 11
   },
-  "Desc": "체크 박스로 이벤트를 비활성화 시킬 수 있습니다!"
+  "Desc": "자잘한 버그 수정 Fixed the issue where the area of interest could not be deleted"
 }
