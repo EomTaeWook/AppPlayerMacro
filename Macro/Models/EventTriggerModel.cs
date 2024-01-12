@@ -208,17 +208,9 @@ namespace Macro.Models
         {
             set
             {
-                if (value == null)
-                {
-                    return;
-                }
-
-                if (value.IsExists())
-                {
-                    _roiData = value;
-                    OnPropertyChanged("RoiData");
-                    OnPropertyChanged("Desc");
-                }
+                _roiData = value;
+                OnPropertyChanged("RoiData");
+                OnPropertyChanged("Desc");
             }
             get => _roiData;
         }
@@ -239,7 +231,10 @@ namespace Macro.Models
                 var sb = new StringBuilder();
                 if (RoiData != null)
                 {
-                    sb.Append($"R : [X : {RoiData.RoiRect.Left} W : {RoiData.RoiRect.Width} Y : {RoiData.RoiRect.Top} H : {RoiData.RoiRect.Height}] ");
+                    if (RoiData.RoiRect != null)
+                    {
+                        sb.Append($"R : [X : {RoiData.RoiRect.Left} W : {RoiData.RoiRect.Width} Y : {RoiData.RoiRect.Top} H : {RoiData.RoiRect.Height}] ");
+                    }
                 }
                 else
                 {
@@ -283,7 +278,6 @@ namespace Macro.Models
                 }
                 else
                 {
-
                 }
                 return sb.ToString();
             }
