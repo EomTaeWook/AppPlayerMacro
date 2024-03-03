@@ -228,7 +228,7 @@
     <Compile Include="Infrastructure\Manager\CacheDataManager.cs" />
     <Compile Include="Infrastructure\Manager\InputManager.cs" />
     <Compile Include="Infrastructure\Manager\SchedulerManager.cs" />
-    <Compile Include="Infrastructure\Manager\ServiceProviderManager.cs" />
+    <Compile Include="Infrastructure\Manager\ServiceDispatcher.cs" />
     <Compile Include="Infrastructure\Manager\UIManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />

@@ -1,6 +1,7 @@
 ﻿using Dignus.Framework;
 using Dignus.Log;
 using Dignus.Log.LogTarget;
+using Dignus.Log.Model;
 using Dignus.Log.Rule;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -38,7 +39,6 @@ namespace Patcher
                 LogFormatRenderer = @"${date} | ${level} | ${message}",
                 MaxArchiveFile = 7,
             };
-            configuration.AddTarget("file target", fileLogTarget);
             configuration.AddLogRule("file rule", new LoggerRule("", LogLevel.Debug, fileLogTarget));
             LogBuilder.Configuration(configuration).Build();
         }
@@ -110,7 +110,7 @@ namespace Patcher
             }
             AllFileBackup();
 #if !DEBUG
-            if(VersionValidate(e.Args) == false)
+            if (VersionValidate(e.Args) == false)
             {
                 Current.Shutdown();
             }

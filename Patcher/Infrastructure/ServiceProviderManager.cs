@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Patcher.Infrastructure
 {
-    public class ServiceProviderManager : Singleton<ServiceProvider>
+    public class ServiceProviderManager : Singleton<SimpleServiceProvider>
     {
         private static Dictionary<string, object> _typeToMap = new Dictionary<string, object>();
 
@@ -19,7 +19,7 @@ namespace Patcher.Infrastructure
         }
         public static T GetService<T>(string key) where T : class
         {
-            if(_typeToMap.ContainsKey(key) == false)
+            if (_typeToMap.ContainsKey(key) == false)
             {
                 throw new KeyNotFoundException();
             }

@@ -63,7 +63,7 @@ namespace Macro
         private void MovePatcherFile()
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(ConstHelper.TempPath);
-            if(directoryInfo.Exists == false)
+            if (directoryInfo.Exists == false)
             {
                 return;
             }
@@ -118,6 +118,7 @@ namespace Macro
 
             ServiceDispatcher.SetContainer(serviceContainer);
 
+            serviceContainer.Build();
 
         }
     }
