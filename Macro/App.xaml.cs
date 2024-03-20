@@ -93,14 +93,6 @@ namespace Macro
 
             serviceContainer.RegisterType(config);
 
-            //var documentHelper = Singleton<DocumentHelper>.Instance;
-            //documentHelper.Init(config);
-            //serviceContainer.RegisterType(documentHelper);
-
-            //var applicationDataHelper = Singleton<ApplicationDataHelper>.Instance;
-            //applicationDataHelper.Init("ApplicationData");
-            //serviceContainer.RegisterType(applicationDataHelper);
-
             serviceContainer.RegisterType<FileService, FileService>();
 
             serviceContainer.RegisterType<IKeyboardInput, KeyboardInput>();
@@ -111,7 +103,6 @@ namespace Macro
             serviceContainer.RegisterType<SettingViewModel, SettingViewModel>();
 
             ServiceDispatcher.SetContainer(serviceContainer);
-
 
             serviceContainer.Build();
 
