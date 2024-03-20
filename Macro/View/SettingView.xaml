@@ -10,7 +10,7 @@
              mc:Ignorable="d" Width="798" Height="400">
     <StackPanel>
         <StackPanel>
-            <Label Content="{Binding Path=LabelViewModel.Preferences, Source={StaticResource Locator} }"></Label>
+            <Label Content="{Binding Path=Preferences, Source={StaticResource LabelLocator} }"></Label>
         </StackPanel>
         <StackPanel>
             <Grid>
@@ -32,27 +32,27 @@
                             <ColumnDefinition Width="5.5*"></ColumnDefinition>
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=LabelViewModel.Language, Source={StaticResource Locator} }"></Label>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=Language, Source={StaticResource LabelLocator} }"></Label>
                         <ComboBox Name="comboLanguage" Grid.Row="0" Grid.Column="1" SelectedValue="{Binding Path=Config.Language, Mode=TwoWay}"></ComboBox>
 
-                        <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=LabelViewModel.SavePath, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=SavePath, Source={StaticResource LabelLocator}}"></Label>
                         <TextBox Name="txtSavePath" Grid.Row="1" Grid.Column="1" Text ="{Binding Path=Config.SavePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                          mah:TextBoxHelper.ButtonCommand="{Binding SavePathButtonCmd }"
                          mah:TextBoxHelper.ButtonCommandParameter="{Binding ElementName=txtSavePath}"/>
 
-                        <Label Grid.Row="2" Grid.Column="0"  Content="{Binding Path=LabelViewModel.Period, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="2" Grid.Column="0"  Content="{Binding Path=Period, Source={StaticResource LabelLocator}}"></Label>
                         <mah:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.Period, Mode=TwoWay}"></mah:NumericUpDown>
 
-                        <Label Grid.Row="3" Grid.Column="0"  Content="{Binding Path=LabelViewModel.ItemDelay, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="3" Grid.Column="0"  Content="{Binding Path=ItemDelay, Source={StaticResource LabelLocator}}"></Label>
                         <mah:NumericUpDown Name="numDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinItemDelay}}" Grid.Row="3" Grid.Column="1" Value="{Binding Path=Config.ItemDelay, Mode=TwoWay}"></mah:NumericUpDown>
 
-                        <Label Grid.Row="4" Grid.Column="0" Content="{Binding Path=LabelViewModel.Similarity, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="4" Grid.Column="0" Content="{Binding Path=Similarity, Source={StaticResource LabelLocator}}"></Label>
                         <mah:NumericUpDown Name="numSimilarity" Minimum="{Binding Source={x:Static util:ConstHelper.MinSimilarity}}" Grid.Row="4" Grid.Column="1" Value="{Binding Path=Config.Similarity, Mode=TwoWay}"></mah:NumericUpDown>
 
-                        <Label Grid.Row="5" Grid.Column="0" Content="{Binding Path=LabelViewModel.DragDelay, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="5" Grid.Column="0" Content="{Binding Path=DragDelay, Source={StaticResource LabelLocator}}"></Label>
                         <mah:NumericUpDown Name="numDragDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinDragDelay}}" Grid.Row="5" Grid.Column="1" Value="{Binding Path=Config.DragDelay, Mode=TwoWay}"></mah:NumericUpDown>
 
-                        <Label Grid.Row="6" Grid.Column="0" Content="{Binding Path=LabelViewModel.SearchResultDisplay, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="6" Grid.Column="0" Content="{Binding Path=SearchResultDisplay, Source={StaticResource LabelLocator}}"></Label>
                         <ComboBox Name="comboSearchResultDisplay" Grid.Row="6" Grid.Column="1" SelectedValue="{Binding Path=Config.SearchImageResultDisplay, Mode=TwoWay}">
                             <ComboBox.Items>
                                 <system:Boolean>True</system:Boolean>
@@ -60,14 +60,14 @@
                             </ComboBox.Items>
                         </ComboBox>
 
-                        <Label Grid.Row="7" Grid.Column="0" Content="{Binding Path=LabelViewModel.VersionCheck, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="7" Grid.Column="0" Content="{Binding Path=VersionCheck, Source={StaticResource LabelLocator}}"></Label>
                         <ComboBox Name="comboVersionCheck" Grid.Row="7" Grid.Column="1" SelectedValue="{Binding Path=Config.VersionCheck, Mode=TwoWay}">
                             <ComboBox.Items>
                                 <system:Boolean>True</system:Boolean>
                                 <system:Boolean>False</system:Boolean>
                             </ComboBox.Items>
                         </ComboBox>
-                        <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=LabelViewModel.SettingProcessLocation, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=SettingProcessLocation, Source={StaticResource LabelLocator}}"></Label>
                         <DockPanel Grid.Row="8" Grid.Column="1">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -79,8 +79,8 @@
                             </Grid>
                         </DockPanel>
                         
-                        <Button Name="btnSave" Grid.Row ="9" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
-                        <Button Name="btnClose" Grid.Row ="9" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=LabelViewModel.Close, Source={StaticResource Locator}}" Background="DarkGray"></Button>
+                        <Button Name="btnSave" Grid.Row ="9" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}"></Button>
+                        <Button Name="btnClose" Grid.Row ="9" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Close, Source={StaticResource LabelLocator}}" Background="DarkGray"></Button>
                     </Grid>
                 </DockPanel>
             </Grid>

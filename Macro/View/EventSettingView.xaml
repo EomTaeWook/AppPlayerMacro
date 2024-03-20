@@ -34,7 +34,7 @@
                     <ColumnDefinition Width="3*"></ColumnDefinition>
                     <ColumnDefinition Width="7*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.EventType, Source={StaticResource Locator}}"></Label>
+                <Label Grid.Column="0" Grid.Row="0" Content="{Binding Path=EventType, Source={StaticResource LabelLocator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1.5*"></ColumnDefinition>
@@ -48,7 +48,7 @@
                     <RadioButton GroupName="EventType" Grid.Column="2" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=Keyboard}" Content="Keyboard" Name="rbKeyboard"/>
                     <RadioButton GroupName="EventType" Grid.Column="3" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.EventType, Mode=Default, Converter={StaticResource ResourceKey=BooleanConverter}, ConverterParameter=RelativeToImage}" Content="RelativeToImage" Name="rbRelativeToImage"/>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=LabelViewModel.EventDataSet, Source={StaticResource Locator}}"></Label>
+                <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=EventDataSet, Source={StaticResource LabelLocator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -58,26 +58,26 @@
                         <ColumnDefinition Width="3.*"></ColumnDefinition>
                         <ColumnDefinition Width="7.*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button Name="btnSetROI" Grid.Column="0" Content="{Binding Path=LabelViewModel.SetROI, Source={StaticResource Locator}}"></Button>
-                    <Button Name="btnRemoveROI" Visibility="Hidden" Grid.Column="0" Content="{Binding Path=LabelViewModel.RemoveROI, Source={StaticResource Locator}}"></Button>
+                    <Button Name="btnSetROI" Grid.Column="0" Content="{Binding Path=SetROI, Source={StaticResource LabelLocator}}"></Button>
+                    <Button Name="btnRemoveROI" Visibility="Hidden" Grid.Column="0" Content="{Binding Path=RemoveROI, Source={StaticResource LabelLocator}}"></Button>
                     <Label Name="lblDesc" Content="{Binding Path=CurrentTreeViewItem.DataContext.Desc, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" Grid.ColumnSpan="2" Grid.Row="2"></Label>
                     <Grid Name="gridImage" Grid.Column="1" Visibility="Visible">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
                             <ColumnDefinition Width="5.5*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.SameImageDrag, Mode=TwoWay}" Content="{Binding Path=LabelViewModel.SameImageDrag, Source={StaticResource Locator}}" Grid.Column="0"></CheckBox>
+                        <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.SameImageDrag, Mode=TwoWay}" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}" Grid.Column="0"></CheckBox>
                         <mah:NumericUpDown Name="numMaxSameImageCount" Minimum="1" Grid.Column="1" Visibility="Hidden" Value="{Binding Path=CurrentTreeViewItem.DataContext.MaxSameImageCount, Mode=TwoWay}"></mah:NumericUpDown>
-                        <!--<Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
+                        <!--<Button Name="btnMouseWheel" Content="{Binding Path=MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
                     </Grid>
                     <Grid Name="gridMouse" Grid.Column="1" Visibility="Collapsed">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="5.5*"></ColumnDefinition>
                             <ColumnDefinition Width="4.5*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Button Name="btnMouseCoordinate" Content="{Binding Path=LabelViewModel.MouseCoordinates, Source={StaticResource Locator}}" Grid.Column="0"></Button>
+                        <Button Name="btnMouseCoordinate" Content="{Binding Path=MouseCoordinates, Source={StaticResource LabelLocator}}" Grid.Column="0"></Button>
                         
-                        <!--<Button Name="btnMouseWheel" Content="{Binding Path=LabelViewModel.MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
+                        <!--<Button Name="btnMouseWheel" Content="{Binding Path=MouseWheel, Source={StaticResource Locator}}" Grid.Column="1"></Button>-->
                     </Grid>
                     <Grid Name="gridKeyboard" Grid.Column="1" Visibility="Collapsed">
                         <TextBox Name="txtKeyboardCmd" DockPanel.Dock="Left" Grid.Column="0" Text="{Binding Path=CurrentTreeViewItem.DataContext.KeyboardCmd, Mode=TwoWay}"></TextBox>
@@ -89,13 +89,13 @@
                             <ColumnDefinition Width="1*"></ColumnDefinition>
                             <ColumnDefinition Width="4*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="{Binding Path=LabelViewModel.X, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Column="0" Content="{Binding Path=X, Source={StaticResource LabelLocator}}"></Label>
                         <mah:NumericUpDown Name="numRelativeX" Grid.Column="1" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.X, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></mah:NumericUpDown>
-                        <Label Grid.Column="2" Content="{Binding Path=LabelViewModel.Y, Source={StaticResource Locator}}"></Label>
+                        <Label Grid.Column="2" Content="{Binding Path=Y, Source={StaticResource LabelLocator}}"></Label>
                         <mah:NumericUpDown Name="numRelativeY" Grid.Column="3" Interval="1" NumericInputMode="All" Value="{Binding Path=RelativePosition.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></mah:NumericUpDown>
                     </Grid>
                 </Grid>
-                <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=LabelViewModel.AfterDelay, Source={StaticResource Locator}}"></Label>
+                <Label Grid.Column="0" Grid.Row="3" Content="{Binding Path=AfterDelay, Source={StaticResource LabelLocator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
@@ -103,8 +103,8 @@
                     </Grid.ColumnDefinitions>
                     <mah:NumericUpDown Name="numAfterDelay" Minimum="0" Grid.Row="0" Grid.Column="0" Value="{Binding Path=CurrentTreeViewItem.DataContext.AfterDelay, Mode=TwoWay}"></mah:NumericUpDown>
                 </Grid>
-                
-                <Label Grid.Column="0" Grid.Row="4" Content="{Binding Path=LabelViewModel.TriggerToNext, Source={StaticResource Locator}}"></Label>
+
+                <Label Grid.Column="0" Grid.Row="4" Content="{Binding Path=TriggerToNext, Source={StaticResource LabelLocator}}"></Label>
                 <Grid Grid.Column="1" Grid.Row="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
@@ -117,10 +117,10 @@
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Label Name="lblHardClick" Grid.Column="0" Grid.Row="0" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></Label>
-                    <CheckBox x:Name="checkHardClick" Grid.Row="0" Grid.Column="1" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.HardClick, Mode=TwoWay}" Content="{Binding Path=LabelViewModel.HardClick, Source={StaticResource Locator}}"></CheckBox>
+                    <Label Name="lblHardClick" Grid.Column="0" Grid.Row="0" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}"></Label>
+                    <CheckBox x:Name="checkHardClick" Grid.Row="0" Grid.Column="1" IsEnabled="True" IsChecked="{Binding Path=CurrentTreeViewItem.DataContext.HardClick, Mode=TwoWay}" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}"></CheckBox>
                 </Grid>
-                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="6" Content="{Binding Path=LabelViewModel.RepeatSubItems, Source={StaticResource Locator}}" Visibility="Collapsed"></Label>
+                <Label Name="lblRepeatSubItems" Grid.Column="0" Grid.Row="6" Content="{Binding Path=RepeatSubItems, Source={StaticResource LabelLocator}}" Visibility="Collapsed"></Label>
                 <Grid Grid.Column="1" Grid.Row="6" Visibility="Collapsed" Name="gridRepeat">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="7*"></ColumnDefinition>
@@ -139,7 +139,7 @@
                         <ColumnDefinition Width="8*"></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Content="{Binding Path=LabelViewModel.TriggerList, Source={StaticResource Locator}}"></Label>
+                    <Label Grid.Column="0" Content="{Binding Path=TriggerList, Source={StaticResource LabelLocator}}"></Label>
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"></ColumnDefinition>

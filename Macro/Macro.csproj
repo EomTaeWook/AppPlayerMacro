@@ -209,6 +209,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\MessageTemplateExtensions.cs" />
+    <Compile Include="Extensions\StringTemplateExtensions.cs" />
     <Compile Include="Infrastructure\Controller\ContentController.cs" />
     <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
@@ -224,7 +226,6 @@
     <Compile Include="Infrastructure\Converter\ImageConverter.cs" />
     <Compile Include="Infrastructure\Interface\IMouseInput.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
-    <Compile Include="Infrastructure\Manager\ApplicationDataHelper.cs" />
     <Compile Include="Infrastructure\Manager\CacheDataManager.cs" />
     <Compile Include="Infrastructure\Manager\InputManager.cs" />
     <Compile Include="Infrastructure\Manager\SchedulerManager.cs" />
@@ -247,11 +248,12 @@
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Models\EventArgsModel.cs" />
-    <Compile Include="Models\ApplicationDataModel.cs" />
     <Compile Include="Models\MouseTriggerInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\VersionNote.cs" />
     <Compile Include="Models\RoiModel.cs" />
+    <Compile Include="Models\LabelLocator.cs" />
+    <Compile Include="Models\ViewModel\MainViewModel.cs" />
     <Compile Include="UI\UIItem.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
     <Compile Include="Models\ViewModel\LabelViewModel.cs" />
@@ -326,7 +328,6 @@
   <ItemGroup>
     <Compile Include="Models\Config.cs" />
     <Compile Include="Models\EventTriggerModel.cs" />
-    <Compile Include="Models\ViewModelLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -343,6 +344,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataContainer\DataContainer.csproj">
+      <Project>{4a87a3df-5207-4149-b81a-9c4ee7900cb9}</Project>
+      <Name>DataContainer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{da7e0725-f356-48bc-b586-4cd4dea35803}</Project>
       <Name>Utils</Name>

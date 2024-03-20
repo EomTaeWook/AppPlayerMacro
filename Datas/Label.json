@@ -1,0 +1,350 @@
+[
+  {
+    "Id": 1000,
+    "Name": "1000",
+    "Kor": "연결된 프로세스",
+    "Eng": "Select Process"
+  },
+  {
+    "Id": 1001,
+    "Name": "1001",
+    "Kor": "비교할 이미지",
+    "Eng": "Compare Image"
+  },
+  {
+    "Id": 1002,
+    "Name": "1002",
+    "Kor": "이미지 캡쳐",
+    "Eng": "Image Capture"
+  },
+  {
+    "Id": 1003,
+    "Name": "1003",
+    "Kor": "저장",
+    "Eng": "Save"
+  },
+  {
+    "Id": 1004,
+    "Name": "1004",
+    "Kor": "구성",
+    "Eng": "Config"
+  },
+  {
+    "Id": 1005,
+    "Name": "1005",
+    "Kor": "환경 설정",
+    "Eng": "Preferences"
+  },
+  {
+    "Id": 1006,
+    "Name": "1006",
+    "Kor": "이벤트 타입",
+    "Eng": "EventType"
+  },
+  {
+    "Id": 1007,
+    "Name": "1007",
+    "Kor": "이벤트 데이터",
+    "Eng": "EventDataSet"
+  },
+  {
+    "Id": 1008,
+    "Name": "1008",
+    "Kor": "트리거 리스트",
+    "Eng": "TriggerList"
+  },
+  {
+    "Id": 1009,
+    "Name": "1009",
+    "Kor": "마우스 좌표 지정",
+    "Eng": "MouseCoordinates"
+  },
+  {
+    "Id": 1010,
+    "Name": "1010",
+    "Kor": "마우스 휠",
+    "Eng": "MouseWheel"
+  },
+  {
+    "Id": 1011,
+    "Name": "1011",
+    "Kor": "휠 스크롤",
+    "Eng": "MouseWheelScroll"
+  },
+  {
+    "Id": 1012,
+    "Name": "1012",
+    "Kor": "닫기",
+    "Eng": "Close"
+  },
+  {
+    "Id": 1013,
+    "Name": "1013",
+    "Kor": "삭제",
+    "Eng": "Delete"
+  },
+  {
+    "Id": 1014,
+    "Name": "1014",
+    "Kor": "시작",
+    "Eng": "Start"
+  },
+  {
+    "Id": 1015,
+    "Name": "1015",
+    "Kor": "중지",
+    "Eng": "Stop"
+  },
+  {
+    "Id": 1016,
+    "Name": "1016",
+    "Kor": "Setting",
+    "Eng": "Setting"
+  },
+  {
+    "Id": 1017,
+    "Name": "1017",
+    "Kor": "매크로",
+    "Eng": "Macro"
+  },
+  {
+    "Id": 1018,
+    "Name": "1018",
+    "Kor": "언어",
+    "Eng": "Language"
+  },
+  {
+    "Id": 1019,
+    "Name": "1019",
+    "Kor": "저장 경로",
+    "Eng": "SavePath"
+  },
+  {
+    "Id": 1020,
+    "Name": "1020",
+    "Kor": "전체 프로세싱 주기(ms)",
+    "Eng": "Period(ms)"
+  },
+  {
+    "Id": 1021,
+    "Name": "1021",
+    "Kor": "아이템 딜레이(ms)",
+    "Eng": "ItemDelay(ms)"
+  },
+  {
+    "Id": 1022,
+    "Name": "1022",
+    "Kor": "유사도",
+    "Eng": "Similarity"
+  },
+  {
+    "Id": 1023,
+    "Name": "1023",
+    "Kor": "후(後) 작업 딜레이(ms)",
+    "Eng": "AfterDelay(ms)"
+  },
+  {
+    "Id": 1024,
+    "Name": "1024",
+    "Kor": "이미지 검색 결과 표시",
+    "Eng": "Display Search Result"
+  },
+  {
+    "Id": 1025,
+    "Name": "1025",
+    "Kor": "버전 정보 확인",
+    "Eng": "VersionCheck"
+  },
+  {
+    "Id": 1026,
+    "Name": "1026",
+    "Kor": "고정",
+    "Eng": "Fix"
+  },
+  {
+    "Id": 1027,
+    "Name": "1027",
+    "Kor": "아이템 반복",
+    "Eng": "Repeat Items"
+  },
+  {
+    "Id": 1028,
+    "Name": "Once",
+    "Kor": "한번",
+    "Eng": "Once"
+  },
+  {
+    "Id": 1029,
+    "Name": "Count",
+    "Kor": "횟수",
+    "Eng": "Count"
+  },
+  {
+    "Id": 1030,
+    "Name": "NoSearch",
+    "Kor": "검색 결과가 없을 때까지",
+    "Eng": "검색 결과가 없을 때까지"
+  },
+  {
+    "Id": 1031,
+    "Name": "Search",
+    "Kor": "검색 될 때까지",
+    "Eng": "Until the search"
+  },
+  {
+    "Id": 1032,
+    "Name": "1032",
+    "Kor": "취소",
+    "Eng": "Cancel"
+  },
+  {
+    "Id": 1033,
+    "Name": "1033",
+    "Kor": "백업 중",
+    "Eng": "Backup"
+  },
+  {
+    "Id": 1034,
+    "Name": "1034",
+    "Kor": "변경을 되돌리는 중입니다.",
+    "Eng": "Rollback is in progress."
+  },
+  {
+    "Id": 1035,
+    "Name": "1035",
+    "Kor": "다운로드",
+    "Eng": "Download"
+  },
+  {
+    "Id": 1036,
+    "Name": "1036",
+    "Kor": "패치 목록 검색",
+    "Eng": "SearchPatchList"
+  },
+  {
+    "Id": 1037,
+    "Name": "1037",
+    "Kor": "패치 진행",
+    "Eng": "Patch in progress"
+  },
+  {
+    "Id": 1038,
+    "Name": "1038",
+    "Kor": "동일한 내용 추가",
+    "Eng": "Add the same content"
+  },
+  {
+    "Id": 1039,
+    "Name": "1039",
+    "Kor": "바로 이동",
+    "Eng": "ToNext"
+  },
+  {
+    "Id": 1040,
+    "Name": "1040",
+    "Kor": "패치 실패",
+    "Eng": "FailedPatch"
+  },
+  {
+    "Id": 1041,
+    "Name": "1041",
+    "Kor": "이상",
+    "Eng": "Above"
+  },
+  {
+    "Id": 1042,
+    "Name": "1042",
+    "Kor": "이하",
+    "Eng": "Below"
+  },
+  {
+    "Id": 1043,
+    "Name": "1043",
+    "Kor": "이미지 검색 필수",
+    "Eng": "Image Search Required"
+  },
+  {
+    "Id": 1044,
+    "Name": "1044",
+    "Kor": "초기 탭",
+    "Eng": "Initial Tab"
+  },
+  {
+    "Id": 1045,
+    "Name": "1045",
+    "Kor": "같은 이미지 드래그",
+    "Eng": "Drag the same image"
+  },
+  {
+    "Id": 1046,
+    "Name": "1046",
+    "Kor": "같은 이미지 찾기 반복",
+    "Eng": "Repeat finding the same image"
+  },
+  {
+    "Id": 1047,
+    "Name": "1047",
+    "Kor": "드래그 딜레이",
+    "Eng": "Drag Delay"
+  },
+  {
+    "Id": 1048,
+    "Name": "1048",
+    "Kor": "물리 클릭",
+    "Eng": "Hard Click"
+  },
+  {
+    "Id": 1049,
+    "Name": "1049",
+    "Kor": "관심영역 설정",
+    "Eng": "Set ROI"
+  },
+  {
+    "Id": 1050,
+    "Name": "1050",
+    "Kor": "관심영역 제거",
+    "Eng": "Remove ROI"
+  },
+  {
+    "Id": 1051,
+    "Name": "1051",
+    "Kor": "연결된 프로세스 위치 설정",
+    "Eng": "Setting Process Location"
+  },
+  {
+    "Id": 1052,
+    "Name": "1052",
+    "Kor": "프로세스 위치 이동",
+    "Eng": "Process Location Movement"
+  },
+  {
+    "Id": 1053,
+    "Name": "1053",
+    "Kor": "프로세스 위치 복구",
+    "Eng": "Process Location Restoration"
+  },
+  {
+    "Id": 1054,
+    "Name": "1054",
+    "Kor": "새로고침",
+    "Eng": "Refresh"
+  },
+  {
+    "Id": 1055,
+    "Name": "1055",
+    "Kor": "취소",
+    "Eng": "Cancel"
+  },
+  {
+    "Id": 1056,
+    "Name": "1056",
+    "Kor": "동일한 내용 추가",
+    "Eng": "Add the same content"
+  },
+  {
+    "Id": 1057,
+    "Name": "1057",
+    "Kor": "일반",
+    "Eng": "Common"
+  }
+]

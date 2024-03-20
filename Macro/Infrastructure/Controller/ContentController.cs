@@ -1,4 +1,6 @@
-﻿using Dignus.Log;
+﻿using DataContainer.Generated;
+using Dignus.DependencyInjection.Attribute;
+using Dignus.Log;
 using Macro.Extensions;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
@@ -10,31 +12,31 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TemplateContainers;
 using Utils;
-using Utils.Document;
 using Utils.Infrastructure;
 using Point = System.Windows.Point;
 
 namespace Macro.Infrastructure.Controller
 {
+
+    [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
     public class ContentController
     {
         private readonly SeedRandom _random;
         private ContentView _contentView;
-        private readonly ApplicationDataHelper _applicationDataHelper;
         private InputManager _inputManager;
         private int _delay = 0;
         private ProcessConfigModel _processConfig;
         private CancellationTokenSource _cts;
         private CancellationToken _token;
         private Process _fixProcess;
-        public ContentController()
+        public ContentController(Config config, InputManager inputManager)
         {
             _random = new SeedRandom();
-            _applicationDataHelper = ServiceDispatcher.Resolve<ApplicationDataHelper>();
-            _inputManager = ServiceDispatcher.Resolve<InputManager>();
 
-            SetConfig(ServiceDispatcher.Resolve<Config>());
+            _inputManager = inputManager;
+            SetConfig(config);
 
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
         }
@@ -60,31 +62,31 @@ namespace Macro.Infrastructure.Controller
             this._contentView = baseContentView;
         }
 
-        public bool Validate(EventTriggerModel model, out Message error)
+        public bool Validate(EventTriggerModel model, out MessageTemplate messageTemplate)
         {
-            error = Message.Success;
+            messageTemplate = TemplateContainer<MessageTemplate>.Find(1000);
 
             model.KeyboardCmd = model.KeyboardCmd.Replace(" ", "");
 
             if (model.Image == null)
             {
-                error = Message.FailedImageValidate;
+                messageTemplate = TemplateContainer<MessageTemplate>.Find(1001);
                 return false;
             }
             if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
             {
-                error = Message.FailedMouseCoordinatesValidate;
+                messageTemplate = TemplateContainer<MessageTemplate>.Find(1002);
                 return false;
             }
 
             if (string.IsNullOrEmpty(model.KeyboardCmd) && model.EventType == EventType.Keyboard)
             {
-                error = Message.FailedKeyboardCommandValidate;
+                messageTemplate = TemplateContainer<MessageTemplate>.Find(1003);
                 return false;
             }
             if (string.IsNullOrEmpty(model.ProcessInfo.ProcessName))
             {
-                error = Message.FailedProcessValidate;
+                messageTemplate = TemplateContainer<MessageTemplate>.Find(1004);
                 return false;
             }
 
@@ -136,15 +138,16 @@ namespace Macro.Infrastructure.Controller
         private async Task<Tuple<bool, EventTriggerModel>> ProcessEvents(Process process, EventTriggerModel model, ProcessConfigModel processConfigModel)
         {
             var hWnd = IntPtr.Zero;
-            var applciationData = _applicationDataHelper.Find(model.ProcessInfo.ProcessName) ?? new ApplicationDataModel();
+            var template = TemplateContainer<ApplicationTemplate>.Find(model.ProcessInfo.ProcessName);
 
-            if (string.IsNullOrEmpty(applciationData.HandleName))
+
+            if (string.IsNullOrEmpty(template.HandleName))
             {
                 hWnd = process.MainWindowHandle;
             }
             else
             {
-                var item = NativeHelper.GetChildHandles(process.MainWindowHandle).Where(r => r.Item1.Equals(applciationData.HandleName)).FirstOrDefault();
+                var item = NativeHelper.GetChildHandles(process.MainWindowHandle).Where(r => r.Item1.Equals(template.HandleName)).FirstOrDefault();
 
                 hWnd = item != null ? item.Item2 : process.MainWindowHandle;
             }
@@ -296,8 +299,8 @@ namespace Macro.Infrastructure.Controller
                     {
                         if (model.HardClick == false)
                         {
-                            findLocation.X = applciationData.OffsetX;
-                            findLocation.Y = applciationData.OffsetY;
+                            findLocation.X = template.OffsetX;
+                            findLocation.Y = template.OffsetY;
                             MouseTriggerProcess(hWnd, findLocation, model, processConfigModel);
                         }
                         else
@@ -314,8 +317,8 @@ namespace Macro.Infrastructure.Controller
                     {
                         var percentageX = _random.NextDouble();
                         var percentageY = _random.NextDouble();
-                        findLocation.X = (findLocation.X + applciationData.OffsetX) + (findBmp.Width * percentageX);
-                        findLocation.Y = (findLocation.Y + applciationData.OffsetY) + (findBmp.Height * percentageY);
+                        findLocation.X = (findLocation.X + template.OffsetX) + (findBmp.Width * percentageX);
+                        findLocation.Y = (findLocation.Y + template.OffsetY) + (findBmp.Height * percentageY);
 
                         if (model.HardClick == false)
                         {
@@ -335,8 +338,8 @@ namespace Macro.Infrastructure.Controller
                     }
                     else if (model.EventType == EventType.RelativeToImage)
                     {
-                        findLocation.X = (findLocation.X + applciationData.OffsetX) + (findBmp.Width / 2);
-                        findLocation.Y = (findLocation.Y + applciationData.OffsetY) + (findBmp.Height / 2);
+                        findLocation.X = (findLocation.X + template.OffsetX) + (findBmp.Width / 2);
+                        findLocation.Y = (findLocation.Y + template.OffsetY) + (findBmp.Height / 2);
 
                         ImageTriggerProcess(hWnd, findLocation, model);
                     }

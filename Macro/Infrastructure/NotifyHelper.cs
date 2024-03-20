@@ -17,14 +17,12 @@ namespace Macro.Infrastructure
         public static event Action<EventTriggerEventArgs> EventTriggerRemoved;
         public static event Action<ComboProcessChangedEventArgs> ComboProcessChanged;
 
-
         public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
         public static event Action<SaveEventTriggerModelArgs> SaveEventTriggerModel;
         public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
 
         public static event Action<TreeGridViewFocusEventArgs> TreeGridViewFocus;
         public static event Action<ROICaptureEventArgs> ROICaptureDataBind;
-
 
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {

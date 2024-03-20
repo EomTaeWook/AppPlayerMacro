@@ -1,6 +1,7 @@
-﻿using Dignus.DependencyInjection;
+﻿using DataContainer.Generated;
+using Dignus.DependencyInjection;
+using Dignus.DependencyInjection.Extensions;
 using Dignus.Extensions.Log;
-using Dignus.Framework;
 using Dignus.Log;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Interface;
@@ -11,9 +12,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using Utils;
-using Utils.Document;
 
 namespace Macro
 {
@@ -22,9 +23,6 @@ namespace Macro
     /// </summary>
     public partial class App : Application
     {
-        public App()
-        {
-        }
         protected override void OnStartup(StartupEventArgs e)
         {
             LogBuilder.Configuration(LogConfigXmlReader.Load("DignusLog.config"));
@@ -42,11 +40,7 @@ namespace Macro
             };
             AppDomain.CurrentDomain.FirstChanceException += (s, ex) =>
             {
-#if DEBUG
-                LogHelper.Debug(ex.Exception.Message);
-#else
-                LogHelper.Error(ex.Exception);
-#endif
+                LogHelper.Error(ex.Exception.Message);
             };
 
             MovePatcherFile();
@@ -83,8 +77,8 @@ namespace Macro
         }
         private void InitTemplate()
         {
-            Singleton<DocumentTemplate<Label>>.Instance.Init(ConstHelper.DefaultDatasFilePath);
-            Singleton<DocumentTemplate<Message>>.Instance.Init(ConstHelper.DefaultDatasFilePath);
+            TemplateLoader.Load("Datas");
+            TemplateLoader.MakeRefTemplate();
         }
         private void DependenciesResolved()
         {
@@ -95,28 +89,29 @@ namespace Macro
             }
             var config = JsonHelper.Load<Config>(path);
             ServiceContainer serviceContainer = new ServiceContainer();
+            serviceContainer.RegisterDependencies(Assembly.GetExecutingAssembly());
+
             serviceContainer.RegisterType(config);
 
-            var documentHelper = Singleton<DocumentHelper>.Instance;
-            documentHelper.Init(config);
-            serviceContainer.RegisterType(documentHelper);
+            //var documentHelper = Singleton<DocumentHelper>.Instance;
+            //documentHelper.Init(config);
+            //serviceContainer.RegisterType(documentHelper);
 
-            var applicationDataHelper = Singleton<ApplicationDataHelper>.Instance;
-            applicationDataHelper.Init("ApplicationData");
-            serviceContainer.RegisterType(applicationDataHelper);
+            //var applicationDataHelper = Singleton<ApplicationDataHelper>.Instance;
+            //applicationDataHelper.Init("ApplicationData");
+            //serviceContainer.RegisterType(applicationDataHelper);
+
             serviceContainer.RegisterType<FileService, FileService>();
 
             serviceContainer.RegisterType<IKeyboardInput, KeyboardInput>();
             serviceContainer.RegisterType<IMouseInput, MouseInput>();
-            serviceContainer.RegisterType<InputManager, InputManager>();
-            serviceContainer.RegisterType<CacheDataManager, CacheDataManager>();
+            serviceContainer.RegisterType(CacheDataManager.Instance);
 
             serviceContainer.RegisterType<EventSettingViewModel, EventSettingViewModel>();
-            serviceContainer.RegisterType<LabelViewModel, LabelViewModel>();
             serviceContainer.RegisterType<SettingViewModel, SettingViewModel>();
-            serviceContainer.RegisterType<ViewModelLocator, ViewModelLocator>();
 
             ServiceDispatcher.SetContainer(serviceContainer);
+
 
             serviceContainer.Build();
 

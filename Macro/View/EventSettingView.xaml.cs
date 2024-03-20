@@ -1,4 +1,5 @@
-﻿using Dignus.Coroutine;
+﻿using DataContainer.Generated;
+using Dignus.Coroutine;
 using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Manager;
@@ -13,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TemplateContainers;
 
 namespace Macro.View
 {
@@ -353,13 +355,7 @@ namespace Macro.View
 
         private void EventConfigView_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach (var type in Enum.GetValues(typeof(RepeatType)))
-            {
-                if (Enum.TryParse($"Repeat{type}", out Utils.Document.Label label))
-                {
-                    _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, DocumentHelper.Get(label)));
-                }
-            }
+            ReloadRepeatItems();
 
             comboRepeatSubItem.ItemsSource = _repeatItems;
             comboRepeatSubItem.DisplayMemberPath = "Value";
@@ -382,17 +378,20 @@ namespace Macro.View
                 numMaxSameImageCount.Visibility = Visibility.Collapsed;
             }
         }
-
-        private void NotifyHelper_ConfigChanged(ConfigEventArgs config)
+        private void ReloadRepeatItems()
         {
             _repeatItems.Clear();
+
             foreach (var type in Enum.GetValues(typeof(RepeatType)))
             {
-                if (Enum.TryParse($"Repeat{type}", out Utils.Document.Label label))
-                {
-                    _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, DocumentHelper.Get(label)));
-                }
+                var template = TemplateContainer<LabelTemplate>.Find(type.ToString());
+
+                _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, template.GetString()));
             }
+        }
+        private void NotifyHelper_ConfigChanged(ConfigEventArgs config)
+        {
+            ReloadRepeatItems();
         }
 
         private void ComboRepeatSubItem_SelectionChanged(object sender, SelectionChangedEventArgs e)

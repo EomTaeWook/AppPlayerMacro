@@ -1,13 +1,13 @@
 ﻿using Macro.Infrastructure;
 using System.ComponentModel;
 using Utils;
-using Utils.Document;
+using Utils.Models;
 
 namespace Macro.Models
 {
     public class Config : INotifyPropertyChanged
     {
-        private Language _language = Language.Kor;
+        private LanguageType _language = LanguageType.Kor;
         private string _savePath = "";
         private int _period = ConstHelper.MinPeriod;
         private int _ItemDelay = ConstHelper.MinItemDelay;
@@ -19,7 +19,7 @@ namespace Macro.Models
         private int _processLocationX;
         private int _processLocationY;
 
-        public Language Language
+        public LanguageType Language
         {
             get => _language;
             set
