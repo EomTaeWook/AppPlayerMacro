@@ -1,7 +1,3 @@
-Macro/bin/
-Macro/obj/
-Utils/obj/
-Utils/bin/
 .vs/
 packages/
 Release/exe/
@@ -12,8 +8,8 @@ Patcher/Patcher/bin/
 Patcher/Patcher/obj/
 .gitattributes
 Patcher/Patcher/Patcher.csproj.user
-Patcher/obj/
-Patcher/bin/
 Macro/Macro.csproj.user
 *.user
 Release/Install/
+**/obj/*
+**/bin/*

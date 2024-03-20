@@ -1,9 +1,0 @@
-D:\Source\AppPlayerMacro\DataContainer\obj\Debug\DataContainer.csproj.AssemblyReference.cache
-D:\Source\AppPlayerMacro\DataContainer\obj\Debug\DataContainer.csproj.CoreCompileInputs.cache
-D:\Source\AppPlayerMacro\DataContainer\bin\Debug\DataContainer.dll
-D:\Source\AppPlayerMacro\DataContainer\bin\Debug\DataContainer.pdb
-D:\Source\AppPlayerMacro\DataContainer\bin\Debug\Newtonsoft.Json.dll
-D:\Source\AppPlayerMacro\DataContainer\bin\Debug\Newtonsoft.Json.xml
-D:\Source\AppPlayerMacro\DataContainer\obj\Debug\DataCont.F93CD56F.Up2Date
-D:\Source\AppPlayerMacro\DataContainer\obj\Debug\DataContainer.dll
-D:\Source\AppPlayerMacro\DataContainer\obj\Debug\DataContainer.pdb
