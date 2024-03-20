@@ -1,0 +1,50 @@
+[
+  {
+    "Id": 1000,
+    "Name": "Nox",
+    "NeedFocus": "FALSE",
+    "HandleName": "",
+    "OffsetX": 0,
+    "OffsetY": 0
+  },
+  {
+    "Id": 1001,
+    "Name": "dnplayer",
+    "NeedFocus": "FALSE",
+    "HandleName": "TheRender",
+    "OffsetX": 0,
+    "OffsetY": -35
+  },
+  {
+    "Id": 1002,
+    "Name": "Peak",
+    "NeedFocus": "FALSE",
+    "HandleName": "kaopu001_tiantianplayer_opengl_wndWindow",
+    "OffsetX": 0,
+    "OffsetY": -35
+  },
+  {
+    "Id": 1003,
+    "Name": "Bluestacks",
+    "NeedFocus": "FALSE",
+    "HandleName": "BlueStacks Android PluginAndroid",
+    "OffsetX": 0,
+    "OffsetY": 0
+  },
+  {
+    "Id": 1004,
+    "Name": "HD-Player",
+    "NeedFocus": "FALSE",
+    "HandleName": "HD-Player",
+    "OffsetX": 0,
+    "OffsetY": 0
+  },
+  {
+    "Id": 1005,
+    "Name": "mspaint",
+    "NeedFocus": "TRUE",
+    "HandleName": "",
+    "OffsetX": 0,
+    "OffsetY": 0
+  }
+]

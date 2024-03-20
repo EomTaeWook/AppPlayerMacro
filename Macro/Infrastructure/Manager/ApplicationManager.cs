@@ -17,26 +17,26 @@ namespace Macro.Infrastructure.Manager
     {
         public static MessageDialogResult ShowMessageDialog(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative)
         {
-            return ApplicationManager.Instance._mainWindow.ShowModalMessageExternal(title, message, style, new MetroDialogSettings()
+            return Instance._mainWindow.ShowModalMessageExternal(title, message, style, new MetroDialogSettings()
             {
                 ColorScheme = MetroDialogColorScheme.Inverted,
             });
         }
         public static void ShowProgressbar()
         {
-            ApplicationManager.Instance._mainWindow.Dispatcher.Invoke(() =>
+            Instance._mainWindow.Dispatcher.Invoke(() =>
             {
-                ApplicationManager.Instance._progress.Width = ApplicationManager.Instance._mainWindow.ActualWidth;
-                ApplicationManager.Instance._progress.Height = ApplicationManager.Instance._mainWindow.ActualHeight;
+                Instance._progress.Width = Instance._mainWindow.ActualWidth;
+                Instance._progress.Height = Instance._mainWindow.ActualHeight;
 
-                ApplicationManager.Instance._progress.Left = ApplicationManager.Instance._mainWindow.Left;
-                ApplicationManager.Instance._progress.Top = ApplicationManager.Instance._mainWindow.Top;
-                ApplicationManager.Instance._progress.Show();
+                Instance._progress.Left = Instance._mainWindow.Left;
+                Instance._progress.Top = Instance._mainWindow.Top;
+                Instance._progress.Show();
             });
         }
         public static void HideProgressbar()
         {
-            ApplicationManager.Instance._progress.Hide();
+            Instance._progress.Hide();
         }
 
         private readonly ProgressView _progress;
@@ -65,7 +65,7 @@ namespace Macro.Infrastructure.Manager
                 _mousePointViews.Add(new MousePositionView(item));
             }
         }
-        
+
         public Window GetDrawWindow()
         {
             return _drawWindow;
@@ -124,7 +124,7 @@ namespace Macro.Infrastructure.Manager
 
         public void CloseCaptureView()
         {
-            foreach(var item in _captureViews)
+            foreach (var item in _captureViews)
             {
                 item.Hide();
             }
@@ -140,12 +140,11 @@ namespace Macro.Infrastructure.Manager
             {
                 item.Close();
             }
-            foreach(var item in _mousePointViews)
+            foreach (var item in _mousePointViews)
             {
                 item.Close();
             }
         }
-
         public VersionNote GetLatestVersion()
         {
             VersionNote versionNote = null;

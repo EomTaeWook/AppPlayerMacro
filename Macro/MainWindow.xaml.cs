@@ -1,4 +1,5 @@
-﻿using Macro.Extensions;
+﻿using DataContainer.Generated;
+using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Manager;
@@ -15,8 +16,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
+using TemplateContainers;
 using Utils;
-using Utils.Document;
 using Utils.Extensions;
 using Utils.Infrastructure;
 using Label = System.Windows.Controls.Label;
@@ -33,16 +34,17 @@ namespace Macro
         private KeyValuePair<string, Process>? _fixProcess;
         private Config _config;
         private ContentView _contentView;
-        private ContentController _contentController = new ContentController();
+        private ContentController _contentController;
         public MainWindow()
         {
             InitializeComponent();
-            _config = ServiceDispatcher.Resolve<Config>();
             Loaded += MainWindow_Loaded;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            _contentController = ServiceDispatcher.Resolve<ContentController>();
+            _config = ServiceDispatcher.Resolve<Config>();
             InitEvent();
             Init();
             VersionCheck();
@@ -50,6 +52,7 @@ namespace Macro
             this.ads.ShowAd(728, 90, "5ybbzi0gxwn0");
 #endif
             ApplicationManager.Instance.Init();
+
         }
         private void InitEvent()
         {
@@ -98,11 +101,12 @@ namespace Macro
             }
             else
             {
-                ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(Message.FailedOSVersion));
+                var template = TemplateContainer<MessageTemplate>.Find(1006);
+                ApplicationManager.ShowMessageDialog("Error", template.GetString());
                 Process.GetCurrentProcess().Kill();
             }
             Refresh();
-            LoadDatas(GetSaveFilePath());
+            LoadSave(GetSaveFilePath());
         }
         private string GetSaveFilePath()
         {
@@ -266,7 +270,7 @@ namespace Macro
 
             SettingProcessMonitorInfo(obj.CurrentEventTriggerModel, process);
 
-            if (_contentController.Validate(obj.CurrentEventTriggerModel, out Message error))
+            if (_contentController.Validate(obj.CurrentEventTriggerModel, out MessageTemplate messageTemplate))
             {
                 Dispatcher.Invoke(async () =>
                 {
@@ -282,7 +286,7 @@ namespace Macro
             }
             else
             {
-                ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(error));
+                ApplicationManager.ShowMessageDialog("Error", messageTemplate.GetString());
             }
         }
         private async Task Save()
@@ -396,7 +400,7 @@ namespace Macro
             }
         }
 
-        public async void LoadDatas(string path)
+        public async void LoadSave(string path)
         {
             var fileManager = ServiceDispatcher.Resolve<FileService>();
             var loadDatas = await fileManager.Load<EventTriggerModel>(path);
@@ -414,7 +418,7 @@ namespace Macro
             ApplicationManager.ShowProgressbar();
             _config = e.Config;
             Refresh();
-            LoadDatas(GetSaveFilePath());
+            LoadSave(GetSaveFilePath());
             ApplicationManager.HideProgressbar();
         }
         private void VersionCheck()
@@ -430,9 +434,13 @@ namespace Macro
             }
             if (latestNote.Version > VersionNote.CurrentVersion)
             {
+                var newVersionTemplate = TemplateContainer<MessageTemplate>.Find(1011);
+
+                var patchContentTemplate = TemplateContainer<MessageTemplate>.Find(1012);
+
                 if (ApplicationManager.ShowMessageDialog("Infomation",
-                                                        $"{DocumentHelper.Get(Message.NewVersion)}{Environment.NewLine}{Environment.NewLine}" +
-                                                        $"{DocumentHelper.Get(Message.PatchContent, latestNote.Desc)}",
+                                                        $"{newVersionTemplate.GetString()}{Environment.NewLine}{Environment.NewLine}" +
+                                                        $"{patchContentTemplate.GetString(latestNote.Desc)}",
                                                         MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
                 {
                     Process.Start(ConstHelper.ReleaseUrl);
@@ -512,7 +520,8 @@ namespace Macro
             {
                 if (comboProcess.SelectedValue == null)
                 {
-                    ApplicationManager.ShowMessageDialog("Error", DocumentHelper.Get(Message.FailedProcessValidate));
+                    var template = TemplateContainer<MessageTemplate>.Find(1004);
+                    ApplicationManager.ShowMessageDialog("Error", template.GetString());
                     return;
                 }
 

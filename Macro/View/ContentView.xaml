@@ -26,9 +26,9 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="2*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=LabelViewModel.CompareImage, Source={StaticResource Locator}}" ></Label>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=CompareImage, Source={StaticResource LabelLocator}}" ></Label>
                         <DockPanel Grid.Row="0" Grid.Column="1">
-                            <Button Name="btnCapture" Content="{Binding Path=LabelViewModel.ImageCapture, Source={StaticResource Locator}}"/>
+                            <Button Name="btnCapture" Content="{Binding Path=ImageCapture, Source={StaticResource LabelLocator}}"/>
                         </DockPanel>
                     </Grid>
                 </StackPanel>
@@ -38,10 +38,10 @@
         </Border>
         <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0">
             <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                <Label DockPanel.Dock="Left" Content="{Binding Path=LabelViewModel.Config, Source={StaticResource Locator}}"></Label>
-                <Button Name="btnAddSameContent" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.AddSameContent, Source={StaticResource Locator}}"></Button>
-                <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Delete, Source={StaticResource Locator}}"></Button>
-                <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=LabelViewModel.Save, Source={StaticResource Locator}}"></Button>
+                <Label DockPanel.Dock="Left" Content="{Binding Path=Config, Source={StaticResource LabelLocator}}"></Label>
+                <Button Name="btnAddSameContent" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=AddSameContent, Source={StaticResource LabelLocator}}"></Button>
+                <Button Name="btnDelete" DockPanel.Dock="Right" Visibility="Collapsed" Content="{Binding Path=Delete, Source={StaticResource LabelLocator}}"></Button>
+                <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}"></Button>
             </DockPanel>
             <DockPanel DockPanel.Dock="Left">
                 <view:EventSettingView x:Name="eventSettingView"/>

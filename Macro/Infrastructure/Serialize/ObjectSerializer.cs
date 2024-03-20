@@ -1,9 +1,12 @@
-﻿using System;
+﻿using DataContainer.Generated;
+using Macro.Extensions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using TemplateContainers;
 
 namespace Macro.Infrastructure.Serialize
 {
@@ -27,7 +30,7 @@ namespace Macro.Infrastructure.Serialize
                 foreach (var prop in properties)
                 {
                     var val = prop.GetValue(model);
-                    var nullableType =  Nullable.GetUnderlyingType(prop.PropertyType);
+                    var nullableType = Nullable.GetUnderlyingType(prop.PropertyType);
                     if (nullableType == null)
                     {
                         val = val ?? Activator.CreateInstance(prop.PropertyType);
@@ -64,7 +67,8 @@ namespace Macro.Infrastructure.Serialize
                     var startTag = bf.Deserialize(ms);
                     if (!startTag.Equals("\uFF1C"))
                     {
-                        throw new FormatException(DocumentHelper.Get(Utils.Document.Message.FailedFileBroken));
+                        var template = TemplateContainer<MessageTemplate>.Find(1007);
+                        throw new FormatException(template.GetString());
                     }
                     var obj = (T)Activator.CreateInstance(typeof(T));
                     bool isComplete = true;
@@ -83,7 +87,8 @@ namespace Macro.Infrastructure.Serialize
                         var endTag = bf.Deserialize(ms);
                         if (!endTag.Equals("\uFF1E"))
                         {
-                            throw new FormatException(DocumentHelper.Get(Utils.Document.Message.FailedFileBroken));
+                            var template = TemplateContainer<MessageTemplate>.Find(1007);
+                            throw new FormatException(template.GetString());
                         }
                     }
                     list.Add(obj);

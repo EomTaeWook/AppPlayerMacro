@@ -1,7 +1,9 @@
-﻿using Macro.Infrastructure.Interface;
+﻿using Dignus.DependencyInjection.Attribute;
+using Macro.Infrastructure.Interface;
 
 namespace Macro.Infrastructure.Manager
 {
+    [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
     public class InputManager
     {
         public IKeyboardInput Keyboard { get; private set; }

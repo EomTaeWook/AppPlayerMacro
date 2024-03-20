@@ -41,7 +41,7 @@
                 <Setter Property="MaxHeight" Value="80" />
                 <Setter Property="Height" Value="80" />
             </Style>
-            <model:ViewModelLocator x:Key="Locator" xmlns:model="clr-namespace:Macro.Models"/>
+            <model:LabelLocator x:Key="LabelLocator" xmlns:model="clr-namespace:Macro.Models"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

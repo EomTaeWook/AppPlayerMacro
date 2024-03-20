@@ -9,7 +9,7 @@
                       xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                       BorderThickness="1"
-                      Title="{Binding Path=LabelViewModel.Title, Source={StaticResource Locator}}" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
+                      Title="{Binding Path=Title, Source={StaticResource LabelLocator}}" Height="780" Width="1270" WindowStartupLocation="CenterScreen" 
                       mc:Ignorable="d">
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -21,7 +21,7 @@
             <Button Name="btnSetting">
                 <StackPanel Orientation="Horizontal">
                     <IconPacks:PackIconMaterial Width="24" Height="24" Kind="ContentSaveSettingsOutline" />
-                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="{Binding Path=LabelViewModel.Setting, Source={StaticResource Locator}}" />
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="{Binding Path=Setting, Source={StaticResource LabelLocator}}" />
                 </StackPanel>
             </Button>
         </mah:WindowCommands>
@@ -30,9 +30,9 @@
         <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">
             <DockPanel LastChildFill="True" Margin="0,0,0,6">
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                    <Label Height="43" VerticalAlignment="Top" Content="{Binding Path=LabelViewModel.SelectProcess, Source={StaticResource Locator}}" DockPanel.Dock="Left"/>
-                    <Button Name="btnStart" Width="100" Content="{Binding Path=LabelViewModel.Start, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
-                    <Button Name="btnStop" Width="100" Visibility="Collapsed" Content="{Binding Path=LabelViewModel.Stop, Source={StaticResource Locator}}" DockPanel.Dock="Right"/>
+                    <Label Height="43" VerticalAlignment="Top" Content="{Binding Path=SelectProcess, Source={StaticResource LabelLocator}}" DockPanel.Dock="Left"/>
+                    <Button Name="btnStart" Width="100" Content="{Binding Path=Start, Source={StaticResource LabelLocator}}" DockPanel.Dock="Right"/>
+                    <Button Name="btnStop" Width="100" Visibility="Collapsed" Content="{Binding Path=Stop, Source={StaticResource LabelLocator}}" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -47,9 +47,9 @@
                             <ColumnDefinition Width="8*"></ColumnDefinition>
                             <ColumnDefinition Width="2*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=LabelViewModel.Fix, Source={StaticResource Locator}}" Margin="5,0,0,0" Width="50"></CheckBox>
-                        <Button x:Name="btnMoveProcessLocation" Grid.Column="1" Content="{Binding Path=LabelViewModel.MoveProcessLocation, Source={StaticResource Locator}}" Width="240" Height="35" Visibility="Visible"></Button>
-                        <Button x:Name="btnRestoreMoveProcessLocation" Grid.Column="1" Content="{Binding Path=LabelViewModel.RestoreMoveProcessLocation, Source={StaticResource Locator}}" Width="240" Height="35"  Visibility="Collapsed"></Button>
+                        <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=Fix, Source={StaticResource LabelLocator}}" Margin="5,0,0,0" Width="50"></CheckBox>
+                        <Button x:Name="btnMoveProcessLocation" Grid.Column="1" Content="{Binding Path=MoveProcessLocation, Source={StaticResource LabelLocator}}" Width="240" Height="35" Visibility="Visible"></Button>
+                        <Button x:Name="btnRestoreMoveProcessLocation" Grid.Column="1" Content="{Binding Path=RestoreMoveProcessLocation, Source={StaticResource LabelLocator}}" Width="240" Height="35"  Visibility="Collapsed"></Button>
                         <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="40" Height="40" >
                             <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
                         </Button>
@@ -62,7 +62,7 @@
                 <AdsJumboWinForm:BannerAds x:Name="ads" />
             </WindowsFormsHost>
             <mah:MetroAnimatedTabControl x:Name="tab_content" DockPanel.Dock="Bottom">
-                <mah:MetroTabItem Header="{Binding Path=LabelViewModel.Common, Source={StaticResource Locator}}">
+                <mah:MetroTabItem Header="{Binding Path=Common, Source={StaticResource LabelLocator}}">
                     <view:ContentView x:Name="contentView" Tag="Common"/>
                 </mah:MetroTabItem>
             </mah:MetroAnimatedTabControl>
