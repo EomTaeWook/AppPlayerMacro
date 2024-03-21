@@ -163,7 +163,7 @@ namespace Macro.Infrastructure.Controller
             var findBmp = model.Image;
             var similarity = 0;
             Point findLocation;
-            if (model.RoiData != null)
+            if (model.RoiData.IsExists() == true)
             {
                 var newRect = DisplayHelper.ApplyMonitorDPI(model.RoiData.RoiRect, model.RoiData.MonitorInfo);
                 var roiBmp = OpenCVHelper.CropImage(sourceBmp, newRect);
@@ -212,7 +212,6 @@ namespace Macro.Infrastructure.Controller
             }
             else if (model.SameImageDrag == true)
             {
-                //Todo
                 for (int ii = 0; ii < model.MaxSameImageCount; ++ii)
                 {
                     var locations = OpenCVHelper.MultipleSearch(sourceBmp, findBmp, processConfigModel.Similarity, 2, processConfigModel.SearchImageResultDisplay);

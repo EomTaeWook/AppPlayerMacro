@@ -92,7 +92,7 @@ namespace Macro.Models.ViewModel
                 SubEventTriggers = new ObservableCollection<EventTriggerModel>(),
                 ProcessInfo = new ProcessInfo(),
                 RepeatInfo = new RepeatInfoModel(),
-                RoiData = null,
+                RoiData = new RoiModel(),
             };
         }
         public TreeGridViewItem CurrentTreeViewItem

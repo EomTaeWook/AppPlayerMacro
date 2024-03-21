@@ -73,8 +73,8 @@ namespace Macro.View
         private void Save(Config model)
         {
             var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
-            var fileManager = ServiceDispatcher.Resolve<FileService>();
-            var saved = fileManager.SaveJson(path, model);
+            var fileService = ServiceDispatcher.Resolve<FileService>();
+            var saved = fileService.SaveJson(path, model);
 
             if (saved == true)
             {

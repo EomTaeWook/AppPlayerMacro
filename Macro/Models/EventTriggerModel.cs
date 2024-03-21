@@ -28,7 +28,7 @@ namespace Macro.Models
         private bool _hardClick = false;
         private int _maxSameImageCount = 1;
         private bool _isChecked = true;
-        private RoiModel _roiData { get; set; }
+        private RoiModel _roiData = new RoiModel();
         private Bitmap _image;
 
         public EventTriggerModel()

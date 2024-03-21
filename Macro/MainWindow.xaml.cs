@@ -206,6 +206,10 @@ namespace Macro
 
             if (model.EventType != EventType.Mouse)
             {
+                if (model.Image == null)
+                {
+                    return;
+                }
                 foreach (var monitor in DisplayHelper.MonitorInfo())
                 {
                     if (monitor.Rect.IsContain(rect))
@@ -219,7 +223,7 @@ namespace Macro
                             model.MonitorInfo = monitor;
 
                         }
-                        if (model.RoiData != null)
+                        if (model.RoiData.IsExists() == true)
                         {
                             model.RoiData.RoiRect.Left -= rect.Left - monitor.Rect.Left;
                             model.RoiData.RoiRect.Top -= rect.Top - monitor.Rect.Top;

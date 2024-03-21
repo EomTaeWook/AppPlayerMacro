@@ -149,7 +149,7 @@ namespace Macro.Models
         }
         public string DragDelay
         {
-            get => GetString(1048);
+            get => GetString(1047);
         }
         public string Preferences
         {
