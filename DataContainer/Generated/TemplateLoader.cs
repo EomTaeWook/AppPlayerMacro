@@ -25,6 +25,10 @@ namespace DataContainer.Generated
             TemplateContainer<ApplicationTemplate>.MakeRefTemplate();
             TemplateContainer<LabelTemplate>.MakeRefTemplate();
             TemplateContainer<MessageTemplate>.MakeRefTemplate();
+            
+            TemplateContainer<ApplicationTemplate>.Combine();
+            TemplateContainer<LabelTemplate>.Combine();
+            TemplateContainer<MessageTemplate>.Combine();
         }
     }
 }

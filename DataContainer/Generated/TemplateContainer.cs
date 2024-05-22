@@ -54,6 +54,12 @@ namespace TemplateContainers
             foreach(var template in _dataToMap.Values)
             {
                 template.MakeRefTemplate();
+            }
+        }
+        public static void Combine()
+        {
+            foreach(var template in _dataToMap.Values)
+            {
                 template.Combine();
             }
         }

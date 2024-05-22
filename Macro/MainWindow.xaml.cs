@@ -129,7 +129,7 @@ namespace Macro
             }
 
             _processes = Process.GetProcesses().Where(r => r.MainWindowHandle != IntPtr.Zero)
-                                                .Select(r => new KeyValuePair<string, Process>($"{r.ProcessName}", r))
+                                                .Select(r => new KeyValuePair<string, Process>($"{r.ProcessName}:{r.Id}", r))
                                                 .OrderBy(r => r.Key).ToArray();
             comboProcess.ItemsSource = _processes;
             comboProcess.DisplayMemberPath = "Key";
