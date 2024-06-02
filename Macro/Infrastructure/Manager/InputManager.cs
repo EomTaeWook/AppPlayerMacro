@@ -1,4 +1,4 @@
-﻿using Dignus.DependencyInjection.Attribute;
+﻿using Dignus.DependencyInjection.Attributes;
 using Macro.Infrastructure.Interface;
 
 namespace Macro.Infrastructure.Manager

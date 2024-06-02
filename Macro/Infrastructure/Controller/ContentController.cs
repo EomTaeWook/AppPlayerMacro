@@ -1,5 +1,5 @@
 ﻿using DataContainer.Generated;
-using Dignus.DependencyInjection.Attribute;
+using Dignus.DependencyInjection.Attributes;
 using Dignus.Log;
 using Macro.Extensions;
 using Macro.Infrastructure.Manager;

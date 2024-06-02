@@ -25,9 +25,6 @@ namespace Macro
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            LogBuilder.Configuration(LogConfigXmlReader.Load("DignusLog.config"));
-            LogBuilder.Build();
-
             DispatcherUnhandledException += (s, ex) =>
             {
                 ex.Handled = true;
@@ -42,7 +39,8 @@ namespace Macro
             {
                 LogHelper.Error(ex.Exception.Message);
             };
-
+            LogBuilder.Configuration(LogConfigXmlReader.Load("DignusLog.config"));
+            LogBuilder.Build();
             MovePatcherFile();
             Init();
             base.OnStartup(e);
