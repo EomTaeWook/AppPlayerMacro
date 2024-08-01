@@ -1,19 +1,20 @@
 ﻿using Dignus.Log;
+using Dignus.Utils.Extensions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Utils.Infrastructure
+namespace Macro.Infrastructure
 {
     public class TaskHelper
     {
-        public static async Task<bool> TokenCheckDelayAsync(int millisecondsDelay, CancellationToken token)
+        public static bool TokenCheckDelay(int millisecondsDelay, CancellationToken token)
         {
             try
             {
                 if (millisecondsDelay > 0)
                 {
-                    await Task.Delay(millisecondsDelay, token);
+                    Task.Delay(millisecondsDelay, token).GetResult();
                 }
             }
             catch (TaskCanceledException ex)

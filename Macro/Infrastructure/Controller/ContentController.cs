@@ -1,6 +1,7 @@
 ﻿using DataContainer.Generated;
 using Dignus.DependencyInjection.Attributes;
 using Dignus.Log;
+using Dignus.Utils.Extensions;
 using Macro.Extensions;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
@@ -100,9 +101,9 @@ namespace Macro.Infrastructure.Controller
                 _token = _cts.Token;
             }
 
-            var task = Task.Run(ProcessStart);
+            var _ = Task.Run(()=> ProcessStart());
         }
-        private async Task ProcessStart()
+        private void ProcessStart()
         {
             List<EventTriggerModel> models = new List<EventTriggerModel>();
 
@@ -118,9 +119,9 @@ namespace Macro.Infrastructure.Controller
             {
                 foreach (var model in models)
                 {
-                    await ProcessTrigger(model, _processConfig);
+                    ProcessTrigger(model, _processConfig);
                 }
-                await TaskHelper.TokenCheckDelayAsync(_delay, _token);
+                TaskHelper.TokenCheckDelay(_delay, _token);
             }
         }
         public void Stop()
@@ -135,7 +136,7 @@ namespace Macro.Infrastructure.Controller
         {
             this._fixProcess = process;
         }
-        private async Task<Tuple<bool, EventTriggerModel>> ProcessEvents(Process process, EventTriggerModel model, ProcessConfigModel processConfigModel)
+        private Tuple<bool, EventTriggerModel> ProcessEvents(Process process, EventTriggerModel model, ProcessConfigModel processConfigModel)
         {
             var hWnd = IntPtr.Zero;
             var template = TemplateContainer<ApplicationTemplate>.Find(model.ProcessInfo.ProcessName);
@@ -155,7 +156,7 @@ namespace Macro.Infrastructure.Controller
             if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetDrawWindowHandle(), out Bitmap sourceBmp) == false)
             //if(DisplayHelper.ProcessCapture(process, out Bitmap bmp, applciationData.IsDynamic) == false)
             {
-                await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
+                TaskHelper.TokenCheckDelay(processConfigModel.ItemDelay, _token);
 
                 return Tuple.Create<bool, EventTriggerModel>(false, null);
             }
@@ -182,7 +183,7 @@ namespace Macro.Infrastructure.Controller
             LogHelper.Debug($"Similarity : {similarity} % max Loc : X : {findLocation.X} Y: {findLocation.Y}");
             if (similarity < processConfigModel.Similarity)
             {
-                await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
+                TaskHelper.TokenCheckDelay(processConfigModel.ItemDelay, _token);
 
                 return Tuple.Create<bool, EventTriggerModel>(false, null);
             }
@@ -192,7 +193,7 @@ namespace Macro.Infrastructure.Controller
                 for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                 {
                     LogHelper.Debug($"RepeatType[Search : {ii}] : >>>> Similarity : {similarity} % max Loc : X : {findLocation.X} Y: {findLocation.Y}");
-                    if (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, _token) == false ||
+                    if (TaskHelper.TokenCheckDelay(model.AfterDelay, _token) == false ||
                                                             similarity > processConfigModel.Similarity)
                     {
                         break;
@@ -200,7 +201,7 @@ namespace Macro.Infrastructure.Controller
 
                     for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
                     {
-                        await ProcessTrigger(model.SubEventTriggers[iii], processConfigModel);
+                        ProcessTrigger(model.SubEventTriggers[iii], processConfigModel);
 
                         if (_token.IsCancellationRequested == true)
                         {
@@ -243,14 +244,14 @@ namespace Macro.Infrastructure.Controller
                     {
                         for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                         {
-                            if (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, _token) == true)
+                            if (TaskHelper.TokenCheckDelay(model.AfterDelay, _token) == true)
                             {
                                 break;
                             }
 
                             for (int iii = 0; iii < model.SubEventTriggers.Count; ++iii)
                             {
-                                await ProcessTrigger(model.SubEventTriggers[iii], processConfigModel);
+                                ProcessTrigger(model.SubEventTriggers[iii], processConfigModel);
 
                                 if (_token.IsCancellationRequested == true)
                                 {
@@ -262,11 +263,11 @@ namespace Macro.Infrastructure.Controller
                     }
                     else if (model.RepeatInfo.RepeatType == RepeatType.NoSearch)
                     {
-                        while (await TaskHelper.TokenCheckDelayAsync(model.AfterDelay, _token) == true)
+                        while (TaskHelper.TokenCheckDelay(model.AfterDelay, _token) == true)
                         {
                             for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
                             {
-                                var childResult = await ProcessTrigger(model.SubEventTriggers[ii], processConfigModel);
+                                var childResult = ProcessTrigger(model.SubEventTriggers[ii], processConfigModel);
                                 if (_token.IsCancellationRequested)
                                 {
                                     break;
@@ -365,30 +366,30 @@ namespace Macro.Infrastructure.Controller
             return Tuple.Create<bool, EventTriggerModel>(false, null);
         }
 
-        private async Task<bool> ProcessTrigger(EventTriggerModel model, ProcessConfigModel processConfigModel)
+        private bool ProcessTrigger(EventTriggerModel model, ProcessConfigModel processConfigModel)
         {
             var processDatas = Process.GetProcessesByName(model.ProcessInfo.ProcessName);
 
             if (_fixProcess != null)
             {
-                _ = await ProcessEvents(_fixProcess, model, processConfigModel);
-                await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
+                ProcessEvents(_fixProcess, model, processConfigModel);
+                TaskHelper.TokenCheckDelay(processConfigModel.ItemDelay, _token);
             }
             else
             {
                 for (int i = 0; i < processDatas.Length; ++i)
                 {
-                    _ = await ProcessEvents(processDatas[i], model, processConfigModel);
-                    await TaskHelper.TokenCheckDelayAsync(processConfigModel.ItemDelay, _token);
+                    ProcessEvents(processDatas[i], model, processConfigModel);
+                    TaskHelper.TokenCheckDelay(processConfigModel.ItemDelay, _token);
                 }
             }
-            return true; ;
+            return true;
         }
 
         private void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
         {
             var hWndActive = NativeHelper.GetForegroundWindow();
-            Task.Delay(100).Wait();
+            Task.Delay(100).GetResult();
             NativeHelper.SetForegroundWindow(hWnd);
             var inputs = model.KeyboardCmd.ToUpper().Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
             var modifiedKey = inputs.Where(r =>
@@ -435,7 +436,7 @@ namespace Macro.Infrastructure.Controller
             }).ToArray();
 
             _inputManager.Keyboard.ModifiedKeyStroke(modifiedKey, keys);
-            Task.Delay(100).Wait();
+            Task.Delay(100).GetResult();
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }
@@ -519,7 +520,7 @@ namespace Macro.Infrastructure.Controller
 
             NativeHelper.SetCursorPos((int)clickPoint.X, (int)clickPoint.Y);
             NativeHelper.MouseEvent(MouseFlag.LeftDown, 0, 0);
-            Task.Delay(10).Wait();
+            Task.Delay(10).GetResult();
             NativeHelper.MouseEvent(MouseFlag.LeftUp, 0, 0);
             NativeHelper.SetCursorPos(currentPosition.X, currentPosition.Y);
         }
@@ -535,7 +536,7 @@ namespace Macro.Infrastructure.Controller
             var middlePoints = this.GetIntevalDragMiddlePoint(start, arrive, interval);
 
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, start.ToLParam());
-            Task.Delay(10).Wait();
+            Task.Delay(10).GetResult();
 
             Point mousePosition;
             for (int i = 0; i < middlePoints.Count; ++i)
@@ -547,7 +548,7 @@ namespace Macro.Infrastructure.Controller
                 };
                 LogHelper.Debug($">>>>Same Drag Move Mouse Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
-                Task.Delay(config.DragDelay).Wait();
+                Task.Delay(config.DragDelay).GetResult();
             }
             mousePosition = new Point()
             {
@@ -555,7 +556,7 @@ namespace Macro.Infrastructure.Controller
                 Y = Math.Abs(model.ProcessInfo.Position.Top + arrive.Y * -1)
             };
             NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
-            Task.Delay(10).Wait();
+            Task.Delay(10).GetResult();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             LogHelper.Debug($">>>>Same Drag End Mouse Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
         }
@@ -575,7 +576,7 @@ namespace Macro.Infrastructure.Controller
             LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
 
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
-            Task.Delay(10).Wait();
+            Task.Delay(10).GetResult();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
 
         }

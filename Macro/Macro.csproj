@@ -129,6 +129,9 @@
     <Reference Include="Dignus.Extensions">
       <HintPath>..\Dll\Dignus.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Dignus.Utils">
+      <HintPath>..\Dll\Dignus.Utils.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.4.9\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -234,6 +237,7 @@
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
+    <Compile Include="Infrastructure\TaskHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
