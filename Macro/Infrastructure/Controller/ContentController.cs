@@ -101,7 +101,7 @@ namespace Macro.Infrastructure.Controller
                 _token = _cts.Token;
             }
 
-            var _ = Task.Run(()=> ProcessStart());
+            var _ = Task.Run(() => ProcessStart());
         }
         private void ProcessStart()
         {
@@ -193,8 +193,8 @@ namespace Macro.Infrastructure.Controller
                 for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                 {
                     LogHelper.Debug($"RepeatType[Search : {ii}] : >>>> Similarity : {similarity} % max Loc : X : {findLocation.X} Y: {findLocation.Y}");
-                    if (TaskHelper.TokenCheckDelay(model.AfterDelay, _token) == false ||
-                                                            similarity > processConfigModel.Similarity)
+                    if (TaskHelper.TokenCheckDelay(model.AfterDelay, _token) == false
+                        || similarity > processConfigModel.Similarity)
                     {
                         break;
                     }
@@ -244,7 +244,7 @@ namespace Macro.Infrastructure.Controller
                     {
                         for (int ii = 0; ii < model.RepeatInfo.Count; ++ii)
                         {
-                            if (TaskHelper.TokenCheckDelay(model.AfterDelay, _token) == true)
+                            if (TaskHelper.TokenCheckDelay(model.AfterDelay, _token) == false)
                             {
                                 break;
                             }
