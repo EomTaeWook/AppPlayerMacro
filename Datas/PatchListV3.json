@@ -1,9 +1,13 @@
 {
   "currentVersion": {
-    "version": "2.6.15",
+    "version": "2.6.16",
     "list": []
   },
   "oldVersion": [
+    {
+      "version": "2.6.15",
+      "list": []
+    },
     {
       "version": "2.6.14",
       "list": []

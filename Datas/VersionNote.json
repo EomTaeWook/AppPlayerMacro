@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 15
+    "Build": 16
   },
-  "Desc": "이미지 조합 기능 동작 안 하던 버그 수정, 버그 제보 감사합니다. Bug report: Thank you for reporting the issue with the image combination feature not working."
+  "Desc": "ROI 설정시 이미지 사이즈보다 큰 경우 예외 처리. Handle exceptions when ROI exceeds the image size"
 }
