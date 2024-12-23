@@ -293,7 +293,7 @@ namespace Macro
                 ApplicationManager.ShowMessageDialog("Error", messageTemplate.GetString());
             }
         }
-        private async Task Save()
+        private async Task SaveAsync()
         {
             var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
             var fileManager = ServiceDispatcher.Resolve<FileService>();
@@ -305,7 +305,7 @@ namespace Macro
             {
                 File.Delete(GetSaveFilePath());
             }
-            _ = Save();
+            _ = SaveAsync();
 
             Clear();
         }
@@ -313,7 +313,7 @@ namespace Macro
         {
             obj.SelectedTreeViewItem.IsSelected = true;
 
-            _ = Save();
+            _ = SaveAsync();
         }
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)

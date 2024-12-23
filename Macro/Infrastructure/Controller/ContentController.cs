@@ -163,15 +163,46 @@ namespace Macro.Infrastructure.Controller
 
             var findBmp = model.Image;
             var similarity = 0;
-            Point findLocation;
+            Point findLocation = new Point(0, 0);
             if (model.RoiData.IsExists() == true)
             {
                 var newRect = DisplayHelper.ApplyMonitorDPI(model.RoiData.RoiRect, model.RoiData.MonitorInfo);
-                var roiBmp = OpenCVHelper.CropImage(sourceBmp, newRect);
-                similarity = OpenCVHelper.Search(roiBmp, findBmp, out findLocation, processConfigModel.SearchImageResultDisplay);
 
-                findLocation.X += newRect.Left;
-                findLocation.Y += newRect.Top;
+                int imageWidth = sourceBmp.Width;
+                int imageHeight = sourceBmp.Height;
+
+                if (newRect.Left < 0 || newRect.Right > imageWidth || newRect.Top < 0 || newRect.Bottom > imageHeight)
+                {
+                    newRect.Left = 0;
+                    newRect.Right = imageWidth;
+                    newRect.Top = 0;
+                    newRect.Bottom = imageHeight;
+                }
+                else
+                {
+                    newRect.Left = Math.Max(0, Math.Min(newRect.Left, imageWidth - 1));
+                    newRect.Right = Math.Max(newRect.Left + 1, Math.Min(newRect.Right, imageWidth - 1));
+                    newRect.Top = Math.Max(0, Math.Min(newRect.Top, imageHeight - 1));
+                    newRect.Bottom = Math.Max(newRect.Top + 1, Math.Min(newRect.Bottom, imageHeight - 1));
+
+                }
+
+                Bitmap roiBmp = null;
+                try
+                {
+                    roiBmp = OpenCVHelper.CropImage(sourceBmp, newRect);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error(ex);
+                }
+
+                if (roiBmp != null)
+                {
+                    similarity = OpenCVHelper.Search(roiBmp, findBmp, out findLocation, processConfigModel.SearchImageResultDisplay);
+                    findLocation.X += newRect.Left;
+                    findLocation.Y += newRect.Top;
+                }
             }
             else
             {
