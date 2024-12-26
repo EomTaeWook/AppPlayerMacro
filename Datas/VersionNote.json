@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 16
+    "Build": 17
   },
-  "Desc": "ROI 설정시 이미지 사이즈보다 큰 경우 예외 처리. Handle exceptions when ROI exceeds the image size"
+  "Desc": "설정 저장시 로드할 때 기본 값으로 로드되던 현상 수정, 아이템 딜레이 기본 값 : 0.1초 -> 0, 프로세스 주기 딜레이 기본 값 : 0.1 초 -> 0.001초로 수정. Fix the issue where default values were loaded when saving settings. Item delay default value: Change from 0.1 seconds to 0. Process cycle delay default value: Change from 0.1 seconds to 0.001 seconds."
 }
