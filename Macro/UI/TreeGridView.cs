@@ -23,7 +23,11 @@ namespace Macro.UI
         public TreeGridView()
         {
             Columns = new GridViewColumnCollection();
-            Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+
+            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this) == false)
+            {
+                Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+            }
         }
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {

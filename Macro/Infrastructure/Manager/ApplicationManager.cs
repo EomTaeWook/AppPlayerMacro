@@ -1,15 +1,11 @@
 ﻿using Dignus.Framework;
-using Dignus.Log;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
 using System.Windows;
 using System.Windows.Interop;
-using Utils;
 
 namespace Macro.Infrastructure.Manager
 {
@@ -144,27 +140,6 @@ namespace Macro.Infrastructure.Manager
             {
                 item.Close();
             }
-        }
-        public VersionNote GetLatestVersion()
-        {
-            VersionNote versionNote = null;
-            try
-            {
-                var request = (HttpWebRequest)WebRequest.Create(ConstHelper.VersionUrl);
-                using (var response = request.GetResponse())
-                {
-                    using (var stream = new StreamReader(response.GetResponseStream()))
-                    {
-                        versionNote = JsonHelper.DeserializeObject<VersionNote>(stream.ReadToEnd());
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(ex);
-            }
-
-            return versionNote;
         }
     }
 }

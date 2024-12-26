@@ -1,0 +1,10 @@
+<VersionNote>
+  <Version>
+    <Major>2</Major>
+    <Minor>6</Minor>
+    <Build>16</Build>
+  </Version>
+  <Description>ROI 설정시 이미지 사이즈보다 큰 경우 예외 처리.
+    Handle exceptions when ROI exceeds the image size.
+  </Description>
+</VersionNote>

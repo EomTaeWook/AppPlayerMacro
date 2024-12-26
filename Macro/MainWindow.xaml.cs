@@ -1,4 +1,5 @@
 ﻿using DataContainer.Generated;
+using Dignus.Coroutine;
 using Macro.Extensions;
 using Macro.Infrastructure;
 using Macro.Infrastructure.Controller;
@@ -6,7 +7,9 @@ using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.View;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -33,8 +36,9 @@ namespace Macro
         private KeyValuePair<string, Process>[] _processes;
         private KeyValuePair<string, Process>? _fixProcess;
         private Config _config;
-        private ContentView _contentView;
         private ContentController _contentController;
+        private CloseButtonWindow _closeButtonWindow;
+        private CoroutineHandler _coroutineHandler = new CoroutineHandler();
         public MainWindow()
         {
             InitializeComponent();
@@ -47,12 +51,16 @@ namespace Macro
             _config = ServiceDispatcher.Resolve<Config>();
             InitEvent();
             Init();
-            VersionCheck();
-#if !DEBUG
-            this.ads.ShowAd(728, 90, "5ybbzi0gxwn0");
-#endif
-            ApplicationManager.Instance.Init();
+            _closeButtonWindow = new CloseButtonWindow(this, () =>
+            {
+                AdOverlay.Visibility = Visibility.Collapsed;
+            });
 
+            if (VersionCheck() == false)
+            {
+                _coroutineHandler.Start(ShowAd());
+            }
+            ApplicationManager.Instance.Init();
         }
         private void InitEvent()
         {
@@ -76,6 +84,12 @@ namespace Macro
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
             NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModelAsync;
+            NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
+        }
+
+        private void NotifyHelper_UpdatedTime(UpdatedTimeArgs obj)
+        {
+            _coroutineHandler.UpdateCoroutines(obj.DeltaTime);
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -106,7 +120,7 @@ namespace Macro
                 Process.GetCurrentProcess().Kill();
             }
             Refresh();
-            LoadSave(GetSaveFilePath());
+            LoadSaveAsync(GetSaveFilePath());
         }
         private string GetSaveFilePath()
         {
@@ -131,6 +145,7 @@ namespace Macro
             _processes = Process.GetProcesses().Where(r => r.MainWindowHandle != IntPtr.Zero)
                                                 .Select(r => new KeyValuePair<string, Process>($"{r.ProcessName}:{r.Id}", r))
                                                 .OrderBy(r => r.Key).ToArray();
+
             comboProcess.ItemsSource = _processes;
             comboProcess.DisplayMemberPath = "Key";
             comboProcess.SelectedValuePath = "Value";
@@ -143,7 +158,10 @@ namespace Macro
             var buttons = ObjectExtensions.FindChildren<Button>(this);
             foreach (var button in buttons)
             {
-                if (button.Equals(btnSetting) || button.Content == null || !(button.Content is string))
+                if (button.Equals(btnSetting) ||
+                    button.Content == null ||
+                    !(button.Content is string) ||
+                    button.Content.Equals("Close"))
                 {
                     continue;
                 }
@@ -160,30 +178,12 @@ namespace Macro
 
                 BindingOperations.GetBindingExpressionBase(checkBox, ContentProperty).UpdateTarget();
             }
-            foreach (var tab in tab_content.Items)
-            {
-                var tablItem = tab as TabItem;
 
-                BindingOperations.GetBindingExpressionBase(tablItem, HeaderedContentControl.HeaderProperty).UpdateTarget();
-            }
             BindingOperations.GetBindingExpressionBase(this, TitleProperty).UpdateTarget();
 
             Clear();
 
-            foreach (var tab in tab_content.Items)
-            {
-                var tabItem = tab as TabItem;
-                var tabView = tabItem.Content as ContentView;
-                var key = tabView.Tag.ToString();
-                if (key.Equals(_config.InitialTab.ToString()))
-                {
-                    tabItem.IsSelected = true;
-                    _contentView = tabView;
-                    break;
-                }
-            }
-
-            _contentController.SetContentView(_contentView);
+            _contentController.SetContentView(contentView);
         }
         private void SettingProcessMonitorInfo(EventTriggerModel model, Process process)
         {
@@ -239,26 +239,20 @@ namespace Macro
         {
             Dispatcher.Invoke(() =>
             {
-                for (int i = 0; i < tab_content.Items.Count; i++)
-                {
-                    if ((tab_content.Items[i] as MetroTabItem).Content is ContentView view)
-                    {
-                        view.Clear();
-                    }
-                }
+                contentView.Clear();
             });
         }
 
         private async void NotifyHelper_DeleteEventTriggerModelAsync(DeleteEventTriggerModelArgs obj)
         {
-            _contentView.eventSettingView.RemoveCurrentItem();
+            contentView.eventSettingView.RemoveCurrentItem();
 
             if (File.Exists(GetSaveFilePath()))
             {
                 File.Delete(GetSaveFilePath());
             }
 
-            var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
+            var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
             var fileManager = ServiceDispatcher.Resolve<FileService>();
             await fileManager.Save(GetSaveFilePath(), triggers);
 
@@ -280,8 +274,8 @@ namespace Macro
                 {
                     CacheDataManager.Instance.MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
 
-                    _contentView.eventSettingView.InsertCurrentItem();
-                    var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
+                    contentView.eventSettingView.InsertCurrentItem();
+                    var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
                     var fileManager = ServiceDispatcher.Resolve<FileService>();
                     await fileManager.Save(GetSaveFilePath(), triggers);
 
@@ -295,7 +289,7 @@ namespace Macro
         }
         private async Task SaveAsync()
         {
-            var triggers = _contentView.eventSettingView.GetDataContext().TriggerSaves;
+            var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
             var fileManager = ServiceDispatcher.Resolve<FileService>();
             await fileManager.Save(GetSaveFilePath(), triggers);
         }
@@ -404,7 +398,7 @@ namespace Macro
             }
         }
 
-        public async void LoadSave(string path)
+        public async void LoadSaveAsync(string path)
         {
             var fileManager = ServiceDispatcher.Resolve<FileService>();
             var loadDatas = await fileManager.Load<EventTriggerModel>(path);
@@ -414,7 +408,7 @@ namespace Macro
             }
             CacheDataManager.Instance.InitMaxIndex(loadDatas);
 
-            _contentView.SaveDataBind(loadDatas);
+            contentView.SaveDataBind(loadDatas);
         }
 
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
@@ -422,45 +416,56 @@ namespace Macro
             ApplicationManager.ShowProgressbar();
             _config = e.Config;
             Refresh();
-            LoadSave(GetSaveFilePath());
+            LoadSaveAsync(GetSaveFilePath());
             ApplicationManager.HideProgressbar();
         }
-        private void VersionCheck()
+        private bool VersionCheck()
         {
             if (_config.VersionCheck == false)
             {
-                return;
+                return false;
             }
-            var latestNote = ApplicationManager.Instance.GetLatestVersion();
+
+            var webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
+
+            var latestNote = webApiManager.GetLatestVersion();
             if (latestNote == null)
             {
-                return;
+                return false;
             }
+
             if (latestNote.Version > VersionNote.CurrentVersion)
             {
                 var newVersionTemplate = TemplateContainer<MessageTemplate>.Find(1011);
 
-                var patchContentTemplate = TemplateContainer<MessageTemplate>.Find(1012);
-
-                if (ApplicationManager.ShowMessageDialog("Infomation",
-                                                        $"{newVersionTemplate.GetString()}{Environment.NewLine}{Environment.NewLine}" +
-                                                        $"{patchContentTemplate.GetString(latestNote.Desc)}",
-                                                        MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                if (ApplicationManager.ShowMessageDialog("Information", $"{newVersionTemplate.GetString()}", MessageDialogStyle.AffirmativeAndNegative) == MessageDialogResult.Affirmative)
                 {
-                    Process.Start(ConstHelper.ReleaseUrl);
-
-                    //if (File.Exists("Patcher.exe"))
-                    //{
-                    //    Process.Start("Patcher.exe", $"{VersionNote.CurrentVersion.ToVersionString()} {latestNote.Version.ToVersionString()}");
-                    //    Application.Current.Shutdown();
-                    //}
-                    //else
-                    //{
-                    //    Process.Start(ConstHelper.ReleaseUrl);
-                    //}
+                    Process.Start(ConstHelper.VersionInfoPageUrl);
                 }
+
+                return true;
             }
+            return false;
         }
+        private IEnumerator ShowAd()
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                AdOverlay.Visibility = Visibility.Visible;
+
+                var adManager = ServiceDispatcher.Resolve<AdManager>();
+
+                await EmbeddedWebView.LoadUrlAsync(adManager.GetRandomAdUrl());
+            });
+
+            yield return new DelayInSeconds(3);
+
+            Dispatcher.Invoke(() =>
+            {
+                _closeButtonWindow.Show();
+            });
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
@@ -484,7 +489,6 @@ namespace Macro
                 }
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
-                tab_content.IsEnabled = false;
                 Clear();
 
                 _contentController.Start();
@@ -495,7 +499,6 @@ namespace Macro
             {
                 ApplicationManager.ShowProgressbar();
                 _contentController.Stop();
-                tab_content.IsEnabled = true;
                 Dispatcher.Invoke(() =>
                 {
                     var buttons = this.FindChildren<Button>();

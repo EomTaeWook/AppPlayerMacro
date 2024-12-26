@@ -19,6 +19,10 @@ namespace Macro.Models
         private int _processLocationX;
         private int _processLocationY;
 
+        public Config()
+        {
+        }
+
         public LanguageType Language
         {
             get => _language;

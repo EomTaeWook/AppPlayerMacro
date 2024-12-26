@@ -12,7 +12,7 @@ namespace Utils
         public static readonly string DefaultPatcherName = @"Patcher.exe";
 
         public static readonly string TempPath = Path.GetTempPath() + $"Macro\\";
-        public static readonly string TempBackupPath = $"{ TempPath }backup\\";
+        public static readonly string TempBackupPath = $"{TempPath}backup\\";
 
         public static readonly int MinPeriod = 0;
         public static readonly int MinItemDelay = 0;
@@ -24,9 +24,16 @@ namespace Utils
         public static readonly short WheelDelta = 120;
         public static readonly int DefaultMaxSameImageCount = 5;
 
-        public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=1WzaTDn7gj0cQZAz5gQt_VMgQ10Y01mPL";
+        //public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=1WzaTDn7gj0cQZAz5gQt_VMgQ10Y01mPL";
+
+        public static readonly string VersionUrl = @"https://itdah.com/macro/GetMacroLatestVersion";
+
+        public static readonly string VersionInfoPageUrl = @"https://itdah.com/MacroVersion";
+
         public static readonly string ReleaseUrl = @"https://github.com/EomTaeWook/EmulatorMacro/releases";
-        
+
         public static readonly string HelpUrl = @"https://github.com/EomTaeWook/EmulatorMacro/blob/master/README.md";
+
+
     }
 }

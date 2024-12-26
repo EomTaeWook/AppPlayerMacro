@@ -11,19 +11,7 @@ namespace Macro.Models.ViewModel
 
         public SettingViewModel(Config config)
         {
-            _config = new Config()
-            {
-                Language = config.Language,
-                Period = config.Period,
-                ItemDelay = config.ItemDelay,
-                SavePath = config.SavePath,
-                Similarity = config.Similarity,
-                DragDelay = config.DragDelay,
-                SearchImageResultDisplay = config.SearchImageResultDisplay,
-                VersionCheck = config.VersionCheck,
-                ProcessLocationX = config.ProcessLocationX,
-                ProcessLocationY = config.ProcessLocationY  
-            };
+            _config = config;
         }
         public Config Config
         {
