@@ -12,7 +12,7 @@ namespace Macro.Infrastructure
     public class VersionNote
     {
         public Version Version { get; set; }
-        public string Desc { get; set; }
+        public string Description { get; set; }
         public VersionNote()
         {
         }

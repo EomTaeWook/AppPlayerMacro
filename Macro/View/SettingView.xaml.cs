@@ -33,7 +33,6 @@ namespace Macro.View
             var languages = Enum.GetValues(typeof(LanguageType)).Cast<LanguageType>().Where(r => r != LanguageType.Max);
             comboLanguage.ItemsSource = languages;
 
-
             DataContext = ServiceDispatcher.Resolve<SettingViewModel>();
         }
         private void SettingView_Loaded(object sender, RoutedEventArgs e)

@@ -21,13 +21,14 @@ namespace Macro.Infrastructure.Manager
         }
         public Task Start()
         {
-            if(IsRunning() == true)
+            if (IsRunning() == true)
             {
                 LogHelper.Error($"scheduler is already running!");
+                return Task.CompletedTask;
             }
             cts = new CancellationTokenSource();
             cancellationToken = cts.Token;
-            return TaskBuilder.Build(async ()=> { await UpdateAsync(); });
+            return TaskBuilder.Build(async () => { await UpdateAsync(); });
         }
         public void Stop()
         {
@@ -41,13 +42,12 @@ namespace Macro.Infrastructure.Manager
             var args = new UpdatedTimeArgs();
             while (IsRunning() == true)
             {
+                await Task.Delay(33);
                 var currentTime = DateTime.Now.Ticks;
                 args.DeltaTime = (float)TimeSpan.FromTicks(currentTime - previousTick).TotalSeconds;
                 previousTick = currentTime;
 
                 NotifyHelper.InvokeNotify(NotifyEventType.UpdatedTime, args);
-
-                await Task.Delay(33);
             }
         }
     }

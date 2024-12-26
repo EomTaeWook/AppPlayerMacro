@@ -4,11 +4,9 @@ using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Utils;
 using Point = System.Windows.Point;
 
 namespace Macro.View
@@ -30,7 +28,7 @@ namespace Macro.View
             canvasCaptureImage.Background = System.Windows.Media.Brushes.White;
             eventSettingView.Clear();
         }
-       
+
         public void SaveDataBind(List<EventTriggerModel> saves)
         {
             Dispatcher.Invoke(() =>
@@ -94,7 +92,7 @@ namespace Macro.View
         private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
         {
             ApplicationManager.Instance.CloseCaptureView();
-            
+
             if (e.CaptureImage != null)
             {
                 var capture = e.CaptureImage;
@@ -108,7 +106,7 @@ namespace Macro.View
             }
         }
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
-        {            
+        {
             if (e.TreeViewItem == null)
             {
                 Clear();
@@ -126,7 +124,7 @@ namespace Macro.View
                 canvasCaptureImage.Background = new ImageBrush(model.Image.ToBitmapSource());
             }
         }
-        
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
@@ -147,26 +145,26 @@ namespace Macro.View
                 {
                     model.MouseTriggerInfo.StartPoint = new Point(dataContext.RelativePosition.X, dataContext.RelativePosition.Y);
                 }
-                
+
                 NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = model,
                 });
             }
-            else if(btn.Equals(btnAddSameContent))
+            else if (btn.Equals(btnAddSameContent))
             {
                 var item = eventSettingView.CopyCurrentItem();
                 if (item == null)
                 {
                     return;
                 }
-                    
+
                 NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = item,
                 });
             }
-            else if(btn.Equals(btnDelete))
+            else if (btn.Equals(btnDelete))
             {
                 var model = eventSettingView.GetDataContext().CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 NotifyHelper.InvokeNotify(NotifyEventType.Delete, new DeleteEventTriggerModelArgs()
