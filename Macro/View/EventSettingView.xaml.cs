@@ -382,8 +382,12 @@ namespace Macro.View
         {
             _repeatItems.Clear();
 
-            foreach (var type in Enum.GetValues(typeof(RepeatType)))
+            foreach (RepeatType type in Enum.GetValues(typeof(RepeatType)))
             {
+                if (type == RepeatType.Max)
+                {
+                    continue;
+                }
                 var template = TemplateContainer<LabelTemplate>.Find(type.ToString());
 
                 _repeatItems.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, template.GetString()));
@@ -398,7 +402,7 @@ namespace Macro.View
         {
             if (sender.Equals(comboRepeatSubItem) && comboRepeatSubItem.SelectedItem is KeyValuePair<RepeatType, string> item)
             {
-                if (item.Key == RepeatType.Count || item.Key == RepeatType.Search)
+                if (item.Key == RepeatType.Count || item.Key == RepeatType.SearchParent)
                 {
                     numRepeatCount.Visibility = Visibility.Visible;
                 }

@@ -35,16 +35,16 @@ namespace Macro.Models
     }
     public class EventTriggerEventArgs : INotifyEventArgs
     {
-        public ulong Index { get; set; }
+        public long Index { get; set; }
         public EventTriggerModel TriggerModel { get; set; }
     }
     public class UpdatedTimeArgs : INotifyEventArgs
-    { 
+    {
         public float DeltaTime { get; set; }
-    }   
+    }
 
 
-    public class SaveEventTriggerModelArgs : INotifyEventArgs 
+    public class SaveEventTriggerModelArgs : INotifyEventArgs
     {
         public EventTriggerModel CurrentEventTriggerModel { get; set; }
     }

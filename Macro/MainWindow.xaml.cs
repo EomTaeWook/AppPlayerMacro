@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -83,7 +82,7 @@ namespace Macro
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
-            NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModelAsync;
+            NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
             NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
         }
 
@@ -120,7 +119,7 @@ namespace Macro
                 Process.GetCurrentProcess().Kill();
             }
             Refresh();
-            LoadSaveAsync(GetSaveFilePath());
+            LoadSaveFile(GetSaveFilePath());
         }
         private string GetSaveFilePath()
         {
@@ -243,7 +242,7 @@ namespace Macro
             });
         }
 
-        private async void NotifyHelper_DeleteEventTriggerModelAsync(DeleteEventTriggerModelArgs obj)
+        private void NotifyHelper_DeleteEventTriggerModel(DeleteEventTriggerModelArgs obj)
         {
             contentView.eventSettingView.RemoveCurrentItem();
 
@@ -252,12 +251,9 @@ namespace Macro
                 File.Delete(GetSaveFilePath());
             }
 
-            var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
-            var fileManager = ServiceDispatcher.Resolve<FileService>();
-            await fileManager.Save(GetSaveFilePath(), triggers);
-
             Dispatcher.Invoke(() =>
             {
+                Save();
                 Clear();
             });
         }
@@ -270,15 +266,12 @@ namespace Macro
 
             if (_contentController.Validate(obj.CurrentEventTriggerModel, out MessageTemplate messageTemplate))
             {
-                Dispatcher.Invoke(async () =>
+                Dispatcher.Invoke(() =>
                 {
                     CacheDataManager.Instance.MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
 
                     contentView.eventSettingView.InsertCurrentItem();
-                    var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
-                    var fileManager = ServiceDispatcher.Resolve<FileService>();
-                    await fileManager.Save(GetSaveFilePath(), triggers);
-
+                    Save();
                     Clear();
                 });
             }
@@ -287,11 +280,11 @@ namespace Macro
                 ApplicationManager.ShowMessageDialog("Error", messageTemplate.GetString());
             }
         }
-        private async Task SaveAsync()
+        private void Save()
         {
             var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
-            var fileManager = ServiceDispatcher.Resolve<FileService>();
-            await fileManager.Save(GetSaveFilePath(), triggers);
+            var fileService = ServiceDispatcher.Resolve<FileService>();
+            fileService.Save(GetSaveFilePath(), triggers);
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
@@ -299,15 +292,15 @@ namespace Macro
             {
                 File.Delete(GetSaveFilePath());
             }
-            _ = SaveAsync();
 
+            Save();
             Clear();
         }
         private void NotifyHelper_EventTriggerOrderChanged(EventTriggerOrderChangedEventArgs obj)
         {
             obj.SelectedTreeViewItem.IsSelected = true;
 
-            _ = SaveAsync();
+            Save();
         }
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -398,15 +391,15 @@ namespace Macro
             }
         }
 
-        public async void LoadSaveAsync(string path)
+        public void LoadSaveFile(string path)
         {
             var fileManager = ServiceDispatcher.Resolve<FileService>();
-            var loadDatas = await fileManager.Load<EventTriggerModel>(path);
+            var loadDatas = fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {
                 loadDatas = new List<EventTriggerModel>();
             }
-            CacheDataManager.Instance.InitMaxIndex(loadDatas);
+            CacheDataManager.Instance.InitDatas(loadDatas);
 
             contentView.SaveDataBind(loadDatas);
         }
@@ -416,7 +409,7 @@ namespace Macro
             ApplicationManager.ShowProgressbar();
             _config = e.Config;
             Refresh();
-            LoadSaveAsync(GetSaveFilePath());
+            LoadSaveFile(GetSaveFilePath());
             ApplicationManager.HideProgressbar();
         }
         private bool VersionCheck()
@@ -449,6 +442,10 @@ namespace Macro
         }
         private IEnumerator ShowAd()
         {
+#if DEBUG
+            yield break;
+#endif
+
             Dispatcher.Invoke(async () =>
             {
                 AdOverlay.Visibility = Visibility.Visible;
@@ -458,7 +455,7 @@ namespace Macro
                 await EmbeddedWebView.LoadUrlAsync(adManager.GetRandomAdUrl());
             });
 
-            yield return new DelayInSeconds(3);
+            yield return new DelayInSeconds(3.5F);
 
             Dispatcher.Invoke(() =>
             {

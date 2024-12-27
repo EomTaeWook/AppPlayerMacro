@@ -3,7 +3,7 @@
     "Id": 1000,
     "Name": "Nox",
     "NeedFocus": "FALSE",
-    "HandleName": "",
+    "HandleName": null,
     "OffsetX": 0,
     "OffsetY": 0
   },
@@ -43,7 +43,7 @@
     "Id": 1005,
     "Name": "mspaint",
     "NeedFocus": "TRUE",
-    "HandleName": "",
+    "HandleName": null,
     "OffsetX": 0,
     "OffsetY": 0
   }

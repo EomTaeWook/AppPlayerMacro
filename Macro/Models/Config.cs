@@ -9,7 +9,7 @@ namespace Macro.Models
     {
         private LanguageType _language = LanguageType.Kor;
         private string _savePath = "";
-        private int _period = ConstHelper.MinPeriod;
+        private int _processPeriod = ConstHelper.MinPeriod;
         private int _ItemDelay = ConstHelper.MinItemDelay;
         private int _similarity = ConstHelper.DefaultSimilarity;
         private bool _searchImageResultDisplay = true;
@@ -42,13 +42,13 @@ namespace Macro.Models
                 OnPropertyChanged("SavePath");
             }
         }
-        public int Period
+        public int ProcessPeriod
         {
-            get => _period;
+            get => _processPeriod;
             set
             {
-                _period = value;
-                OnPropertyChanged("Period");
+                _processPeriod = value;
+                OnPropertyChanged("ProcessPeriod");
             }
         }
         public int ItemDelay
