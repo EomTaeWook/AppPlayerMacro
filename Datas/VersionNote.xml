@@ -2,9 +2,9 @@
   <Version>
     <Major>2</Major>
     <Minor>6</Minor>
-    <Build>17</Build>
+    <Build>18</Build>
   </Version>
-  <Description>설정 저장시 로드할 때 기본 값으로 로드되던 현상 수정, 아이템 딜레이 기본 값 : 0.1초 -> 0, 프로세스 주기 딜레이 기본 값 : 0.1 초 -> 0.001초로 수정.
-  Fix the issue where default values were loaded when saving settings. Item delay default value: Change from 0.1 seconds to 0. Process cycle delay default value: Change from 0.1 seconds to 0.001 seconds.
+  <Description>아이템 후 딜레이 버그 및 반복 이벤트 수정
+  Item post-delay bug fixes and repeat event adjustments
   </Description>
 </VersionNote>
