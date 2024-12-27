@@ -19,10 +19,10 @@ namespace Macro.Infrastructure.Controller
     public class InputEventProcessorHandler
     {
         private readonly RandomGenerator _randomGenerator;
-        private readonly InputController _InputController;
+        private readonly InputController _inputController;
         public InputEventProcessorHandler(InputController inputController)
         {
-            _InputController = inputController;
+            _inputController = inputController;
             _randomGenerator = new RandomGenerator();
         }
         public int GetRandomValue(int minValue, int maxValue)
@@ -65,6 +65,7 @@ processLocation;
                 HardClickProcess(clickPoint);
             }
         }
+
         public void HandleRelativeToImageEvent(IntPtr hWnd,
             EventTriggerModel model,
             Point matchedLocation,
@@ -129,11 +130,11 @@ processLocation;
         {
             var currentPosition = NativeHelper.GetCursorPosition();
 
-            _InputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
-            _InputController.Mouse.LeftButtonDown();
+            _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
+            _inputController.Mouse.LeftButtonDown();
             Task.Delay(10).GetResult();
-            _InputController.Mouse.LeftButtonUp();
-            _InputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+            _inputController.Mouse.LeftButtonUp();
+            _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
         }
         public void SameImageMouseDragTriggerProcess(IntPtr hWnd,
                                             Point start,
@@ -326,7 +327,7 @@ processLocation;
                 return keyCode;
             }).ToArray();
 
-            _InputController.Keyboard.ModifiedKeyStroke(modifiedKey, keys);
+            _inputController.Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             Task.Delay(10).GetResult();
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);

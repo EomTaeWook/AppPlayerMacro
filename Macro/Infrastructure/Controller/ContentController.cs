@@ -287,6 +287,7 @@ namespace Macro.Infrastructure.Controller
                 for (int i = 0; i < model.MaxSameImageCount; ++i)
                 {
                     var locations = OpenCVHelper.MultipleSearch(sourceBmp, model.Image, _config.Similarity, 2, _config.SearchImageResultDisplay);
+
                     if (locations.Count > 1)
                     {
                         this._contentView.DrawCaptureImage(sourceBmp);
