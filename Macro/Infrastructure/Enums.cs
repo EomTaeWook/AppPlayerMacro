@@ -48,8 +48,8 @@
     {
         Once,
         Count,
-        NoSearch,
-        Search,
+        NoSearchChild,
+        SearchParent,
 
         Max
     }

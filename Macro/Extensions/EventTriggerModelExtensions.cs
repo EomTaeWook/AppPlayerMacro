@@ -1,6 +1,5 @@
-﻿using Macro.Infrastructure;
-using Macro.Models;
-using System.Collections.ObjectModel;
+﻿using Macro.Models;
+using System.Collections.Generic;
 using System.Linq;
 using Utils.Infrastructure;
 
@@ -26,7 +25,7 @@ namespace Macro.Extensions
                     X = source.EndPoint.X,
                     Y = source.EndPoint.Y
                 },
-                MiddlePoint = source.MiddlePoint.Select(r=>  new System.Windows.Point()
+                MiddlePoint = source.MiddlePoint.Select(r => new System.Windows.Point()
                 {
                     X = r.X,
                     Y = r.Y
@@ -79,5 +78,20 @@ namespace Macro.Extensions
                 Rect = source.Rect.Clone()
             };
         }
+
+        public static bool TryFindTriggerIndex(this IEnumerable<EventTriggerModel> eventTriggerModels, long triggerIndex, out int index)
+        {
+            index = -1;
+            foreach (var item in eventTriggerModels)
+            {
+                index++;
+                if (item.TriggerIndex == triggerIndex)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }

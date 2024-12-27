@@ -7,50 +7,40 @@ namespace Macro.Infrastructure.Manager
 {
     public class CacheDataManager : Singleton<CacheDataManager>
     {
-        private ulong _maxIndex;
-        private int _atomic = 0;
-        private readonly Dictionary<ulong, EventTriggerModel> _indexTriggerModelToMap;
+        private long _currentIndex;
+        private readonly Dictionary<long, EventTriggerModel> _indexTriggerModelToMap;
         private readonly Dictionary<object, object> _cacheDataToMap = new Dictionary<object, object>();
         public CacheDataManager()
         {
-            _indexTriggerModelToMap = new Dictionary<ulong, EventTriggerModel>();
+            _indexTriggerModelToMap = new Dictionary<long, EventTriggerModel>();
 
             NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
             NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
         }
 
-        public void InitMaxIndex(List<EventTriggerModel> eventTriggerDatas)
+        public void InitDatas(List<EventTriggerModel> eventTriggerDatas)
         {
             _indexTriggerModelToMap.Clear();
             foreach (var item in eventTriggerDatas)
             {
-                if(item.TriggerIndex > _maxIndex)
+                _indexTriggerModelToMap.Add(item.TriggerIndex, item);
+
+                if (item.TriggerIndex > _currentIndex)
                 {
-                    _maxIndex = item.TriggerIndex;
+                    _currentIndex = item.TriggerIndex;
                 }
             }
         }
 
-        public ulong IncreaseIndex()
+        public long IncreaseIndex()
         {
-            if(Interlocked.Exchange(ref _atomic, 1) == 0)
-            {
-                _maxIndex++;
-                Interlocked.Exchange(ref _atomic, 0);
-            }
-            return _maxIndex;
+            return Interlocked.Increment(ref _currentIndex);
         }
 
-        public EventTriggerModel GetEventTriggerModel(ulong index)
+        public EventTriggerModel GetEventTriggerModel(long index)
         {
-            if(_indexTriggerModelToMap.ContainsKey(index))
-            {
-                return _indexTriggerModelToMap[index];
-            }
-            else
-            {
-                return null;
-            }
+            _indexTriggerModelToMap.TryGetValue(index, out EventTriggerModel eventTriggerModel);
+            return eventTriggerModel;
         }
 
         private void NotifyHelper_EventTriggerRemoved(EventTriggerEventArgs obj)
@@ -83,7 +73,7 @@ namespace Macro.Infrastructure.Manager
                 InsertIndexTriggerModel(child);
             }
         }
-        
+
         private void RemoveIndexTriggerModel(EventTriggerModel model)
         {
             if (_indexTriggerModelToMap.ContainsKey(model.TriggerIndex))
@@ -97,7 +87,7 @@ namespace Macro.Infrastructure.Manager
         }
         public void AddData(object key, object value)
         {
-            if(_cacheDataToMap.ContainsKey(key) == false)
+            if (_cacheDataToMap.ContainsKey(key) == false)
             {
                 _cacheDataToMap.Add(key, value);
                 return;
@@ -112,7 +102,7 @@ namespace Macro.Infrastructure.Manager
         }
         public T GetData<T>(object key)
         {
-            if(_cacheDataToMap.TryGetValue(key, out object value) == false)
+            if (_cacheDataToMap.TryGetValue(key, out object value) == false)
             {
                 return default;
             }

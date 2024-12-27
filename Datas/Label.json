@@ -181,15 +181,15 @@
   },
   {
     "Id": 1030,
-    "Name": "NoSearch",
-    "Kor": "검색 결과가 없을 때까지",
-    "Eng": "검색 결과가 없을 때까지"
+    "Name": "NoSearchChild",
+    "Kor": "자식 이벤트 실행 시 반복",
+    "Eng": "Repeat when child event runs"
   },
   {
     "Id": 1031,
-    "Name": "Search",
-    "Kor": "검색 될 때까지",
-    "Eng": "Until the search"
+    "Name": "SearchParent",
+    "Kor": "부모 이미지 검색 시 종료",
+    "Eng": "End when parent image is found"
   },
   {
     "Id": 1032,

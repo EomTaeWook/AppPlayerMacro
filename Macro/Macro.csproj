@@ -225,6 +225,7 @@
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
+    <Compile Include="Infrastructure\Controller\InputEventProcessorHandler.cs" />
     <Compile Include="Infrastructure\Manager\AdManager.cs" />
     <Compile Include="Infrastructure\Manager\WebApiManager.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
@@ -238,7 +239,7 @@
     <Compile Include="Infrastructure\Interface\IMouseInput.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Manager\CacheDataManager.cs" />
-    <Compile Include="Infrastructure\Manager\InputManager.cs" />
+    <Compile Include="Infrastructure\Controller\InputController.cs" />
     <Compile Include="Infrastructure\Manager\SchedulerManager.cs" />
     <Compile Include="Infrastructure\Manager\ServiceDispatcher.cs" />
     <Compile Include="Infrastructure\Manager\UIManager.cs" />
@@ -252,8 +253,8 @@
     </Compile>
     <Compile Include="Models\ColorModel.cs" />
     <Compile Include="Models\EventFactorModel.cs" />
+    <Compile Include="Models\EventResult.cs" />
     <Compile Include="Models\PointModel.cs" />
-    <Compile Include="Models\ProcessConfigModel.cs" />
     <Compile Include="Models\ProcessResult.cs" />
     <Compile Include="Models\ProcessResultModel.cs" />
     <Compile Include="Models\Protocols\Protocol.S.C.cs" />

@@ -84,7 +84,7 @@ namespace Macro.View
         {
             messageTemplate = TemplateContainer<MessageTemplate>.Find(1000);
 
-            if (model.Period < ConstHelper.MinPeriod)
+            if (model.ProcessPeriod < ConstHelper.MinPeriod)
             {
                 messageTemplate = TemplateContainer<MessageTemplate>.Find(1008);
                 return false;

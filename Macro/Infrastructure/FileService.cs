@@ -1,11 +1,11 @@
 ﻿using Dignus.Log;
+using Dignus.Utils.Extensions;
 using Macro.Infrastructure.Serialize;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Utils;
 
 namespace Macro.Infrastructure.Manager
@@ -29,7 +29,7 @@ namespace Macro.Infrastructure.Manager
             return true;
         }
 
-        public async Task<List<T>> Load<T>(string path)
+        public List<T> Load<T>(string path)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Macro.Infrastructure.Manager
                     byte[] buffer = new byte[stream.Length];
                     var datas = new List<byte>();
                     var read = 0;
-                    while((read = await stream.ReadAsync(buffer, 0, (int)stream.Length)) != 0)
+                    while ((read = stream.ReadAsync(buffer, 0, (int)stream.Length).GetResult()) != 0)
                     {
                         datas.AddRange(buffer.Take(read));
                     }
@@ -53,7 +53,7 @@ namespace Macro.Infrastructure.Manager
             return null;
         }
 
-        public async Task Save<T>(string path, ObservableCollection<T> list)
+        public void Save<T>(string path, ObservableCollection<T> list)
         {
             if (File.Exists(path))
             {
@@ -65,12 +65,12 @@ namespace Macro.Infrastructure.Manager
                 foreach (var item in list)
                 {
                     var bytes = ObjectSerializer.SerializeObject(item);
-                    await fs.WriteAsync(bytes, 0, bytes.Count());
+                    fs.WriteAsync(bytes, 0, bytes.Count()).GetResult();
                 }
                 fs.Close();
             }
         }
-        public async void Save<T>(string path, List<T> list)
+        public void Save<T>(string path, List<T> list)
         {
             if (File.Exists(path))
             {
@@ -82,7 +82,7 @@ namespace Macro.Infrastructure.Manager
                 foreach (var item in list)
                 {
                     var bytes = ObjectSerializer.SerializeObject(item);
-                    await fs.WriteAsync(bytes, 0, bytes.Count());
+                    fs.WriteAsync(bytes, 0, bytes.Count()).GetResult();
                 }
                 fs.Close();
             }

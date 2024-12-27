@@ -41,7 +41,7 @@
                          mah:TextBoxHelper.ButtonCommandParameter="{Binding ElementName=txtSavePath}"/>
 
                         <Label Grid.Row="2" Grid.Column="0"  Content="{Binding Path=Period, Source={StaticResource LabelLocator}}"></Label>
-                        <mah:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.Period, Mode=TwoWay}"></mah:NumericUpDown>
+                        <mah:NumericUpDown Name="numPeriod" Minimum="{Binding Source={x:Static util:ConstHelper.MinPeriod}}" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Config.ProcessPeriod, Mode=TwoWay}"></mah:NumericUpDown>
 
                         <Label Grid.Row="3" Grid.Column="0"  Content="{Binding Path=ItemDelay, Source={StaticResource LabelLocator}}"></Label>
                         <mah:NumericUpDown Name="numDelay" Minimum="{Binding Source={x:Static util:ConstHelper.MinItemDelay}}" Grid.Row="3" Grid.Column="1" Value="{Binding Path=Config.ItemDelay, Mode=TwoWay}"></mah:NumericUpDown>
