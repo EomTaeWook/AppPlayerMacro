@@ -2,9 +2,12 @@
   <Version>
     <Major>2</Major>
     <Minor>6</Minor>
-    <Build>18</Build>
+    <Build>19</Build>
   </Version>
-  <Description>아이템 후 딜레이 버그 및 반복 이벤트 수정
+  <Description>세이브 파일 하위 호환성
+  Save File Backward Compatibility
+  2.6.18
+  아이템 후 딜레이 버그 및 반복 이벤트 수정
   Item post-delay bug fixes and repeat event adjustments
   </Description>
 </VersionNote>
