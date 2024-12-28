@@ -111,7 +111,7 @@ namespace Macro.Infrastructure.Controller
                         {
                             if (models.TryFindTriggerIndex(nextEventTrigger.TriggerIndex, out int index) == true)
                             {
-                                i = index;
+                                i = index - 1;
                             }
                         }
                     }
