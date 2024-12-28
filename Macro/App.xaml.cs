@@ -85,6 +85,7 @@ namespace Macro
             {
                 File.WriteAllText(path, JsonHelper.SerializeObject(new Config(), true));
             }
+
             var config = JsonHelper.Load<Config>(path);
             ServiceContainer serviceContainer = new ServiceContainer();
             serviceContainer.RegisterDependencies(Assembly.GetExecutingAssembly());

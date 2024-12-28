@@ -24,16 +24,11 @@ namespace Utils
         public static readonly short WheelDelta = 120;
         public static readonly int DefaultMaxSameImageCount = 5;
 
-        //public static readonly string VersionUrl = @"http://drive.google.com/uc?export=view&id=1WzaTDn7gj0cQZAz5gQt_VMgQ10Y01mPL";
-
         public static readonly string VersionUrl = @"https://itdah.com/macro/GetMacroLatestVersion";
 
         public static readonly string VersionInfoPageUrl = @"https://itdah.com/MacroVersion";
 
-        public static readonly string ReleaseUrl = @"https://github.com/EomTaeWook/EmulatorMacro/releases";
-
-        public static readonly string HelpUrl = @"https://github.com/EomTaeWook/EmulatorMacro/blob/master/README.md";
-
+        public static readonly string HelpUrl = @"https://www.itdah.com/MacroVersion/Help";
 
     }
 }
