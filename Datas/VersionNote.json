@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 18
+    "Build": 19
   },
-  "Desc": "아이템 후 딜레이 버그 및 반복 이벤트 수정. Item post-delay bug fixes and repeat event adjustments"
+  "Desc": "세이브 파일 하위 호환성 유지. Maintaining Save File Backward Compatibility"
 }
