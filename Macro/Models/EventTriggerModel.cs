@@ -21,8 +21,8 @@ namespace Macro.Models
         private ObservableCollection<EventTriggerModel> _subEventTriggers;
         private int _afterDelay;
         private RepeatInfoModel _repeatInfo;
-        private long _eventToNext = 0;
-        private long _triggerIndex = 0;
+        private ulong _eventToNext = 0;
+        private ulong _triggerIndex = 0;
         private bool _imageSearchRequired = false;
         private bool _sameImageDrag = false;
         private bool _hardClick = false;
@@ -143,7 +143,7 @@ namespace Macro.Models
             }
         }
         [Order(10)]
-        public long TriggerIndex
+        public ulong TriggerIndex
         {
             set
             {
@@ -154,7 +154,7 @@ namespace Macro.Models
         }
 
         [Order(11)]
-        public long EventToNext
+        public ulong EventToNext
         {
             set
             {

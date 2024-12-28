@@ -1,18 +1,18 @@
 ﻿using Dignus.Framework;
 using Macro.Models;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Macro.Infrastructure.Manager
 {
     public class CacheDataManager : Singleton<CacheDataManager>
     {
-        private long _currentIndex;
-        private readonly Dictionary<long, EventTriggerModel> _indexTriggerModelToMap;
+        private ulong _currentIndex;
+        public object _lockObj = new object();
+        private readonly Dictionary<ulong, EventTriggerModel> _indexTriggerModelToMap;
         private readonly Dictionary<object, object> _cacheDataToMap = new Dictionary<object, object>();
         public CacheDataManager()
         {
-            _indexTriggerModelToMap = new Dictionary<long, EventTriggerModel>();
+            _indexTriggerModelToMap = new Dictionary<ulong, EventTriggerModel>();
 
             NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
             NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
@@ -32,12 +32,17 @@ namespace Macro.Infrastructure.Manager
             }
         }
 
-        public long IncreaseIndex()
+        public ulong IncreaseIndex()
         {
-            return Interlocked.Increment(ref _currentIndex);
+            lock (_lockObj)
+            {
+                _currentIndex++;
+            }
+
+            return _currentIndex;
         }
 
-        public EventTriggerModel GetEventTriggerModel(long index)
+        public EventTriggerModel GetEventTriggerModel(ulong index)
         {
             _indexTriggerModelToMap.TryGetValue(index, out EventTriggerModel eventTriggerModel);
             return eventTriggerModel;

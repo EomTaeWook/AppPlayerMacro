@@ -79,7 +79,7 @@ namespace Macro.Extensions
             };
         }
 
-        public static bool TryFindTriggerIndex(this IEnumerable<EventTriggerModel> eventTriggerModels, long triggerIndex, out int index)
+        public static bool TryFindTriggerIndex(this IEnumerable<EventTriggerModel> eventTriggerModels, ulong triggerIndex, out int index)
         {
             index = -1;
             foreach (var item in eventTriggerModels)

@@ -35,7 +35,7 @@ namespace Macro.Models
     }
     public class EventTriggerEventArgs : INotifyEventArgs
     {
-        public long Index { get; set; }
+        public ulong Index { get; set; }
         public EventTriggerModel TriggerModel { get; set; }
     }
     public class UpdatedTimeArgs : INotifyEventArgs
