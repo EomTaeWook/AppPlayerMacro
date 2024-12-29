@@ -6,6 +6,5 @@
   "DragDelay": "10",
   "Similarity": "75",
   "SearchImageResultDisplay": true,
-  "VersionCheck": true,
-  "InitialTab": "Common"
+  "VersionCheck": true
 }
