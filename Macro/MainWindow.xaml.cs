@@ -11,6 +11,7 @@ using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace Macro
         private ContentController _contentController;
         private CloseButtonWindow _closeButtonWindow;
         private CoroutineHandler _coroutineHandler = new CoroutineHandler();
+        private bool _isShutdownHandled;
         public MainWindow()
         {
             InitializeComponent();
@@ -57,9 +59,25 @@ namespace Macro
 
             if (VersionCheck() == false)
             {
-                _coroutineHandler.Start(ShowAd());
+                _coroutineHandler.Start(ShowAd(true));
             }
             ApplicationManager.Instance.Init();
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            e.Cancel = true;
+            if (_isShutdownHandled)
+            {
+                return;
+            }
+            _isShutdownHandled = true;
+            _coroutineHandler.Start(ShowAd(false), () =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    Application.Current.Shutdown();
+                });
+            });
         }
         private void InitEvent()
         {
@@ -440,7 +458,7 @@ namespace Macro
             }
             return false;
         }
-        private IEnumerator ShowAd()
+        private IEnumerator ShowAd(bool isCloseButtonShow)
         {
 #if DEBUG
             yield break;
@@ -457,10 +475,13 @@ namespace Macro
 
             yield return new DelayInSeconds(3.5F);
 
-            Dispatcher.Invoke(() =>
+            if (isCloseButtonShow)
             {
-                _closeButtonWindow.Show();
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    _closeButtonWindow.Show();
+                });
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
