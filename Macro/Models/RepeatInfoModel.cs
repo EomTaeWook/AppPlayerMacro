@@ -15,7 +15,7 @@ namespace Macro.Models
             set
             {
                 _repeatType = value;
-                if(_repeatType != RepeatType.Count)
+                if (_repeatType != RepeatType.Count)
                 {
                     Count = 1;
                     OnPropertyChanged("Count");
@@ -37,7 +37,7 @@ namespace Macro.Models
 
         public RepeatInfoModel()
         {
-            _repeatType = RepeatType.Once;
+            _repeatType = RepeatType.Count;
             _count = 1;
         }
 

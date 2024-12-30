@@ -240,7 +240,7 @@ namespace Macro.View
                 lblRepeatSubItems.Visibility = Visibility.Collapsed;
                 gridRepeat.Visibility = Visibility.Collapsed;
             }
-            if (current.RoiData == null)
+            if (current.RoiData.IsExists() == false)
             {
                 this.btnRemoveROI.Visibility = Visibility.Hidden;
                 this.btnSetROI.Visibility = Visibility.Visible;
@@ -485,34 +485,36 @@ namespace Macro.View
 
         private void TreeSaves_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (treeSaves.SelectedItem is EventTriggerModel item)
+            if (treeSaves.SelectedItem is EventTriggerModel == false)
             {
-                _eventConfigViewModelCached.CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem);
-                NotifyHelper.InvokeNotify(NotifyEventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
-                {
-                    TreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
-                });
-
-                var eventType = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType;
-
-                if (eventType == EventType.Keyboard)
-                {
-                    RadioButton_Click(rbKeyboard, null);
-                }
-                else if (eventType == EventType.Mouse)
-                {
-                    RadioButton_Click(rbMouse, null);
-                }
-                else if (eventType == EventType.Image)
-                {
-                    RadioButton_Click(rbImage, null);
-                }
-                else if (eventType == EventType.RelativeToImage)
-                {
-                    RadioButton_Click(rbRelativeToImage, null);
-                }
-                RefreshUI();
+                return;
             }
+
+            _eventConfigViewModelCached.CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem);
+            NotifyHelper.InvokeNotify(NotifyEventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
+            {
+                TreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
+            });
+
+            var eventType = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType;
+
+            if (eventType == EventType.Keyboard)
+            {
+                RadioButton_Click(rbKeyboard, null);
+            }
+            else if (eventType == EventType.Mouse)
+            {
+                RadioButton_Click(rbMouse, null);
+            }
+            else if (eventType == EventType.Image)
+            {
+                RadioButton_Click(rbImage, null);
+            }
+            else if (eventType == EventType.RelativeToImage)
+            {
+                RadioButton_Click(rbRelativeToImage, null);
+            }
+            RefreshUI();
         }
 
         private void TreeSaves_Drop(object sender, DragEventArgs e)

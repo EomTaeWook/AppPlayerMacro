@@ -46,7 +46,6 @@
 
     public enum RepeatType
     {
-        Once,
         Count,
         NoSearchChild,
         SearchParent,
